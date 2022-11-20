@@ -11,17 +11,12 @@ namespace Exiled.API.Features
     using System;
     using System.Collections.Generic;
     using System.Linq;
-
     using Enums;
     using Extensions;
     using Items;
-
     using Interactables.Interobjects.DoorUtils;
-
     using MapGeneration;
-
     using Mirror;
-
     using UnityEngine;
 
     /// <summary>
@@ -208,6 +203,7 @@ namespace Exiled.API.Features
             ? RoomIdentToRoomDict[roomIdentifier]
             : null;
 
+        /*
         /// <summary>
         /// Gets a <see cref="Room"/> given the specified <see cref="Vector3"/>.
         /// </summary>
@@ -215,6 +211,7 @@ namespace Exiled.API.Features
         /// <returns>The <see cref="Room"/> with the given <see cref="Vector3"/> or <see langword="null"/> if not found.</returns>
         public static Room Get(Vector3 position) => List.FirstOrDefault(x => x.RoomIdentifier.UniqueId == RoomIdUtils.RoomAtPosition(position).UniqueId)
                                                     ?? List.FirstOrDefault(x => x.RoomIdentifier.UniqueId == RoomIdUtils.RoomAtPositionRaycasts(position).UniqueId);
+        */
 
         /// <summary>
         /// Gets a <see cref="IEnumerable{T}"/> of <see cref="Room"/> given the specified <see cref="ZoneType"/>.

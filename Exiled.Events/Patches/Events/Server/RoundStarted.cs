@@ -5,7 +5,7 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-/*
+/* TO BE REMOVED
 namespace Exiled.Events.Patches.Events.Server
 {
 #pragma warning disable SA1313

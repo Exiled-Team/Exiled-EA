@@ -61,7 +61,7 @@ namespace Exiled.API.Features.Items
 
             Base.AmmoManagerModule = Base switch
             {
-                AutomaticFirearm auto => new AutomaticAmmoManager(auto, auto._baseMaxAmmo, 1, auto._boltTravelTime == 0),
+                // AutomaticFirearm auto => new AutomaticAmmoManager(auto, auto._baseMaxAmmo, 1, auto._boltTravelTime == 0),
                 Shotgun shotgun => new TubularMagazineAmmoManager(shotgun, Serial, shotgun._ammoCapacity, shotgun._numberOfChambers, 0.5f, 3, "ShellsToLoad", ActionName.Zoom, ActionName.Shoot),
                 ParticleDisruptor particleDisruptor => new DisruptorAction(particleDisruptor, 0f, 0f, true),
                 _ => new ClipLoadedInternalMagAmmoManager(Base, 6),
@@ -202,10 +202,12 @@ namespace Exiled.API.Features.Items
             get => Base is AutomaticFirearm auto ? auto._recoil : default;
             set
             {
+                /*
                 if (Base is AutomaticFirearm auto)
                     auto.ActionModule = new AutomaticAction(Base, auto._semiAutomatic, auto._boltTravelTime, 1f / auto._fireRate, auto._dryfireClipId, auto._triggerClipId, auto._gunshotPitchRandomization, value, auto._recoilPattern, false);
                 else
                     throw new InvalidOperationException("You cannot change the recoil pattern of non-automatic weapons.");
+                    */
             }
         }
 
