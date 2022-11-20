@@ -37,7 +37,7 @@ namespace Exiled.API.Features.Roles
         /// </summary>
         public Team Team
         {
-            get => Type.GetTeam();
+            get => RoleExtensions.GetTeam(Type);
         }
 
         /// <summary>
