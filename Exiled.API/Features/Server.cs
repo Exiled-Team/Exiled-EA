@@ -38,11 +38,6 @@ namespace Exiled.API.Features
         public static global::Broadcast Broadcast { get; internal set; }
 
         /// <summary>
-        /// Gets the cached <see cref="global::BanPlayer"/> component.
-        /// </summary>
-        // public static BanPlayer BanPlayer { get; internal set; }
-
-        /// <summary>
         /// Gets the cached <see cref="SendSpawnMessage"/> <see cref="MethodInfo"/>.
         /// </summary>
         public static MethodInfo SendSpawnMessage
