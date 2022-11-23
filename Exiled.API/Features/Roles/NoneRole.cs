@@ -27,6 +27,6 @@ namespace Exiled.API.Features.Roles
         public override Player Owner { get; }
 
         /// <inheritdoc/>
-        internal override RoleTypeId RoleTypeId { get; } = RoleTypeId.None;
+        internal override RoleTypeId TypeId { get; } = RoleTypeId.None;
     }
 }

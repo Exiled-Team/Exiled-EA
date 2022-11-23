@@ -8,6 +8,7 @@
 namespace Exiled.Events.Handlers
 {
     using System.Linq;
+
     using API.Features;
     using Exiled.Events.EventArgs.Player;
     using Exiled.Events.EventArgs.Server;

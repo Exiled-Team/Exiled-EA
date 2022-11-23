@@ -8,35 +8,39 @@
 namespace Exiled.API.Extensions
 {
     using System;
+    using System.Collections.Generic;
 
     using Enums;
+    using Exiled.API.Features;
     using PlayerRoles;
+    using PlayerRoles.FirstPersonControl;
     using UnityEngine;
+
     using Team = PlayerRoles.Team;
 
     /// <summary>
-    /// A set of extensions for <see cref="PlayerRoles.RoleTypeId"/>.
+    /// A set of extensions for <see cref="RoleTypeId"/>.
     /// </summary>
     public static class RoleExtensions
     {
         /// <summary>
-        /// Get a <see cref="PlayerRoles.RoleTypeId">role's</see> <see cref="Color"/>.
+        /// Get a <see cref="RoleTypeId">role's</see> <see cref="Color"/>.
         /// </summary>
-        /// <param name="role">The <see cref="PlayerRoles.RoleTypeId"/> to get the color of.</param>
+        /// <param name="typeId">The <see cref="RoleTypeId"/> to get the color of.</param>
         /// <returns>The <see cref="Color"/> of the role.</returns>
-        // public static Color GetColor(this PlayerRoles.RoleTypeId role) => role == PlayerRoles.RoleTypeId.None ? Color.white : CharacterClassManager._staticClasses.Get(role).classColor;
+        public static Color GetColor(this RoleTypeId typeId) => typeId == RoleTypeId.None ? Color.white : typeId.GetRoleBase().RoleColor;
 
         /// <summary>
-        /// Get a <see cref="PlayerRoles.RoleTypeId">role's</see> <see cref="Side"/>.
+        /// Get a <see cref="RoleTypeId">role's</see> <see cref="Side"/>.
         /// </summary>
-        /// <param name="role">The <see cref="PlayerRoles.RoleTypeId"/> to check the side of.</param>
+        /// <param name="typeId">The <see cref="RoleTypeId"/> to check the side of.</param>
         /// <returns><see cref="Side"/>.</returns>
-        public static Side GetSide(this PlayerRoles.RoleTypeId role) => GetTeam(role).GetSide();
+        public static Side GetSide(this RoleTypeId typeId) => GetTeam(typeId).GetSide();
 
         /// <summary>
-        /// Get a <see cref="PlayerRoles.Team">team's</see> <see cref="Side"/>.
+        /// Get a <see cref="Team">team's</see> <see cref="Side"/>.
         /// </summary>
-        /// <param name="team">The <see cref="PlayerRoles.Team"/> to get the <see cref="Side"/> of.</param>
+        /// <param name="team">The <see cref="Team"/> to get the <see cref="Side"/> of.</param>
         /// <returns><see cref="Side"/>.</returns>.
         public static Side GetSide(this Team team) => team switch
         {
@@ -48,11 +52,11 @@ namespace Exiled.API.Extensions
         };
 
         /// <summary>
-        /// Get the <see cref="Team"/> of the given <see cref="PlayerRoles.RoleTypeId"/>.
+        /// Get the <see cref="Team"/> of the given <see cref="RoleTypeId"/>.
         /// </summary>
-        /// <param name="RoleTypeId">Role.</param>
+        /// <param name="typeId">The <see cref="RoleTypeId"/>.</param>
         /// <returns><see cref="Team"/>.</returns>
-        public static Team GetTeam(this PlayerRoles.RoleTypeId roleTypeId) => roleTypeId switch
+        public static Team GetTeam(this RoleTypeId typeId) => typeId switch
         {
             RoleTypeId.ChaosConscript or RoleTypeId.ChaosMarauder or RoleTypeId.ChaosRepressor or RoleTypeId.ChaosRifleman => Team.ChaosInsurgency,
             RoleTypeId.Scientist => Team.Scientists,
@@ -66,9 +70,16 @@ namespace Exiled.API.Extensions
         /// <summary>
         /// Gets the full name of the given <see cref="RoleTypeId"/>.
         /// </summary>
-        /// <param name="RoleTypeId">Role.</param>
+        /// <param name="typeId">The <see cref="RoleTypeId"/>.</param>
         /// <returns>The full name.</returns>
-        // public static string GetFullName(this PlayerRoles.RoleTypeId RoleTypeId) => CharacterClassManager._staticClasses.SafeGet(RoleTypeId).fullName;
+        public static string GetFullName(this RoleTypeId typeId) => typeId.GetRoleBase().RoleName;
+
+        /// <summary>
+        /// Gets the base <see cref="PlayerRoleBase"/> of the given <see cref="RoleTypeId"/>.
+        /// </summary>
+        /// <param name="typeId">The <see cref="RoleTypeId"/>.</param>
+        /// <returns>The <see cref="PlayerRoleBase"/>.</returns>
+        public static PlayerRoleBase GetRoleBase(this RoleTypeId typeId) => Server.Host.RoleManager.GetRoleBase(typeId);
 
         /// <summary>
         /// Get the <see cref="LeadingTeam"/>.
@@ -88,11 +99,13 @@ namespace Exiled.API.Extensions
         /// </summary>
         /// <param name="roleTypeId">The <see cref="RoleTypeId"/> to get the spawn point from.</param>
         /// <returns>Returns the spawn point <see cref="Vector3"/> and rotation <see cref="float"/>.</returns>
-        public static Tuple<Vector3, float> GetRandomSpawnProperties(this PlayerRoles.RoleTypeId roleTypeId)
+        public static Tuple<Vector3, float> GetRandomSpawnProperties(this RoleTypeId roleTypeId)
         {
             GameObject randomPosition = SpawnpointManager.GetRandomPosition(roleTypeId);
 
-            return randomPosition is null ? new Tuple<Vector3, float>(Vector3.zero, 0f) : new Tuple<Vector3, float>(randomPosition.transform.position, randomPosition.transform.rotation.eulerAngles.y);
+            return randomPosition is null ?
+                new Tuple<Vector3, float>(Vector3.zero, 0f) :
+                new Tuple<Vector3, float>(randomPosition.transform.position, randomPosition.transform.rotation.eulerAngles.y);
         }
     }
 }

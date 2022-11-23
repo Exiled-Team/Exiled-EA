@@ -5,27 +5,23 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-/*
 namespace Exiled.API.Features.Roles
 {
+    using PlayableScps;
     using PlayerRoles;
+    using PlayerRoles.PlayableScps.Scp049.Zombies;
+    using YamlDotNet.Core.Tokens;
 
     /// <summary>
     /// Defines a role that represents SCP-049-2.
     /// </summary>
     public class Scp0492Role : Role
     {
-        private Scp049_2PlayerScript script;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="Scp0492Role"/> class.
         /// </summary>
         /// <param name="player">The encapsulated player.</param>
-        internal Scp0492Role(Player player)
-        {
-            Owner = player;
-            script = player.ReferenceHub.characterClassManager.Scp0492;
-        }
+        internal Scp0492Role(Player player) => Owner = player;
 
         /// <inheritdoc/>
         public override Player Owner { get; }
@@ -33,10 +29,7 @@ namespace Exiled.API.Features.Roles
         /// <summary>
         /// Gets the <see cref="Scp049_2PlayerScript"/> for this role.
         /// </summary>
-        public Scp049_2PlayerScript Script
-        {
-            get => script ??= Owner.ReferenceHub.characterClassManager.Scp0492;
-        }
+        public ZombieRole Script => Owner.RoleManager.CurrentRole as ZombieRole;
 
         /// <summary>
         /// Gets or sets the SCP-049-2 attack distance.
@@ -52,8 +45,8 @@ namespace Exiled.API.Features.Roles
         /// </summary>
         public float AttackDamage
         {
-            get => Script.damage;
-            set => Script.damage = value;
+            get => 40;
+            set { }
         }
 
         /// <summary>
@@ -66,10 +59,9 @@ namespace Exiled.API.Features.Roles
         }
 
         /// <inheritdoc/>
-        internal override RoleTypeId RoleTypeId
+        internal override RoleTypeId TypeId
         {
             get => RoleTypeId.Scp0492;
         }
     }
 }
-*/

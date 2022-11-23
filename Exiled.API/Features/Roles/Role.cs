@@ -24,54 +24,38 @@ namespace Exiled.API.Features.Roles
         public abstract Player Owner { get; }
 
         /// <summary>
-        /// Gets or sets the <see cref="RoleTypeId"/> of this player.
+        /// Gets or sets the <see cref="TypeId"/> of this player.
         /// </summary>
         public RoleTypeId Type
         {
-            get => RoleTypeId;
+            get => TypeId;
             set => Owner?.SetRole(value);
         }
 
         /// <summary>
         /// Gets the <see cref="PlayerRoles.Team"/> of this role.
         /// </summary>
-        public Team Team
-        {
-            get => RoleExtensions.GetTeam(Type);
-        }
+        public Team Team => RoleExtensions.GetTeam(Type);
 
         /// <summary>
         /// Gets the <see cref="Enums.Side"/> of this role.
         /// </summary>
-        public Side Side
-        {
-            get => Type.GetSide();
-        }
+        public Side Side => Type.GetSide();
 
-        /*
         /// <summary>
         /// Gets the <see cref="UnityEngine.Color"/> of this role.
         /// </summary>
-        public Color Color
-        {
-            get => Type.GetColor();
-        }
-        */
+        public Color Color => Type.GetColor();
 
-        /*
         /// <summary>
         /// Gets a value indicating whether or not this role is still valid. This will only ever be <see langword="false"/> if the Role is stored and accessed at a later date.
         /// </summary>
-        public bool IsValid
-        {
-            get => Type == Owner.ReferenceHub.characterClassManager.NetworkCurClass;
-        }
-        */
+        public bool IsValid => Type == Owner.RoleManager.CurrentRole.RoleTypeId;
 
         /// <summary>
-        /// Gets the RoleTypeId belonging to this role.
+        /// Gets the <see cref="RoleTypeId"/> belonging to this role.
         /// </summary>
-        internal abstract RoleTypeId RoleTypeId { get; }
+        internal abstract RoleTypeId TypeId { get; }
 
         /// <summary>
         /// Converts a role to its appropriate <see cref="PlayerRoles.RoleTypeId"/>.
@@ -82,46 +66,46 @@ namespace Exiled.API.Features.Roles
         /// <summary>
         /// Returns whether or not 2 roles are the same.
         /// </summary>
-        /// <param name="role1">The role.</param>
-        /// <param name="role2">The other role.</param>
+        /// <param name="left">The role.</param>
+        /// <param name="right">The other role.</param>
         /// <returns><see langword="true"/> if the values are equal.</returns>
-        public static bool operator ==(Role role1, Role role2)
+        public static bool operator ==(Role left, Role right)
         {
-            if (role1 is null)
-                return role2 is null;
-            return role1.Equals(role2);
+            if (left is null)
+                return right is null;
+
+            return left.Equals(right);
         }
 
         /// <summary>
         /// Returns whether or not the two roles are different.
         /// </summary>
-        /// <param name="role1">The role.</param>
-        /// <param name="role2">The other role.</param>
+        /// <param name="left">The role.</param>
+        /// <param name="right">The other role.</param>
         /// <returns><see langword="true"/> if the values are not equal.</returns>
-        public static bool operator !=(Role role1, Role role2)
+        public static bool operator !=(Role left, Role right)
         {
-            if (role1 is null)
-                return role2 is not null;
-            return !role1.Equals(role2);
+            if (left is null)
+                return right is not null;
+
+            return !left.Equals(right);
         }
 
         /// <summary>
-        /// Returns whether or not the role has the same RoleTypeId as the given <paramref name="type"/>.
+        /// Returns whether or not the role has the same RoleTypeId as the given <paramref name="typeId"/>.
         /// </summary>
         /// <param name="role">The role.</param>
-        /// <param name="type">The <see cref="PlayerRoles.RoleTypeId"/>.</param>
+        /// <param name="typeId">The <see cref="PlayerRoles.RoleTypeId"/>.</param>
         /// <returns><see langword="true"/> if the values are equal.</returns>
-        public static bool operator ==(Role role, RoleTypeId type)
-            => role?.Type == type;
+        public static bool operator ==(Role role, RoleTypeId typeId) => role?.Type == typeId;
 
         /// <summary>
-        /// Returns whether or not the role has a different RoleTypeId as the given <paramref name="type"/>.
+        /// Returns whether or not the role has a different RoleTypeId as the given <paramref name="typeId"/>.
         /// </summary>
         /// <param name="role">The role.</param>
-        /// <param name="type">The <see cref="PlayerRoles.RoleTypeId"/>.</param>
+        /// <param name="typeId">The <see cref="PlayerRoles.RoleTypeId"/>.</param>
         /// <returns><see langword="true"/> if the values are not equal.</returns>
-        public static bool operator !=(Role role, RoleTypeId type)
-            => role?.Type != type;
+        public static bool operator !=(Role role, RoleTypeId typeId) => role?.Type != typeId;
 
         /// <summary>
         /// Returns whether or not the role has the same RoleTypeId as the given <paramref name="type"/>.
@@ -129,8 +113,7 @@ namespace Exiled.API.Features.Roles
         /// <param name="type">The <see cref="PlayerRoles.RoleTypeId"/>.</param>
         /// <param name="role">The role.</param>
         /// <returns><see langword="true"/> if the values are equal.</returns>
-        public static bool operator ==(RoleTypeId type, Role role)
-            => role?.Type == type;
+        public static bool operator ==(RoleTypeId type, Role role) => role?.Type == type;
 
         /// <summary>
         /// Returns whether or not the role has a different RoleTypeId as the given <paramref name="type"/>.
@@ -138,8 +121,7 @@ namespace Exiled.API.Features.Roles
         /// <param name="type">The <see cref="PlayerRoles.RoleTypeId"/>.</param>
         /// <param name="role">The role.</param>
         /// <returns><see langword="true"/> if the values are not equal.</returns>
-        public static bool operator !=(RoleTypeId type, Role role)
-            => role?.Type != type;
+        public static bool operator !=(RoleTypeId type, Role role) => role?.Type != type;
 
         /// <summary>
         /// Casts the role to the specified role type.
@@ -158,7 +140,8 @@ namespace Exiled.API.Features.Roles
         public bool Is<T>(out T role)
             where T : Role
         {
-            role = this is T t ? t : null;
+            role = this is T type ? type : null;
+
             return role is not null;
         }
 
@@ -182,7 +165,6 @@ namespace Exiled.API.Features.Roles
         /// <returns>A role.</returns>
         internal static Role Create(RoleTypeId type, Player player) => type switch
         {
-            /*
             RoleTypeId.Scp049 => new Scp049Role(player),
             RoleTypeId.Scp0492 => new Scp0492Role(player),
             RoleTypeId.Scp079 => new Scp079Role(player),
@@ -193,7 +175,6 @@ namespace Exiled.API.Features.Roles
             RoleTypeId.Spectator => new SpectatorRole(player),
             RoleTypeId.None => new NoneRole(player),
             _ => new HumanRole(player, type),
-            */
         };
     }
 }

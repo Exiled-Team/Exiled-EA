@@ -22,13 +22,13 @@ namespace Exiled.API.Features.Roles
         internal HumanRole(Player player, RoleTypeId type)
         {
             Owner = player;
-            RoleTypeId = type;
+            TypeId = type;
         }
 
         /// <inheritdoc/>
         public override Player Owner { get; }
 
         /// <inheritdoc/>
-        internal override RoleTypeId RoleTypeId { get; }
+        internal override RoleTypeId TypeId { get; }
     }
 }

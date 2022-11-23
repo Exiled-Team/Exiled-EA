@@ -8,6 +8,7 @@
 namespace Exiled.API.Features
 {
     using System.Collections.Generic;
+
     using PlayerRoles;
     using UnityEngine;
 

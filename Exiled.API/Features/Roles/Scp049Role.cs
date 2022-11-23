@@ -61,7 +61,7 @@ namespace Exiled.API.Features.Roles
         }
 
         /// <inheritdoc/>
-        internal override RoleTypeId RoleTypeId
+        internal override RoleTypeId TypeId
         {
             get => RoleTypeId.Scp049;
         }

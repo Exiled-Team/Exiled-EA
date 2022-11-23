@@ -15,14 +15,19 @@ namespace Exiled.API.Features
     using System.Text.RegularExpressions;
 
     using Enums;
+    using Exiled.API.Extensions;
+    using Hazards;
     using InventorySystem.Items.Pickups;
     using Items;
     using LightContainmentZoneDecontamination;
     using MapGeneration.Distributors;
     using Mirror;
+    using PlayerRoles;
+    using PlayerRoles.PlayableScps.Scp173;
+    using RelativePositioning;
     using Roles;
     using Toys;
-    // using PlayableScps.ScriptableObjects;
+
     using UnityEngine;
 
     using Object = UnityEngine.Object;
@@ -59,6 +64,27 @@ namespace Exiled.API.Features
         private static readonly ReadOnlyCollection<AdminToy> ReadOnlyToysValue = ToysValue.AsReadOnly();
 
         private static readonly RaycastHit[] CachedFindParentRoomRaycast = new RaycastHit[1];
+
+        private static TantrumEnvironmentalHazard tantrumPrefab;
+
+        /// <summary>
+        /// Gets the tantrum prefab.
+        /// </summary>
+        public static TantrumEnvironmentalHazard TantrumPrefab
+        {
+            get
+            {
+                if (tantrumPrefab is null)
+                {
+                    Scp173Role scp173Role = RoleTypeId.Scp173.GetRoleBase() as Scp173Role;
+
+                    if (scp173Role.SubroutineModule.TryGetComponent(out Scp173TantrumAbility scp173TantrumAbility))
+                        tantrumPrefab = scp173TantrumAbility._tantrumPrefab;
+                }
+
+                return tantrumPrefab;
+            }
+        }
 
         /// <summary>
         /// Gets a value indicating whether decontamination has begun in the light containment zone.
@@ -282,9 +308,8 @@ namespace Exiled.API.Features
         /// <returns><see cref="Pickup"/> object.</returns>
         public static Pickup GetRandomPickup(ItemType type = ItemType.None)
         {
-            List<Pickup> pickups = (type != ItemType.None
-                ? Pickups.Where(p => p.Type == type)
-                : Pickups).ToList();
+            List<Pickup> pickups = (type != ItemType.None ? Pickups.Where(p => p.Type == type) : Pickups).ToList();
+
             return pickups[Random.Range(0, pickups.Count)];
         }
 
@@ -329,7 +354,6 @@ namespace Exiled.API.Features
             AmbientSoundPlayer.RpcPlaySound(AmbientSoundPlayer.clips[id].index);
         }
 
-        /*
         /// <summary>
         /// Places a Tantrum (SCP-173's ability) in the indicated position.
         /// </summary>
@@ -337,14 +361,15 @@ namespace Exiled.API.Features
         /// <returns>The tantrum's <see cref="GameObject"/>.</returns>
         public static GameObject PlaceTantrum(Vector3 position)
         {
-            GameObject gameObject =
-                Object.Instantiate(ScpScriptableObjects.Instance.Scp173Data.TantrumPrefab);
-            gameObject.transform.position = position;
-            NetworkServer.Spawn(gameObject);
+            TantrumEnvironmentalHazard tantrum = Object.Instantiate(TantrumPrefab);
 
-            return gameObject;
+            tantrum.gameObject.transform.position = position;
+            tantrum.SynchronizedPosition = new RelativePosition(position);
+
+            NetworkServer.Spawn(tantrum.gameObject);
+
+            return tantrum.gameObject;
         }
-        */
 
         /*
         /// <summary>
