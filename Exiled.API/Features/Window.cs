@@ -9,10 +9,9 @@ namespace Exiled.API.Features
 {
     using System.Collections.Generic;
 
+    using DamageHandlers;
     using Enums;
     using Extensions;
-    using DamageHandlers;
-
     using UnityEngine;
 
     /// <summary>

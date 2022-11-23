@@ -7,8 +7,8 @@
 
 namespace Exiled.Events.EventArgs.Player
 {
-    using Interfaces;
     using Hazards;
+    using Interfaces;
 
     /// <summary>
     /// Contains all information before a player exits an environmental hazard.

@@ -13,12 +13,11 @@ namespace Exiled.API.Extensions
 
     using Enums;
     using Features.Items;
-    using Structs;
-
     using InventorySystem;
     using InventorySystem.Items;
     using InventorySystem.Items.Firearms.Attachments;
     using InventorySystem.Items.Firearms.Attachments.Components;
+    using Structs;
 
     /// <summary>
     /// A set of extensions for <see cref="ItemType"/>.

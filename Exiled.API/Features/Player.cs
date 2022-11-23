@@ -12,14 +12,12 @@ namespace Exiled.API.Features
     using System.Linq;
     using System.Reflection;
     using System.Runtime.CompilerServices;
+
+    using Core;
     using CustomPlayerEffects;
+    using DamageHandlers;
     using Enums;
     using Extensions;
-    using Core;
-    using DamageHandlers;
-    using Items;
-    using Roles;
-    using Structs;
     using Footprinting;
     using global::Scp914;
     using Hints;
@@ -30,6 +28,7 @@ namespace Exiled.API.Features
     using InventorySystem.Items.Firearms.Attachments;
     using InventorySystem.Items.Firearms.BasicMessages;
     using InventorySystem.Items.Usables.Scp330;
+    using Items;
     using MapGeneration.Distributors;
     using MEC;
     using Mirror;
@@ -46,10 +45,14 @@ namespace Exiled.API.Features
     using PlayerRoles.Spectating;
     using PlayerStatsSystem;
     using RemoteAdmin;
+    using Roles;
     using RoundRestarting;
+    using Structs;
     using UnityEngine;
     using Utils.Networking;
+
     using static DamageHandlers.DamageHandlerBase;
+
     using CustomHandlerBase = DamageHandlers.DamageHandlerBase;
     using DamageHandlerBase = PlayerStatsSystem.DamageHandlerBase;
     using Firearm = Items.Firearm;
@@ -527,7 +530,7 @@ namespace Exiled.API.Features
         /// <br /><see cref="RoleTypeId.Scp096"/> = <see cref="Scp096Role"/>.
         /// <br /><see cref="RoleTypeId.Scp106"/> = <see cref="Scp106Role"/>.
         /// <br /><see cref="RoleTypeId.Scp173"/> = <see cref="Scp173Role"/>.
-        /// <br /><see cref="RoleTypeId.Scp93953"/> / <see cref="RoleTypeId.Scp93989"/> = <see cref="Scp939Role"/>.
+        /// <br /><see cref="RoleTypeId.Scp939"/> = <see cref="Scp939Role"/>.
         /// <br />If not listed above, the type of Role will be <see cref="Roles.HumanRole"/>.
         /// </para>
         /// <para>

@@ -10,9 +10,9 @@ namespace Exiled.Events.EventArgs.Item
     using System.Collections.Generic;
     using System.Linq;
 
-    using Exiled.API.Extensions;
     using API.Features;
     using API.Structs;
+    using Exiled.API.Extensions;
     using Interfaces;
 
     /// <summary>

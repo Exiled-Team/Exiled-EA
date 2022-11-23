@@ -8,10 +8,8 @@
 namespace Exiled.Events.EventArgs.Scp914
 {
     using API.Features;
-    using Interfaces;
-
     using global::Scp914;
-
+    using Interfaces;
     using UnityEngine;
 
     /// <summary>

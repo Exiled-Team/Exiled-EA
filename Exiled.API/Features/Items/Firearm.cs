@@ -12,16 +12,14 @@ namespace Exiled.API.Features.Items
     using System.Linq;
 
     using CameraShaking;
-
     using Enums;
     using Extensions;
-    using Structs;
-
     using InventorySystem.Items.Firearms;
     using InventorySystem.Items.Firearms.Attachments;
     using InventorySystem.Items.Firearms.Attachments.Components;
     using InventorySystem.Items.Firearms.BasicMessages;
     using InventorySystem.Items.Firearms.Modules;
+    using Structs;
 
     /// <summary>
     /// A wrapper class for <see cref="InventorySystem.Items.Firearms.Firearm"/>.

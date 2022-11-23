@@ -15,20 +15,14 @@ namespace Exiled.API.Features
     using System.Text.RegularExpressions;
 
     using Enums;
+    using InventorySystem.Items.Pickups;
     using Items;
+    using LightContainmentZoneDecontamination;
+    using MapGeneration.Distributors;
+    using Mirror;
     using Roles;
     using Toys;
-
-    using InventorySystem.Items.Pickups;
-
-    using LightContainmentZoneDecontamination;
-
-    using MapGeneration.Distributors;
-
-    using Mirror;
-
     // using PlayableScps.ScriptableObjects;
-
     using UnityEngine;
 
     using Object = UnityEngine.Object;

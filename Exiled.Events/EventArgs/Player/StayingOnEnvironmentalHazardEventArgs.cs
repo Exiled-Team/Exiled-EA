@@ -9,8 +9,8 @@ namespace Exiled.Events.EventArgs.Player
 {
     using System;
 
-    using Interfaces;
     using Hazards;
+    using Interfaces;
 
     /// <summary>
     /// Contains all information when a player stays on an environmental hazard.

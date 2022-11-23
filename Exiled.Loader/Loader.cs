@@ -16,17 +16,14 @@ namespace Exiled.Loader
     using System.Security.Principal;
     using System.Threading;
 
-    using CommandSystem.Commands.Shared;
-
     using API.Enums;
-    using Exiled.API.Features;
     using API.Interfaces;
+    using CommandSystem.Commands.Shared;
+    using Exiled.API.Features;
     using Features;
     using Features.Configs;
     using Features.Configs.CustomConverters;
-
     using NorthwoodLib;
-
     using YamlDotNet.Serialization;
     using YamlDotNet.Serialization.NamingConventions;
     using YamlDotNet.Serialization.NodeDeserializers;

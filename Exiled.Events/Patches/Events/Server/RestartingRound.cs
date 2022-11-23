@@ -11,14 +11,10 @@ namespace Exiled.Events.Patches.Events.Server
     using System.Collections.Generic;
     using System.Reflection.Emit;
 
-    using Loader;
-
     using GameCore;
-
     using HarmonyLib;
-
+    using Loader;
     using NorthwoodLib.Pools;
-
     using RoundRestarting;
 
     using static HarmonyLib.AccessTools;

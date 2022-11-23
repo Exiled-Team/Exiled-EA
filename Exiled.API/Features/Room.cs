@@ -11,10 +11,11 @@ namespace Exiled.API.Features
     using System;
     using System.Collections.Generic;
     using System.Linq;
+
     using Enums;
     using Extensions;
-    using Items;
     using Interactables.Interobjects.DoorUtils;
+    using Items;
     using MapGeneration;
     using Mirror;
     using UnityEngine;

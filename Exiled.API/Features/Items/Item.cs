@@ -11,8 +11,6 @@ namespace Exiled.API.Features.Items
     using System.Linq;
 
     using Extensions;
-    using Structs;
-
     using InventorySystem.Items;
     using InventorySystem.Items.Armor;
     using InventorySystem.Items.Firearms;
@@ -26,9 +24,8 @@ namespace Exiled.API.Features.Items
     using InventorySystem.Items.Usables;
     using InventorySystem.Items.Usables.Scp244;
     using InventorySystem.Items.Usables.Scp330;
-
     using Mirror;
-
+    using Structs;
     using UnityEngine;
 
     using Object = UnityEngine.Object;

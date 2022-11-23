@@ -8,12 +8,9 @@
 namespace Exiled.Events.EventArgs.Scp914
 {
     using API.Features.Items;
-    using Interfaces;
-
     using global::Scp914;
-
+    using Interfaces;
     using InventorySystem.Items.Pickups;
-
     using UnityEngine;
 
     /// <summary>

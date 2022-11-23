@@ -14,16 +14,12 @@ namespace Exiled.Permissions.Extensions
     using System.Text;
 
     using CommandSystem;
-
     using Exiled.API.Extensions;
     using Exiled.API.Features;
     using Features;
-    using Properties;
-
     using NorthwoodLib.Pools;
-
+    using Properties;
     using RemoteAdmin;
-
     using YamlDotNet.Core;
     using YamlDotNet.Serialization;
     using YamlDotNet.Serialization.NamingConventions;

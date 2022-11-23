@@ -8,11 +8,9 @@
 namespace Exiled.API.Features.Items
 {
     using Enums;
-    using Structs;
-
     using InventorySystem.Items.Radio;
-
     using MEC;
+    using Structs;
 
     /// <summary>
     /// A wrapper class for <see cref="RadioItem"/>.

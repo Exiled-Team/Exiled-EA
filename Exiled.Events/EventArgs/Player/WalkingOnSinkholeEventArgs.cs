@@ -10,8 +10,8 @@ namespace Exiled.Events.EventArgs.Player
     using System;
 
     using API.Features;
-    using Interfaces;
     using Hazards;
+    using Interfaces;
 
     /// <summary>
     ///     Contains all information before a player walks over a sinkhole.

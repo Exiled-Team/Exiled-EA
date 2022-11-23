@@ -9,11 +9,10 @@ namespace Exiled.Events.Commands.Reload
 {
     using System;
 
-    using CommandSystem;
-
     using API.Interfaces;
-    using Loader;
+    using CommandSystem;
     using Exiled.Permissions.Extensions;
+    using Loader;
 
     /// <summary>
     /// The reload configs command.

@@ -10,8 +10,8 @@ namespace Exiled.Permissions
     using System.ComponentModel;
     using System.IO;
 
-    using Exiled.API.Features;
     using API.Interfaces;
+    using Exiled.API.Features;
 
     /// <inheritdoc cref="IConfig"/>
     public sealed class Config : IConfig

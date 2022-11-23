@@ -8,9 +8,8 @@
 namespace Exiled.Events.EventArgs.Scp079
 {
     using API.Features;
-    using Player;
-
     using Interactables.Interobjects.DoorUtils;
+    using Player;
 
     /// <summary>
     ///     Contains all information before SCP-079 interacts with a door.

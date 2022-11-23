@@ -15,10 +15,8 @@ namespace Exiled.Events
     using API.Enums;
     using API.Features;
     using EventArgs.Interfaces;
-    using Loader;
-
     using HarmonyLib;
-
+    using Loader;
     using UnityEngine.SceneManagement;
 
     /// <summary>

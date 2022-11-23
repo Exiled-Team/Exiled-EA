@@ -8,9 +8,8 @@
 namespace Exiled.Events.EventArgs.Player
 {
     using API.Enums;
-    using Exiled.API.Extensions;
     using API.Features;
-
+    using Exiled.API.Extensions;
     using InventorySystem.Items.Pickups;
 
     /// <summary>

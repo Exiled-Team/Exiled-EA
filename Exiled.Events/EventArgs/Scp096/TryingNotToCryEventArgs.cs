@@ -8,9 +8,8 @@
 namespace Exiled.Events.EventArgs.Scp096
 {
     using API.Features;
-    using Interfaces;
-
     using Interactables.Interobjects.DoorUtils;
+    using Interfaces;
 
     using Scp096 = PlayableScps.Scp096;
 

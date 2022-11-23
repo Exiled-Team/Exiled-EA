@@ -8,9 +8,8 @@
 namespace Exiled.Events.EventArgs.Player
 {
     using API.Features;
-    using Interfaces;
-
     using Interactables.Interobjects.DoorUtils;
+    using Interfaces;
 
     /// <summary>
     ///     Contains all information before a player interacts with a door.

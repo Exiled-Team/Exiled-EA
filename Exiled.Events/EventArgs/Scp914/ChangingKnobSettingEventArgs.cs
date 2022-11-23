@@ -8,9 +8,8 @@
 namespace Exiled.Events.EventArgs.Scp914
 {
     using API.Features;
-    using Interfaces;
-
     using global::Scp914;
+    using Interfaces;
 
     /// <summary>
     ///     Contains all information before a player changes the SCP-914 knob setting.

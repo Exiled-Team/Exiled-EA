@@ -7,9 +7,9 @@
 
 namespace Exiled.Events.EventArgs.Map
 {
-    using API.Features.Roles;
     using API.Features;
     using API.Features.DamageHandlers;
+    using API.Features.Roles;
     using Interfaces;
 
     using CustomAttackerHandler = API.Features.DamageHandlers.AttackerDamageHandler;

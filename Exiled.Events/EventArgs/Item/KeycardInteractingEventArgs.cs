@@ -9,10 +9,8 @@ namespace Exiled.Events.EventArgs.Item
 {
     using API.Features;
     using API.Features.Items;
-    using Interfaces;
-
     using Interactables.Interobjects.DoorUtils;
-
+    using Interfaces;
     using InventorySystem.Items.Keycards;
 
     /// <summary>

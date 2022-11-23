@@ -11,10 +11,9 @@ namespace Exiled.API.Features.Items
     using System.Collections.Generic;
     using System.Linq;
 
-    using Structs;
-
     using InventorySystem.Items.Armor;
     using PlayerRoles;
+    using Structs;
 
     /// <summary>
     /// A wrapper class for <see cref="BodyArmor"/>.
