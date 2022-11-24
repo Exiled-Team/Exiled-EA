@@ -59,10 +59,7 @@ namespace Exiled.API.Features.Items
         /// <summary>
         /// Gets the <see cref="UnityEngine.GameObject"/> of the Pickup.
         /// </summary>
-        public GameObject GameObject
-        {
-            get => Base.gameObject;
-        }
+        public GameObject GameObject => Base.gameObject;
 
         /// <summary>
         /// Gets the unique serial number for the item.
@@ -119,10 +116,7 @@ namespace Exiled.API.Features.Items
         /// <summary>
         /// Gets the <see cref="ItemType"/> of the item.
         /// </summary>
-        public ItemType Type
-        {
-            get => Base.NetworkInfo.ItemId;
-        }
+        public ItemType Type => Base.NetworkInfo.ItemId;
 
         /// <summary>
         /// Gets or sets a value indicating whether the pickup is locked (can't be picked up).

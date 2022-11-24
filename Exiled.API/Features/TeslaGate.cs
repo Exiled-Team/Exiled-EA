@@ -39,10 +39,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets a <see cref="IEnumerable{T}"/> of <see cref="TeslaGate"/> which contains all the <see cref="TeslaGate"/> instances.
         /// </summary>
-        public static IEnumerable<TeslaGate> List
-        {
-            get => TeslasValue;
-        }
+        public static IEnumerable<TeslaGate> List => TeslasValue;
 
         /// <summary>
         /// Gets or sets a <see cref="HashSet{T}"/> of <see cref="Player"/> which contains all the players ignored by tesla gates.
@@ -67,50 +64,32 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets the tesla gate's <see cref="UnityEngine.GameObject"/>.
         /// </summary>
-        public GameObject GameObject
-        {
-            get => Base.gameObject;
-        }
+        public GameObject GameObject => Base.gameObject;
 
         /// <summary>
         /// Gets the tesla gate's <see cref="UnityEngine.Transform"/>.
         /// </summary>
-        public Transform Transform
-        {
-            get => Base.transform;
-        }
+        public Transform Transform => Base.transform;
 
         /// <summary>
         /// Gets the tesla gate's position.
         /// </summary>
-        public Vector3 Position
-        {
-            get => Transform.position;
-        }
+        public Vector3 Position => Transform.position;
 
         /// <summary>
         /// Gets the tesla gate's rotation.
         /// </summary>
-        public Quaternion Rotation
-        {
-            get => Quaternion.Euler(Base.localRotation);
-        }
+        public Quaternion Rotation => Quaternion.Euler(Base.localRotation);
 
         /// <summary>
         /// Gets the tesla gate's <see cref="Features.Room"/> which is located in.
         /// </summary>
-        public Room Room
-        {
-            get => Map.FindParentRoom(GameObject);
-        }
+        public Room Room => Map.FindParentRoom(GameObject);
 
         /// <summary>
         /// Gets a value indicating whether or not the tesla gate's shock burst is in progess.
         /// </summary>
-        public bool IsShocking
-        {
-            get => Base.InProgress;
-        }
+        public bool IsShocking => Base.InProgress;
 
         /// <summary>
         /// Gets or sets the tesla gate's inactive time.
@@ -204,26 +183,17 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets a <see cref="IEnumerable{T}"/> of <see cref="Player"/> which contains all the players inside the hurt range.
         /// </summary>
-        public IEnumerable<Player> PlayersInHurtRange
-        {
-            get => Player.List.Where(player => Base.PlayerInHurtRange(player.GameObject));
-        }
+        public IEnumerable<Player> PlayersInHurtRange => Player.List.Where(player => Base.PlayerInHurtRange(player.GameObject));
 
         /// <summary>
         /// Gets a <see cref="IEnumerable{T}"/> of <see cref="Player"/> which contains all the players inside the idle range.
         /// </summary>
-        public IEnumerable<Player> PlayersInIdleRange
-        {
-            get => Player.List.Where(player => Base.PlayerInIdleRange(player.ReferenceHub));
-        }
+        public IEnumerable<Player> PlayersInIdleRange => Player.List.Where(player => Base.PlayerInIdleRange(player.ReferenceHub));
 
         /// <summary>
         /// Gets a <see cref="IEnumerable{T}"/> of <see cref="Player"/> which contains all the players inside the trigger range.
         /// </summary>
-        public IEnumerable<Player> PlayersInTriggerRange
-        {
-            get => Player.List.Where(player => Base.PlayerInRange(player.ReferenceHub));
-        }
+        public IEnumerable<Player> PlayersInTriggerRange => Player.List.Where(player => Base.PlayerInRange(player.ReferenceHub));
 
         /// <summary>
         /// Gets the <see cref="TeslaGate"/> belonging to the <see cref="BaseTeslaGate"/>.

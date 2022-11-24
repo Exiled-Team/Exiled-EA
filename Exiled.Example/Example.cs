@@ -33,10 +33,7 @@ namespace Exiled.Example
         /// <summary>
         /// Gets the only existing instance of this plugin.
         /// </summary>
-        public static Example Instance
-        {
-            get => Singleton;
-        }
+        public static Example Instance => Singleton;
 
         /// <inheritdoc/>
         public override PluginPriority Priority { get; } = PluginPriority.Last;

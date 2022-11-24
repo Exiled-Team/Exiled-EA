@@ -833,10 +833,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets a <see cref="IEnumerable{T}"/> of all active Artificial Health processes on the player.
         /// </summary>
-        public IEnumerable<AhpStat.AhpProcess> ActiveArtificialHealthProcesses
-        {
-            get => ((AhpStat)ReferenceHub.playerStats.StatModules[1])._activeProcesses;
-        }
+        public IEnumerable<AhpStat.AhpProcess> ActiveArtificialHealthProcesses => ((AhpStat)ReferenceHub.playerStats.StatModules[1])._activeProcesses;
 
         /// <summary>
         /// Gets or sets the player's current SCP.
@@ -878,10 +875,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets a value indicating whether or not the staff bypass is enabled.
         /// </summary>
-        public bool IsStaffBypassEnabled
-        {
-            get => ReferenceHub.serverRoles.BypassStaff;
-        }
+        public bool IsStaffBypassEnabled => ReferenceHub.serverRoles.BypassStaff;
 
         /// <summary>
         /// Gets or sets the player's group name.

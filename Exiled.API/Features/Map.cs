@@ -89,26 +89,17 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets a value indicating whether decontamination has begun in the light containment zone.
         /// </summary>
-        public static bool IsLczDecontaminated
-        {
-            get => DecontaminationController.Singleton._stopUpdating; // && !DecontaminationController.Singleton.disableDecontamination;
-        }
+        public static bool IsLczDecontaminated => DecontaminationController.Singleton._stopUpdating; // && !DecontaminationController.Singleton.disableDecontamination;
 
         /// <summary>
         /// Gets all <see cref="PocketDimensionTeleport"/> objects.
         /// </summary>
-        public static ReadOnlyCollection<PocketDimensionTeleport> PocketDimensionTeleports
-        {
-            get => ReadOnlyTeleportsValue;
-        }
+        public static ReadOnlyCollection<PocketDimensionTeleport> PocketDimensionTeleports => ReadOnlyTeleportsValue;
 
         /// <summary>
         /// Gets all <see cref="Locker"/> objects.
         /// </summary>
-        public static ReadOnlyCollection<Locker> Lockers
-        {
-            get => ReadOnlyLockersValue;
-        }
+        public static ReadOnlyCollection<Locker> Lockers => ReadOnlyLockersValue;
 
         /// <summary>
         /// gets all <see cref="Pickup"/>s on the map.
@@ -131,18 +122,12 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets all <see cref="Ragdoll"/> objects.
         /// </summary>
-        public static ReadOnlyCollection<Ragdoll> Ragdolls
-        {
-            get => ReadOnlyRagdollsValue;
-        }
+        public static ReadOnlyCollection<Ragdoll> Ragdolls => ReadOnlyRagdollsValue;
 
         /// <summary>
         /// Gets all <see cref="AdminToy"/> objects.
         /// </summary>
-        public static ReadOnlyCollection<AdminToy> Toys
-        {
-            get => ReadOnlyToysValue;
-        }
+        public static ReadOnlyCollection<AdminToy> Toys => ReadOnlyToysValue;
 
         /// <summary>
         /// Gets or sets the current seed of the map.

@@ -33,18 +33,12 @@ namespace Exiled.API.Features.Roles
         /// <summary>
         /// Gets the <see cref="Scp049"/> player script for this role.
         /// </summary>
-        public Scp049 Script
-        {
-            get => script ??= Owner.CurrentScp as Scp049;
-        }
+        public Scp049 Script => script ??= Owner.CurrentScp as Scp049;
 
         /// <summary>
         /// Gets a value indicating whether or not SCP-049 is currently recalling a player.
         /// </summary>
-        public bool IsRecalling
-        {
-            get => Script._recallInProgressServer;
-        }
+        public bool IsRecalling => Script._recallInProgressServer;
 
         /// <summary>
         /// Gets the player that is currently being revived by SCP-049. Will be <see langword="null"/> if <see cref="IsRecalling"/> is false.
@@ -61,10 +55,7 @@ namespace Exiled.API.Features.Roles
         }
 
         /// <inheritdoc/>
-        internal override RoleTypeId TypeId
-        {
-            get => RoleTypeId.Scp049;
-        }
+        internal override RoleTypeId TypeId => RoleTypeId.Scp049;
 
         /// <summary>
         /// Gets a boolean indicating whether or not SCP-049 is close enough to a ragdoll to revive it.

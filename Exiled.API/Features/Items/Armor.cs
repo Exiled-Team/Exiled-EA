@@ -47,26 +47,17 @@ namespace Exiled.API.Features.Items
         /// <summary>
         /// Gets a value indicating whether this item is equippable.
         /// </summary>
-        public bool Equippable
-        {
-            get => Base.AllowEquip;
-        }
+        public bool Equippable => Base.AllowEquip;
 
         /// <summary>
         /// Gets a value indicating whether this item is holsterable.
         /// </summary>
-        public bool Holsterable
-        {
-            get => Base.AllowHolster;
-        }
+        public bool Holsterable => Base.AllowHolster;
 
         /// <summary>
         /// Gets a value indicating whether or not this is a worn item.
         /// </summary>
-        public bool IsWorn
-        {
-            get => Base.IsWorn;
-        }
+        public bool IsWorn => Base.IsWorn;
 
         /// <summary>
         /// Gets or sets the Weight of the armor.
@@ -122,36 +113,13 @@ namespace Exiled.API.Features.Items
         /// Gets or sets how much faster stamina will drain when wearing this armor.
         /// </summary>
         /// <exception cref="ArgumentOutOfRangeException">When attempting to set the value below 1 or above 2.</exception>
-        public float StaminaUseMultiplier
-        {
-            get => Base.StaminaUsageMultiplier;
-            /*
-            set
-            {
-                if (value is > 2f or < 1f)
-                    throw new ArgumentOutOfRangeException(nameof(StaminaUseMultiplier), "You can only set the stamina use multiplier to a value between 1f and 2f.");
-                Base.StaminaUsageMultiplier = value;
-            }
-            */
-        }
+        public float StaminaUseMultiplier => Base.StaminaUsageMultiplier;
 
         /// <summary>
         /// Gets or sets how much the users movement speed should be affected when wearing this armor. (higher values = slower movement).
         /// </summary>
         /// <exception cref="ArgumentOutOfRangeException">When attempting to set the value below 0 or above 1.</exception>
-        public float MovementSpeedMultiplier
-        {
-            get => Base.MovementSpeedMultiplier;
-            /*
-            [Obsolete("The client would be desynchronized", true)]
-            set
-            {
-                if (value is < 0.0f or > 1f)
-                    throw new ArgumentOutOfRangeException(nameof(MovementSpeedMultiplier), "You can only set the movement speed multiplier to a value between 0 and 1.");
-                Base.MovementSpeedMultiplier = value;
-            }
-            */
-        }
+        public float MovementSpeedMultiplier => Base.MovementSpeedMultiplier;
 
         /// <summary>
         /// Gets or sets how much worse <see cref="RoleTypeId.ClassD"/> and <see cref="RoleTypeId.Scientist"/>s are affected by wearing this armor.

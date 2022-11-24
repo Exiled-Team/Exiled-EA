@@ -51,10 +51,7 @@ namespace Exiled.CustomRoles.API.Features.Parsers
         }
 
         /// <inheritdoc />
-        public Type BaseType
-        {
-            get => typeof(CustomAbility);
-        }
+        public Type BaseType => typeof(CustomAbility);
 
         /// <inheritdoc />
         public bool TryResolve(ParsingEventBuffer buffer, out Type suggestedType)

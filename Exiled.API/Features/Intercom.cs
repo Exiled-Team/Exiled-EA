@@ -40,18 +40,12 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets the intercom's <see cref="UnityEngine.GameObject"/>.
         /// </summary>
-        public static GameObject GameObject
-        {
-            get => PlayerRoles.Voice.Intercom._singleton.gameObject;
-        }
+        public static GameObject GameObject => PlayerRoles.Voice.Intercom._singleton.gameObject;
 
         /// <summary>
         /// Gets the intercom's <see cref="UnityEngine.Transform"/>.
         /// </summary>
-        public static Transform Transform
-        {
-            get => PlayerRoles.Voice.Intercom._singleton.transform;
-        }
+        public static Transform Transform => PlayerRoles.Voice.Intercom._singleton.transform;
 
         /*
         /// <summary>

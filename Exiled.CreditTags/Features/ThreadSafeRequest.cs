@@ -26,10 +26,7 @@ namespace Exiled.CreditTags.Features
 
         public HttpStatusCode Code { get; private set; }
 
-        public bool Done
-        {
-            get => done;
-        }
+        public bool Done => done;
 
         public static void Go(string url, Action<ThreadSafeRequest> errorHandler, Action<string> resultHandler, GameObject issuer)
         {

@@ -38,10 +38,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets a <see cref="IEnumerable{T}"/> of <see cref="Generator"/> which contains all the <see cref="Generator"/> instances.
         /// </summary>
-        public static IEnumerable<Generator> List
-        {
-            get => GeneratorValues;
-        }
+        public static IEnumerable<Generator> List => GeneratorValues;
 
         /// <summary>
         /// Gets the base <see cref="Scp079Generator"/>.
@@ -51,26 +48,17 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets the <see cref="UnityEngine.GameObject"/> of the generator.
         /// </summary>
-        public GameObject GameObject
-        {
-            get => Base.gameObject;
-        }
+        public GameObject GameObject => Base.gameObject;
 
         /// <summary>
         /// Gets the <see cref="UnityEngine.Transform"/> of the generator.
         /// </summary>
-        public Transform Transform
-        {
-            get => Base.transform;
-        }
+        public Transform Transform => Base.transform;
 
         /// <summary>
         /// Gets the generator's <see cref="Room"/>.
         /// </summary>
-        public Room Room
-        {
-            get => Map.FindParentRoom(GameObject);
-        }
+        public Room Room => Map.FindParentRoom(GameObject);
 
         /// <summary>
         /// Gets or sets the generator' state.
@@ -93,18 +81,12 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets the generator's dropdown speed.
         /// </summary>
-        public float DropdownSpeed
-        {
-            get => Base.DropdownSpeed;
-        }
+        public float DropdownSpeed => Base.DropdownSpeed;
 
         /// <summary>
         /// Gets a value indicating whether the generator is ready to be activated.
         /// </summary>
-        public bool IsReady
-        {
-            get => Base.ActivationReady;
-        }
+        public bool IsReady => Base.ActivationReady;
 
         /// <summary>
         /// Gets or sets a value indicating whether the generator is engaged.
@@ -208,18 +190,12 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets the generator position.
         /// </summary>
-        public Vector3 Position
-        {
-            get => Base.transform.position;
-        }
+        public Vector3 Position => Base.transform.position;
 
         /// <summary>
         /// Gets the generator rotation.
         /// </summary>
-        public Quaternion Rotation
-        {
-            get => Base.transform.rotation;
-        }
+        public Quaternion Rotation => Base.transform.rotation;
 
         /// <summary>
         /// Gets or sets the required permissions to interact with the generator.

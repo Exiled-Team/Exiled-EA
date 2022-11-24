@@ -21,10 +21,7 @@ namespace Exiled.Permissions
         /// <summary>
         /// Gets the permissions instance.
         /// </summary>
-        public static Permissions Instance
-        {
-            get => instance;
-        }
+        public static Permissions Instance => instance;
 
         /// <inheritdoc/>
         public override void OnEnabled()

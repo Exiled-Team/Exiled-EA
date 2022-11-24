@@ -34,10 +34,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets the <see cref="GameObject"/> of the warhead lever.
         /// </summary>
-        public static GameObject Lever
-        {
-            get => SitePanel.lever.gameObject;
-        }
+        public static GameObject Lever => SitePanel.lever.gameObject;
 
         /// <summary>
         /// Gets or sets a value indicating whether or not the warhead lever is enabled.
@@ -89,10 +86,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets a value indicating whether or not the warhead has already been detonated.
         /// </summary>
-        public static bool IsDetonated
-        {
-            get => Controller._alreadyDetonated;
-        }
+        public static bool IsDetonated => Controller._alreadyDetonated;
 
         /*
         /// <summary>

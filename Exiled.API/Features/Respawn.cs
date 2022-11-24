@@ -24,43 +24,28 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets the next known <see cref="SpawnableTeamType"/> that will spawn.
         /// </summary>
-        public static SpawnableTeamType NextKnownTeam
-        {
-            get => RespawnManager.Singleton.NextKnownTeam;
-        }
+        public static SpawnableTeamType NextKnownTeam => RespawnManager.Singleton.NextKnownTeam;
 
         /// <summary>
         /// Gets the amount of seconds before the next respawn will occur.
         /// </summary>
         [Obsolete("Use TimeUntilSpawnWave.TotalSeconds.")]
-        public static int TimeUntilRespawn
-        {
-            get => (int)TimeUntilSpawnWave.TotalSeconds;
-        }
+        public static int TimeUntilRespawn => (int)TimeUntilSpawnWave.TotalSeconds;
 
         /// <summary>
         /// Gets a <see cref="TimeSpan"/> indicating the amount of time before the next respawn wave will occur.
         /// </summary>
-        public static TimeSpan TimeUntilSpawnWave
-        {
-            get => TimeSpan.FromSeconds(RespawnManager.Singleton._timeForNextSequence - (float)RespawnManager.Singleton._stopwatch.Elapsed.TotalSeconds);
-        }
+        public static TimeSpan TimeUntilSpawnWave => TimeSpan.FromSeconds(RespawnManager.Singleton._timeForNextSequence - (float)RespawnManager.Singleton._stopwatch.Elapsed.TotalSeconds);
 
         /// <summary>
         /// Gets a <see cref="DateTime"/> indicating the moment in UTC time the next respawn wave will occur.
         /// </summary>
-        public static DateTime NextTeamTime
-        {
-            get => DateTime.UtcNow.AddSeconds(TimeUntilSpawnWave.TotalSeconds);
-        }
+        public static DateTime NextTeamTime => DateTime.UtcNow.AddSeconds(TimeUntilSpawnWave.TotalSeconds);
 
         /// <summary>
         /// Gets a value indicating whether or not a team is currently being spawned or the animations are playing for a team.
         /// </summary>
-        public static bool IsSpawning
-        {
-            get => RespawnManager.Singleton._curSequence == RespawnManager.RespawnSequencePhase.PlayingEntryAnimations || RespawnManager.Singleton._curSequence == RespawnManager.RespawnSequencePhase.SpawningSelectedTeam;
-        }
+        public static bool IsSpawning => RespawnManager.Singleton._curSequence == RespawnManager.RespawnSequencePhase.PlayingEntryAnimations || RespawnManager.Singleton._curSequence == RespawnManager.RespawnSequencePhase.SpawningSelectedTeam;
 
 
         /// <summary>
@@ -87,10 +72,7 @@ namespace Exiled.API.Features
         /// Gets the actual <see cref="RespawnEffectsController"/>.
         /// </summary>
         [Obsolete("Using this will lead to indefinable errors", true)]
-        public static RespawnEffectsController Controller
-        {
-            get => RespawnEffectsController.AllControllers.FirstOrDefault(controller => controller != null);
-        }
+        public static RespawnEffectsController Controller => RespawnEffectsController.AllControllers.FirstOrDefault(controller => controller != null);
 
         /// <summary>
         /// Play an effect when a certain class spawns.

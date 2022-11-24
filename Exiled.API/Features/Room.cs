@@ -33,42 +33,27 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets a <see cref="IEnumerable{T}"/> of <see cref="Room"/> which contains all the <see cref="Room"/> instances.
         /// </summary>
-        public static IEnumerable<Room> List
-        {
-            get => RoomsValue;
-        }
+        public static IEnumerable<Room> List => RoomsValue;
 
         /// <summary>
         /// Gets the <see cref="Room"/> name.
         /// </summary>
-        public string Name
-        {
-            get => name;
-        }
+        public string Name => name;
 
         /// <summary>
         /// Gets the <see cref="Room"/> <see cref="UnityEngine.GameObject"/>.
         /// </summary>
-        public GameObject GameObject
-        {
-            get => gameObject;
-        }
+        public GameObject GameObject => gameObject;
 
         /// <summary>
         /// Gets the <see cref="Room"/> <see cref="UnityEngine.Transform"/>.
         /// </summary>
-        public Transform Transform
-        {
-            get => transform;
-        }
+        public Transform Transform => transform;
 
         /// <summary>
         /// Gets the <see cref="Room"/> position.
         /// </summary>
-        public Vector3 Position
-        {
-            get => transform.position;
-        }
+        public Vector3 Position => transform.position;
 
         /// <summary>
         /// Gets the <see cref="ZoneType"/> in which the room is located.
@@ -173,10 +158,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets the FlickerableLightController's NetworkIdentity.
         /// </summary>
-        public NetworkIdentity FlickerableLightControllerNetIdentity
-        {
-            get => FlickerableLightController.netIdentity;
-        }
+        public NetworkIdentity FlickerableLightControllerNetIdentity => FlickerableLightController.netIdentity;
 
         /// <summary>
         /// Gets the room's FlickerableLightController.

@@ -53,42 +53,27 @@ namespace Exiled.API.Features.Toys
         /// <summary>
         /// Gets the <see cref="UnityEngine.GameObject"/> of the target.
         /// </summary>
-        public GameObject GameObject
-        {
-            get => Base.gameObject;
-        }
+        public GameObject GameObject => Base.gameObject;
 
         /// <summary>
         /// Gets the <see cref="UnityEngine.GameObject"/> of the bullseye.
         /// </summary>
-        public GameObject Bullseye
-        {
-            get => Base._bullsEye.gameObject;
-        }
+        public GameObject Bullseye => Base._bullsEye.gameObject;
 
         /// <summary>
         /// Gets the <see cref="Interactables.Verification.IVerificationRule"/> for this target.
         /// </summary>
-        public Interactables.Verification.IVerificationRule VerificationRule
-        {
-            get => Base.VerificationRule;
-        }
+        public Interactables.Verification.IVerificationRule VerificationRule => Base.VerificationRule;
 
         /// <summary>
         /// Gets the bullseye location of the target.
         /// </summary>
-        public Vector3 BullseyePosition
-        {
-            get => Base._bullsEye.position;
-        }
+        public Vector3 BullseyePosition => Base._bullsEye.position;
 
         /// <summary>
         /// Gets the bullseye radius of the target.
         /// </summary>
-        public float BullseyeRadius
-        {
-            get => Base._bullsEyeRadius;
-        }
+        public float BullseyeRadius => Base._bullsEyeRadius;
 
         /// <summary>
         /// Gets or sets the max health of the target.

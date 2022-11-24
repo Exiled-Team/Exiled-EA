@@ -81,10 +81,7 @@ namespace Exiled.API.Features.DamageHandlers
         /// <summary>
         /// Gets the text to show in the server logs.
         /// </summary>
-        public virtual string ServerLogsText
-        {
-            get => Base.ServerLogsText;
-        }
+        public virtual string ServerLogsText => Base.ServerLogsText;
 
         /// <summary>
         /// Gets or sets the <see cref="DamageType"/> for the damage handler.
@@ -139,10 +136,7 @@ namespace Exiled.API.Features.DamageHandlers
         /// <summary>
         /// Gets the <see cref="PlayerStatsSystem.DeathTranslation"/>.
         /// </summary>
-        public virtual DeathTranslation DeathTranslation
-        {
-            get => DamageTypeExtensions.TranslationConversion.FirstOrDefault(translation => translation.Value == Type).Key;
-        }
+        public virtual DeathTranslation DeathTranslation => DamageTypeExtensions.TranslationConversion.FirstOrDefault(translation => translation.Value == Type).Key;
 
         /// <summary>
         /// Implicitly converts the given <see cref="DamageHandlerBase"/> instance to a <see cref="BaseHandler"/> object.
@@ -245,10 +239,7 @@ namespace Exiled.API.Features.DamageHandlers
             /// <summary>
             /// Gets the default announcement.
             /// </summary>
-            public static CassieAnnouncement Default
-            {
-                get => BaseHandler.CassieAnnouncement.Default;
-            }
+            public static CassieAnnouncement Default => BaseHandler.CassieAnnouncement.Default;
 
             /// <summary>
             /// Gets or sets the announcement.

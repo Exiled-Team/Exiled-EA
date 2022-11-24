@@ -77,10 +77,7 @@ namespace Exiled.API.Features.Items
         }
 
         /// <inheritdoc cref="AvailableAttachmentsValue"/>.
-        public static IReadOnlyDictionary<ItemType, AttachmentIdentifier[]> AvailableAttachments
-        {
-            get => AvailableAttachmentsValue;
-        }
+        public static IReadOnlyDictionary<ItemType, AttachmentIdentifier[]> AvailableAttachments => AvailableAttachmentsValue;
 
         /// <summary>
         /// Gets a <see cref="Dictionary{TKey, TValue}"/> which represents all the preferences for each <see cref="Player"/>.
@@ -122,58 +119,37 @@ namespace Exiled.API.Features.Items
         /// <summary>
         /// Gets the max ammo for this firearm.
         /// </summary>
-        public byte MaxAmmo
-        {
-            get => Base.AmmoManagerModule.MaxAmmo;
-        }
+        public byte MaxAmmo => Base.AmmoManagerModule.MaxAmmo;
 
         /// <summary>
         /// Gets the <see cref="Enums.AmmoType"/> of the firearm.
         /// </summary>
-        public AmmoType AmmoType
-        {
-            get => Base.AmmoType.GetAmmoType();
-        }
+        public AmmoType AmmoType => Base.AmmoType.GetAmmoType();
 
         /// <summary>
         /// Gets a value indicating whether the firearm is being aimed.
         /// </summary>
-        public bool Aiming
-        {
-            get => Base.AdsModule.ServerAds;
-        }
+        public bool Aiming => Base.AdsModule.ServerAds;
 
         /// <summary>
         /// Gets a value indicating whether the firearm's flashlight module is enabled.
         /// </summary>
-        public bool FlashlightEnabled
-        {
-            get => Base.Status.Flags.HasFlagFast(FirearmStatusFlags.FlashlightEnabled);
-        }
+        public bool FlashlightEnabled => Base.Status.Flags.HasFlagFast(FirearmStatusFlags.FlashlightEnabled);
 
         /// <summary>
         /// Gets the <see cref="Attachment"/>s of the firearm.
         /// </summary>
-        public Attachment[] Attachments
-        {
-            get => Base.Attachments;
-        }
+        public Attachment[] Attachments => Base.Attachments;
 
         /// <summary>
         /// Gets the <see cref="AttachmentIdentifier"/>s of the firearm.
         /// </summary>
-        public IEnumerable<AttachmentIdentifier> AttachmentIdentifiers
-        {
-            get => this.GetAttachmentIdentifiers();
-        }
+        public IEnumerable<AttachmentIdentifier> AttachmentIdentifiers => this.GetAttachmentIdentifiers();
 
         /// <summary>
         /// Gets the <see cref="Enums.BaseCode"/> of the firearm.
         /// </summary>
-        public BaseCode BaseCode
-        {
-            get => FirearmPairs[Type];
-        }
+        public BaseCode BaseCode => FirearmPairs[Type];
 
         /// <summary>
         /// Gets or sets the fire rate of the firearm, if it is an automatic weapon.

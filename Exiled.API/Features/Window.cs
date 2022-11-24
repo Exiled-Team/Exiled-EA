@@ -41,10 +41,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets a <see cref="IEnumerable{T}"/> of <see cref="Door"/> which contains all the <see cref="Door"/> instances.
         /// </summary>
-        public static IEnumerable<Window> List
-        {
-            get => WindowValue.AsReadOnly();
-        }
+        public static IEnumerable<Window> List => WindowValue.AsReadOnly();
 
         /// <summary>
         /// Gets the base-game <see cref="BreakableWindow"/> for this window.
@@ -54,18 +51,12 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets the <see cref="UnityEngine.GameObject"/> of the window.
         /// </summary>
-        public GameObject GameObject
-        {
-            get => Base.gameObject;
-        }
+        public GameObject GameObject => Base.gameObject;
 
         /// <summary>
         /// Gets the window's <see cref="UnityEngine.Transform"/>.
         /// </summary>
-        public Transform Transform
-        {
-            get => Base._transform;
-        }
+        public Transform Transform => Base._transform;
 
         /// <summary>
         /// Gets the <see cref="Exiled.API.Features.Room"/> the window is in.
@@ -80,10 +71,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets the window's <see cref="ZoneType"/>.
         /// </summary>
-        public ZoneType Zone
-        {
-            get => Room.Zone;
-        }
+        public ZoneType Zone => Room.Zone;
 
         /// <summary>
         /// Gets or sets the window's position.
@@ -107,10 +95,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets a value indicating whether or not this window is breakable.
         /// </summary>
-        public bool IsBreakable
-        {
-            get => !Base.isBroken;
-        }
+        public bool IsBreakable => !Base.isBroken;
 
         /// <summary>
         /// Gets or sets a value indicating whether or not this window is broken.

@@ -72,10 +72,7 @@ namespace Exiled.Events.EventArgs.Player
         /// <summary>
         ///     Gets the ragdoll's creation time.
         /// </summary>
-        public double CreationTime
-        {
-            get => Info.CreationTime;
-        }
+        public double CreationTime => Info.CreationTime;
 
         /// <summary>
         ///     Gets or sets the ragdoll's nickname.

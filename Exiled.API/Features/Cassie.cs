@@ -30,26 +30,17 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets the <see cref="NineTailedFoxAnnouncer"/> singleton.
         /// </summary>
-        public static NineTailedFoxAnnouncer Announcer
-        {
-            get => NineTailedFoxAnnouncer.singleton;
-        }
+        public static NineTailedFoxAnnouncer Announcer => NineTailedFoxAnnouncer.singleton;
 
         /// <summary>
         /// Gets a value indicating whether or not C.A.S.S.I.E is currently announcing. Does not include decontamination messages.
         /// </summary>
-        public static bool IsSpeaking
-        {
-            get => Announcer.queue.Count != 0;
-        }
+        public static bool IsSpeaking => Announcer.queue.Count != 0;
 
         /// <summary>
         /// Gets a <see cref="IReadOnlyCollection{T}"/> of <see cref="NineTailedFoxAnnouncer.VoiceLine"/> objects that C.A.S.S.I.E recognizes.
         /// </summary>
-        public static IReadOnlyCollection<NineTailedFoxAnnouncer.VoiceLine> VoiceLines
-        {
-            get => Announcer.voiceLines.ToList().AsReadOnly();
-        }
+        public static IReadOnlyCollection<NineTailedFoxAnnouncer.VoiceLine> VoiceLines => Announcer.voiceLines.ToList().AsReadOnly();
 
         /// <summary>
         /// Reproduce a non-glitched C.A.S.S.I.E message.

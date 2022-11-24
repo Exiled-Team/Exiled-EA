@@ -34,10 +34,7 @@ namespace Exiled.Loader.Features.Configs
         public string Name { get; set; }
 
         /// <inheritdoc/>
-        public Type Type
-        {
-            get => baseDescriptor.Type;
-        }
+        public Type Type => baseDescriptor.Type;
 
         /// <inheritdoc/>
         public Type TypeOverride
@@ -57,10 +54,7 @@ namespace Exiled.Loader.Features.Configs
         }
 
         /// <inheritdoc/>
-        public bool CanWrite
-        {
-            get => baseDescriptor.CanWrite;
-        }
+        public bool CanWrite => baseDescriptor.CanWrite;
 
         /// <inheritdoc/>
         public void Write(object target, object value)

@@ -48,10 +48,7 @@ namespace Exiled.API.Features.Core
         /// <summary>
         /// Gets all the registered <see cref="EObject"/> types.
         /// </summary>
-        public static IReadOnlyDictionary<Type, List<string>> RegisteredTypes
-        {
-            get => RegisteredTypesValue;
-        }
+        public static IReadOnlyDictionary<Type, List<string>> RegisteredTypes => RegisteredTypesValue;
 
         /// <summary>
         /// Gets or sets the base <see cref="GameObject"/>.

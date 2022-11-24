@@ -36,27 +36,15 @@ namespace Exiled.Loader.Features.Configs
         public string Comment { get; private set; }
 
         /// <inheritdoc/>
-        public object Value
-        {
-            get => innerDescriptor.Value;
-        }
+        public object Value => innerDescriptor.Value;
 
         /// <inheritdoc/>
-        public Type Type
-        {
-            get => innerDescriptor.Type;
-        }
+        public Type Type => innerDescriptor.Type;
 
         /// <inheritdoc/>
-        public Type StaticType
-        {
-            get => innerDescriptor.StaticType;
-        }
+        public Type StaticType => innerDescriptor.StaticType;
 
         /// <inheritdoc/>
-        public ScalarStyle ScalarStyle
-        {
-            get => innerDescriptor.ScalarStyle;
-        }
+        public ScalarStyle ScalarStyle => innerDescriptor.ScalarStyle;
     }
 }

@@ -25,36 +25,24 @@ namespace Exiled.API.Features
         /// Gets the time elapsed from the start of the round.
         /// </summary>
         /// <seealso cref="StartedTime"/>
-        public static TimeSpan ElapsedTime
-        {
-            get => RoundStart.RoundLength;
-        }
+        public static TimeSpan ElapsedTime => RoundStart.RoundLength;
 
         /// <summary>
         /// Gets the start time of the round.
         /// </summary>
         /// <seealso cref="ElapsedTime"/>
         /// <seealso cref="IsStarted"/>
-        public static DateTime StartedTime
-        {
-            get => DateTime.Now - ElapsedTime;
-        }
+        public static DateTime StartedTime => DateTime.Now - ElapsedTime;
 
         /// <summary>
         /// Gets a value indicating whether the round is started or not.
         /// </summary>
-        public static bool IsStarted
-        {
-            get => ReferenceHub.LocalHub?.characterClassManager.RoundStarted ?? false;
-        }
+        public static bool IsStarted => ReferenceHub.LocalHub?.characterClassManager.RoundStarted ?? false;
 
         /// <summary>
         /// Gets a value indicating whether the round in progress or not.
         /// </summary>
-        public static bool InProgress
-        {
-            get => ReferenceHub.LocalHub is not null && RoundSummary.RoundInProgress();
-        }
+        public static bool InProgress => ReferenceHub.LocalHub is not null && RoundSummary.RoundInProgress();
 
         /*
         /// <summary>
@@ -151,10 +139,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets the number of rounds since the server started.
         /// </summary>
-        public static int UptimeRounds
-        {
-            get => RoundRestart.UptimeRounds;
-        }
+        public static int UptimeRounds => RoundRestart.UptimeRounds;
 
         /*
         /// <summary>

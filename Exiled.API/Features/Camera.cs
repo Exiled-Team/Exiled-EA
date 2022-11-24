@@ -125,19 +125,13 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets a <see cref="IEnumerable{T}"/> of <see cref="Camera"/> which contains all the <see cref="Camera"/> instances.
         /// </summary>
-        public static IEnumerable<Camera> List
-        {
-            get => CamerasValue;
-        }
+        public static IEnumerable<Camera> List => CamerasValue;
 
         /// <summary>
         /// Gets a random <see cref="Camera"/>.
         /// </summary>
         /// <returns><see cref="Camera"/> object.</returns>
-        public static Camera Random
-        {
-            get => List.ElementAt(UnityEngine.Random.Range(0, List.Count()));
-        }
+        public static Camera Random => List.ElementAt(UnityEngine.Random.Range(0, List.Count()));
 
         /// <summary>
         /// Gets the base <see cref="Camera079"/>.
@@ -147,26 +141,17 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets the camera's <see cref="UnityEngine.GameObject"/>.
         /// </summary>
-        public GameObject GameObject
-        {
-            get => Base.gameObject;
-        }
+        public GameObject GameObject => Base.gameObject;
 
         /// <summary>
         /// Gets the camera's <see cref="UnityEngine.Transform"/>.
         /// </summary>
-        public Transform Transform
-        {
-            get => Base.transform;
-        }
+        public Transform Transform => Base.transform;
 
         /// <summary>
         /// Gets the camera's name.
         /// </summary>
-        public string Name
-        {
-            get => Base.Label;
-        }
+        public string Name => Base.Label;
 
         /*
         /// <summary>
@@ -181,18 +166,12 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets the camera's <see cref="Features.Room"/>.
         /// </summary>
-        public Room Room
-        {
-            get => Map.FindParentRoom(GameObject);
-        }
+        public Room Room => Map.FindParentRoom(GameObject);
 
         /// <summary>
         /// Gets the camera's <see cref="ZoneType"/>.
         /// </summary>
-        public ZoneType Zone
-        {
-            get => Room.Zone;
-        }
+        public ZoneType Zone => Room.Zone;
 
         /// <summary>
         /// Gets the camera's <see cref="CameraType"/>.

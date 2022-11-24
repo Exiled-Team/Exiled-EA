@@ -27,18 +27,12 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets all the patched methods.
         /// </summary>
-        public static IEnumerable<MethodBase> PatchedMethods
-        {
-            get => Harmony.GetAllPatchedMethods();
-        }
+        public static IEnumerable<MethodBase> PatchedMethods => Harmony.GetAllPatchedMethods();
 
         /// <summary>
         /// Gets all the patched methods and their relative patch group.
         /// </summary>
-        public static IReadOnlyDictionary<MethodBase, HashSet<string>> PatchedGroupMethods
-        {
-            get => PatchedGroupMethodsValue;
-        }
+        public static IReadOnlyDictionary<MethodBase, HashSet<string>> PatchedGroupMethods => PatchedGroupMethodsValue;
 
         /// <summary>
         /// Searches the current assembly for Harmony annotations and uses them to create patches.

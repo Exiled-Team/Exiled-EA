@@ -78,16 +78,10 @@ namespace Exiled.API.Features
         public ITranslation InternalTranslation { get; protected set; }
 
         /// <inheritdoc/>
-        public string ConfigPath
-        {
-            get => Paths.GetConfigPath(Prefix);
-        }
+        public string ConfigPath => Paths.GetConfigPath(Prefix);
 
         /// <inheritdoc/>
-        public string TranslationPath
-        {
-            get => Paths.GetTranslationPath(Prefix);
-        }
+        public string TranslationPath => Paths.GetTranslationPath(Prefix);
 
         /// <inheritdoc/>
         public virtual void OnEnabled()
@@ -187,9 +181,6 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets the plugin translations.
         /// </summary>
-        public TTranslation Translation
-        {
-            get => (TTranslation)InternalTranslation;
-        }
+        public TTranslation Translation => (TTranslation)InternalTranslation;
     }
 }

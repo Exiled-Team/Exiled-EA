@@ -104,26 +104,17 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets the <see cref="RagDoll"/>.
         /// </summary>
-        public RagDoll Base
-        {
-            get => ragdoll;
-        }
+        public RagDoll Base => ragdoll;
 
         /// <summary>
         /// Gets the <see cref="UnityEngine.GameObject"/> of the ragdoll.
         /// </summary>
-        public GameObject GameObject
-        {
-            get => Base.gameObject;
-        }
+        public GameObject GameObject => Base.gameObject;
 
         /// <summary>
         /// Gets the <see cref="UnityEngine.Transform"/> of the ragdoll.
         /// </summary>
-        public Transform Transform
-        {
-            get => Base.transform;
-        }
+        public Transform Transform => Base.transform;
 
         /// <summary>
         /// Gets or sets the ragdoll's <see cref="RagdollInfo">NetworkInfo</see>.
@@ -137,34 +128,22 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets the ragdoll's <see cref="DamageHandlerBase"/>.
         /// </summary>
-        public DamageHandlerBase DamageHandler
-        {
-            get => NetworkInfo.Handler;
-        }
+        public DamageHandlerBase DamageHandler => NetworkInfo.Handler;
 
         /// <summary>
         /// Gets the ragdoll's <see cref="SpecialRigidbody"/>[].
         /// </summary>
-        public SpecialRigidbody[] SpecialRigidbodies
-        {
-            get => ragdoll.SpecialRigidbodies;
-        }
+        public SpecialRigidbody[] SpecialRigidbodies => ragdoll.SpecialRigidbodies;
 
         /// <summary>
         /// Gets all ragdoll's <see cref="DeathAnimation"/>[].
         /// </summary>
-        public DeathAnimation[] DeathAnimations
-        {
-            get => ragdoll.AllDeathAnimations;
-        }
+        public DeathAnimation[] DeathAnimations => ragdoll.AllDeathAnimations;
 
         /// <summary>
         /// Gets a value indicating whether or not the ragdoll has been already cleaned up.
         /// </summary>
-        public bool IsCleanedUp
-        {
-            get => ragdoll._cleanedUp;
-        }
+        public bool IsCleanedUp => ragdoll._cleanedUp;
 
         /// <summary>
         /// Gets or sets a value indicating whether or not the ragdoll can be cleaned up.
@@ -190,7 +169,7 @@ namespace Exiled.API.Features
         /// </summary>
         // public bool IsPlayingAnimations
         // {
-         //    get => ragdoll._playingLocalAnims;
+        //    get => ragdoll._playingLocalAnims;
         // }
 
         /// <summary>
@@ -198,65 +177,47 @@ namespace Exiled.API.Features
         /// </summary>
         // public bool AllowAnimations
         // {
-          //   get => ragdoll._animationsDisabled;
-         //   set => ragdoll._animationsDisabled = value;
+        //   get => ragdoll._animationsDisabled;
+        //   set => ragdoll._animationsDisabled = value;
         // }
 
         /// <summary>
         /// Gets the ragdoll's name.
         /// </summary>
-        public string Name
-        {
-            get => ragdoll.name;
-        }
+        public string Name => ragdoll.name;
 
         /// <summary>
         /// Gets the owner <see cref="Player"/>. Can be <see langword="null"/> if the ragdoll does not have an owner.
         /// </summary>
-        public Player Owner
-        {
-            get => Player.Get(ragdoll.Info.OwnerHub);
-        }
+        public Player Owner => Player.Get(ragdoll.Info.OwnerHub);
 
         /// <summary>
         /// Gets the time that the ragdoll was spawned.
         /// </summary>
-        public DateTime CreationTime
-        {
-            get => new((long)NetworkInfo.CreationTime);
-        }
+        public DateTime CreationTime => new((long)NetworkInfo.CreationTime);
 
         /// <summary>
         /// Gets the <see cref="RoleTypeId"/> of the ragdoll.
         /// </summary>
         // public RoleTypeId Role
         // {
-         //    get => NetworkInfo.RoleTypeId;
+        //    get => NetworkInfo.RoleTypeId;
         // }
 
         /// <summary>
         /// Gets a value indicating whether or not the ragdoll is respawnable by SCP-049.
         /// </summary>
-        public bool AllowRecall
-        {
-            get => NetworkInfo.ExistenceTime > Scp049.ReviveEligibilityDuration;
-        }
+        public bool AllowRecall => NetworkInfo.ExistenceTime > Scp049.ReviveEligibilityDuration;
 
         /// <summary>
         /// Gets the <see cref="Features.Room"/> the ragdoll is located in.
         /// </summary>
-        public Room Room
-        {
-            get => Map.FindParentRoom(GameObject);
-        }
+        public Room Room => Map.FindParentRoom(GameObject);
 
         /// <summary>
         /// Gets the <see cref="ZoneType"/> the ragdoll is in.
         /// </summary>
-        public ZoneType Zone
-        {
-            get => Room.Zone;
-        }
+        public ZoneType Zone => Room.Zone;
 
         /// <summary>
         /// Gets or sets the ragdoll's position.
@@ -303,10 +264,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets the ragdoll's death reason.
         /// </summary>
-        public string DeathReason
-        {
-            get => DamageHandler.ServerLogsText;
-        }
+        public string DeathReason => DamageHandler.ServerLogsText;
 
         /// <summary>
         /// Gets or sets a <see cref="HashSet{T}"/> of <see cref="RagDoll"/>'s that will be ignored by clean up event.

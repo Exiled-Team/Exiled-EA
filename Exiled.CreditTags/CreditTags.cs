@@ -38,10 +38,7 @@ namespace Exiled.CreditTags
         /// <summary>
         /// Gets a static reference to this class.
         /// </summary>
-        public static CreditTags Instance
-        {
-            get => Singleton;
-        }
+        public static CreditTags Instance => Singleton;
 
         /// <inheritdoc/>
         public override string Prefix { get; } = "exiled_credits";

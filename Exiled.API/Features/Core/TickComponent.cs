@@ -77,10 +77,7 @@ namespace Exiled.API.Features.Core
         /// <summary>
         /// Gets all the currently bound handles.
         /// </summary>
-        public IReadOnlyCollection<CoroutineHandle> BoundHandles
-        {
-            get => boundHandles;
-        }
+        public IReadOnlyCollection<CoroutineHandle> BoundHandles => boundHandles;
 
         /// <summary>
         /// Binds a <see cref="CoroutineHandle"/>.
