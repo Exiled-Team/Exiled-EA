@@ -35,14 +35,12 @@ namespace Exiled.API.Features
     using Mirror.LiteNetLib4Mirror;
     using NorthwoodLib;
     using NorthwoodLib.Pools;
-    using PlayableScps;
     using PlayerRoles;
     using PlayerRoles.FirstPersonControl;
     using PlayerRoles.PlayableScps.Scp079;
     using PlayerRoles.PlayableScps.Scp106;
     using PlayerRoles.PlayableScps.Scp173;
     using PlayerRoles.PlayableScps.Scp939;
-    using PlayerRoles.Spectating;
     using PlayerRoles.Voice;
     using PlayerStatsSystem;
     using RemoteAdmin;
@@ -103,7 +101,7 @@ namespace Exiled.API.Features
             readOnlyItems = ItemsValue.AsReadOnly();
             ReferenceHub = referenceHub;
 
-            Timing.CallDelayed(0.05f, () => Role = Role.Create(playerRoleBase.RoleTypeId, this));
+            Timing.CallDelayed(0.05f, () => Role = Role.Create(this, playerRoleBase.RoleTypeId));
         }
 
         /// <summary>
@@ -115,7 +113,7 @@ namespace Exiled.API.Features
             readOnlyItems = ItemsValue.AsReadOnly();
             ReferenceHub = ReferenceHub.GetHub(gameObject);
 
-            Timing.CallDelayed(0.05f, () => Role = Role.Create(playerRoleBase.RoleTypeId, this));
+            Timing.CallDelayed(0.05f, () => Role = Role.Create(this, playerRoleBase.RoleTypeId));
         }
 
         /// <summary>
@@ -175,6 +173,7 @@ namespace Exiled.API.Features
                 CameraTransform = value.PlayerCameraReference;
 
                 value.playerStats.StatModules[0] = healthStat = new CustomHealthStat { Hub = value };
+
                 if (!value.playerStats._dictionarizedTypes.ContainsKey(typeof(HealthStat)))
                     value.playerStats._dictionarizedTypes.Add(typeof(HealthStat), healthStat);
             }
@@ -519,7 +518,7 @@ namespace Exiled.API.Features
         /// <para>
         /// The type of the Role is different based on the <see cref="RoleTypeId"/> of the player, and casting should be used to modify the role.
         /// <br /><see cref="RoleTypeId.Spectator"/> = <see cref="SpectatorRole"/>.
-        /// <br /><see cref="RoleTypeId.None"/> = <see cref="Roles.NoneRole"/>.
+        /// <br /><see cref="RoleTypeId.None"/> = <see cref="NoneRole"/>.
         /// <br /><see cref="RoleTypeId.Scp049"/> = <see cref="Scp049Role"/>.
         /// <br /><see cref="RoleTypeId.Scp0492"/> = <see cref="Scp0492Role"/>.
         /// <br /><see cref="RoleTypeId.Scp079"/> = <see cref="Scp079Role"/>.
@@ -527,7 +526,7 @@ namespace Exiled.API.Features
         /// <br /><see cref="RoleTypeId.Scp106"/> = <see cref="Scp106Role"/>.
         /// <br /><see cref="RoleTypeId.Scp173"/> = <see cref="Scp173Role"/>.
         /// <br /><see cref="RoleTypeId.Scp939"/> = <see cref="Scp939Role"/>.
-        /// <br />If not listed above, the type of Role will be <see cref="Roles.HumanRole"/>.
+        /// <br />If not listed above, the type of Role will be <see cref="HumanRole"/>.
         /// </para>
         /// <para>
         /// If the role object is stored, it may become invalid if the player changes roles. Thus, the <see cref="Features.Roles.Role.IsValid"/> property can be checked. If this property is <see langword="false"/>, the role should be discarded and this property should be used again to get the new Role.
@@ -537,10 +536,10 @@ namespace Exiled.API.Features
         /// Roles and RoleTypeIds can be compared directly. <c>Player.Role == RoleTypeId.Scp079</c> is valid and will return <see langword="true"/> if the player is SCP-079. To set the player's role, see <see cref="SetRole(RoleTypeId, SpawnReason, bool)"/>.
         /// </para>
         /// </summary>
-        /// <seealso cref="SetRole(RoleTypeId, SpawnReason, bool)"/>
+        /// <seealso cref="SetRole(RoleTypeId, SpawnReason)"/>
         public Role Role
         {
-            get => role ??= Role.Create(RoleTypeId.None, this);
+            get => role ??= Role.Create(this, RoleTypeId.None);
             set => role = value;
         }
 
@@ -780,16 +779,16 @@ namespace Exiled.API.Features
                 healthStat.CurValue = value;
 
                 if (value > MaxHealth)
-                    MaxHealth = (int)value;
+                    MaxHealth = value;
             }
         }
 
         /// <summary>
         /// Gets or sets the player's maximum health.
         /// </summary>
-        public int MaxHealth
+        public float MaxHealth
         {
-            get => (int)healthStat.MaxValue;
+            get => healthStat.MaxValue;
             set => healthStat.CustomMaxValue = value;
         }
 
@@ -800,13 +799,13 @@ namespace Exiled.API.Features
         public float ArtificialHealth
         {
             get => ActiveArtificialHealthProcesses.FirstOrDefault()?.CurrentAmount ?? 0f;
-
             set
             {
                 if (value > MaxArtificialHealth)
                     MaxArtificialHealth = value;
 
                 AhpStat.AhpProcess ahp = ActiveArtificialHealthProcesses.FirstOrDefault();
+
                 if (ahp is not null)
                     ahp.CurrentAmount = value;
             }
@@ -818,13 +817,13 @@ namespace Exiled.API.Features
         public float MaxArtificialHealth
         {
             get => ActiveArtificialHealthProcesses.FirstOrDefault()?.Limit ?? 0f;
-
             set
             {
                 if (!ActiveArtificialHealthProcesses.Any())
                     AddAhp(value);
 
                 AhpStat.AhpProcess ahp = ActiveArtificialHealthProcesses.FirstOrDefault();
+
                 if (ahp is not null)
                     ahp.Limit = value;
             }
@@ -836,21 +835,11 @@ namespace Exiled.API.Features
         public IEnumerable<AhpStat.AhpProcess> ActiveArtificialHealthProcesses => ((AhpStat)ReferenceHub.playerStats.StatModules[1])._activeProcesses;
 
         /// <summary>
-        /// Gets or sets the player's current SCP.
-        /// </summary>
-        public PlayableScp CurrentScp
-        {
-            get => ReferenceHub.scpsController.CurrentScp;
-            set => ReferenceHub.scpsController.CurrentScp = value;
-        }
-
-        /// <summary>
         /// Gets or sets the item in the player's hand, returns the default value if empty.
         /// </summary>
         public Item CurrentItem
         {
             get => Item.Get(Inventory.CurInstance);
-
             set
             {
                 if (value is null || value.Type == ItemType.None)
@@ -1022,7 +1011,13 @@ namespace Exiled.API.Features
         {
             get
             {
-                yield return null; // TODO: This could be done by creating a "SpectatorDictionary" by using "OnBeganSpectating" and "OnStoppedSpectating" events.
+                foreach (Player player in List)
+                {
+                    if (player == this || player.Role is not SpectatorRole role || role.SpectatedPlayer != this)
+                        continue;
+
+                    yield return player;
+                }
             }
         }
 
@@ -1641,11 +1636,7 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="newRole">The new <see cref="RoleTypeId"/> to be set.</param>
         /// <param name="reason">The <see cref="SpawnReason"/> defining why the player's role was changed.</param>
-        /// <param name="lite">Indicates whether or not it should preserve the position and inventory after changing the role.</param>
-        public void SetRole(RoleTypeId newRole, SpawnReason reason = SpawnReason.ForceClass, bool lite = false)
-        {
-            // ReferenceHub.characterClassManager.SetPlayersClass(newRole, GameObject, (CharacterClassManager.SpawnReason)reason, lite);
-        }
+        public void SetRole(RoleTypeId newRole, SpawnReason reason = SpawnReason.ForceClass) => RoleManager.ServerSetRole(newRole, (RoleChangeReason)reason);
 
         /// <summary>
         /// Broadcasts the given <see cref="Features.Broadcast"/> to the player.

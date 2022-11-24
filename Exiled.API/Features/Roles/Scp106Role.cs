@@ -5,62 +5,61 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-/*
 namespace Exiled.API.Features.Roles
 {
     using PlayerRoles;
+    using PlayerRoles.PlayableScps.Scp106;
+    using PlayerRoles.PlayableScps.Subroutines;
     using UnityEngine;
+
+    using Scp106GameRole = PlayerRoles.PlayableScps.Scp106.Scp106Role;
 
     /// <summary>
     /// Defines a role that represents SCP-106.
     /// </summary>
-    public class Scp106Role : Role
+    public class Scp106Role : ScpRole
     {
-        private Scp106PlayerScript script;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="Scp106Role"/> class.
         /// </summary>
-        /// <param name="player">The encapsulated player.</param>
-        internal Scp106Role(Player player)
+        /// <param name="owner">The encapsulated <see cref="Player"/>.</param>
+        internal Scp106Role(Player owner)
+            : base(owner)
         {
-            Owner = player;
+            Internal = Owner.RoleManager.CurrentRole as Scp106GameRole;
+            SubroutineModule = Internal.SubroutineModule;
         }
 
         /// <inheritdoc/>
-        public override Player Owner { get; }
+        public override RoleTypeId Type { get; } = RoleTypeId.Scp106;
+
+        /// <inheritdoc/>
+        public override SubroutineManagerModule SubroutineModule { get; }
 
         /// <summary>
-        /// Gets the <see cref="Scp106PlayerScript"/> script for the role.
+        /// Gets the <see cref="Scp106GameRole"/>.
         /// </summary>
-        public Scp106PlayerScript Script
-        {
-            get => script ??= Owner.ReferenceHub.scp106PlayerScript;
-        }
+        protected Scp106GameRole Internal { get; }
 
         /// <summary>
         /// Gets a value indicating whether or not SCP-106 is currently inside of an object.
         /// </summary>
-        public bool IsInsideObject
-        {
-            get => Script.ObjectCurrentlyIn is not null;
-        }
+        //public bool IsInsideObject =>;
+
+        /// <summary>
+        /// Gets a value indicating whether or not SCP-106 is currently submerged.
+        /// </summary>
+        public bool IsSubmerged => Internal.IsSubmerged;
 
         /// <summary>
         /// Gets a value indicating whether or not SCP-106 is currently inside of a door.
         /// </summary>
-        public bool IsInsideDoor
-        {
-            get => Script.DoorCurrentlyIn is not null;
-        }
+        // public bool IsInsideDoor => Script.DoorCurrentlyIn is not null;
 
         /// <summary>
         /// Gets the door that SCP-106 is currently inside of.
         /// </summary>
-        public Door InsideDoor
-        {
-            get => Door.Get(Script.DoorCurrentlyIn);
-        }
+        // public Door InsideDoor => Door.Get(Script.DoorCurrentlyIn);
 
         /// <summary>
         /// Gets or sets the location of SCP-106's portal.
@@ -70,8 +69,8 @@ namespace Exiled.API.Features.Roles
         /// </remarks>
         public Vector3 PortalPosition
         {
-            get => Script.portalPosition;
-            set => Script.SetPortalPosition(PortalPosition, value);
+            get => Internal.Sinkhole.transform.position;
+            set => Internal.Sinkhole.transform.position = value;
         }
 
         /// <summary>
@@ -79,20 +78,22 @@ namespace Exiled.API.Features.Roles
         /// </summary>
         public float CaptureCooldown
         {
-            get => Script.captureCooldown;
-            set => Script.captureCooldown = value;
-        }
-
-        /// <inheritdoc/>
-        internal override RoleTypeId RoleTypeId
-        {
-            get => RoleTypeId.Scp106;
+            get => SubroutineModule.TryGetSubroutine(out Scp106Attack ability) ? ability._hitCooldown : 0;
+            set
+            {
+                if (SubroutineModule.TryGetSubroutine(out Scp106Attack ability))
+                    ability._hitCooldown = value;
+            }
         }
 
         /// <summary>
         /// Forces SCP-106 to use its portal, if one is placed.
         /// </summary>
-        public void UsePortal() => Script.UserCode_CmdUsePortal();
+        public void UsePortal()
+        {
+            if (SubroutineModule.TryGetSubroutine(out Scp106HuntersAtlasAbility ability))
+                ability.SetSubmerged(true);
+        }
 
         /// <summary>
         /// Contains SCP-106.
@@ -101,11 +102,10 @@ namespace Exiled.API.Features.Roles
         /// <exception cref="System.ArgumentException">Container cannot be <see langword="null"/>.</exception>
         public void Contain(Player container)
         {
-            if (container is null)
+            /*if (container is null)
                 throw new System.ArgumentException("Container cannot be null.", nameof(container));
 
-            Script.Contain(container.Footprint);
+            Script.Contain(container.Footprint);*/
         }
     }
 }
-*/

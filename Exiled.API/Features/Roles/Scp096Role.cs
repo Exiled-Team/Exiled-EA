@@ -12,30 +12,34 @@ namespace Exiled.API.Features.Roles
 
     using PlayableScps;
     using PlayerRoles;
+    using PlayerRoles.PlayableScps.Subroutines;
 
     /// <summary>
     /// Defines a role that represents SCP-096.
     /// </summary>
-    public class Scp096Role : Role
+    public class Scp096Role : ScpRole
     {
         private Scp096 script;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Scp096Role"/> class.
         /// </summary>
-        /// <param name="player">The encapsulated player.</param>
-        internal Scp096Role(Player player)
+        /// <param name="owner">The encapsulated <see cref="Player"/>.</param>
+        public Scp096Role(Player owner)
+            : base(owner)
         {
-            Owner = player;
         }
 
         /// <inheritdoc/>
-        public override Player Owner { get; }
+        public override RoleTypeId Type { get; } = RoleTypeId.Scp096;
+
+        /// <inheritdoc/>
+        public override SubroutineManagerModule SubroutineModule => throw new System.NotImplementedException();
 
         /// <summary>
         /// Gets the <see cref="Scp096"/> script for the role.
         /// </summary>
-        public Scp096 Script => script ??= Owner.CurrentScp as Scp096;
+        public Scp096 Script => script ??= Owner.ReferenceHub.scpsController.CurrentScp as Scp096;
 
         /// <summary>
         /// Gets a value indicating SCP-096's state.
@@ -94,8 +98,5 @@ namespace Exiled.API.Features.Roles
         /// Gets a <see cref="IReadOnlyCollection{T}"/> of Players that are currently targeted by SCP-096.
         /// </summary>
         public IReadOnlyCollection<Player> Targets => Script._targets.Select(Player.Get).ToList().AsReadOnly();
-
-        /// <inheritdoc/>
-        internal override RoleTypeId TypeId => RoleTypeId.Scp096;
     }
 }

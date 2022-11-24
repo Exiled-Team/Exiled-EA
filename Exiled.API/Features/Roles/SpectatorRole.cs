@@ -5,11 +5,12 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-/*
 namespace Exiled.API.Features.Roles
 {
     using System;
+
     using PlayerRoles;
+    using RelativePositioning;
 
     /// <summary>
     /// Defines a role that represents a spectator.
@@ -19,58 +20,51 @@ namespace Exiled.API.Features.Roles
         /// <summary>
         /// Initializes a new instance of the <see cref="SpectatorRole"/> class.
         /// </summary>
-        /// <param name="player">The encapsulated player.</param>
-        internal SpectatorRole(Player player)
+        /// <param name="owner">The encapsulated <see cref="Player"/>.</param>
+        public SpectatorRole(Player owner)
+            : base(owner)
         {
-            Owner = player;
         }
 
         /// <inheritdoc/>
-        public override Player Owner { get; }
+        public override RoleTypeId Type { get; } = RoleTypeId.Spectator;
 
         /// <summary>
         /// Gets the <see cref="DateTime"/> at which the player died.
         /// </summary>
-        public DateTime DeathTime
-        {
-            get => new(Owner.ReferenceHub.characterClassManager.DeathTime);
-        }
+        public DateTime DeathTime => Round.StartedTime + ActiveTime;
 
         /// <summary>
         /// Gets the total amount of time the player has been dead.
         /// </summary>
-        public TimeSpan DeadTime
-        {
-            get => DateTime.UtcNow - DeathTime;
-        }
+        public TimeSpan DeadTime => DateTime.UtcNow - DeathTime;
 
         /// <summary>
-        /// Gets or sets currently spectated player by this <see cref="Player"/>. May be <see langword="null"/>.
+        /// Gets the <see cref="Player"/>'s death position.
+        /// </summary>
+        public RelativePosition DeathPosition => InternalSpectatorRole.DeathPosition;
+
+        /// <summary>
+        /// Gets a value indicating whether the <see cref="Player"/> is ready to respawn or not.
+        /// </summary>
+        public bool IsReadyToRespawn => InternalSpectatorRole.ReadyToRespawn;
+
+        /// <summary>
+        /// Gets currently spectated <see cref="Player"/> by this <see cref="Player"/>. May be <see langword="null"/>.
         /// </summary>
         public Player SpectatedPlayer
         {
             get
             {
-                Player spectatedPlayer = Player.Get(Owner.ReferenceHub.spectatorManager.CurrentSpectatedPlayer);
+                Player spectatedPlayer = Player.Get(InternalSpectatorRole.SyncedSpectatedNetId);
+
                 return spectatedPlayer != Owner ? spectatedPlayer : null;
             }
-
-            [Obsolete("Client side feature.", true)]
-            set
-            {
-                if (Owner.IsAlive)
-                    throw new InvalidOperationException("The spectated player cannot be set on an alive player.");
-
-                Owner.ReferenceHub.spectatorManager.CurrentSpectatedPlayer = value.ReferenceHub;
-                Owner.ReferenceHub.spectatorManager.CmdSendPlayer(value.Id);
-            }
         }
 
-        /// <inheritdoc/>
-        internal override RoleTypeId RoleTypeId
-        {
-            get => RoleTypeId.Spectator;
-        }
+        /// <summary>
+        /// Gets the game <see cref="PlayerRoles.HumanRole"/>.
+        /// </summary>
+        private PlayerRoles.Spectating.SpectatorRole InternalSpectatorRole { get; }
     }
 }
-*/
