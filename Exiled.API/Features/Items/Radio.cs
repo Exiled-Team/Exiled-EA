@@ -49,18 +49,15 @@ namespace Exiled.API.Features.Items
             set => Base.BatteryPercent = value;
         }
 
-        /*
         /// <summary>
         /// Gets or sets the current <see cref="RadioRange"/>.
         /// </summary>
         public RadioRange Range
         {
-            get => (RadioRange)Base.CurRange;
-            set => Base.CurRange = (int)value;
+            get => (RadioRange)Base.RangeLevel;
+            set => Base._rangeId = (byte)value;
         }
-        */
 
-        /*
         /// <summary>
         /// Gets or sets the <see cref="RadioRangeSettings"/> for the current <see cref="Range"/>.
         /// </summary>
@@ -81,20 +78,18 @@ namespace Exiled.API.Features.Items
                     MinuteCostWhenTalking = value.TalkingUsage,
                 };
         }
-        */
 
         /// <summary>
         /// Turns off the radio.
         /// </summary>
-        // public void Disable() => Base._radio.ForceDisableRadio();
+        public void Disable() => Base._enabled = false;
 
         /// <summary>
         /// Returns the Radio in a human readable format.
         /// </summary>
         /// <returns>A string containing Radio-related data.</returns>
-        // public override string ToString() => $"{Type} ({Serial}) [{Weight}] *{Scale}* |{Range}| -{BatteryLevel}-";
+        public override string ToString() => $"{Type} ({Serial}) [{Weight}] *{Scale}* |{Range}| -{BatteryLevel}-";
 
-        /*
         /// <summary>
         /// Clones current <see cref="Radio"/> object.
         /// </summary>
@@ -113,6 +108,5 @@ namespace Exiled.API.Features.Items
                 });
             return radio;
         }
-        */
     }
 }

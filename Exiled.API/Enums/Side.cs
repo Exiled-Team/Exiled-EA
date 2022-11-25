@@ -22,9 +22,9 @@ namespace Exiled.API.Enums
     public enum Side
     {
         /// <summary>
-        /// SCP team. Same as <see cref="Team.SCP"/>.
+        /// SCP team. Same as <see cref="Team.SCPs"/>.
         /// Contains all SCP-related roles: <see cref="RoleTypeId.Scp049"/>, <see cref="RoleTypeId.Scp0492"/>, <see cref="RoleTypeId.Scp079"/>, <see cref="RoleTypeId.Scp096"/>,
-        /// <see cref="RoleTypeId.Scp106"/>, <see cref="RoleTypeId.Scp173"/>, <see cref="RoleTypeId.Scp93953"/>, and <see cref="RoleTypeId.Scp93989"/>.
+        /// <see cref="RoleTypeId.Scp106"/>, <see cref="RoleTypeId.Scp173"/>, and <see cref="RoleTypeId.Scp939"/>.
         /// </summary>
         Scp,
 
@@ -42,12 +42,12 @@ namespace Exiled.API.Enums
         ChaosInsurgency,
 
         /// <summary>
-        /// Tutorial team. Contains <see cref="RoleTypeId.Tutorial"/>. Same as <see cref="Team.TUT"/>.
+        /// Tutorial team. Contains <see cref="RoleTypeId.Tutorial"/>. Same as <see cref="Team.OtherAlive"/>.
         /// </summary>
         Tutorial,
 
         /// <summary>
-        /// No team. Same as <see cref="Team.RIP"/>.
+        /// No team. Same as <see cref="Team.Dead"/>.
         /// </summary>
         None,
     }

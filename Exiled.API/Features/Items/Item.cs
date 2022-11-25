@@ -54,6 +54,7 @@ namespace Exiled.API.Features.Items
             Base = itemBase;
             Type = itemBase.ItemTypeId;
             Serial = Base.OwnerInventory.UserInventory.Items.FirstOrDefault(i => i.Value == Base).Key;
+
             if (Serial == 0)
             {
                 ushort serial = ItemSerialGenerator.GenerateNext();
@@ -83,7 +84,6 @@ namespace Exiled.API.Features.Items
         public ushort Serial
         {
             get => Base.ItemSerial;
-
             set => Base.ItemSerial = value;
         }
 
@@ -235,7 +235,7 @@ namespace Exiled.API.Features.Items
             ItemType.GrenadeHE or ItemType.SCP018 => new ExplosiveGrenade(type, owner),
             ItemType.GunCrossvec or ItemType.GunLogicer or ItemType.GunRevolver or ItemType.GunShotgun or ItemType.GunAK or ItemType.GunCOM15 or ItemType.GunCOM18 or ItemType.GunE11SR or ItemType.GunFSP9 or ItemType.ParticleDisruptor => new Firearm(type),
             ItemType.KeycardGuard or ItemType.KeycardJanitor or ItemType.KeycardO5 or ItemType.KeycardScientist or ItemType.KeycardChaosInsurgency or ItemType.KeycardContainmentEngineer or ItemType.KeycardFacilityManager or ItemType.KeycardResearchCoordinator or ItemType.KeycardZoneManager or ItemType.KeycardNTFCommander or ItemType.KeycardNTFLieutenant or
-                ItemType.KeycardNTFOfficer => new Keycard(type),
+            ItemType.KeycardNTFOfficer => new Keycard(type),
             ItemType.ArmorLight or ItemType.ArmorCombat or ItemType.ArmorHeavy => new Armor(type),
             ItemType.SCP330 => new Scp330(),
             ItemType.SCP2176 => new Scp2176(owner),
@@ -310,9 +310,9 @@ namespace Exiled.API.Features.Items
         public virtual Pickup Spawn(Vector3 position, Quaternion rotation = default)
         {
             Base.PickupDropModel.Info.ItemId = Type;
-            // Base.PickupDropModel.Info.Position = position;
+            Base.PickupDropModel.Info._serverPosition = position;
             Base.PickupDropModel.Info.Weight = Weight;
-            // Base.PickupDropModel.Info.Rotation = new LowPrecisionQuaternion(rotation);
+            Base.PickupDropModel.Info._serverRotation = rotation;
             Base.PickupDropModel.NetworkInfo = Base.PickupDropModel.Info;
 
             ItemPickupBase ipb = Object.Instantiate(Base.PickupDropModel, position, rotation);
@@ -361,10 +361,6 @@ namespace Exiled.API.Features.Items
         /// Clones the current item with a different serial.
         /// </summary>
         /// <returns> Cloned item object. </returns>
-        public virtual Item Clone()
-        {
-            Item generatedItem = Create(Type);
-            return generatedItem;
-        }
+        public virtual Item Clone() => Create(Type);
     }
 }

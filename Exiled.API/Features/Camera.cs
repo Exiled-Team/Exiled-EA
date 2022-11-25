@@ -117,10 +117,7 @@ namespace Exiled.API.Features
         /// Initializes a new instance of the <see cref="Camera"/> class.
         /// </summary>
         /// <param name="camera079">The base camera.</param>
-        internal Camera(Scp079Camera camera079)
-        {
-            Base = camera079;
-        }
+        internal Camera(Scp079Camera camera079) => Base = camera079;
 
         /// <summary>
         /// Gets a <see cref="IEnumerable{T}"/> of <see cref="Camera"/> which contains all the <see cref="Camera"/> instances.
@@ -134,7 +131,7 @@ namespace Exiled.API.Features
         public static Camera Random => List.ElementAt(UnityEngine.Random.Range(0, List.Count()));
 
         /// <summary>
-        /// Gets the base <see cref="Camera079"/>.
+        /// Gets the base <see cref="Scp079Camera"/>.
         /// </summary>
         public Scp079Camera Base { get; }
 
@@ -153,15 +150,10 @@ namespace Exiled.API.Features
         /// </summary>
         public string Name => Base.Label;
 
-        /*
         /// <summary>
         /// Gets the camera's id.
         /// </summary>
-        public ushort Id
-        {
-            get => Base.cameraId;
-        }
-        */
+        public ushort Id => Base.SyncId;
 
         /// <summary>
         /// Gets the camera's <see cref="Features.Room"/>.
@@ -181,6 +173,7 @@ namespace Exiled.API.Features
             get
             {
                 string cameraName = Name.ToLower();
+
                 if (NameToCameraType.ContainsKey(cameraName))
                     return NameToCameraType[cameraName];
 
@@ -237,165 +230,47 @@ namespace Exiled.API.Features
             }
         }
 
-        /*
-        /// <summary>
-        /// Gets the position of the camera's head.
-        /// </summary>
-        public Vector3 HeadPosition
-        {
-            get => Base.head.localPosition;
-        }
-
-
-        /// <summary>
-        /// Gets or sets the rotation of the camera's head.
-        /// </summary>
-        public Quaternion HeadRotation
-        {
-            get => Base.head.localRotation;
-            set => Base.head.localRotation = value;
-        }
-
         /// <summary>
         /// Gets the camera's position.
         /// </summary>
-        public Vector3 Position
-        {
-            get => Transform.position;
-        }
-
-        /// <summary>
-        /// Gets or sets the camera's pitch.
-        /// </summary>
-        public float Pitch
-        {
-            get => Base.curPitch;
-            set => Base.UpdatePosition(Rotation, value);
-        }
+        public Vector3 Position => Base.Position;
 
         /// <summary>
         /// Gets or sets the camera's rotation.
         /// </summary>
-        public float Rotation
+        public Vector3 Rotation
         {
-            get => Base.curRot;
-            set => Base.UpdatePosition(value, Pitch);
+            get => Base._cameraAnchor.rotation.eulerAngles;
+            set => Base._cameraAnchor.rotation = Quaternion.Euler(value);
         }
 
         /// <summary>
-        /// Gets or sets the value used to update the camera's pitch during the animation.
+        /// Gets the value of the <see cref="Camera"/> zoom.
         /// </summary>
-        public float SmoothPitch
-        {
-            get => Base.smoothPitch;
-            set => Base.smoothPitch = value;
-        }
-
-        /// <summary>
-        /// Gets or sets the value used to update the camera's rotation during the animation.
-        /// </summary>
-        public float SmoothRotation
-        {
-            get => Base.smoothRot;
-            set => Base.smoothRot = value;
-        }
-
-        /// <summary>
-        /// Gets or sets the minimum rotation that can be reached by the camera.
-        /// </summary>
-        public float MinimumRotation
-        {
-            get => Base.minRot;
-            set => Base.minRot = value;
-        }
-
-        /// <summary>
-        /// Gets or sets the maximum rotation that can be reached by the camera.
-        /// </summary>
-        public float MaximumRotation
-        {
-            get => Base.maxRot;
-            set => Base.maxRot = value;
-        }
-
-        /// <summary>
-        /// Gets or sets the minimum pitch that can be reached by the camera.
-        /// </summary>
-        public float MinimumPitch
-        {
-            get => Base.minPitch;
-            set => Base.minPitch = value;
-        }
-
-        /// <summary>
-        /// Gets or sets the maximum pitch that can be reached by the camera.
-        /// </summary>
-        public float MaximumPitch
-        {
-            get => Base.maxPitch;
-            set => Base.maxPitch = value;
-        }
-
-        /// <summary>
-        /// Gets or sets the animation step speed.
-        /// </summary>
-        public float AnimationStepSpeed
-        {
-            get => Base.stepSpeed;
-            set => Base.stepSpeed = value;
-        }
-
-        /// <summary>
-        /// Gets or sets the animation speed.
-        /// </summary>
-        public float AnimationSpeed
-        {
-            get => Base.timeToAnimate;
-            set => Base.timeToAnimate = value;
-        }
+        public float Zoom => Base.ZoomAxis.CurrentZoom;
 
         /// <summary>
         /// Gets or sets a value indicating whether this camera is being used by SCP-079.
         /// </summary>
         public bool IsBeingUsed
         {
-            get
-            {
-                using (List<Scp079PlayerScript>.Enumerator enumerator = Scp079PlayerScript.instances.GetEnumerator())
-                {
-                    while (enumerator.MoveNext())
-                    {
-                        if (enumerator.Current.currentCamera is null || enumerator.Current.currentCamera != Base)
-                            continue;
-
-                        return true;
-                    }
-                }
-
-                return false;
-            }
-
-            set
-            {
-                using List<Scp079PlayerScript>.Enumerator enumerator = Scp079PlayerScript.instances.GetEnumerator();
-                while (enumerator.MoveNext())
-                    enumerator.Current.RpcSwitchCamera(Id, true);
-            }
+            get => Base.IsActive;
+            set => Base.IsActive = value;
         }
 
         /// <summary>
-        /// Gets a <see cref="IEnumerable{T}"/> of <see cref="Camera"/> which contains all the <see cref="Camera"/> instances given a <see cref="IEnumerable{T}"/> of <see cref="Camera079"/>.
+        /// Gets a <see cref="IEnumerable{T}"/> of <see cref="Camera"/> which contains all the <see cref="Camera"/> instances given a <see cref="IEnumerable{T}"/> of <see cref="Scp079Camera"/>.
         /// </summary>
-        /// <param name="cameras">The <see cref="IEnumerable{T}"/> of <see cref="Camera079"/>.</param>
+        /// <param name="cameras">The <see cref="IEnumerable{T}"/> of <see cref="Scp079Camera"/>.</param>
         /// <returns>A <see cref="IEnumerable{T}"/> of <see cref="Camera"/>.</returns>
-        public static IEnumerable<Camera> Get(IEnumerable<Camera079> cameras) => cameras.Select(Get);
+        public static IEnumerable<Camera> Get(IEnumerable<Scp079Camera> cameras) => cameras.Select(Get);
 
         /// <summary>
-        /// Gets the <see cref="Camera"/> belonging to the <see cref="Camera079"/>, if any.
+        /// Gets the <see cref="Camera"/> belonging to the <see cref="Scp079Camera"/>, if any.
         /// </summary>
-        /// <param name="camera079">The base <see cref="Camera079"/>.</param>
+        /// <param name="camera079">The base <see cref="Scp079Camera"/>.</param>
         /// <returns>A <see cref="Camera"/> or <see langword="null"/> if not found.</returns>
-        public static Camera Get(Camera079 camera079) => List.FirstOrDefault(camera => camera.Base == camera079);
+        public static Camera Get(Scp079Camera camera079) => List.FirstOrDefault(camera => camera.Base == camera079);
 
         /// <summary>
         /// Gets a <see cref="Camera"/> given the specified id.
@@ -430,6 +305,5 @@ namespace Exiled.API.Features
         /// </summary>
         /// <returns>A string containing Camera-related data.</returns>
         public override string ToString() => $"{Zone} ({Type}) [{Room}] *{Name}* |{Id}| ={IsBeingUsed}=";
-        */
     }
 }

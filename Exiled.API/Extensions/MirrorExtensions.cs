@@ -23,6 +23,7 @@ namespace Exiled.API.Extensions
 
     using NorthwoodLib.Pools;
     using PlayerRoles;
+    using RelativePositioning;
     using Respawning;
 
     using UnityEngine;
@@ -79,12 +80,17 @@ namespace Exiled.API.Extensions
                         .Where(m => m.Name.StartsWith("Network")))
                     {
                         MethodInfo setMethod = property.GetSetMethod();
+
                         if (setMethod is null)
                             continue;
+
                         MethodBody methodBody = setMethod.GetMethodBody();
+
                         if (methodBody is null)
                             continue;
+
                         byte[] bytecodes = methodBody.GetILAsByteArray();
+
                         if (!SyncVarDirtyBitsValue.ContainsKey($"{property.Name}"))
                             SyncVarDirtyBitsValue.Add($"{property.Name}", bytecodes[bytecodes.LastIndexOf((byte)OpCodes.Ldc_I8.Value) + 1]);
                     }
@@ -103,12 +109,6 @@ namespace Exiled.API.Extensions
         /// Gets a NetworkServer.SendSpawnMessage's <see cref="MethodInfo"/>.
         /// </summary>
         public static MethodInfo SendSpawnMessageMethodInfo => sendSpawnMessageMethodInfoValue ??= typeof(NetworkServer).GetMethod("SendSpawnMessage", BindingFlags.NonPublic | BindingFlags.Static);
-
-        /// <summary>
-        /// Shaking target <see cref="Player"/> window.
-        /// </summary>
-        /// <param name="player">Target to shake.</param>
-        // public static void Shake(this Player player) => AlphaWarheadController.Host.TargetRpcShake(player.Connection, false, true);
 
         /// <summary>
         /// Play beep sound to <see cref="Player"/>.
@@ -139,17 +139,11 @@ namespace Exiled.API.Extensions
                 Weapon = itemType,
                 AudioClipId = audioClipId,
                 MaxDistance = volume,
-                // ShooterNetId = 0U,
+                ShooterHub = player.ReferenceHub,
+                ShooterPosition = new RelativePosition(position),
             };
 
-            // Vector3 to = position - player.Position;
-            // float angle = Vector3.Angle(Vector3.forward, to);
-            // if (Vector3.Dot(to.normalized, Vector3.left) > 0f)
-                // angle = 360f - angle;
-            // message.ShooterDirection = (byte)Mathf.RoundToInt(angle / 1.44f);
-            // message.ShooterRealDistance = (byte)Mathf.RoundToInt(Mathf.Min(to.magnitude, 255f));
-
-            // player.Connection.Send(message);
+            player.Connection.Send(message);
         }
 
         /// <summary>

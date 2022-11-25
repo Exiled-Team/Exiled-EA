@@ -113,13 +113,21 @@ namespace Exiled.API.Features.Items
         /// Gets or sets how much faster stamina will drain when wearing this armor.
         /// </summary>
         /// <exception cref="ArgumentOutOfRangeException">When attempting to set the value below 1 or above 2.</exception>
-        public float StaminaUseMultiplier => Base.StaminaUsageMultiplier;
+        public float StaminaUseMultiplier
+        {
+            get => Base.StaminaUsageMultiplier;
+            set => Base._staminaUseMultiplier = value;
+        }
 
         /// <summary>
         /// Gets or sets how much the users movement speed should be affected when wearing this armor. (higher values = slower movement).
         /// </summary>
         /// <exception cref="ArgumentOutOfRangeException">When attempting to set the value below 0 or above 1.</exception>
-        public float MovementSpeedMultiplier => Base.MovementSpeedMultiplier;
+        public float MovementSpeedMultiplier
+        {
+            get => Base.MovementSpeedMultiplier;
+            set => Base._movementSpeedMultiplier = value;
+        }
 
         /// <summary>
         /// Gets or sets how much worse <see cref="RoleTypeId.ClassD"/> and <see cref="RoleTypeId.Scientist"/>s are affected by wearing this armor.
@@ -157,15 +165,16 @@ namespace Exiled.API.Features.Items
         /// <returns> New <see cref="Armor"/> object. </returns>
         public override Item Clone()
         {
-            Armor cloneableItem = new(Type);
-
-            cloneableItem.Weight = Weight;
-            // cloneableItem.StaminaUseMultiplier = StaminaUseMultiplier;
-            cloneableItem.RemoveExcessOnDrop = RemoveExcessOnDrop;
-            cloneableItem.CategoryLimits = CategoryLimits;
-            cloneableItem.AmmoLimits = AmmoLimits;
-            cloneableItem.VestEfficacy = VestEfficacy;
-            cloneableItem.HelmetEfficacy = HelmetEfficacy;
+            Armor cloneableItem = new(Type)
+            {
+                Weight = Weight,
+                StaminaUseMultiplier = StaminaUseMultiplier,
+                RemoveExcessOnDrop = RemoveExcessOnDrop,
+                CategoryLimits = CategoryLimits,
+                AmmoLimits = AmmoLimits,
+                VestEfficacy = VestEfficacy,
+                HelmetEfficacy = HelmetEfficacy,
+            };
 
             return cloneableItem;
         }

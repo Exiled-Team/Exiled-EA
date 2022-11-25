@@ -137,6 +137,8 @@ namespace Exiled.API.Features.DamageHandlers
             if (Damage <= 0f)
                 return Action.None;
 
+            damageHandler.ApplyDamage(player.ReferenceHub);
+
             /*
             StartVelocity = player.ReferenceHub.playerMovementSync.PlayerVelocity;
             As<StandardDamageHandler>().StartVelocity.y = Mathf.Max(damageHandler.StartVelocity.y, 0f);
@@ -163,8 +165,8 @@ namespace Exiled.API.Features.DamageHandlers
 
             // DealtHealthDamage = ahpModule.ServerProcessDamage(Damage);
             AbsorbedAhpDamage = Damage - DealtHealthDamage;
-            // healthModule.CurValue -= DealtHealthDamage;
 
+            // healthModule.CurValue -= DealtHealthDamage;
             return player.GetModule<HealthStat>().CurValue > 0f ? Action.Damage : Action.Death;
         }
 

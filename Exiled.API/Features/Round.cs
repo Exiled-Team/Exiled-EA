@@ -44,25 +44,15 @@ namespace Exiled.API.Features
         /// </summary>
         public static bool InProgress => ReferenceHub.LocalHub is not null && RoundSummary.RoundInProgress();
 
-        /*
         /// <summary>
         /// Gets a value indicating whether the round is ended or not.
         /// </summary>
-        public static bool IsEnded
-        {
-            get => RoundSummary.singleton.RoundEnded;
-        }
-        */
+        public static bool IsEnded => RoundSummary.singleton._roundEnded;
 
-        /*
         /// <summary>
         /// Gets a value indicating whether the round is lobby or not.
         /// </summary>
-        public static bool IsLobby
-        {
-            get => !(IsEnded || IsStarted);
-        }
-        */
+        public static bool IsLobby => !(IsEnded || IsStarted);
 
         /// <summary>
         /// Gets or sets a value indicating whether the round is locked or not.
@@ -141,7 +131,6 @@ namespace Exiled.API.Features
         /// </summary>
         public static int UptimeRounds => RoundRestart.UptimeRounds;
 
-        /*
         /// <summary>
         /// Gets a <see cref="IEnumerable{T}"/> indicating the sides that are currently alive.
         /// </summary>
@@ -150,16 +139,15 @@ namespace Exiled.API.Features
             get
             {
                 List<Side> sides = new(4);
-                foreach (Player ply in Player.Get(ply => ply.IsAlive))
+                foreach (Player player in Player.Get(ply => ply.IsAlive))
                 {
-                    if (!sides.Contains(ply.Role.Side))
-                        sides.Add(ply.Role.Side);
+                    if (!sides.Contains(player.Role.Side))
+                        sides.Add(player.Role.Side);
                 }
 
                 return sides;
             }
         }
-        */
 
         /// <summary>
         /// Restarts the round with custom settings.
@@ -210,12 +198,8 @@ namespace Exiled.API.Features
         /// <returns>A <see cref="bool"/> describing whether or not the round was successfully ended.</returns>
         public static bool EndRound(bool forceEnd = false)
         {
-            /*
-            if (RoundSummary.singleton._keepRoundOnOne && (Player.Dictionary.Count < 2) && !forceEnd)
-            {
+            if (RoundSummary.singleton.KeepRoundOnOne && Player.Dictionary.Count < 2 && !forceEnd)
                 return false;
-            }
-            */
 
             if ((IsStarted && !IsLocked) || forceEnd)
             {

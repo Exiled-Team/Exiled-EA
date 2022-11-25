@@ -21,6 +21,7 @@ namespace Exiled.API.Features
     using Footprinting;
     using global::Scp914;
     using Hints;
+    using Interactables.Interobjects;
     using InventorySystem;
     using InventorySystem.Disarming;
     using InventorySystem.Items;
@@ -439,33 +440,34 @@ namespace Exiled.API.Features
         /// </summary>
         public Vector3 Position
         {
-            get
-            {
-                if (playerRoleBase is FpcStandardRoleBase fpc)
-                    return fpc.FpcModule.Position;
-
-                return Vector3.zero;
-            }
-
-            set => ReferenceHub.TryOverridePosition(value, Vector3.zero);
+            get => GameObject.transform.position;
+            set => ReferenceHub.TryOverridePosition(value, Rotation);
         }
 
-        /*
         /// <summary>
         /// Gets or sets the player's rotation.
         /// </summary>
         /// <returns>Returns the direction the player is looking at.</returns>
-        public Vector2 Rotation
+        public Vector3 Rotation
         {
-            // get => ReferenceHub.playerMovementSync.RotationSync;
-            set
-            {
-                ReferenceHub.playerMovementSync.NetworkRotationSync = value;
-                ReferenceHub.playerMovementSync.ForceRotation(new PlayerMovementSync.PlayerRotation(value.x, value.y));
-            }
+            get => GameObject.transform.eulerAngles;
             set => ReferenceHub.TryOverridePosition(Position, value);
         }
-        */
+
+        /// <summary>
+        /// Gets the <see cref="Player"/>'s current movement speed.
+        /// </summary>
+        public float MovementSpeed => Role.FirstPersonController.FpcModule.VelocityForState(MoveState, IsCrouching);
+
+        /// <summary>
+        /// Gets the <see cref="Player"/>'s current movement speed.
+        /// </summary>
+        public Vector3 Velocity => ReferenceHub.GetVelocity();
+
+        /// <summary>
+        /// Gets a value indicating whether the <see cref="Player"/> is crouching or not.
+        /// </summary>
+        public bool IsCrouching => Role.FirstPersonController.FpcModule.StateProcessor.CrouchPercent > 0;
 
         /// <summary>
         /// Gets the player's <see cref="Enums.LeadingTeam"/>.
@@ -2706,13 +2708,6 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
-        /// Makes noise given a specified distance intensity.
-        /// </summary>
-        /// <param name="distanceIntensity">The distance from which is able to hear the noise.</param>
-        // public void MakeNoise(float distanceIntensity) =>
-        // ReferenceHub.footstepSync._visionController.MakeNoise(distanceIntensity);
-
-        /// <summary>
         /// Reconnects player to the server. Can be used to redirect them to another server on a different port but same IP.
         /// </summary>
         /// <param name="newPort">New port.</param>
@@ -2736,11 +2731,11 @@ namespace Exiled.API.Features
         public void PlayGunSound(ItemType type, byte volume, byte audioClipId = 0) =>
             MirrorExtensions.PlayGunSound(this, Position, type, volume, audioClipId);
 
-        /// <inheritdoc cref="Map.PlaceBlood(Vector3, BloodType, float)"/>
-        // public void PlaceBlood(BloodType type, float multiplier = 1f) => Map.PlaceBlood(Position, type, multiplier);
+        /// <inheritdoc cref="Map.PlaceBlood(Vector3, Vector3)"/>
+        public void PlaceBlood(Vector3 direction) => Map.PlaceBlood(Position, direction);
 
         /// <inheritdoc cref="Map.GetNearCameras(Vector3, float)"/>
-        // public IEnumerable<Camera> GetNearCameras(float toleration = 15f) => Map.GetNearCameras(Position, toleration);
+        public IEnumerable<Camera> GetNearCameras(float toleration = 15f) => Map.GetNearCameras(Position, toleration);
 
         /// <summary>
         /// Teleports the player to the given <see cref="Vector3"/> coordinates.
@@ -2756,9 +2751,9 @@ namespace Exiled.API.Features
         {
             switch (obj)
             {
-                // case Camera camera:
-                // Teleport(camera.Position + Vector3.down);
-                // break;
+                case Camera camera:
+                    Teleport(camera.Position + Vector3.down);
+                    break;
                 case Door door:
                     Teleport(door.Position + Vector3.up);
                     break;
@@ -2774,12 +2769,12 @@ namespace Exiled.API.Features
                 case RoomType roomType:
                     Teleport(Room.Get(roomType).Position + Vector3.up);
                     break;
-                // case Enums.CameraType cameraType:
-                // Teleport(Camera.Get(cameraType).Position);
-                // break;
-                // case ElevatorType elevatorType:
-                // Teleport(Lift.Get(elevatorType).Position + Vector3.up);
-                // break;
+                case Enums.CameraType cameraType:
+                    Teleport(Camera.Get(cameraType).Position);
+                    break;
+                case ElevatorType elevatorType:
+                    Teleport(Lift.Get(elevatorType).Position + Vector3.up);
+                    break;
                 case Room room:
                     Teleport(room.Position + Vector3.up);
                     break;
@@ -2817,9 +2812,9 @@ namespace Exiled.API.Features
                 case Toys.AdminToy toy:
                     Teleport(toy.Position + Vector3.up);
                     break;
-                // case Elevator elevator:
-                // Teleport(elevator.Position + Vector3.up);
-                // break;
+                case ElevatorChamber elevator:
+                    Teleport(elevator.transform.position + Vector3.up);
+                    break;
                 case EActor ea:
                     Teleport(ea.Position + Vector3.up);
                     break;

@@ -17,6 +17,8 @@ namespace Exiled.API.Features
     using Enums;
     using Exiled.API.Extensions;
     using Hazards;
+    using Hints;
+    using InventorySystem.Items.Firearms.BasicMessages;
     using InventorySystem.Items.Pickups;
     using Items;
     using LightContainmentZoneDecontamination;
@@ -27,6 +29,7 @@ namespace Exiled.API.Features
     using RelativePositioning;
     using Toys;
     using UnityEngine;
+    using Utils.Networking;
 
     using Object = UnityEngine.Object;
     using Random = UnityEngine.Random;
@@ -298,30 +301,6 @@ namespace Exiled.API.Features
             return pickups[Random.Range(0, pickups.Count)];
         }
 
-        /*
-        /// <summary>
-        /// Changes the color of a MTF unit.
-        /// </summary>
-        /// <param name="index">The index of the unit color you want to change.</param>
-        /// <param name="color">The new color of the Unit.</param>
-        public static void ChangeUnitColor(int index, string color)
-        {
-            string unit = Respawning.RespawnManager.Singleton.NamingManager.AllUnitNames[index].UnitName;
-
-            Respawning.RespawnManager.Singleton.NamingManager.AllUnitNames.Remove(Respawning.RespawnManager.Singleton.NamingManager.AllUnitNames[index]);
-            Respawning.NamingRules.UnitNamingRules.AllNamingRules[Respawning.SpawnableTeamType.NineTailedFox].AddCombination($"<color={color}>{unit}</color>", Respawning.SpawnableTeamType.NineTailedFox);
-
-            foreach (Player ply in Player.List.Where(x => x.UnitName == unit))
-            {
-                string modifiedUnit = Regex.Replace(unit, "<[^>]*?>", string.Empty);
-                if (!string.IsNullOrEmpty(color))
-                    modifiedUnit = $"<color={color}>{modifiedUnit}</color>";
-
-                ply.UnitName = modifiedUnit;
-            }
-        }
-        */
-
         /// <summary>
         /// Plays a random ambient sound.
         /// </summary>
@@ -356,15 +335,12 @@ namespace Exiled.API.Features
             return tantrum.gameObject;
         }
 
-        /*
         /// <summary>
         /// Places a blood decal.
         /// </summary>
         /// <param name="position">The position of the blood decal.</param>
-        /// <param name="type">The <see cref="BloodType"/> to place.</param>
-        /// <param name="multiplier">A value which determines the spread of the blood decal.</param>
-        public static void PlaceBlood(Vector3 position, BloodType type, float multiplier = 1f) => PlayerManager.hostHub.characterClassManager.RpcPlaceBlood(position, (int)type, multiplier);
-        */
+        /// <param name="direction">The direction of the blood decal.</param>
+        public static void PlaceBlood(Vector3 position, Vector3 direction) => new GunHitMessage(position, direction, true).SendToAuthenticated(0);
 
         /// <summary>
         /// Gets all the near cameras.
@@ -372,7 +348,8 @@ namespace Exiled.API.Features
         /// <param name="position">The position from which starting to search cameras.</param>
         /// <param name="toleration">The maximum toleration to define the radius from which get the cameras.</param>
         /// <returns>A <see cref="IEnumerable{T}"/> of <see cref="Camera"/> which contains all the found cameras.</returns>
-        // public static IEnumerable<Camera> GetNearCameras(Vector3 position, float toleration = 15f) => Camera.Get(cam => (position - cam.Position).sqrMagnitude <= toleration * toleration);
+        public static IEnumerable<Camera> GetNearCameras(Vector3 position, float toleration = 15f)
+            => Camera.Get(cam => (position - cam.Position).sqrMagnitude <= toleration * toleration);
 
         /// <summary>
         /// Clears the lazy loading game object cache.
@@ -383,14 +360,12 @@ namespace Exiled.API.Features
             Door.DoorVariantToDoor.Clear();
             Camera.CamerasValue.Clear();
             Window.WindowValue.Clear();
-            // Lift.LiftsValue.Clear();
             TeslaGate.TeslasValue.Clear();
             Generator.GeneratorValues.Clear();
             TeleportsValue.Clear();
             LockersValue.Clear();
             RagdollsValue.Clear();
             Firearm.AvailableAttachmentsValue.Clear();
-            // Scp079Interactable.InteractablesByRoomId.Clear();
         }
     }
 }

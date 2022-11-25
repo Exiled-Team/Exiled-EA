@@ -7,14 +7,13 @@
 
 namespace Exiled.API.Features.Roles
 {
+    using System.Collections.Generic;
+
     using Interactables.Interobjects.DoorUtils;
-    using Mirror;
     using PlayerRoles;
     using PlayerRoles.PlayableScps.Scp079;
-    using PlayerRoles.PlayableScps.Scp079.Cameras;
     using PlayerRoles.PlayableScps.Subroutines;
-    using System.Collections.Generic;
-    using UnityEngine;
+
     using Scp079GameRole = PlayerRoles.PlayableScps.Scp079.Scp079Role;
 
     /// <summary>
@@ -39,13 +38,9 @@ namespace Exiled.API.Features.Roles
         public override SubroutineManagerModule SubroutineModule { get; }
 
         /// <summary>
-        /// Gets or sets the camera SCP-079 is currently controlling.
+        /// Gets the camera SCP-079 is currently controlling.
         /// </summary>
-        public Scp079Camera Camera // TODO: Convert to Features.Camera
-        {
-            get => Internal.CurrentCamera;
-            set => Internal._curCamSync.CurrentCamera = value;
-        }
+        public Camera Camera => Camera.Get(Internal.CurrentCamera);
 
         /// <summary>
         /// Gets the speaker SCP-079 is currently using. Can be <see langword="null"/>.
@@ -54,13 +49,12 @@ namespace Exiled.API.Features.Roles
         {
             get
             {
-                if (Camera != null && Scp079Speaker.TryGetSpeaker(Camera, out Scp079Speaker speaker))
+                if (Internal.CurrentCamera != null && Scp079Speaker.TryGetSpeaker(Internal.CurrentCamera, out Scp079Speaker speaker))
                     return speaker;
 
                 return null;
             }
         }
-
 
         /// <summary>
         /// Gets the doors SCP-079 has locked. Can be <see langword="null"/>.
@@ -165,30 +159,6 @@ namespace Exiled.API.Features.Roles
         /// Gets the game <see cref="Scp079GameRole"/>.
         /// </summary>
         protected Scp079GameRole Internal { get; }
-
-        /// <summary>
-        /// Sets the camera SCP-079 is currently located at.
-        /// </summary>
-        /// <param name="cameraId">Camera ID.</param>
-        public void SetCamera(ushort cameraId)
-        {
-            // TODO
-        }
-
-        /// <summary>
-        /// Sets the camera SCP-079 is currently located at.
-        /// </summary>
-        /// <param name="cameraType">The <see cref="Enums.CameraType"/>.</param>
-        public void SetCamera(Enums.CameraType cameraType) => SetCamera(Camera.Get(cameraType));
-
-        /// <summary>
-        /// Sets the camera SCP-079 is currently located at.
-        /// </summary>
-        /// <param name="camera">The <see cref="Camera"/> object to switch to.</param>
-        public void SetCamera(Camera camera)
-        {
-            // TODO
-        }
 
         /// <summary>
         /// Unlocks all doors that SCP-079 has locked.

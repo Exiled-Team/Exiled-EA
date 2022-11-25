@@ -140,7 +140,7 @@ namespace Exiled.API.Enums
         Scp173,
 
         /// <summary>
-        /// Damage caused by <see cref="RoleTypeId.Scp93953"/> or <see cref="RoleTypeId.Scp93989"/>.
+        /// Damage caused by <see cref="RoleTypeId.Scp939"/>.
         /// </summary>
         Scp939,
 
