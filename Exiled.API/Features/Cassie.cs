@@ -151,8 +151,9 @@ namespace Exiled.API.Features
             else if (info.Is(out UniversalDamageHandler _))
                 result += " LOST IN DECONTAMINATION SEQUENCE";
             else if (info.BaseIs(out CustomFirearmHandler firearmDamageHandler) && firearmDamageHandler.Attacker is Player attacker)
-                // result += " CONTAINEDSUCCESSFULLY " + ConvertTeam(attacker.Role.Team, attacker.UnitName);
-                result += "To be changed";
+                result += " CONTAINEDSUCCESSFULLY " + ConvertTeam(attacker.Role.Team, attacker.UnitName);
+
+                // result += "To be changed";
             else
                 result += " SUCCESSFULLY TERMINATED . TERMINATION CAUSE UNSPECIFIED";
 

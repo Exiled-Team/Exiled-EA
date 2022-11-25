@@ -140,7 +140,7 @@ namespace Exiled.API.Features.DamageHandlers
                     break;
 
                 case DamageType.Scp096:
-                    PlayableScps.Scp096 curr096 = attacker.CurrentScp as PlayableScps.Scp096 ?? new PlayableScps.Scp096();
+                    PlayableScps.Scp096 curr096 = attacker.ReferenceHub.scpsController.CurrentScp as PlayableScps.Scp096 ?? new PlayableScps.Scp096();
                     if (curr096 != null)
                     {
                         curr096.Hub = attacker.ReferenceHub;

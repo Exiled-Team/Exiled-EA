@@ -263,9 +263,9 @@ namespace Exiled.API.Features.Items
         public virtual Pickup Spawn(Vector3 position, Quaternion rotation = default, IEnumerable<AttachmentIdentifier> identifiers = null)
         {
             Base.PickupDropModel.Info.ItemId = Type;
-            // Base.PickupDropModel.Info.Position = position;
+            Base.PickupDropModel.Info._serverPosition = position;
             Base.PickupDropModel.Info.Weight = Weight;
-            // Base.PickupDropModel.Info.Rotation = new LowPrecisionQuaternion(rotation);
+            Base.PickupDropModel.Info._serverRotation = rotation;
             Base.PickupDropModel.NetworkInfo = Base.PickupDropModel.Info;
 
             ItemPickupBase ipb = Object.Instantiate(Base.PickupDropModel, position, rotation);

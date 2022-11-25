@@ -30,6 +30,11 @@ namespace Exiled.API.Features.Roles
         {
         }
 
+        /// <summary>
+        /// Gets a list of players who will be turned away from SCP-096.
+        /// </summary>
+        public static HashSet<Player> TurnedPlayers { get; } = new(20);
+
         /// <inheritdoc/>
         public override RoleTypeId Type { get; } = RoleTypeId.Scp096;
 

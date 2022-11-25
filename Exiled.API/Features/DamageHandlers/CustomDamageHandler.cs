@@ -140,16 +140,14 @@ namespace Exiled.API.Features.DamageHandlers
         {
             Ragdoll.Spawn(player, damageHandlerBase);
 
-            /*
             if (damageHandlerBase.Is(out BaseAttackerHandler handler) && damageHandlerBase.BaseAs<FirearmDamageHandler>().Attacker is not null)
                 player.ReferenceHub.playerStats.TargetReceiveAttackerDeathReason(damageHandlerBase.BaseAs<FirearmDamageHandler>().Attacker.Nickname, damageHandlerBase.BaseAs<FirearmDamageHandler>().Attacker.Role);
             else
                 player.ReferenceHub.playerStats.TargetReceiveSpecificDeathReason(handler);
-                */
 
             player.DropItems();
             player.SetRole(RoleTypeId.Spectator, SpawnReason.Died);
-            // player.SendConsoleMessage("You died. Reason: " + handler.ServerLogsText, "yellow");
+            player.SendConsoleMessage("You died. Reason: " + handler.ServerLogsText, "yellow");
 
             return Action.Death;
         }

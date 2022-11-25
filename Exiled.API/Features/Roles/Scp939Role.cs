@@ -5,68 +5,50 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-/*
 namespace Exiled.API.Features.Roles
 {
     using System.Collections.Generic;
 
-    using PlayableScps;
     using PlayerRoles;
+    using PlayerRoles.PlayableScps.Scp173;
+    using PlayerRoles.PlayableScps.Scp939;
+    using PlayerRoles.PlayableScps.Subroutines;
+
+    using Scp939GameRole = PlayerRoles.PlayableScps.Scp939.Scp939Role;
 
     /// <summary>
     /// Defines a role that represents SCP-939.
     /// </summary>
-    public class Scp939Role : Role
+    public class Scp939Role : ScpRole
     {
-        private Scp939 script;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="Scp939Role"/> class.
         /// </summary>
-        /// <param name="player">The encapsulated player.</param>
-        /// <param name="scp939Type">The type of SCP-939.</param>
-        internal Scp939Role(Player player, RoleTypeId scp939Type)
+        /// <param name="owner">The encapsulated <see cref="Player"/>.</param>
+        public Scp939Role(Player owner)
+            : base(owner)
         {
-            Owner = player;
-            RoleTypeId = scp939Type;
-            script = player.CurrentScp as Scp939;
+            SubroutineModule = (Owner.RoleManager.CurrentRole as Scp939GameRole).SubroutineModule;
         }
 
         /// <inheritdoc/>
-        public override Player Owner { get; }
+        public override SubroutineManagerModule SubroutineModule { get; }
 
-        /// <summary>
-        /// Gets the <see cref="Scp939"/> script for this role.
-        /// </summary>
-        public Scp939 Script
-        {
-            get => script ??= Owner.CurrentScp as Scp939;
-        }
+        /// <inheritdoc/>
+        public override RoleTypeId Type { get; } = RoleTypeId.Scp939;
 
         /// <summary>
         /// Gets or sets the amount of time before SCP-939 can attack again.
         /// </summary>
         public float AttackCooldown
         {
-            get => Script.CurrentBiteCooldown;
-            set => Script.CurrentBiteCooldown = value;
-        }
-
-        /// <summary>
-        /// Gets SCP-939's move speed.
-        /// </summary>
-        public float MoveSpeed
-        {
-            get => Script.GetMovementSpeed();
+            get => 0.6f; // It's hardcoded
+            set { }
         }
 
         /// <summary>
         /// Gets a list of players this SCP-939 instance can see regardless of their movement.
         /// </summary>
         public List<Player> VisiblePlayers { get; } = new();
-
-        /// <inheritdoc/>
-        internal override RoleTypeId RoleTypeId { get; }
     }
 }
-*/

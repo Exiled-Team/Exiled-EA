@@ -81,6 +81,42 @@ namespace Exiled.API.Features.Roles
         public TimeSpan ActiveTime => TimeSpan.FromSeconds((double)Base.ActiveTime);
 
         /// <summary>
+        /// Gets or sets the <see cref="Role"/> walking speed.
+        /// </summary>
+        public float WalkingSpeed
+        {
+            get => FirstPersonController.FpcModule.WalkSpeed;
+            set => FirstPersonController.FpcModule.WalkSpeed = value;
+        }
+
+        /// <summary>
+        /// Gets or sets the <see cref="Role"/> sprinting speed.
+        /// </summary>
+        public float SprintingSpeed
+        {
+            get => FirstPersonController.FpcModule.SprintSpeed;
+            set => FirstPersonController.FpcModule.SprintSpeed = value;
+        }
+
+        /// <summary>
+        /// Gets or sets the <see cref="Role"/> jumping speed.
+        /// </summary>
+        public float JumpingSpeed
+        {
+            get => FirstPersonController.FpcModule.JumpSpeed;
+            set => FirstPersonController.FpcModule.JumpSpeed = value;
+        }
+
+        /// <summary>
+        /// Gets or sets the <see cref="Role"/> crouching speed.
+        /// </summary>
+        public float CrouchingSpeed
+        {
+            get => FirstPersonController.FpcModule.CrouchSpeed;
+            set => FirstPersonController.FpcModule.CrouchSpeed = value;
+        }
+
+        /// <summary>
         /// Gets a value indicating whether or not this role is still valid. This will only ever be <see langword="false"/> if the Role is stored and accessed at a later date.
         /// </summary>
         public bool IsValid => Type == Owner.RoleManager.CurrentRole.RoleTypeId;
@@ -193,7 +229,7 @@ namespace Exiled.API.Features.Roles
             RoleTypeId.Scp096 => new Scp096Role(owner),
             RoleTypeId.Scp106 => new Scp106Role(owner),
             RoleTypeId.Scp173 => new Scp173Role(owner),
-            RoleTypeId.Scp939 => new Scp939Role(owner, type),
+            RoleTypeId.Scp939 => new Scp939Role(owner),
             RoleTypeId.Spectator => new SpectatorRole(owner),
             RoleTypeId.None => new NoneRole(owner),
             _ => new GenericHumanRole(owner, type),

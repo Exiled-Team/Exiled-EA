@@ -26,7 +26,7 @@ namespace Exiled.API.Features.Roles
         internal Scp106Role(Player owner)
             : base(owner)
         {
-            Internal = Owner.RoleManager.CurrentRole as Scp106GameRole;
+            Internal = Base as Scp106GameRole;
             SubroutineModule = Internal.SubroutineModule;
         }
 
@@ -37,14 +37,9 @@ namespace Exiled.API.Features.Roles
         public override SubroutineManagerModule SubroutineModule { get; }
 
         /// <summary>
-        /// Gets the <see cref="Scp106GameRole"/>.
-        /// </summary>
-        protected Scp106GameRole Internal { get; }
-
-        /// <summary>
         /// Gets a value indicating whether or not SCP-106 is currently inside of an object.
         /// </summary>
-        //public bool IsInsideObject =>;
+        public bool IsInsideObject => false; // TODO
 
         /// <summary>
         /// Gets a value indicating whether or not SCP-106 is currently submerged.
@@ -54,12 +49,12 @@ namespace Exiled.API.Features.Roles
         /// <summary>
         /// Gets a value indicating whether or not SCP-106 is currently inside of a door.
         /// </summary>
-        // public bool IsInsideDoor => Script.DoorCurrentlyIn is not null;
+        public bool IsInsideDoor => false; // TODO
 
         /// <summary>
         /// Gets the door that SCP-106 is currently inside of.
         /// </summary>
-        // public Door InsideDoor => Door.Get(Script.DoorCurrentlyIn);
+        public Door InsideDoor => null; // TODO
 
         /// <summary>
         /// Gets or sets the location of SCP-106's portal.
@@ -87,25 +82,17 @@ namespace Exiled.API.Features.Roles
         }
 
         /// <summary>
+        /// Gets the <see cref="Scp106GameRole"/>.
+        /// </summary>
+        protected Scp106GameRole Internal { get; }
+
+        /// <summary>
         /// Forces SCP-106 to use its portal, if one is placed.
         /// </summary>
         public void UsePortal()
         {
             if (SubroutineModule.TryGetSubroutine(out Scp106HuntersAtlasAbility ability))
                 ability.SetSubmerged(true);
-        }
-
-        /// <summary>
-        /// Contains SCP-106.
-        /// </summary>
-        /// <param name="container">The player who recontained SCP-106.</param>
-        /// <exception cref="System.ArgumentException">Container cannot be <see langword="null"/>.</exception>
-        public void Contain(Player container)
-        {
-            /*if (container is null)
-                throw new System.ArgumentException("Container cannot be null.", nameof(container));
-
-            Script.Contain(container.Footprint);*/
         }
     }
 }

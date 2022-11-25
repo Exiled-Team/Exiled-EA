@@ -9,6 +9,8 @@ namespace Exiled.API.Features.Roles
 {
     using Respawning;
 
+    using HumanGameRole = PlayerRoles.HumanRole;
+
     /// <summary>
     /// Defines a role that represents a human class.
     /// </summary>
@@ -21,7 +23,7 @@ namespace Exiled.API.Features.Roles
         protected HumanRole(Player owner)
             : base(owner)
         {
-            Internal = FirstPersonController as PlayerRoles.HumanRole;
+            Internal = Base as HumanGameRole;
         }
 
         /// <summary>
@@ -53,9 +55,9 @@ namespace Exiled.API.Features.Roles
         public bool UsesUnitNames => Internal.UsesUnitNames;
 
         /// <summary>
-        /// Gets the game <see cref="PlayerRoles.HumanRole"/>.
+        /// Gets the game <see cref="HumanGameRole"/>.
         /// </summary>
-        protected PlayerRoles.HumanRole Internal { get; }
+        protected HumanGameRole Internal { get; }
 
         /// <summary>
         /// Gets the <see cref="HumanRole"/> armor efficacy based on a specific <see cref="HitboxType"/>.

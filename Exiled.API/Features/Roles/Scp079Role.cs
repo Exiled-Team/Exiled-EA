@@ -5,131 +5,139 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-/*
 namespace Exiled.API.Features.Roles
 {
+    using Interactables.Interobjects.DoorUtils;
     using Mirror;
     using PlayerRoles;
+    using PlayerRoles.PlayableScps.Scp079;
+    using PlayerRoles.PlayableScps.Scp079.Cameras;
+    using PlayerRoles.PlayableScps.Subroutines;
+    using System.Collections.Generic;
+    using UnityEngine;
+    using Scp079GameRole = PlayerRoles.PlayableScps.Scp079.Scp079Role;
 
     /// <summary>
     /// Defines a role that represents SCP-079.
     /// </summary>
-    public class Scp079Role : Role
+    public class Scp079Role : ScpRole
     {
-        // private Scp079PlayerScript script;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="Scp079Role"/> class.
         /// </summary>
-        /// <param name="player">The encapsulated player.</param>
-        internal Scp079Role(Player player)
+        /// <param name="owner">The encapsulated <see cref="Player"/>.</param>
+        public Scp079Role(Player owner)
+            : base(owner)
         {
-            Owner = player;
+            Internal = Base as Scp079GameRole;
         }
 
         /// <inheritdoc/>
-        public override Player Owner { get; }
+        public override RoleTypeId Type { get; } = RoleTypeId.Scp079;
 
-        /*
-        /// <summary>
-        /// Gets the <see cref="Scp079PlayerScript"/> script for the role.
-        /// </summary>
-        public Scp079PlayerScript Script
-        {
-            get => script ??= Owner.ReferenceHub.scp079PlayerScript;
-        }
+        /// <inheritdoc/>
+        public override SubroutineManagerModule SubroutineModule { get; }
 
         /// <summary>
         /// Gets or sets the camera SCP-079 is currently controlling.
         /// </summary>
-        public Camera Camera
+        public Scp079Camera Camera // TODO: Convert to Features.Camera
         {
-            get => Camera.Get(Owner.ReferenceHub.scp079PlayerScript.currentCamera);
-            set => SetCamera(value);
+            get => Internal.CurrentCamera;
+            set => Internal._curCamSync.CurrentCamera = value;
         }
+
+        /// <summary>
+        /// Gets the speaker SCP-079 is currently using. Can be <see langword="null"/>.
+        /// </summary>
+        public Scp079Speaker Speaker
+        {
+            get
+            {
+                if (Camera != null && Scp079Speaker.TryGetSpeaker(Camera, out Scp079Speaker speaker))
+                    return speaker;
+
+                return null;
+            }
+        }
+
+
+        /// <summary>
+        /// Gets the doors SCP-079 has locked. Can be <see langword="null"/>.
+        /// </summary>
+        public HashSet<DoorVariant> LockedDoors => SubroutineModule.TryGetSubroutine(out Scp079DoorLockChanger ability) ? ability._lockedDoors : null;
 
         /// <summary>
         /// Gets or sets SCP-079's abilities. Can be <see langword="null"/>.
         /// </summary>
-        public Scp079PlayerScript.Ability079[] Abilities
+        public Scp079AbilityBase[] Abilities
         {
-            get => Script?.abilities;
+            get => SubroutineModule.TryGetSubroutine(out Scp079AuxManager ability) ? ability._abilities : null;
             set
             {
-                if (Script is not null)
-                    Script.abilities = value;
-            }
-        }
+                if (SubroutineModule.TryGetSubroutine(out Scp079AuxManager ability))
+                    return;
 
-        /// <summary>
-        /// Gets or sets SCP-079's levels. Can be <see langword="null"/>.
-        /// </summary>
-        public Scp079PlayerScript.Level079[] Levels
-        {
-            get => Script?.levels;
-            set
-            {
-                if (Script is not null)
-                    Script.levels = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the speaker SCP-079 is currently using. Can be <see langword="null"/>.
-        /// </summary>
-        public string Speaker
-        {
-            get => Script?.Speaker;
-            set
-            {
-                if (Script is not null)
-                    Script.Speaker = value;
-            }
-        }
-                */
-
-        /*
-        /// <summary>
-        /// Gets or sets the doors SCP-079 has locked. Can be <see langword="null"/>.
-        /// </summary>
-        public SyncList<uint> LockedDoors
-        {
-            get => Script?.lockedDoors;
-            set
-            {
-                if (Script is not null)
-                    Script.lockedDoors = value;
+                ability._abilities = value;
             }
         }
 
         /// <summary>
         /// Gets or sets the amount of experience SCP-079 has.
         /// </summary>
-        public float Experience
+        public int Experience
         {
-            get => Script?.Exp ?? float.NaN;
+            get => SubroutineModule.TryGetSubroutine(out Scp079TierManager ability) ? ability.TotalExp : 0;
             set
             {
-                if (Script is null)
+                if (SubroutineModule.TryGetSubroutine(out Scp079TierManager ability))
                     return;
 
-                Script.Exp = value;
-                Script.OnExpChange();
+                ability.TotalExp = value;
             }
         }
 
         /// <summary>
         /// Gets or sets SCP-079's level.
         /// </summary>
-        public byte Level
+        public int Level
         {
-            get => Script?.Lvl ?? byte.MinValue;
+            get => SubroutineModule.TryGetSubroutine(out Scp079TierManager ability) ? ability.AccessTierLevel : 0;
             set
             {
-                if (Script is null || Script.Lvl == value)
+                if (SubroutineModule.TryGetSubroutine(out Scp079TierManager ability))
                     return;
 
-                Script.ForceLevel(value, true);
+                ability.AccessTierIndex = value - 1;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets SCP-079's level index.
+        /// </summary>
+        public int LevelIndex
+        {
+            get => SubroutineModule.TryGetSubroutine(out Scp079TierManager ability) ? ability.AccessTierIndex : 0;
+            set => Level = value + 1;
+        }
+
+        /// <summary>
+        /// Gets SCP-079's next level threshold.
+        /// </summary>
+        public int NextLevelThreshold => SubroutineModule.TryGetSubroutine(out Scp079TierManager ability) ? ability.NextLevelThreshold : 0;
+
+        /// <summary>
+        /// Gets or sets SCP-079's energy.
+        /// </summary>
+        public float Energy
+        {
+            get => SubroutineModule.TryGetSubroutine(out Scp079AuxManager ability) ? ability.CurrentAux : 0;
+            set
+            {
+                if (SubroutineModule.TryGetSubroutine(out Scp079AuxManager ability))
+                    return;
+
+                ability.CurrentAux = value;
             }
         }
 
@@ -138,43 +146,34 @@ namespace Exiled.API.Features.Roles
         /// </summary>
         public float MaxEnergy
         {
-            get => Script?.NetworkmaxMana ?? float.NaN;
+            get => SubroutineModule.TryGetSubroutine(out Scp079AuxManager ability) ? ability.MaxAux : 0;
             set
             {
-                if (Script is null)
+                if (SubroutineModule.TryGetSubroutine(out Scp079AuxManager ability))
                     return;
 
-                Script.NetworkmaxMana = value;
-                Script.levels[Level].maxMana = value;
+                ability._maxPerTier[LevelIndex] = value;
             }
         }
 
         /// <summary>
-        /// Gets or sets SCP-079's energy.
+        /// Gets SCP-079's energy regeneration speed.
         /// </summary>
-        public float Energy
-        {
-            get => Script?.Mana ?? float.NaN;
-            set
-            {
-                if (Script is null)
-                    return;
+        public float EnergyRegenerationSpeed => SubroutineModule.TryGetSubroutine(out Scp079AuxManager ability) ? ability.RegenSpeed : 0;
 
-                Script.Mana = value;
-            }
-        }
-
-        /// <inheritdoc/>
-        internal override RoleTypeId RoleTypeId
-        {
-            get => RoleTypeId.Scp079;
-        }
+        /// <summary>
+        /// Gets the game <see cref="Scp079GameRole"/>.
+        /// </summary>
+        protected Scp079GameRole Internal { get; }
 
         /// <summary>
         /// Sets the camera SCP-079 is currently located at.
         /// </summary>
         /// <param name="cameraId">Camera ID.</param>
-        public void SetCamera(ushort cameraId) => Script?.RpcSwitchCamera(cameraId, false);
+        public void SetCamera(ushort cameraId)
+        {
+            // TODO
+        }
 
         /// <summary>
         /// Sets the camera SCP-079 is currently located at.
@@ -186,12 +185,18 @@ namespace Exiled.API.Features.Roles
         /// Sets the camera SCP-079 is currently located at.
         /// </summary>
         /// <param name="camera">The <see cref="Camera"/> object to switch to.</param>
-        public void SetCamera(Camera camera) => SetCamera(camera.Id);
+        public void SetCamera(Camera camera)
+        {
+            // TODO
+        }
 
         /// <summary>
         /// Unlocks all doors that SCP-079 has locked.
         /// </summary>
-        public void UnlockDoors() => Owner.ReferenceHub.scp079PlayerScript.UnlockDoors();
+        public void UnlockAllDoors()
+        {
+            if (SubroutineModule.TryGetSubroutine(out Scp079DoorLockChanger ability))
+                ability.ServerUnlockAll();
+        }
     }
 }
-*/

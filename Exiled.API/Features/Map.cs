@@ -25,13 +25,12 @@ namespace Exiled.API.Features
     using PlayerRoles;
     using PlayerRoles.PlayableScps.Scp173;
     using RelativePositioning;
-    using Roles;
     using Toys;
-
     using UnityEngine;
 
     using Object = UnityEngine.Object;
     using Random = UnityEngine.Random;
+    using Scp173GameRole = PlayerRoles.PlayableScps.Scp173.Scp173Role;
 
     /// <summary>
     /// A set of tools to easily handle the in-game map.
@@ -76,7 +75,7 @@ namespace Exiled.API.Features
             {
                 if (tantrumPrefab is null)
                 {
-                    Scp173Role scp173Role = RoleTypeId.Scp173.GetRoleBase() as Scp173Role;
+                    Scp173GameRole scp173Role = RoleTypeId.Scp173.GetRoleBase() as Scp173GameRole;
 
                     if (scp173Role.SubroutineModule.TryGetComponent(out Scp173TantrumAbility scp173TantrumAbility))
                         tantrumPrefab = scp173TantrumAbility._tantrumPrefab;
@@ -109,6 +108,7 @@ namespace Exiled.API.Features
             get
             {
                 List<Pickup> pickups = new();
+
                 foreach (ItemPickupBase itemPickupBase in Object.FindObjectsOfType<ItemPickupBase>())
                 {
                     if (Pickup.Get(itemPickupBase) is Pickup pickup)

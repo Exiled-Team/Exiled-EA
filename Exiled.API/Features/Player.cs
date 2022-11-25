@@ -75,19 +75,8 @@ namespace Exiled.API.Features
 
         private readonly IReadOnlyCollection<Item> readOnlyItems;
 
-        /// <summary>
-        /// The running speed of the player.
-        /// </summary>
-        private float? runningSpeed;
-
-        /// <summary>
-        /// The walk speed of the player.
-        /// </summary>
-        private float? walkingSpeed;
-
         private ReferenceHub referenceHub;
         private PlayerRoleBase playerRoleBase;
-        private FirstPersonMovementModule firstPersonMovementModule;
         private CustomHealthStat healthStat;
         private Role role;
         private HashSet<EActor> components = new();
@@ -357,36 +346,6 @@ namespace Exiled.API.Features
             set => ReferenceHub.nicknameSync.Network_customPlayerInfoString = value;
         }
 
-        /*
-        /// <summary>
-        /// Gets or sets runningSpeed of the player.
-        /// </summary>
-        public float RunningSpeed
-        {
-            get => runningSpeed ??= ServerConfigSynchronizer.Singleton.NetworkHumanSprintSpeedMultiplier;
-            set
-            {
-                runningSpeed = value;
-                this.ChangeRunningSpeed(value, false);
-            }
-        }
-        */
-
-        /*
-        /// <summary>
-        /// Gets or sets walkSpeed of the player.
-        /// </summary>
-        public float WalkingSpeed
-        {
-            get => walkingSpeed ??= ServerConfigSynchronizer.Singleton.NetworkHumanWalkSpeedMultiplier;
-            set
-            {
-                walkingSpeed = value;
-                this.ChangeWalkingSpeed(value, false);
-            }
-        }
-        */
-
         /// <summary>
         /// Gets the dictionary of the player's session variables.
         /// <para>
@@ -533,7 +492,7 @@ namespace Exiled.API.Features
         /// This role is automatically cached until it changes, and it is recommended to use this propertly directly rather than storing the property yourself.
         /// </para>
         /// <para>
-        /// Roles and RoleTypeIds can be compared directly. <c>Player.Role == RoleTypeId.Scp079</c> is valid and will return <see langword="true"/> if the player is SCP-079. To set the player's role, see <see cref="SetRole(RoleTypeId, SpawnReason, bool)"/>.
+        /// Roles and RoleTypeIds can be compared directly. <c>Player.Role == RoleTypeId.Scp079</c> is valid and will return <see langword="true"/> if the player is SCP-079. To set the player's role, see <see cref="SetRole(RoleTypeId, SpawnReason)"/>.
         /// </para>
         /// </summary>
         /// <seealso cref="SetRole(RoleTypeId, SpawnReason)"/>
@@ -3071,15 +3030,6 @@ namespace Exiled.API.Features
                 return;
 
             RandomTeleport(array[Random.Range(0, array.Length)]);
-        }
-
-        /// <summary>
-        /// Resets the player speed.
-        /// </summary>
-        public void ResetSpeed()
-        {
-            // WalkingSpeed = ServerConfigSynchronizer.Singleton.NetworkHumanWalkSpeedMultiplier;
-            // RunningSpeed = ServerConfigSynchronizer.Singleton.NetworkHumanSprintSpeedMultiplier;
         }
 
         /// <summary>

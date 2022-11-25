@@ -100,12 +100,11 @@ namespace Exiled.API.Features.Items
         public CandyAddStatus AddCandy(IEnumerable<CandyKindID> candies)
         {
             bool addedCandy = false;
+
             foreach (CandyKindID candy in candies)
             {
                 if (!Base.TryAddSpecific(candy))
-                {
                     return addedCandy ? CandyAddStatus.SomeCandyAdded : CandyAddStatus.NoCandyAdded;
-                }
 
                 addedCandy = true;
             }
@@ -122,10 +121,13 @@ namespace Exiled.API.Features.Items
         public int RemoveCandy(CandyKindID type, bool removeAll = false)
         {
             int amount = 0;
+
             while (Base.Candies.Contains(type))
             {
                 Base.TryRemove(Base.Candies.IndexOf(type));
+
                 amount++;
+
                 if (!removeAll)
                     break;
             }
@@ -161,27 +163,38 @@ namespace Exiled.API.Features.Items
 
             if ((count > 1) && !dropIndividual)
             {
-                Scp330Pickup ipb = (Scp330Pickup)Object.Instantiate(Base.PickupDropModel, Owner.Position, default);
-                ipb.NetworkExposedCandy = overrideExposedType ? exposedType : CandyKindID.None;
+                Scp330Pickup scp330Pickup = (Scp330Pickup)Object.Instantiate(Base.PickupDropModel, Owner.Position, default);
+
+                scp330Pickup.NetworkExposedCandy = overrideExposedType ? exposedType : CandyKindID.None;
+
                 for (int i = 0; i < count; i++)
-                    ipb.StoredCandies.Add(type);
-                NetworkServer.Spawn(ipb.gameObject);
-                ipb.InfoReceived(default, Base.PickupDropModel.NetworkInfo);
-                Pickup pickup = Pickup.Get(ipb);
+                    scp330Pickup.StoredCandies.Add(type);
+
+                NetworkServer.Spawn(scp330Pickup.gameObject);
+
+                scp330Pickup.InfoReceived(default, Base.PickupDropModel.NetworkInfo);
+
+                Pickup pickup = Pickup.Get(scp330Pickup);
                 pickup.Scale = Scale;
                 pickups.Add(pickup);
+
                 return pickups;
             }
 
             for (int i = 0; i < count; i++)
             {
-                Scp330Pickup ipb = (Scp330Pickup)Object.Instantiate(Base.PickupDropModel, Owner.Position, default);
-                ipb.NetworkExposedCandy = overrideExposedType ? exposedType : CandyKindID.None;
-                ipb.StoredCandies.Add(type);
-                Pickup pickup = Pickup.Get(ipb);
+                Scp330Pickup scp330Pickup = (Scp330Pickup)Object.Instantiate(Base.PickupDropModel, Owner.Position, default);
+
+                scp330Pickup.NetworkExposedCandy = overrideExposedType ? exposedType : CandyKindID.None;
+                scp330Pickup.StoredCandies.Add(type);
+
+                Pickup pickup = Pickup.Get(scp330Pickup);
                 pickup.Scale = Scale;
-                NetworkServer.Spawn(ipb.gameObject);
-                ipb.InfoReceived(default, Base.PickupDropModel.NetworkInfo);
+
+                NetworkServer.Spawn(scp330Pickup.gameObject);
+
+                scp330Pickup.InfoReceived(default, Base.PickupDropModel.NetworkInfo);
+
                 pickups.Add(pickup);
             }
 
@@ -198,20 +211,25 @@ namespace Exiled.API.Features.Items
         public Pickup Spawn(Vector3 position, Quaternion rotation = default, bool overrideExposedType = false)
         {
             Base.PickupDropModel.Info.ItemId = Type;
-            // Base.PickupDropModel.Info.Position = position;
+            Base.PickupDropModel.Info._serverPosition = position;
             Base.PickupDropModel.Info.Weight = Weight;
-            // Base.PickupDropModel.Info.Rotation = new LowPrecisionQuaternion(rotation);
+            Base.PickupDropModel.Info._serverRotation = rotation;
             Base.PickupDropModel.NetworkInfo = Base.PickupDropModel.Info;
 
-            Scp330Pickup ipb = (Scp330Pickup)Object.Instantiate(Base.PickupDropModel, position, rotation);
+            Scp330Pickup scp330Pickup = (Scp330Pickup)Object.Instantiate(Base.PickupDropModel, position, rotation);
 
             if (overrideExposedType)
-                ipb.NetworkExposedCandy = ExposedType;
-            ipb.StoredCandies = Base.Candies;
-            Pickup pickup = Pickup.Get(ipb);
+                scp330Pickup.NetworkExposedCandy = ExposedType;
+
+            scp330Pickup.StoredCandies = Base.Candies;
+
+            Pickup pickup = Pickup.Get(scp330Pickup);
             pickup.Scale = Scale;
-            NetworkServer.Spawn(ipb.gameObject);
-            ipb.InfoReceived(default, Base.PickupDropModel.NetworkInfo);
+
+            NetworkServer.Spawn(scp330Pickup.gameObject);
+
+            scp330Pickup.InfoReceived(default, Base.PickupDropModel.NetworkInfo);
+
             return pickup;
         }
 
@@ -228,8 +246,10 @@ namespace Exiled.API.Features.Items
         public override Item Clone()
         {
             Scp330 cloneableItem = new();
+
             cloneableItem.ExposedType = ExposedType;
             cloneableItem.AddCandy(Candies);
+
             return cloneableItem;
         }
     }
