@@ -36,10 +36,7 @@ namespace Exiled.Events.Commands.Show
         public override string Description { get; } = "Show plugins";
 
         /// <inheritdoc/>
-        public override void LoadGeneratedCommands()
-        {
-            RegisterCommand(new Plugins());
-        }
+        public override void LoadGeneratedCommands() => RegisterCommand(new Plugins());
 
         /// <inheritdoc/>
         protected override bool ExecuteParent(ArraySegment<string> arguments, ICommandSender sender, out string response)

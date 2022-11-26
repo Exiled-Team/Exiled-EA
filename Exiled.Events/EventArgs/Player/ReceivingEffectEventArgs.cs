@@ -12,7 +12,7 @@ namespace Exiled.Events.EventArgs.Player
     using Interfaces;
 
     /// <summary>
-    ///     Contains all information before a player receives a <see cref="PlayerEffect" />.
+    ///     Contains all information before a player receives a <see cref="StatusEffectBase" />.
     /// </summary>
     public class ReceivingEffectEventArgs : IPlayerEvent, IDeniableEvent
     {
@@ -22,7 +22,7 @@ namespace Exiled.Events.EventArgs.Player
         ///     Initializes a new instance of the <see cref="ReceivingEffectEventArgs" /> class.
         /// </summary>
         /// <param name="player">The <see cref="Player" /> receiving the effect.</param>
-        /// <param name="effect">The <see cref="PlayerEffect" /> being added to the player.</param>
+        /// <param name="effect">The <see cref="StatusEffectBase" /> being added to the player.</param>
         /// <param name="state">The state the effect is being changed to.</param>
         /// <param name="currentState">The current state of the effect being changed.</param>
         public ReceivingEffectEventArgs(Player player, StatusEffectBase effect, byte state, byte currentState)
@@ -34,7 +34,7 @@ namespace Exiled.Events.EventArgs.Player
         }
 
         /// <summary>
-        ///     Gets the <see cref="PlayerEffect" /> being received.
+        ///     Gets the <see cref="StatusEffectBase" /> being received.
         /// </summary>
         public StatusEffectBase Effect { get; }
 

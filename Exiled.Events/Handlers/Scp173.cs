@@ -22,10 +22,10 @@ namespace Exiled.Events.Handlers
         /// </summary>
         public static event CustomEventHandler<BlinkingEventArgs> Blinking;
 
-        /// <summary>
+        /*/// <summary>
         ///     Invoked before a tantrum is placed.
         /// </summary>
-        // public static event CustomEventHandler<PlacingTantrumEventArgs> PlacingTantrum;
+        public static event CustomEventHandler<PlacingTantrumEventArgs> PlacingTantrum;*/
 
         /// <summary>
         ///     Invoked before using breakneck speeds.
@@ -36,10 +36,7 @@ namespace Exiled.Events.Handlers
         ///     Called before players near SCP-173 blink.
         /// </summary>
         /// <param name="ev">The <see cref="BlinkingEventArgs" /> instance.</param>
-        public static void OnBlinking(BlinkingEventArgs ev)
-        {
-            Blinking.InvokeSafely(ev);
-        }
+        public static void OnBlinking(BlinkingEventArgs ev) => Blinking.InvokeSafely(ev);
 
         /*
         /// <summary>
@@ -56,9 +53,6 @@ namespace Exiled.Events.Handlers
         ///     Called before a using breakneck speeds.
         /// </summary>
         /// <param name="ev">The <see cref="UsingBreakneckSpeedsEventArgs" /> instance.</param>
-        public static void OnUsingBreakneckSpeeds(UsingBreakneckSpeedsEventArgs ev)
-        {
-            UsingBreakneckSpeeds.InvokeSafely(ev);
-        }
+        public static void OnUsingBreakneckSpeeds(UsingBreakneckSpeedsEventArgs ev) => UsingBreakneckSpeeds.InvokeSafely(ev);
     }
 }

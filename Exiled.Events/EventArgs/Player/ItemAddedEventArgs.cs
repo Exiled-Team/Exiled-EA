@@ -1,4 +1,4 @@
-﻿// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
 // <copyright file="ItemAddedEventArgs.cs" company="Exiled Team">
 // Copyright (c) Exiled Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
@@ -10,7 +10,6 @@ namespace Exiled.Events.EventArgs.Player
     using API.Features.Items;
     using Interfaces;
 
-    using InventorySystem;
     using InventorySystem.Items;
     using InventorySystem.Items.Pickups;
 
@@ -22,12 +21,12 @@ namespace Exiled.Events.EventArgs.Player
         /// <summary>
         /// Initializes a new instance of the <see cref="ItemAddedEventArgs"/> class.
         /// </summary>
-        /// <param name="inventory">The <see cref="Inventory"/> the item was added to.</param>
+        /// <param name="referenceHub">The <see cref="ReferenceHub"/> the item was added to.</param>
         /// <param name="itemBase">The added <see cref="ItemBase"/>.</param>
         /// <param name="pickupBase">The <see cref="ItemPickupBase"/> the <see cref="ItemBase"/> originated from, or <see langword="null"/> if the item was not picked up.</param>
-        public ItemAddedEventArgs(Inventory inventory, ItemBase itemBase, ItemPickupBase pickupBase)
+        public ItemAddedEventArgs(ReferenceHub referenceHub, ItemBase itemBase, ItemPickupBase pickupBase)
         {
-            Player = API.Features.Player.Get(inventory._hub);
+            Player = API.Features.Player.Get(referenceHub);
             Item = Item.Get(itemBase);
             Pickup = Pickup.Get(pickupBase);
         }

@@ -117,10 +117,7 @@ namespace Exiled.Events.EventArgs.Player
         /// </summary>
         /// <param name="port">The new server port.</param>
         /// <param name="isForced">Indicates whether the player has to be rejected forcefully or not.</param>
-        public void Redirect(ushort port, bool isForced)
-        {
-            Reject(RejectionReason.Redirect, isForced, null, 0, 0, port);
-        }
+        public void Redirect(ushort port, bool isForced) => Reject(RejectionReason.Redirect, isForced, null, 0, 0, port);
 
         /// <summary>
         ///     Rejects a player who's trying to authenticate.
@@ -128,10 +125,7 @@ namespace Exiled.Events.EventArgs.Player
         /// <param name="banReason">The ban reason.</param>
         /// <param name="expiration">The ban expiration time.</param>
         /// <param name="isForced">Indicates whether the player has to be rejected forcefully or not.</param>
-        public void RejectBanned(string banReason, DateTime expiration, bool isForced)
-        {
-            Reject(RejectionReason.Banned, isForced, banReason, expiration.Ticks);
-        }
+        public void RejectBanned(string banReason, DateTime expiration, bool isForced) => Reject(RejectionReason.Banned, isForced, banReason, expiration.Ticks);
 
         /// <summary>
         ///     Rejects a player who's trying to authenticate.
@@ -139,10 +133,7 @@ namespace Exiled.Events.EventArgs.Player
         /// <param name="banReason">The ban reason.</param>
         /// <param name="expiration">The ban expiration time in .NET Ticks.</param>
         /// <param name="isForced">Indicates whether the player has to be rejected forcefully or not.</param>
-        public void RejectBanned(string banReason, long expiration, bool isForced)
-        {
-            Reject(RejectionReason.Banned, isForced, banReason, expiration);
-        }
+        public void RejectBanned(string banReason, long expiration, bool isForced) => Reject(RejectionReason.Banned, isForced, banReason, expiration);
 
         /// <summary>
         ///     Rejects a player who's trying to authenticate.
@@ -167,10 +158,7 @@ namespace Exiled.Events.EventArgs.Player
         /// </summary>
         /// <param name="rejectionReason">The custom rejection reason.</param>
         /// <param name="isForced">Indicates whether the player has to be rejected forcefully or not.</param>
-        public void Reject(string rejectionReason, bool isForced)
-        {
-            Reject(RejectionReason.Custom, isForced, rejectionReason);
-        }
+        public void Reject(string rejectionReason, bool isForced) => Reject(RejectionReason.Custom, isForced, rejectionReason);
 
         /// <summary>
         ///     Rejects a player who's trying to authenticate.
@@ -225,9 +213,6 @@ namespace Exiled.Events.EventArgs.Player
         ///     Disallows the connection without sending any reason. Should only be used when the connection has already been
         ///     terminated by the plugin itself.
         /// </summary>
-        public void Disallow()
-        {
-            isAllowed = false;
-        }
+        public void Disallow() => isAllowed = false;
     }
 }

@@ -166,19 +166,10 @@ namespace Exiled.Permissions.Extensions
         /// <returns>Returns a value indicating whether the user has the permission or not.</returns>
         public static bool CheckPermission(this CommandSender sender, string permission)
         {
-            if (sender.FullPermissions || sender is ServerConsoleSender || sender is GameCore.ConsoleCommandSender)
-            {
+            if (sender.FullPermissions || sender is ServerConsoleSender)
                 return true;
-            }
-            else if (sender is PlayerCommandSender)
-            {
-                Player player = Player.Get(sender.SenderId);
-
-                if (player is null)
-                    return false;
-
+            else if (sender is PlayerCommandSender && Player.Get(sender.SenderId) is Player player)
                 return player == Server.Host || player.CheckPermission(permission);
-            }
 
             return false;
         }
@@ -197,10 +188,8 @@ namespace Exiled.Permissions.Extensions
             if (Server.Host == player)
                 return true;
 
-            if (player is null || player.GameObject == null || Groups is null || Groups.Count == 0)
-            {
+            if (player is null || player.GameObject is null || Groups is null || Groups.Count == 0)
                 return false;
-            }
 
             Log.Debug($"UserID: {player.UserId} | PlayerId: {player.Id}", Instance.Config.ShouldDebugBeShown);
             Log.Debug($"Permission string: {permission}", Instance.Config.ShouldDebugBeShown);
@@ -272,7 +261,9 @@ namespace Exiled.Permissions.Extensions
 
             // It'll work when there is no dot in the permission.
             bool result2 = group.CombinedPermissions.Contains(permission, StringComparison.OrdinalIgnoreCase);
+
             Log.Debug($"Result outside the block: {result2}", Instance.Config.ShouldDebugBeShown);
+
             return result2;
         }
 

@@ -27,7 +27,7 @@ namespace Exiled.Events.EventArgs.Player
         public TogglingNoClipEventArgs(Player player, bool isAllowed = true)
         {
             Player = player;
-            // IsEnabled = player.ReferenceHub.characterClassManager.NoclipEnabled;
+            IsEnabled = player.IsNoClipEnabled;
             IsAllowed = isAllowed;
         }
 

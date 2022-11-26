@@ -199,7 +199,7 @@ namespace Exiled.Example.Events
         /// <inheritdoc cref="Exiled.Events.Handlers.Player.OnSpawning(SpawningEventArgs)"/>
         public void OnSpawning(SpawningEventArgs ev)
         {
-            if (ev.RoleTypeId == RoleTypeId.Scientist)
+            if (ev.RoleType == RoleTypeId.Scientist)
             {
                 ev.Position = new Vector3(53f, 1020f, -44f);
                 Timing.CallDelayed(1f, () => ev.Player.CurrentItem = Item.Create(ItemType.GunCrossvec));

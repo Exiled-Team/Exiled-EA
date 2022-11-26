@@ -169,7 +169,7 @@ namespace Exiled.API.Extensions
             target.SendFakeSyncVar(room.FlickerableLightControllerNetIdentity, typeof(FlickerableLightController), nameof(FlickerableLightController.Network_lightIntensityMultiplier), multiplier);
         }
 
-        /// <summary>
+        /*/// <summary>
         /// Change <see cref="Player"/> character model for appearance.
         /// It will continue until <see cref="Player"/>'s <see cref="RoleTypeId"/> changes.
         /// </summary>
@@ -177,9 +177,9 @@ namespace Exiled.API.Extensions
         /// <param name="type">Model type.</param>
         public static void ChangeAppearance(this Player player, RoleTypeId type)
         {
-            // foreach (Player target in Player.List.Where(x => x != player))
-                // SendFakeSyncVar(target, player.ReferenceHub.networkIdentity, typeof(CharacterClassManager), nameof(CharacterClassManager.NetworkCurClass), (sbyte)type);
-        }
+            foreach (Player target in Player.List.Where(x => x != player))
+                SendFakeSyncVar(target, player.ReferenceHub.networkIdentity, typeof(PlayerRoleManager), nameof(PlayerRoleManager.CurrentRole), (sbyte)type);
+        }*/
 
         /// <summary>
         /// Send CASSIE announcement that only <see cref="Player"/> can hear.
@@ -230,7 +230,7 @@ namespace Exiled.API.Extensions
             StringBuilderPool.Shared.Return(annoucement);
         }
 
-        /// <summary>
+        /*/// <summary>
         /// Changes the <see cref="Player"/>'s walking speed. Negative values will invert the player's controls.
         /// </summary>
         /// <param name="player">Player to change.</param>
@@ -240,10 +240,11 @@ namespace Exiled.API.Extensions
         {
             if (useCap)
                 multiplier = Mathf.Clamp(multiplier, -2f, 2f);
-            // SendFakeSyncVar(player, ServerConfigSynchronizer.Singleton.netIdentity, typeof(ServerConfigSynchronizer), nameof(ServerConfigSynchronizer.Singleton.NetworkHumanWalkSpeedMultiplier), multiplier);
-        }
 
-        /// <summary>
+            SendFakeSyncVar(player, ServerConfigSynchronizer.Singleton.netIdentity, typeof(ServerConfigSynchronizer), nameof(ServerConfigSynchronizer.Singleton.NetworkHumanWalkSpeedMultiplier), multiplier);
+        }*/
+
+        /*/// <summary>
         /// Changes the <see cref="Player"/>'s running speed. Negative values will invert the player's controls.
         /// </summary>
         /// <param name="player">Player to change.</param>
@@ -253,8 +254,9 @@ namespace Exiled.API.Extensions
         {
             if (useCap)
                 multiplier = Mathf.Clamp(multiplier, -1.4f, 1.4f);
-            // SendFakeSyncVar(player, ServerConfigSynchronizer.Singleton.netIdentity, typeof(ServerConfigSynchronizer), nameof(ServerConfigSynchronizer.Singleton.NetworkHumanSprintSpeedMultiplier), multiplier);
-        }
+
+            SendFakeSyncVar(player, ServerConfigSynchronizer.Singleton.netIdentity, typeof(ServerConfigSynchronizer), nameof(ServerConfigSynchronizer.Singleton.NetworkHumanSprintSpeedMultiplier), multiplier);
+        }*/
 
         /// <summary>
         /// Send fake values to client's <see cref="SyncVarAttribute"/>.
@@ -274,8 +276,10 @@ namespace Exiled.API.Extensions
 
             PooledNetworkWriter writer = NetworkWriterPool.GetWriter();
             PooledNetworkWriter writer2 = NetworkWriterPool.GetWriter();
+
             MakeCustomSyncWriter(behaviorOwner, targetType, null, CustomSyncVarGenerator, writer, writer2);
             target.ReferenceHub.networkIdentity.connectionToClient.Send(new UpdateVarsMessage() { netId = behaviorOwner.netId, payload = writer.ToArraySegment() });
+
             NetworkWriterPool.Recycle(writer);
             NetworkWriterPool.Recycle(writer2);
         }
@@ -310,7 +314,9 @@ namespace Exiled.API.Extensions
                 functionHash = (targetType.FullName.GetStableHashCode() * 503) + rpcName.GetStableHashCode(),
                 payload = writer.ToArraySegment(),
             };
-            // target.Connection.Send(msg, 0);
+
+            target.Connection.Send(msg, 0);
+
             NetworkWriterPool.Recycle(writer);
         }
 
@@ -356,10 +362,11 @@ namespace Exiled.API.Extensions
             {
                 netId = identity.netId,
             };
-            foreach (Player ply in Player.List)
+
+            foreach (Player player in Player.List)
             {
-                // ply.Connection.Send(objectDestroyMessage, 0);
-                // SendSpawnMessageMethodInfo.Invoke(null, new object[] { identity, ply.Connection });
+                player.Connection.Send(objectDestroyMessage, 0);
+                SendSpawnMessageMethodInfo.Invoke(null, new object[] { identity, player.Connection });
             }
         }
 

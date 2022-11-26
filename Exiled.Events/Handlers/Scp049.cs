@@ -31,18 +31,12 @@ namespace Exiled.Events.Handlers
         ///     Called before SCP-049 finishes recalling a player.
         /// </summary>
         /// <param name="ev">The <see cref="FinishingRecallEventArgs" /> instance.</param>
-        public static void OnFinishingRecall(FinishingRecallEventArgs ev)
-        {
-            FinishingRecall.InvokeSafely(ev);
-        }
+        public static void OnFinishingRecall(FinishingRecallEventArgs ev) => FinishingRecall.InvokeSafely(ev);
 
         /// <summary>
         ///     Called before SCP-049 starts to recall a player.
         /// </summary>
         /// <param name="ev">The <see cref="StartingRecallEventArgs" /> instance.</param>
-        public static void OnStartingRecall(StartingRecallEventArgs ev)
-        {
-            StartingRecall.InvokeSafely(ev);
-        }
+        public static void OnStartingRecall(StartingRecallEventArgs ev) => StartingRecall.InvokeSafely(ev);
     }
 }

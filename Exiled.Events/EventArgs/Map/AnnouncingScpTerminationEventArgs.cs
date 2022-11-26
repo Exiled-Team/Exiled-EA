@@ -35,7 +35,7 @@ namespace Exiled.Events.EventArgs.Map
         public AnnouncingScpTerminationEventArgs(Player scp, DamageHandlerBase damageHandlerBase, bool isAllowed = true)
         {
             Target = scp;
-            // Role = scp.ReferenceHub.characterClassManager.CurRole;
+            Role = scp.Role;
             DamageHandler = new CustomDamageHandler(scp, damageHandlerBase);
             Player = DamageHandler.BaseIs(out CustomAttackerHandler customAttackerHandler) ? customAttackerHandler.Attacker : null;
             TerminationCause = damageHandlerBase.CassieDeathAnnouncement.Announcement;

@@ -49,7 +49,6 @@ namespace Exiled.API.Features
     using RoundRestarting;
     using Structs;
     using UnityEngine;
-    using UnityEngine.Assertions;
     using Utils.Networking;
     using VoiceChat;
     using VoiceChat.Playbacks;
@@ -75,12 +74,12 @@ namespace Exiled.API.Features
 #pragma warning restore SA1401
 
         private readonly IReadOnlyCollection<Item> readOnlyItems;
+        private readonly HashSet<EActor> components = new();
 
         private ReferenceHub referenceHub;
         private PlayerRoleBase playerRoleBase;
         private CustomHealthStat healthStat;
         private Role role;
-        private HashSet<EActor> components = new();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Player"/> class.
@@ -568,7 +567,7 @@ namespace Exiled.API.Features
         /// Gets or sets a value indicating whether or not the player has No-clip enabled.
         /// </summary>
         /// <returns><see cref="bool"/> indicating status.</returns>
-        public bool NoClipEnabled
+        public bool IsNoClipEnabled
         {
             get => playerRoleBase is FpcStandardRoleBase fpcStandardRoleBase && fpcStandardRoleBase.FpcModule.Noclip.IsActive;
             set
@@ -919,15 +918,10 @@ namespace Exiled.API.Features
         /// </summary>
         public bool IsGlobalModerator => ReferenceHub.serverRoles.RaEverywhere;
 
-        /*
         /// <summary>
         /// Gets a value indicating whether or not the player is in the pocket dimension.
         /// </summary>
-        public bool IsInPocketDimension
-        {
-            get => GetEffectActive<Corroding>() || Map.FindParentRoom(GameObject)?.Type == RoomType.Pocket;
-        }
-        */
+        public bool IsInPocketDimension => IsEffectActive<Corroding>() || Map.FindParentRoom(GameObject)?.Type == RoomType.Pocket;
 
         /// <summary>
         /// Gets or sets a value indicating whether or not the player should use stamina system.
@@ -954,16 +948,10 @@ namespace Exiled.API.Features
         /// </summary>
         public bool IsInventoryFull => Items.Count >= 8;
 
-        /*
         /// <summary>
-        /// Gets or sets a value indicating whether or not the player can send inputs.
+        /// Gets a value indicating whether or not the player can send inputs.
         /// </summary>
-        public bool CanSendInputs
-        {
-            get => !ReferenceHub.fpc.NetworkforceStopInputs;
-            set => ReferenceHub.fpc.NetworkforceStopInputs = !value;
-        }
-        */
+        public bool CanSendInputs => Role.FirstPersonController.FpcModule.LockMovement;
 
         /// <summary>
         /// Gets a <see cref="Player"/> <see cref="IEnumerable{T}"/> of spectators that are currently spectating this <see cref="Player"/>.
@@ -1498,7 +1486,6 @@ namespace Exiled.API.Features
         /// <returns> Whether or not the item was able to be added. </returns>
         public bool TryRemoveCustomeRoleFriendlyFire(string role) => CustomRoleFriendlyFireMultiplier.Remove(role);
 
-        /*
         /// <summary>
         /// Forces the player to reload their current weapon.
         /// </summary>
@@ -1515,7 +1502,6 @@ namespace Exiled.API.Features
                 throw new InvalidOperationException("You may only reload weapons.");
             }
         }
-        */
 
         /// <summary>
         /// Tries to get an item from a player's inventory.
@@ -1900,8 +1886,6 @@ namespace Exiled.API.Features
         {
             VoiceChatMutes.RevokeLocalMute(UserId, isIntercom);
 
-            var flags = VoiceChatMutes.GetFlags(ReferenceHub);
-
             VoiceChatMuteFlags = VcMuteFlags.None;
         }
 
@@ -1940,10 +1924,10 @@ namespace Exiled.API.Features
         /// <param name="shouldClearPrevious">Clears all player's broadcasts before sending the new one.</param>
         public void Broadcast(ushort duration, string message, global::Broadcast.BroadcastFlags type = global::Broadcast.BroadcastFlags.Normal, bool shouldClearPrevious = false)
         {
-            // if (shouldClearPrevious)
-            // ClearBroadcasts();
+            if (shouldClearPrevious)
+                ClearBroadcasts();
 
-            // Server.Broadcast.TargetAddElement(Connection, message, duration, type);
+            Server.Broadcast.TargetAddElement(Connection, message, duration, type);
         }
 
         /// <summary>
@@ -2187,15 +2171,12 @@ namespace Exiled.API.Features
         {
             try
             {
-                if (item is null)
-                    item = Item.Get(itemBase);
+                item ??= Item.Get(itemBase);
 
                 int ammo = -1;
 
                 if (item is Firearm firearm1)
-                {
                     ammo = firearm1.Ammo;
-                }
 
                 itemBase.Owner = ReferenceHub;
                 Inventory.UserInventory.Items[item.Serial] = itemBase;
@@ -2614,13 +2595,12 @@ namespace Exiled.API.Features
         /// <summary>
         /// Tries to get an instance of <see cref="StatusEffectBase"/> by <see cref="EffectType"/>.
         /// </summary>
-        /// <param name="type">The <see cref="EffectType"/>.</param>
         /// <param name="statusEffect">The <see cref="StatusEffectBase"/>.</param>
         /// <typeparam name="T">The <see cref="StatusEffectBase"/> to get.</typeparam>
         /// <returns>A bool indicating whether or not the <paramref name="statusEffect"/> was successfully gotten.</returns>
-        public bool TryGetEffect<T>(EffectType type, out T statusEffect)
+        public bool TryGetEffect<T>(out T statusEffect)
             where T : StatusEffectBase
-            => ReferenceHub.playerEffectsController.TryGetEffect<T>(out statusEffect);
+            => ReferenceHub.playerEffectsController.TryGetEffect(out statusEffect);
 
         /// <summary>
         /// Gets a <see cref="byte"/> indicating the intensity of the given <see cref="StatusEffectBase"></see>.

@@ -4,7 +4,7 @@
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
-/*
+
 namespace Exiled.Events.EventArgs.Scp079
 {
     using Exiled.API.Features;
@@ -59,4 +59,3 @@ namespace Exiled.Events.EventArgs.Scp079
         public Player Player { get; }
     }
 }
-*/

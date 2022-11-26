@@ -4,7 +4,7 @@
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
-
+/*
 namespace Exiled.Events.Patches.Fixes
 {
 #pragma warning disable SA1313
@@ -40,4 +40,4 @@ namespace Exiled.Events.Patches.Fixes
             return false;
         }
     }
-}
+}*/

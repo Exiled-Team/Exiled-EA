@@ -4,11 +4,12 @@
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
-/*
+
 namespace Exiled.Events.EventArgs.Scp079
 {
     using Exiled.API.Features;
     using Exiled.Events.EventArgs.Interfaces;
+    using PlayerRoles.PlayableScps.Scp079.Cameras;
 
     /// <summary>
     ///     Contains all information before a SCP-079 changes the current camera.
@@ -30,7 +31,7 @@ namespace Exiled.Events.EventArgs.Scp079
         /// <param name="isAllowed">
         ///     <inheritdoc cref="IsAllowed" />
         /// </param>
-        public ChangingCameraEventArgs(Player player, Camera079 camera, float auxiliaryPowerCost, bool isAllowed = true)
+        public ChangingCameraEventArgs(Player player, Scp079Camera camera, float auxiliaryPowerCost, bool isAllowed = true)
         {
             Player = player;
             Camera = Camera.Get(camera);
@@ -61,4 +62,3 @@ namespace Exiled.Events.EventArgs.Scp079
         public Player Player { get; }
     }
 }
-*/

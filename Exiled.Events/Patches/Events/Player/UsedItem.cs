@@ -45,9 +45,7 @@ namespace Exiled.Events.Patches.Events.Player
             ListPool<CodeInstruction>.Shared.Return(newInstructions);
         }
 
-        internal static List<CodeInstruction> InstructionsToInject()
-        {
-            return new List<CodeInstruction>
+        internal static List<CodeInstruction> InstructionsToInject() => new List<CodeInstruction>
             {
                 new(OpCodes.Ldarg_0),
                 new(OpCodes.Callvirt, PropertyGetter(typeof(ItemBase), nameof(ItemBase.Owner))),
@@ -56,7 +54,6 @@ namespace Exiled.Events.Patches.Events.Player
                 new(OpCodes.Newobj, GetDeclaredConstructors(typeof(UsedItemEventArgs))[0]),
                 new(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnUsedItem))),
             };
-        }
     }
 
     /// <summary>

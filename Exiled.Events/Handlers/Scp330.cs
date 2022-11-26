@@ -47,45 +47,30 @@ namespace Exiled.Events.Handlers
         ///     Called before a player eats a candy from SCP-330.
         /// </summary>
         /// <param name="ev">The <see cref="EatingScp330EventArgs" /> instance.</param>
-        public static void OnEatingScp330(EatingScp330EventArgs ev)
-        {
-            EatingScp330.InvokeSafely(ev);
-        }
+        public static void OnEatingScp330(EatingScp330EventArgs ev) => EatingScp330.InvokeSafely(ev);
 
         /// <summary>
         ///     Called after the player has eaten a candy from SCP-330.
         /// </summary>
         /// <param name="ev">The <see cref="EatenScp330EventArgs" /> instance.</param>
-        public static void OnEatenScp330(EatenScp330EventArgs ev)
-        {
-            EatenScp330.InvokeSafely(ev);
-        }
+        public static void OnEatenScp330(EatenScp330EventArgs ev) => EatenScp330.InvokeSafely(ev);
 
         /// <summary>
         ///     Called before a <see cref="API.Features.Player" /> picks up a SCP-330 candy.
         /// </summary>
         /// <param name="ev">The <see cref="PickingUpScp330EventArgs" /> instance.</param>
-        public static void OnPickingUp330(PickingUpScp330EventArgs ev)
-        {
-            PickingUpScp330.InvokeSafely(ev);
-        }
+        public static void OnPickingUp330(PickingUpScp330EventArgs ev) => PickingUpScp330.InvokeSafely(ev);
 
         /// <summary>
         ///     Called before a <see cref="API.Features.Player" /> interacts with SCP-330.
         /// </summary>
         /// <param name="ev">The <see cref="InteractingScp330EventArgs" /> instance.</param>
-        public static void OnInteractingScp330(InteractingScp330EventArgs ev)
-        {
-            InteractingScp330.InvokeSafely(ev);
-        }
+        public static void OnInteractingScp330(InteractingScp330EventArgs ev) => InteractingScp330.InvokeSafely(ev);
 
         /// <summary>
         ///     Called before a <see cref="API.Features.Player" /> searches a Pickup.
         /// </summary>
         /// <param name="ev">The <see cref="DroppingScp330EventArgs" /> instance.</param>
-        public static void OnDroppingScp330(DroppingScp330EventArgs ev)
-        {
-            DroppingScp330.InvokeSafely(ev);
-        }
+        public static void OnDroppingScp330(DroppingScp330EventArgs ev) => DroppingScp330.InvokeSafely(ev);
     }
 }

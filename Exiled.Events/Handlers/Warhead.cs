@@ -22,10 +22,10 @@ namespace Exiled.Events.Handlers
         /// </summary>
         public static event CustomEventHandler<StoppingEventArgs> Stopping;
 
-        /// <summary>
+        /*/// <summary>
         ///     Invoked before starting the warhead.
         /// </summary>
-        // public static event CustomEventHandler<StartingEventArgs> Starting;
+        public static event CustomEventHandler<StartingEventArgs> Starting;*/
 
         /// <summary>
         ///     Invoked after the warhead has been detonated.
@@ -41,10 +41,7 @@ namespace Exiled.Events.Handlers
         ///     Called before stopping the warhead.
         /// </summary>
         /// <param name="ev">The <see cref="StoppingEventArgs" /> instance.</param>
-        public static void OnStopping(StoppingEventArgs ev)
-        {
-            Stopping.InvokeSafely(ev);
-        }
+        public static void OnStopping(StoppingEventArgs ev) => Stopping.InvokeSafely(ev);
 
         /*
         /// <summary>
@@ -60,18 +57,12 @@ namespace Exiled.Events.Handlers
         /// <summary>
         ///     Called after the warhead has been detonated.
         /// </summary>
-        public static void OnDetonated()
-        {
-            Detonated.InvokeSafely();
-        }
+        public static void OnDetonated() => Detonated.InvokeSafely();
 
         /// <summary>
         ///     Called before changing the warhead lever status.
         /// </summary>
         /// <param name="ev">The <see cref="ChangingLeverStatusEventArgs" /> instance.</param>
-        public static void OnChangingLeverStatus(ChangingLeverStatusEventArgs ev)
-        {
-            ChangingLeverStatus.InvokeSafely(ev);
-        }
+        public static void OnChangingLeverStatus(ChangingLeverStatusEventArgs ev) => ChangingLeverStatus.InvokeSafely(ev);
     }
 }

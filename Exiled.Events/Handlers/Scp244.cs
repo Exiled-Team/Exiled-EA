@@ -41,36 +41,24 @@ namespace Exiled.Events.Handlers
         ///     Called before a <see cref="API.Features.Player" /> picks up an item.
         /// </summary>
         /// <param name="ev">The <see cref="PickingUpScp244EventArgs" /> instance.</param>
-        public static void OnPickingUpScp244(PickingUpScp244EventArgs ev)
-        {
-            PickingUpScp244.InvokeSafely(ev);
-        }
+        public static void OnPickingUpScp244(PickingUpScp244EventArgs ev) => PickingUpScp244.InvokeSafely(ev);
 
         /// <summary>
         ///     Called before using a usable item.
         /// </summary>
         /// <param name="ev">The <see cref="UsingScp244EventArgs" /> instance.</param>
-        public static void OnUsingScp244(UsingScp244EventArgs ev)
-        {
-            UsingScp244.InvokeSafely(ev);
-        }
+        public static void OnUsingScp244(UsingScp244EventArgs ev) => UsingScp244.InvokeSafely(ev);
 
         /// <summary>
         ///     Called before an Scp244 take damage.
         /// </summary>
         /// <param name="ev">The <see cref="DamagingScp244EventArgs" /> instance.</param>
-        public static void OnDamagingScp244(DamagingScp244EventArgs ev)
-        {
-            DamagingScp244.InvokeSafely(ev);
-        }
+        public static void OnDamagingScp244(DamagingScp244EventArgs ev) => DamagingScp244.InvokeSafely(ev);
 
         /// <summary>
         ///     Called before Scp244 open because the angle was too low.
         /// </summary>
         /// <param name="ev">The <see cref="DamagingScp244EventArgs" /> instance.</param>
-        public static void OnOpeningScp244(OpeningScp244EventArgs ev)
-        {
-            OpeningScp244.InvokeSafely(ev);
-        }
+        public static void OnOpeningScp244(OpeningScp244EventArgs ev) => OpeningScp244.InvokeSafely(ev);
     }
 }

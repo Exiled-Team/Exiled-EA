@@ -21,10 +21,10 @@ namespace Exiled.Example.Events
             Log.Info($"{ev.Player.Nickname} stopped the warhead!");
         }
 
-        /// <inheritdoc cref="Exiled.Events.Handlers.Warhead.OnStarting(StartingEventArgs)"/>
+        /*/// <inheritdoc cref="Exiled.Events.Handlers.Warhead.OnStarting(StartingEventArgs)"/>
         public void OnStarting(StartingEventArgs ev)
         {
             Log.Info($"{ev.Player.Nickname} started the warhead!");
-        }
+        }*/
     }
 }

@@ -14,6 +14,7 @@ namespace Exiled.API.Extensions
     using Enums;
 
     using InventorySystem.Items.Usables.Scp244.Hypothermia;
+    using PlayerRoles.FirstPersonControl;
 
     /// <summary>
     /// Contains an extension method to get <see cref="System.Type"/> from <see cref="EffectType"/>.
@@ -104,14 +105,14 @@ namespace Exiled.API.Extensions
         /// </summary>
         /// <param name="effect">The <see cref="EffectType"/>.</param>
         /// <returns>Whether or not the effect modifies the player's movement speed.</returns>
-        // public static bool IsMovement(this EffectType effect) => typeof(IMovementSpeedEffect).IsAssignableFrom(effect.Type());
+        public static bool IsMovement(this EffectType effect) => typeof(IMovementSpeedModifier).IsAssignableFrom(effect.Type());
 
         /// <summary>
         /// Returns whether or not the provided <paramref name="effect"/> is displayed to spectators as text.
         /// </summary>
         /// <param name="effect">The <see cref="EffectType"/>.</param>
         /// <returns>Whether or not the effect is displayed to spectators as text.</returns>
-        // public static bool IsDisplayed(this EffectType effect) => typeof(IDisplayablePlayerEffect).IsAssignableFrom(effect.Type());
+        public static bool IsDisplayed(this EffectType effect) => typeof(ISpectatorDataPlayerEffect).IsAssignableFrom(effect.Type());
 
         /// <summary>
         /// Returns the <see cref="EffectCategory"/> of the given <paramref name="effect"/>.
@@ -125,8 +126,8 @@ namespace Exiled.API.Extensions
                 category |= EffectCategory.Positive;
             if (effect.IsNegative())
                 category |= EffectCategory.Negative;
-            // if (effect.IsMovement())
-                // category |= EffectCategory.Movement;
+            if (effect.IsMovement())
+                category |= EffectCategory.Movement;
             if (effect.IsHarmful())
                 category |= EffectCategory.Harmful;
 

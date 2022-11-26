@@ -46,45 +46,30 @@ namespace Exiled.Events.Handlers
         ///     Called before SCP-914 upgrades a item.
         /// </summary>
         /// <param name="ev">The <see cref="UpgradingItemEventArgs" /> instance.</param>
-        public static void OnUpgradingItem(UpgradingItemEventArgs ev)
-        {
-            UpgradingItem.InvokeSafely(ev);
-        }
+        public static void OnUpgradingItem(UpgradingItemEventArgs ev) => UpgradingItem.InvokeSafely(ev);
 
         /// <summary>
         ///     Called before SCP-914 upgrades an item in a player's inventory.
         /// </summary>
         /// <param name="ev">The <see cref="UpgradingInventoryItemEventArgs" /> instance.</param>
-        public static void OnUpgradingInventoryItem(UpgradingInventoryItemEventArgs ev)
-        {
-            UpgradingInventoryItem.InvokeSafely(ev);
-        }
+        public static void OnUpgradingInventoryItem(UpgradingInventoryItemEventArgs ev) => UpgradingInventoryItem.InvokeSafely(ev);
 
         /// <summary>
         ///     Called before SCP-914 upgrades a player.
         /// </summary>
         /// <param name="ev">The <see cref="UpgradingPlayerEventArgs" /> instance.</param>
-        public static void OnUpgradingPlayer(UpgradingPlayerEventArgs ev)
-        {
-            UpgradingPlayer.InvokeSafely(ev);
-        }
+        public static void OnUpgradingPlayer(UpgradingPlayerEventArgs ev) => UpgradingPlayer.InvokeSafely(ev);
 
         /// <summary>
         ///     Called before activating the SCP-914 machine.
         /// </summary>
         /// <param name="ev">The <see cref="ActivatingEventArgs" /> instance.</param>
-        public static void OnActivating(ActivatingEventArgs ev)
-        {
-            Activating.InvokeSafely(ev);
-        }
+        public static void OnActivating(ActivatingEventArgs ev) => Activating.InvokeSafely(ev);
 
         /// <summary>
         ///     Called before changing the SCP-914 machine knob setting.
         /// </summary>
         /// <param name="ev">The <see cref="ChangingKnobSettingEventArgs" /> instance.</param>
-        public static void OnChangingKnobSetting(ChangingKnobSettingEventArgs ev)
-        {
-            ChangingKnobSetting.InvokeSafely(ev);
-        }
+        public static void OnChangingKnobSetting(ChangingKnobSettingEventArgs ev) => ChangingKnobSetting.InvokeSafely(ev);
     }
 }

@@ -10,7 +10,9 @@ namespace Exiled.Events.EventArgs.Player
     using System;
 
     using API.Features;
+    using CustomPlayerEffects;
     using Exiled.API.Extensions;
+    using Exiled.API.Features.Roles;
     using Interfaces;
     using PlayerRoles;
     using UnityEngine;
@@ -26,22 +28,26 @@ namespace Exiled.Events.EventArgs.Player
         /// <param name="player">
         ///     <inheritdoc cref="Player" />
         /// </param>
-        /// <param name="RoleTypeId">
-        ///     <inheritdoc cref="RoleTypeId" />
+        /// <param name="roleType">
+        ///     <inheritdoc cref="RoleType" />
         /// </param>
-        public SpawningEventArgs(Player player, RoleTypeId RoleTypeId)
+        public SpawningEventArgs(Player player, RoleTypeId roleType)
         {
             Player = player;
-            RoleTypeId = RoleTypeId;
-            (Vector3 position, float rotation) = RoleTypeId.GetRandomSpawnProperties();
-            if (position == Vector3.zero)
+            RoleType = roleType;
+
+            (Vector3 position, float rotation) = roleType.GetRandomSpawnProperties();
+
+            if (position == Vector3.zero && player.Role.Type == RoleTypeId.Spectator)
             {
-                // Position = player.ReferenceHub.characterClassManager.DeathPosition;
+                Position = (player.Role as SpectatorRole).DeathPosition.Position;
+
                 // RotationY = new PlayerMovementSync.PlayerRotation(0f, 0f);
             }
             else
             {
-                // Position = position;
+                Position = position;
+
                 // RotationY = new PlayerMovementSync.PlayerRotation(0f, rotation);
             }
         }
@@ -49,17 +55,17 @@ namespace Exiled.Events.EventArgs.Player
         /// <summary>
         ///     Gets the player role type.
         /// </summary>
-        public RoleTypeId RoleTypeId { get; }
+        public RoleTypeId RoleType { get; }
 
         /// <summary>
         ///     Gets or sets the player's spawning position.
         /// </summary>
         public Vector3 Position { get; set; }
 
-        /// <summary>
+        /*/// <summary>
         ///     Gets or sets the rotation y axis of the player.
         /// </summary>
-       //  public PlayerMovementSync.PlayerRotation RotationY { get; set; }
+        public PlayerMovementSync.PlayerRotation RotationY { get; set; }*/
 
         /// <summary>
         ///     Gets the spawning player.

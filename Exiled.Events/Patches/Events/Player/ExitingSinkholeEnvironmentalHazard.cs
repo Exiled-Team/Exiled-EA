@@ -5,7 +5,6 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-/*
 namespace Exiled.Events.Patches.Events.Player
 {
     using System.Collections.Generic;
@@ -19,6 +18,7 @@ namespace Exiled.Events.Patches.Events.Player
     using HarmonyLib;
     using Hazards;
     using NorthwoodLib.Pools;
+    using PlayerRoles;
 
     using static HarmonyLib.AccessTools;
 
@@ -29,7 +29,7 @@ namespace Exiled.Events.Patches.Events.Player
     /// </summary>
     /// <seealso cref="StayingOnSinkholeEnvironmentalHazard"/>
     /// <seealso cref="SinkholeEffectFix"/>
-    // [HarmonyPatch(typeof(EnvironmentalHazard), nameof(EnvironmentalHazard.OnExit))]
+    [HarmonyPatch(typeof(EnvironmentalHazard), nameof(EnvironmentalHazard.OnExit))]
     internal static class ExitingSinkholeEnvironmentalHazard
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
@@ -66,7 +66,7 @@ namespace Exiled.Events.Patches.Events.Player
                     // SCP check
                     new(OpCodes.Ldarg_1),
                     new(OpCodes.Ldfld, Field(typeof(ReferenceHub), nameof(ReferenceHub.characterClassManager))),
-                    new(OpCodes.Callvirt, Method(typeof(CharacterClassManager), nameof(CharacterClassManager.IsAnyScp))),
+                    new(OpCodes.Callvirt, Method(typeof(PlayerRolesUtils), nameof(PlayerRolesUtils.IsSCP))),
                     new(OpCodes.Brtrue_S, cnt),
 
                     // exit effect for 1 second, cause we disable effect in OnStay
@@ -74,7 +74,7 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Ldfld, Field(typeof(ReferenceHub), nameof(ReferenceHub.playerEffectsController))),
                     new(OpCodes.Ldc_R4, 1f),
                     new(OpCodes.Ldc_I4_0),
-                    new(OpCodes.Callvirt, Method(typeof(PlayerEffectsController), nameof(PlayerEffectsController.EnableEffect), new[] { typeof(float), typeof(bool) }, new[] { typeof(SinkHole) })),
+                    new(OpCodes.Callvirt, Method(typeof(PlayerEffectsController), nameof(PlayerEffectsController.EnableEffect), new[] { typeof(float), typeof(bool) }, new[] { typeof(Sinkhole) })),
                 });
 
             newInstructions[newInstructions.Count - 1].labels.Add(cnt);
@@ -86,4 +86,3 @@ namespace Exiled.Events.Patches.Events.Player
         }
     }
 }
-*/

@@ -59,7 +59,8 @@ namespace Exiled.API.Features.Items
         public void Throw(bool fullForce = true)
         {
             ThrowableItem.ProjectileSettings settings = fullForce ? Base.FullThrowSettings : Base.WeakThrowSettings;
-            // Base.ServerThrow(settings.StartVelocity, settings.UpwardsFactor, settings.StartTorque, ThrowableNetworkHandler.GetLimitedVelocity(Base.Owner?.playerMovementSync.PlayerVelocity ?? Vector3.one));
+
+            Base.ServerThrow(settings.StartVelocity, settings.UpwardsFactor, settings.StartTorque, ThrowableNetworkHandler.GetLimitedVelocity(Owner?.Velocity ?? Vector3.one));
         }
 
         /// <summary>
@@ -76,6 +77,7 @@ namespace Exiled.API.Features.Items
         {
             Throwable cloneableItem = new(Type);
             cloneableItem.PinPullTime = PinPullTime;
+
             return cloneableItem;
         }
     }

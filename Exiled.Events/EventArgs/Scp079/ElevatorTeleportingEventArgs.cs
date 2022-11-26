@@ -4,11 +4,12 @@
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
-/*
+
 namespace Exiled.Events.EventArgs.Scp079
 {
     using Exiled.API.Features;
     using Exiled.Events.EventArgs.Interfaces;
+    using PlayerRoles.PlayableScps.Scp079.Cameras;
 
     /// <summary>
     ///     Contains all information before SCP-079 changes rooms via elevator.
@@ -30,7 +31,7 @@ namespace Exiled.Events.EventArgs.Scp079
         /// <param name="isAllowed">
         ///     <inheritdoc cref="IsAllowed" />
         /// </param>
-        public ElevatorTeleportingEventArgs(Player player, Camera079 camera, float auxiliaryPowerCost, bool isAllowed = true)
+        public ElevatorTeleportingEventArgs(Player player, Scp079Camera camera, float auxiliaryPowerCost, bool isAllowed = true)
         {
             Player = player;
             Camera = Camera.Get(camera);
@@ -60,4 +61,3 @@ namespace Exiled.Events.EventArgs.Scp079
         public Player Player { get; }
     }
 }
-*/

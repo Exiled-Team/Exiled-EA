@@ -5,7 +5,6 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-/*
 namespace Exiled.Events.Patches.Generic
 {
     using System.Collections.Generic;
@@ -16,13 +15,14 @@ namespace Exiled.Events.Patches.Generic
     using HarmonyLib;
 
     using NorthwoodLib.Pools;
+    using PlayerRoles.PlayableScps.Scp079;
 
     using static HarmonyLib.AccessTools;
 
     /// <summary>
-    /// Patches <see cref="Recontainer079.Start"/>.
+    /// Patches <see cref="Scp079Recontainer.Start"/>.
     /// </summary>
-    // [HarmonyPatch(typeof(Recontainer079), nameof(Recontainer079.Start))]
+    [HarmonyPatch(typeof(Scp079Recontainer), nameof(Scp079Recontainer.Start))]
     internal class InitRecontainerInstance
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
@@ -44,4 +44,3 @@ namespace Exiled.Events.Patches.Generic
         }
     }
 }
-*/

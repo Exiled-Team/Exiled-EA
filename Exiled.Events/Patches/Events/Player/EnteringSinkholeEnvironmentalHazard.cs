@@ -5,7 +5,6 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-/*
 namespace Exiled.Events.Patches.Events.Player
 {
     using System.Collections.Generic;
@@ -16,6 +15,7 @@ namespace Exiled.Events.Patches.Events.Player
     using HarmonyLib;
     using Hazards;
     using NorthwoodLib.Pools;
+    using PlayerRoles;
 
     using static HarmonyLib.AccessTools;
 
@@ -23,7 +23,7 @@ namespace Exiled.Events.Patches.Events.Player
     /// Patches <see cref="SinkholeEnvironmentalHazard.OnEnter(ReferenceHub)"/>.
     /// Adds the <see cref="Handlers.Player.EnteringEnvironmentalHazard"/> event.
     /// </summary>
-    // [HarmonyPatch(typeof(SinkholeEnvironmentalHazard), nameof(SinkholeEnvironmentalHazard.OnEnter))]
+    [HarmonyPatch(typeof(SinkholeEnvironmentalHazard), nameof(SinkholeEnvironmentalHazard.OnEnter))]
     internal static class EnteringSinkholeEnvironmentalHazard
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
@@ -35,7 +35,7 @@ namespace Exiled.Events.Patches.Events.Player
             Label ret = generator.DefineLabel();
 
             int offset = -1;
-            int index = newInstructions.FindIndex(i => i.Calls(Method(typeof(CharacterClassManager), nameof(CharacterClassManager.IsAnyScp)))) + offset;
+            int index = newInstructions.FindIndex(i => i.Calls(Method(typeof(PlayerRolesUtils), nameof(PlayerRolesUtils.IsSCP)))) + offset;
 
             newInstructions.InsertRange(
                 index,
@@ -61,4 +61,3 @@ namespace Exiled.Events.Patches.Events.Player
         }
     }
 }
-*/

@@ -36,27 +36,18 @@ namespace Exiled.Events.Handlers
         ///     Called before SCP-106 creates a portal.
         /// </summary>
         /// <param name="ev">The <see cref="CreatingPortalEventArgs" /> instance.</param>
-        public static void OnCreatingPortal(CreatingPortalEventArgs ev)
-        {
-            CreatingPortal.InvokeSafely(ev);
-        }
+        public static void OnCreatingPortal(CreatingPortalEventArgs ev) => CreatingPortal.InvokeSafely(ev);
 
         /// <summary>
         ///     Called before SCP-106 teleports using a portal.
         /// </summary>
         /// <param name="ev">The <see cref="TeleportingEventArgs" /> instance.</param>
-        public static void OnTeleporting(TeleportingEventArgs ev)
-        {
-            Teleporting.InvokeSafely(ev);
-        }
+        public static void OnTeleporting(TeleportingEventArgs ev) => Teleporting.InvokeSafely(ev);
 
         /// <summary>
         ///     Called before containing SCP-106.
         /// </summary>
         /// <param name="ev">The <see cref="ContainingEventArgs" /> instance.</param>
-        public static void OnContaining(ContainingEventArgs ev)
-        {
-            Containing.InvokeSafely(ev);
-        }
+        public static void OnContaining(ContainingEventArgs ev) => Containing.InvokeSafely(ev);
     }
 }

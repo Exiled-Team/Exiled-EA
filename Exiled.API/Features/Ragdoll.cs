@@ -14,7 +14,7 @@ namespace Exiled.API.Features
     using DeathAnimations;
 
     using Enums;
-
+    using Exiled.API.Extensions;
     using Mirror;
 
     using PlayableScps;
@@ -43,16 +43,22 @@ namespace Exiled.API.Features
         /// <param name="canBeSpawned">A value that represents whether the ragdoll can be spawned.</param>
         public Ragdoll(Player player, DamageHandlerBase handler, bool canBeSpawned = false)
         {
-            /*
-            GameObject modelRagdoll = player.ReferenceHub.characterClassManager.CurRole.model_ragdoll;
+            if (player.Role.Base is not IRagdollRole ragdollRole)
+                return;
+
+            GameObject modelRagdoll = ragdollRole.Ragdoll.gameObject;
+
             if (modelRagdoll == null || !Object.Instantiate(modelRagdoll).TryGetComponent(out RagDoll ragdoll))
                 return;
+
             ragdoll.NetworkInfo = new RagdollInfo(player.ReferenceHub, handler, modelRagdoll.transform.localPosition, modelRagdoll.transform.localRotation);
+
             this.ragdoll = ragdoll;
+
             Map.RagdollsValue.Add(this);
+
             if (canBeSpawned)
                 Spawn();
-                */
         }
 
         /// <summary>
@@ -62,26 +68,29 @@ namespace Exiled.API.Features
         /// <param name="canBeSpawned">A value that represents whether the ragdoll can be spawned.</param>
         public Ragdoll(RagdollInfo ragdollInfo, bool canBeSpawned = false)
         {
-            /*
-            GameObject modelRagdoll = CharacterClassManager._staticClasses.SafeGet(ragdollInfo.RoleTypeId).model_ragdoll;
-            if (modelRagdoll == null || !Object.Instantiate(modelRagdoll).TryGetComponent(out RagDoll ragdoll))
+            if (ragdollInfo.RoleType.GetRoleBase() is not IRagdollRole ragdollRole)
                 return;
+
+            GameObject modelRagdoll = ragdollRole.Ragdoll.gameObject;
+
+            if (modelRagdoll is null || !Object.Instantiate(modelRagdoll).TryGetComponent(out RagDoll ragdoll))
+                return;
+
             ragdoll.NetworkInfo = ragdollInfo;
+
             this.ragdoll = ragdoll;
+
             Map.RagdollsValue.Add(this);
+
             if (canBeSpawned)
                 Spawn();
-                */
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Ragdoll"/> class.
         /// </summary>
         /// <param name="ragdoll">The encapsulated <see cref="RagDoll"/>.</param>
-        internal Ragdoll(RagDoll ragdoll)
-        {
-            this.ragdoll = ragdoll;
-        }
+        internal Ragdoll(RagDoll ragdoll) => this.ragdoll = ragdoll;
 
         /// <summary>
         /// Gets or sets the <see cref="RagDoll"/>s clean up time.
@@ -154,32 +163,11 @@ namespace Exiled.API.Features
             set
             {
                 if (!value)
-                {
                     IgnoredRagdolls.Remove(Base);
-                }
                 else
-                {
                     IgnoredRagdolls.Add(Base);
-                }
             }
         }
-
-        /// <summary>
-        /// Gets a value indicating whether or not the ragdoll is currently playing animations.
-        /// </summary>
-        // public bool IsPlayingAnimations
-        // {
-        //    get => ragdoll._playingLocalAnims;
-        // }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether or not the ragdoll can play animations.
-        /// </summary>
-        // public bool AllowAnimations
-        // {
-        //   get => ragdoll._animationsDisabled;
-        //   set => ragdoll._animationsDisabled = value;
-        // }
 
         /// <summary>
         /// Gets the ragdoll's name.
@@ -199,10 +187,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets the <see cref="RoleTypeId"/> of the ragdoll.
         /// </summary>
-        // public RoleTypeId Role
-        // {
-        //    get => NetworkInfo.RoleTypeId;
-        // }
+        public RoleTypeId Role => NetworkInfo.RoleType;
 
         /// <summary>
         /// Gets a value indicating whether or not the ragdoll is respawnable by SCP-049.
@@ -228,7 +213,9 @@ namespace Exiled.API.Features
             set
             {
                 NetworkServer.UnSpawn(GameObject);
+
                 ragdoll.transform.position = value;
+
                 NetworkServer.Spawn(GameObject);
             }
         }
@@ -242,7 +229,9 @@ namespace Exiled.API.Features
             set
             {
                 NetworkServer.UnSpawn(GameObject);
+
                 ragdoll.transform.rotation = value;
+
                 NetworkServer.Spawn(GameObject);
             }
         }
@@ -256,7 +245,9 @@ namespace Exiled.API.Features
             set
             {
                 NetworkServer.UnSpawn(GameObject);
+
                 ragdoll.transform.localScale = value;
+
                 NetworkServer.Spawn(GameObject);
             }
         }
@@ -295,21 +286,6 @@ namespace Exiled.API.Features
         /// <summary>
         /// Spawns a <see cref="Ragdoll"/> on the map.
         /// </summary>
-        /// <param name="player">The ragdoll's <see cref="Player">owner</see>.</param>
-        /// <param name="handler">The player's <see cref="DamageHandlerBase"/>.</param>
-        [Obsolete("Use Spawn(Player, Exiled.API.Features.DamageHandlers.DamageHandlerBase) instead.", true)]
-        public static void Spawn(Player player, DamageHandlerBase handler) => _ = new Ragdoll(player, handler, true);
-
-        /// <summary>
-        /// Spawns a <see cref="Ragdoll"/> on the map.
-        /// </summary>
-        /// <param name="ragdollInfo">The ragdoll's <see cref="RagdollInfo"/>.</param>
-        [Obsolete("Use Spawn(Player, Exiled.API.Features.DamageHandlers.DamageHandlerBase) instead.", true)]
-        public static void Spawn(RagdollInfo ragdollInfo) => _ = new Ragdoll(ragdollInfo, true);
-
-        /// <summary>
-        /// Spawns a <see cref="Ragdoll"/> on the map.
-        /// </summary>
         /// <param name="player">The ragdoll's <see cref="Player"/> owner.</param>
         /// <param name="handler">The ragdoll's <see cref="DamageHandlerBase"/>.</param>
         /// <returns>The created <see cref="Ragdoll"/>.</returns>
@@ -338,6 +314,6 @@ namespace Exiled.API.Features
         /// Returns the Ragdoll in a human-readable format.
         /// </summary>
         /// <returns>A string containing Ragdoll-related data.</returns>
-        // public override string ToString() => $"{Owner} ({Name}) [{DeathReason}] *{Role}* |{CreationTime}| ={AllowRecall}=";
+        public override string ToString() => $"{Owner} ({Name}) [{DeathReason}] *{Role}* |{CreationTime}| ={AllowRecall}=";
     }
 }

@@ -41,28 +41,19 @@ namespace Exiled.Events.Handlers
         ///     Called before the durability of an item is changed.
         /// </summary>
         /// <param name="ev">The <see cref="ChangingDurabilityEventArgs" /> instance.</param>
-        public static void OnChangingDurability(ChangingDurabilityEventArgs ev)
-        {
-            ChangingDurability.InvokeSafely(ev);
-        }
+        public static void OnChangingDurability(ChangingDurabilityEventArgs ev) => ChangingDurability.InvokeSafely(ev);
 
         /// <summary>
         ///     Called before item attachments are changed.
         /// </summary>
         /// <param name="ev">The <see cref="ChangingAttachmentsEventArgs" /> instance.</param>
-        public static void OnChangingAttachments(ChangingAttachmentsEventArgs ev)
-        {
-            ChangingAttachments.InvokeSafely(ev);
-        }
+        public static void OnChangingAttachments(ChangingAttachmentsEventArgs ev) => ChangingAttachments.InvokeSafely(ev);
 
         /// <summary>
         ///     Called before receiving a preference.
         /// </summary>
         /// <param name="ev">The <see cref="ReceivingPreferenceEventArgs" /> instance.</param>
-        public static void OnReceivingPreference(ReceivingPreferenceEventArgs ev)
-        {
-            ReceivingPreference.InvokeSafely(ev);
-        }
+        public static void OnReceivingPreference(ReceivingPreferenceEventArgs ev) => ReceivingPreference.InvokeSafely(ev);
 
         /// <summary>
         /// Called before keycard interacts with a door.

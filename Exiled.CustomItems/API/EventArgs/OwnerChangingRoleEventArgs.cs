@@ -25,7 +25,7 @@ namespace Exiled.CustomItems.API.EventArgs
         /// <param name="item"><inheritdoc cref="Item"/></param>
         /// <param name="ev">The <see cref="ChangingRoleEventArgs"/> instance.</param>
         public OwnerChangingRoleEventArgs(ItemBase item, ChangingRoleEventArgs ev)
-            : this(item, ev.Player, ev.NewRole, ev.Lite, (CharacterClassManager.SpawnReason)ev.Reason)
+            : this(item, ev.Player, ev.NewRole, ev.Lite, (RoleChangeReason)ev.Reason)
         {
         }
 
@@ -37,7 +37,7 @@ namespace Exiled.CustomItems.API.EventArgs
         /// <param name="newRole"><inheritdoc cref="ChangingRoleEventArgs.NewRole"/></param>
         /// <param name="shouldPreservePosition"><inheritdoc cref="ChangingRoleEventArgs.Lite"/></param>
         /// <param name="reason"><inheritdoc cref="ChangingRoleEventArgs.Reason"/></param>
-        public OwnerChangingRoleEventArgs(ItemBase item, Player player, RoleTypeId newRole, bool shouldPreservePosition, CharacterClassManager.SpawnReason reason)
+        public OwnerChangingRoleEventArgs(ItemBase item, Player player, RoleTypeId newRole, bool shouldPreservePosition, RoleChangeReason reason)
             : base(player, newRole, shouldPreservePosition, reason)
         {
             Item = item;

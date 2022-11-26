@@ -4,11 +4,12 @@
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
-/*
+
 namespace Exiled.Events.EventArgs.Scp079
 {
     using Exiled.API.Features;
     using Exiled.Events.EventArgs.Interfaces;
+    using PlayerRoles.PlayableScps.Scp079;
 
     /// <summary>
     ///     Contains all information before SCP-079 gains experience.
@@ -30,7 +31,7 @@ namespace Exiled.Events.EventArgs.Scp079
         /// <param name="isAllowed">
         ///     <inheritdoc cref="IsAllowed" />
         /// </param>
-        public GainingExperienceEventArgs(Player player, ExpGainType gainType, float amount, bool isAllowed = true)
+        public GainingExperienceEventArgs(Player player, Scp079ExpGainReason gainType, float amount, bool isAllowed = true)
         {
             Player = player;
             GainType = gainType;
@@ -41,7 +42,7 @@ namespace Exiled.Events.EventArgs.Scp079
         /// <summary>
         ///     Gets the experience gain type.
         /// </summary>
-        public ExpGainType GainType { get; }
+        public Scp079ExpGainReason GainType { get; }
 
         /// <summary>
         ///     Gets or sets the amount of experience to be gained.
@@ -59,4 +60,3 @@ namespace Exiled.Events.EventArgs.Scp079
         public Player Player { get; }
     }
 }
-*/

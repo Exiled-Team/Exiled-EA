@@ -11,7 +11,7 @@ namespace Exiled.Events.EventArgs.Player
     using Interfaces;
 
     using InventorySystem.Items.Firearms.BasicMessages;
-
+    using RelativePositioning;
     using UnityEngine;
 
     /// <summary>
@@ -44,7 +44,7 @@ namespace Exiled.Events.EventArgs.Player
         /// </summary>
         public Vector3 ShotPosition
         {
-            // get => ShotMessage.TargetPosition;
+            get => ShotMessage.TargetPosition.Relative;
             set
             {
                 ShotMessage msg = ShotMessage;
@@ -52,9 +52,8 @@ namespace Exiled.Events.EventArgs.Player
                 {
                     ShooterPosition = msg.ShooterPosition,
                     ShooterCameraRotation = msg.ShooterCameraRotation,
-                    // ShooterCharacterRotation = msg.ShooterCharacterRotation,
                     ShooterWeaponSerial = msg.ShooterWeaponSerial,
-                    // TargetPosition = value,
+                    TargetPosition = new RelativePosition(value),
                     TargetRotation = msg.TargetRotation,
                     TargetNetId = msg.TargetNetId,
                 };
@@ -74,7 +73,6 @@ namespace Exiled.Events.EventArgs.Player
                 {
                     ShooterPosition = msg.ShooterPosition,
                     ShooterCameraRotation = msg.ShooterCameraRotation,
-                    // ShooterCharacterRotation = msg.ShooterCharacterRotation,
                     ShooterWeaponSerial = msg.ShooterWeaponSerial,
                     TargetPosition = msg.TargetPosition,
                     TargetRotation = msg.TargetRotation,

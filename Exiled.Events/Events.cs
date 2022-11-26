@@ -81,8 +81,9 @@ namespace Exiled.Events
             Handlers.Server.RoundStarted += Handlers.Internal.Round.OnRoundStarted;
             Handlers.Player.ChangingRole += Handlers.Internal.Round.OnChangingRole;
             CharacterClassManager.OnRoundStarted += Handlers.Server.OnRoundStarted;
+
             // PlayerMovementSync.OnPlayerSpawned += Handlers.Player.OnSpawned;
-            // InventorySystem.InventoryExtensions.OnItemAdded += Handlers.Player.OnItemAdded;
+            InventorySystem.InventoryExtensions.OnItemAdded += Handlers.Player.OnItemAdded;
 
             ServerConsole.ReloadServerName();
         }
@@ -97,17 +98,16 @@ namespace Exiled.Events
             DisabledPatchesHashSet.Clear();
 
             SceneManager.sceneUnloaded -= Handlers.Internal.SceneUnloaded.OnSceneUnloaded;
+            MapGeneration.SeedSynchronizer.OnMapGenerated -= Handlers.Map.OnGenerated;
 
             Handlers.Server.WaitingForPlayers -= Handlers.Internal.Round.OnWaitingForPlayers;
             Handlers.Server.RestartingRound -= Handlers.Internal.Round.OnRestartingRound;
             Handlers.Server.RoundStarted -= Handlers.Internal.Round.OnRoundStarted;
             Handlers.Player.ChangingRole -= Handlers.Internal.Round.OnChangingRole;
             CharacterClassManager.OnRoundStarted += Handlers.Server.OnRoundStarted;
-            // PlayerMovementSync.OnPlayerSpawned -= Handlers.Player.OnSpawned;
-            // InventorySystem.InventoryExtensions.OnItemAdded -= Handlers.Player.OnItemAdded;
-            Handlers.Map.Generated -= Handlers.Internal.MapGenerated.OnMapGenerated;
 
-            MapGeneration.SeedSynchronizer.OnMapGenerated -= Handlers.Map.OnGenerated;
+            // PlayerMovementSync.OnPlayerSpawned -= Handlers.Player.OnSpawned;
+            InventorySystem.InventoryExtensions.OnItemAdded -= Handlers.Player.OnItemAdded;
         }
 
         /// <summary>

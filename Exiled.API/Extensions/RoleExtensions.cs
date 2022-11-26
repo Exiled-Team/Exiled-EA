@@ -97,11 +97,11 @@ namespace Exiled.API.Extensions
         /// <summary>
         /// Gets a random spawn point of a <see cref="RoleTypeId"/>.
         /// </summary>
-        /// <param name="roleTypeId">The <see cref="RoleTypeId"/> to get the spawn point from.</param>
+        /// <param name="roleType">The <see cref="RoleTypeId"/> to get the spawn point from.</param>
         /// <returns>Returns the spawn point <see cref="Vector3"/> and rotation <see cref="float"/>.</returns>
-        public static Tuple<Vector3, float> GetRandomSpawnProperties(this RoleTypeId roleTypeId)
+        public static Tuple<Vector3, float> GetRandomSpawnProperties(this RoleTypeId roleType)
         {
-            GameObject randomPosition = SpawnpointManager.GetRandomPosition(roleTypeId);
+            GameObject randomPosition = SpawnpointManager.GetRandomPosition(roleType);
 
             return randomPosition is null ?
                 new Tuple<Vector3, float>(Vector3.zero, 0f) :

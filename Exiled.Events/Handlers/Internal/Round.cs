@@ -11,6 +11,7 @@ namespace Exiled.Events.Handlers.Internal
 
     using API.Features;
     using API.Features.Items;
+    using Exiled.API.Features.Roles;
     using Exiled.Events.EventArgs.Player;
     using InventorySystem;
     using Loader;
@@ -45,29 +46,21 @@ namespace Exiled.Events.Handlers.Internal
         {
             MultiAdminFeatures.CallEvent(MultiAdminFeatures.EventType.ROUND_END);
 
-            Scp173.TurnedPlayers.Clear();
-            Scp096.TurnedPlayers.Clear();
+            Scp173Role.TurnedPlayers.Clear();
+            Scp096Role.TurnedPlayers.Clear();
             TeslaGate.IgnoredPlayers.Clear();
             TeslaGate.IgnoredRoles.Clear();
             TeslaGate.IgnoredTeams.Clear();
-            // Scp106Container.IgnoredPlayers.Clear();
-            // Scp106Container.IgnoredRoles = new List<RoleTypeId> { RoleTypeId.Spectator };
-            // Scp106Container.IgnoredTeams = new List<Team> { Team.SCP };
         }
 
         /// <inheritdoc cref="Handlers.Server.OnRoundStarted" />
-        public static void OnRoundStarted()
-        {
-            MultiAdminFeatures.CallEvent(MultiAdminFeatures.EventType.ROUND_START);
-        }
+        public static void OnRoundStarted() => MultiAdminFeatures.CallEvent(MultiAdminFeatures.EventType.ROUND_START);
 
         /// <inheritdoc cref="Handlers.Player.OnChangingRole(ChangingRoleEventArgs)" />
         public static void OnChangingRole(ChangingRoleEventArgs ev)
         {
-            /*
             if (ev.Player?.IsHost != false || string.IsNullOrEmpty(ev.Player.UserId))
                 return;
-                */
 
             if ((ev.NewRole == RoleTypeId.Spectator) && Events.Instance.Config.ShouldDropInventory)
                 ev.Player.Inventory.ServerDropEverything();

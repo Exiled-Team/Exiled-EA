@@ -24,7 +24,7 @@ namespace Exiled.Events.Patches.Fixes
     /// </summary>
     /// <seealso cref="StayingOnSinkholeEnvironmentalHazard"/>
     /// <seealso cref="ExitingSinkholeEnvironmentalHazard"/>
-    // [HarmonyPatch(typeof(SinkholeEnvironmentalHazard), nameof(SinkholeEnvironmentalHazard.OnEnter))]
+    [HarmonyPatch(typeof(SinkholeEnvironmentalHazard), nameof(SinkholeEnvironmentalHazard.OnEnter))]
     internal static class SinkholeEffectFix
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
