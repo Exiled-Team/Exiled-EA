@@ -4,7 +4,7 @@
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
-/*
+
 namespace Exiled.Events.EventArgs.Warhead
 {
     using Exiled.API.Features;
@@ -27,7 +27,6 @@ namespace Exiled.Events.EventArgs.Warhead
         /// <summary>
         ///     Gets a value indicating whether or not the nuke was set off automatically.
         /// </summary>
-        public bool IsAuto { get; } = AlphaWarheadController.Host._autoDetonate && (AlphaWarheadController.Host._autoDetonateTime <= 0);
+        public bool IsAuto { get; } = AlphaWarheadController.Singleton._autoDetonate && (AlphaWarheadController.Singleton._autoDetonateTime <= 0);
     }
 }
-*/

@@ -85,31 +85,45 @@ namespace Exiled.CustomItems.API.Features
         /// <returns>The <see cref="Pickup"/> being spawned.</returns>
         public virtual Pickup Throw(Vector3 position, float force, float fuseTime = 3f, ItemType grenadeType = ItemType.GrenadeHE, Player player = null)
         {
-            if (player is null)
-                player = Server.Host;
+            player ??= Server.Host;
 
             Throwable throwable = (Throwable)Item.Create(grenadeType, player);
 
             ThrownProjectile thrownProjectile = UnityEngine.Object.Instantiate(throwable.Base.Projectile, position, throwable.Owner.CameraTransform.rotation);
             Transform transform = thrownProjectile.transform;
+
             PickupSyncInfo newInfo = new()
             {
                 ItemId = throwable.Type,
                 Locked = !throwable.Base._repickupable,
                 Serial = ItemSerialGenerator.GenerateNext(),
                 Weight = Weight,
-                Position = transform.position,
-                Rotation = new LowPrecisionQuaternion(transform.rotation),
+                _serverPosition = transform.position,
+                _serverRotation = transform.rotation,
             };
+
             if (thrownProjectile is TimeGrenade time)
                 time._fuseTime = fuseTime;
+
             thrownProjectile.NetworkInfo = newInfo;
             thrownProjectile.PreviousOwner = new Footprint(throwable.Owner.ReferenceHub);
+
             NetworkServer.Spawn(thrownProjectile.gameObject);
+
             thrownProjectile.InfoReceived(default, newInfo);
+
             if (thrownProjectile.TryGetComponent(out Rigidbody component))
-                throwable.Base.PropelBody(component, throwable.Base.FullThrowSettings.StartTorque, ThrowableNetworkHandler.GetLimitedVelocity(player.ReferenceHub.playerMovementSync.PlayerVelocity), force, throwable.Base.FullThrowSettings.UpwardsFactor);
+            {
+                throwable.Base.PropelBody(
+                    component,
+                    throwable.Base.FullThrowSettings.StartTorque,
+                    ThrowableNetworkHandler.GetLimitedVelocity(player.Velocity),
+                    force,
+                    throwable.Base.FullThrowSettings.UpwardsFactor);
+            }
+
             thrownProjectile.ServerActivate();
+
             Tracked.Add(thrownProjectile);
 
             if (ExplodeOnCollision)

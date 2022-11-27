@@ -5,7 +5,6 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-/*
 namespace Exiled.Events.Patches.Events.Warhead
 {
     using System.Collections.Generic;
@@ -24,7 +23,7 @@ namespace Exiled.Events.Patches.Events.Warhead
     ///     Patch the <see cref="PlayerInteract.UserCode_CmdDetonateWarhead" />.
     ///     Adds the <see cref="Handlers.Warhead.Starting" /> event.
     /// </summary>
-    // [HarmonyPatch(typeof(PlayerInteract), nameof(PlayerInteract.UserCode_CmdDetonateWarhead))]
+    [HarmonyPatch(typeof(PlayerInteract), nameof(PlayerInteract.UserCode_CmdDetonateWarhead))]
     internal static class Starting
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
@@ -43,7 +42,7 @@ namespace Exiled.Events.Patches.Events.Warhead
             // if (!Warhead.CanBeStarted)
             //   return;
             //
-            // var ev = new StartingEventArgs(Player.Get(this.gameObject), true);
+            // var ev = new StartingEventArgs(Player.Get(this._hub), true);
             //
             // Handlers.Warhead.OnStarting(ev);
             //
@@ -64,12 +63,6 @@ namespace Exiled.Events.Patches.Events.Warhead
                     new(OpCodes.Call, Method(typeof(Handlers.Warhead), nameof(Handlers.Warhead.OnStarting))),
                     new(OpCodes.Call, PropertyGetter(typeof(StartingEventArgs), nameof(StartingEventArgs.IsAllowed))),
                     new(OpCodes.Brfalse_S, returnLabel),
-                    new(OpCodes.Ldsfld, Field(typeof(AlphaWarheadController), nameof(AlphaWarheadController.Host))),
-                    new(OpCodes.Dup),
-                    new(OpCodes.Ldc_I4_0),
-                    new(OpCodes.Stfld, Field(typeof(AlphaWarheadController), nameof(AlphaWarheadController.doorsOpen))),
-                    new(OpCodes.Ldc_I4_1),
-                    new(OpCodes.Call, PropertySetter(typeof(AlphaWarheadController), nameof(AlphaWarheadController.NetworkinProgress))),
                 });
 
             newInstructions[newInstructions.Count - 1].labels.Add(returnLabel);
@@ -81,4 +74,3 @@ namespace Exiled.Events.Patches.Events.Warhead
         }
     }
 }
-*/

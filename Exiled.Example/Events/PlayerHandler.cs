@@ -59,7 +59,7 @@ namespace Exiled.Example.Events
                     if (ev.Player?.CurrentItem is Firearm firearm)
                     {
                         Log.Info($"{ev.Player.Nickname} has a firearm!");
-                        firearm.Recoil = new RecoilSettings(0, 0, 0, 0, 0, 0);
+                        firearm.Recoil = new RecoilSettings(0, 0, 0, 0, 0);
                     }
                 });
             Log.Info($"{ev.Player.Nickname} is changing his {(ev.Player?.CurrentItem is null ? "NONE" : ev.Player?.CurrentItem?.Type.ToString())} item to {(ev.NewItem is null ? "NONE" : ev.NewItem.Type.ToString())}!");

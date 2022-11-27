@@ -22,10 +22,10 @@ namespace Exiled.Events.Handlers
         /// </summary>
         public static event CustomEventHandler<StoppingEventArgs> Stopping;
 
-        /*/// <summary>
+        /// <summary>
         ///     Invoked before starting the warhead.
         /// </summary>
-        public static event CustomEventHandler<StartingEventArgs> Starting;*/
+        public static event CustomEventHandler<StartingEventArgs> Starting;
 
         /// <summary>
         ///     Invoked after the warhead has been detonated.
@@ -43,7 +43,6 @@ namespace Exiled.Events.Handlers
         /// <param name="ev">The <see cref="StoppingEventArgs" /> instance.</param>
         public static void OnStopping(StoppingEventArgs ev) => Stopping.InvokeSafely(ev);
 
-        /*
         /// <summary>
         ///     Called before starting the warhead.
         /// </summary>
@@ -52,7 +51,6 @@ namespace Exiled.Events.Handlers
         {
             Starting.InvokeSafely(ev);
         }
-        */
 
         /// <summary>
         ///     Called after the warhead has been detonated.

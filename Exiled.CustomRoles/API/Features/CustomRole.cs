@@ -166,7 +166,9 @@ namespace Exiled.CustomRoles.API.Features
         public static IEnumerable<CustomRole> RegisterRoles(bool skipReflection = false, object overrideClass = null)
         {
             List<CustomRole> roles = new();
-            Log.Warn("Registering roles..");
+
+            Log.Warn("Registering roles...");
+
             Assembly assembly = Assembly.GetCallingAssembly();
 
             foreach (Type type in assembly.GetTypes())
@@ -192,8 +194,7 @@ namespace Exiled.CustomRoles.API.Features
                         }
                     }
 
-                    if (customRole is null)
-                        customRole = (CustomRole)Activator.CreateInstance(type);
+                    customRole ??= (CustomRole)Activator.CreateInstance(type);
 
                     if (customRole.Role == RoleTypeId.None)
                         customRole.Role = ((CustomRoleAttribute)attribute).RoleTypeId;
@@ -221,9 +222,13 @@ namespace Exiled.CustomRoles.API.Features
 
             foreach (Type type in assembly.GetTypes())
             {
-                if (type.BaseType != typeof(CustomItem) || type.GetCustomAttribute(typeof(CustomRoleAttribute)) is null ||
-                    (isIgnored && targetTypes.Contains(type)) || (!isIgnored && !targetTypes.Contains(type)))
+                if (type.BaseType != typeof(CustomItem) ||
+                    type.GetCustomAttribute(typeof(CustomRoleAttribute)) is null ||
+                    (isIgnored && targetTypes.Contains(type)) ||
+                    (!isIgnored && !targetTypes.Contains(type)))
+                {
                     continue;
+                }
 
                 foreach (Attribute attribute in type.GetCustomAttributes(typeof(CustomRoleAttribute), true))
                 {
@@ -243,8 +248,7 @@ namespace Exiled.CustomRoles.API.Features
                         }
                     }
 
-                    if (customRole is null)
-                        customRole = (CustomRole)Activator.CreateInstance(type);
+                    customRole ??= (CustomRole)Activator.CreateInstance(type);
 
                     if (customRole.Role == RoleTypeId.None)
                         customRole.Role = ((CustomRoleAttribute)attribute).RoleTypeId;
@@ -395,11 +399,11 @@ namespace Exiled.CustomRoles.API.Features
         public virtual void AddRole(Player player)
         {
             Vector3 oldPos = player.Position;
+
             Log.Debug($"{Name}: Adding role to {player.Nickname}.", CustomRoles.Instance.Config.Debug);
+
             if (Role != RoleTypeId.None)
-            {
-                player.SetRole(Role, SpawnReason.ForceClass, true);
-            }
+                player.SetRole(Role, SpawnReason.ForceClass);
 
             Timing.CallDelayed(
                 1.5f,
