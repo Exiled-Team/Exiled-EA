@@ -40,10 +40,9 @@ namespace Exiled.API.Features.DamageHandlers
             this.player = player;
             this.damageType = damageType;
             customCassieAnnouncement = cassieAnnouncement;
+
             if (customCassieAnnouncement is not null)
-            {
                 customCassieAnnouncement.Announcement = customCassieAnnouncement.Announcement ?? $"{player.Nickname} killed by {attacker.Nickname} utilizing {damageType}";
-            }
 
             Attacker = attacker.Footprint;
             AllowSelfDamage = true;
@@ -141,10 +140,9 @@ namespace Exiled.API.Features.DamageHandlers
 
                 case DamageType.Scp096:
                     PlayableScps.Scp096 curr096 = attacker.ReferenceHub.scpsController.CurrentScp as PlayableScps.Scp096 ?? new PlayableScps.Scp096();
+
                     if (curr096 != null)
-                    {
                         curr096.Hub = attacker.ReferenceHub;
-                    }
 
                     Base = new Scp096DamageHandler(curr096, damage, Scp096DamageHandler.AttackType.Slap);
                     break;
@@ -164,7 +162,7 @@ namespace Exiled.API.Features.DamageHandlers
                     Base = new PlayerStatsSystem.ScpDamageHandler(attacker.ReferenceHub, damage, DeathTranslations.Scp173);
                     break;
                 case DamageType.Scp939:
-                    Base = new PlayerStatsSystem.ScpDamageHandler(attacker.ReferenceHub, damage, DeathTranslations.Scp939);
+                    Base = new PlayerStatsSystem.ScpDamageHandler(attacker.ReferenceHub, damage, DeathTranslations.Scp939Lunge);
                     break;
                 case DamageType.Scp0492:
                     Base = new PlayerStatsSystem.ScpDamageHandler(attacker.ReferenceHub, damage, DeathTranslations.Zombie);

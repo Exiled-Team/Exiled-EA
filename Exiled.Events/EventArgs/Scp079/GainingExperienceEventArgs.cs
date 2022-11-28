@@ -31,7 +31,7 @@ namespace Exiled.Events.EventArgs.Scp079
         /// <param name="isAllowed">
         ///     <inheritdoc cref="IsAllowed" />
         /// </param>
-        public GainingExperienceEventArgs(Player player, Scp079ExpGainReason gainType, float amount, bool isAllowed = true)
+        public GainingExperienceEventArgs(Player player, Scp079HudTranslation gainType, float amount, bool isAllowed = true)
         {
             Player = player;
             GainType = gainType;
@@ -42,7 +42,7 @@ namespace Exiled.Events.EventArgs.Scp079
         /// <summary>
         ///     Gets the experience gain type.
         /// </summary>
-        public Scp079ExpGainReason GainType { get; }
+        public Scp079HudTranslation GainType { get; }
 
         /// <summary>
         ///     Gets or sets the amount of experience to be gained.
