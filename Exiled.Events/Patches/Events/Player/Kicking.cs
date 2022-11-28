@@ -30,12 +30,10 @@ namespace Exiled.Events.Patches.Events.Player
         {
             try
             {
-                if (!EventManager.ExecuteEvent(ServerEventType.PlayerKicked, target, issuer, reason))
-                    return false;
-
                 string message = $"You have been kicked. {(!string.IsNullOrEmpty(reason) ? "Reason: " + reason : string.Empty)}";
 
                 KickingEventArgs ev = new(Player.Get(target), Player.Get(issuer), reason, message);
+
                 Handlers.Player.OnKicking(ev);
 
                 if (!ev.IsAllowed)
@@ -43,6 +41,9 @@ namespace Exiled.Events.Patches.Events.Player
 
                 reason = ev.Reason;
                 message = ev.FullMessage;
+
+                if (!EventManager.ExecuteEvent(ServerEventType.PlayerKicked, target, issuer, reason))
+                    return false;
 
                 ServerConsole.Disconnect(target.gameObject, message);
                 return true;
