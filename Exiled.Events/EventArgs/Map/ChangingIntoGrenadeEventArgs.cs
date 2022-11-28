@@ -26,6 +26,7 @@ namespace Exiled.Events.EventArgs.Map
         {
             if (pickup is null)
                 Log.Error($"{nameof(ChangingIntoGrenadeEventArgs)}: Pickup is null!");
+
             Pickup = Pickup.Get(pickup);
             Type = pickup is not null ? pickup.Info.ItemId : ItemType.None;
             FuseTime = Pickup.Base is TimeGrenade timeGrenade ? timeGrenade._fuseTime : 3f;

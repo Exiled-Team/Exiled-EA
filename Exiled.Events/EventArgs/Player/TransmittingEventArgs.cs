@@ -5,15 +5,14 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-/*
 namespace Exiled.Events.EventArgs.Player
 {
 #pragma warning disable 1584
     using API.Features.Items;
-    using Assets._Scripts.Dissonance;
 
     using Exiled.API.Features;
     using Exiled.Events.EventArgs.Interfaces;
+    using PlayerRoles.Voice;
 
     /// <summary>
     ///     Contains all information after a player presses the transmission key.
@@ -26,11 +25,8 @@ namespace Exiled.Events.EventArgs.Player
         /// <param name="player">
         ///     <inheritdoc cref="Player" />
         /// </param>
-        /// <param name="radio">
-        ///     <inheritdoc cref="Radio" />
-        /// </param>
-        /// <param name="dissonanceUserSetup">
-        ///     <inheritdoc cref="DissonanceUserSetup" />
+        /// <param name="voiceModule">
+        ///     <inheritdoc cref="VoiceModule" />
         /// </param>
         /// <param name="isTransmitting">
         ///     <inheritdoc cref="IsTransmitting" />
@@ -38,11 +34,10 @@ namespace Exiled.Events.EventArgs.Player
         /// <param name="isAllowed">
         ///     <inheritdoc cref="IsAllowed" />
         /// </param>
-        public TransmittingEventArgs(Player player, Radio radio, DissonanceUserSetup dissonanceUserSetup, bool isTransmitting, bool isAllowed = true)
+        public TransmittingEventArgs(Player player, VoiceModuleBase voiceModule, bool isTransmitting, bool isAllowed = true)
         {
             Player = player;
-            Radio = radio;
-            DissonanceUserSetup = dissonanceUserSetup;
+            VoiceModule = voiceModule;
             IsTransmitting = isTransmitting;
             IsAllowed = isAllowed;
         }
@@ -53,9 +48,9 @@ namespace Exiled.Events.EventArgs.Player
         public Radio Radio { get; }
 
         /// <summary>
-        ///     Gets the <see cref="API.Features.Items.Radio" />'s DissonanceUserSetup.
+        ///     Gets the <see cref="Player"/>'s <see cref="VoiceModuleBase" />.
         /// </summary>
-        public DissonanceUserSetup DissonanceUserSetup { get; }
+        public VoiceModuleBase VoiceModule { get; }
 
         /// <summary>
         ///     Gets a value indicating whether or not the player is transmitting.
@@ -73,4 +68,3 @@ namespace Exiled.Events.EventArgs.Player
         public Player Player { get; }
     }
 }
-*/

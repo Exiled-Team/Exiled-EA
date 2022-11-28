@@ -4,15 +4,13 @@
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
-/*
+
 namespace Exiled.Events.EventArgs.Scp173
 {
     using Exiled.API.Features;
     using Exiled.Events.EventArgs.Interfaces;
-
+    using PlayerRoles.PlayableScps.Scp173;
     using UnityEngine;
-
-    using Scp173 = PlayableScps.Scp173;
 
     /// <summary>
     ///     Contains all information before the tantrum is placed.
@@ -37,7 +35,7 @@ namespace Exiled.Events.EventArgs.Scp173
         /// <param name="isAllowed">
         ///     <inheritdoc cref="IsAllowed" />
         /// </param>
-        public PlacingTantrumEventArgs(Scp173 scp173, Player player, GameObject gameObject, float cooldown, bool isAllowed = true)
+        public PlacingTantrumEventArgs(Scp173Role scp173, Player player, GameObject gameObject, float cooldown, bool isAllowed = true)
         {
             Scp173 = scp173;
             Player = player;
@@ -47,9 +45,9 @@ namespace Exiled.Events.EventArgs.Scp173
         }
 
         /// <summary>
-        ///     Gets the player's <see cref="PlayableScps.Scp173" /> instance.
+        ///     Gets the player's <see cref="Scp173Role" /> instance.
         /// </summary>
-        public Scp173 Scp173 { get; }
+        public Scp173Role Scp173 { get; }
 
         /// <summary>
         ///     Gets the tantrum <see cref="UnityEngine.GameObject" />.
@@ -72,4 +70,3 @@ namespace Exiled.Events.EventArgs.Scp173
         public Player Player { get; }
     }
 }
-*/

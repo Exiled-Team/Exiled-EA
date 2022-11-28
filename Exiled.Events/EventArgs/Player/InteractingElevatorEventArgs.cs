@@ -5,15 +5,14 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-/*
 namespace Exiled.Events.EventArgs.Player
 {
     using System;
     using System.Linq;
 
     using Exiled.API.Features;
-    using Exiled.API.Structs;
     using Exiled.Events.EventArgs.Interfaces;
+    using Interactables.Interobjects;
 
     using Lift = API.Features.Lift;
 
@@ -31,29 +30,26 @@ namespace Exiled.Events.EventArgs.Player
         /// <param name="elevator">
         ///     <inheritdoc cref="Elevator" />
         /// </param>
-        /// <param name="lift">
-        ///     <inheritdoc cref="Type" />
-        /// </param>
         /// <param name="isAllowed">
         ///     <inheritdoc cref="IsAllowed" />
         /// </param>
-        public InteractingElevatorEventArgs(Player player, Lift.Elevator elevator, Lift lift, bool isAllowed = true)
+        public InteractingElevatorEventArgs(Player player, ElevatorChamber elevator, bool isAllowed = true)
         {
-            Lift = API.Features.Lift.Get(lift);
             Player = player;
-            Elevator = Lift.Elevators.FirstOrDefault(elev => elev.Base == elevator);
+            Lift = Lift.Get(elevator);
+            Elevator = elevator;
             IsAllowed = isAllowed;
         }
 
         /// <summary>
-        ///     Gets the <see cref="API.Structs.Elevator" /> instance.
+        ///     Gets the <see cref="Elevator" /> instance.
         /// </summary>
-        public Elevator Elevator { get; }
+        public ElevatorChamber Elevator { get; }
 
         /// <summary>
         ///     Gets the <see cref="Lift" /> instance.
         /// </summary>
-        public API.Features.Lift Lift { get; }
+        public Lift Lift { get; }
 
         /// <summary>
         ///     Gets or sets a value indicating whether or not the player can interact with the elevator.
@@ -66,4 +62,3 @@ namespace Exiled.Events.EventArgs.Player
         public Player Player { get; }
     }
 }
-*/

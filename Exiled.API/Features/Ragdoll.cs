@@ -73,7 +73,7 @@ namespace Exiled.API.Features
 
             GameObject modelRagdoll = ragdollRole.Ragdoll.gameObject;
 
-            if (modelRagdoll is null || !Object.Instantiate(modelRagdoll).TryGetComponent(out RagDoll ragdoll))
+            if (modelRagdoll == null || !Object.Instantiate(modelRagdoll).TryGetComponent(out RagDoll ragdoll))
                 return;
 
             ragdoll.NetworkInfo = ragdollInfo;

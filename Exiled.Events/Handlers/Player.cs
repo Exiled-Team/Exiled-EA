@@ -245,10 +245,10 @@ namespace Exiled.Events.Handlers
         /// </summary>
         public static event CustomEventHandler<InteractingDoorEventArgs> InteractingDoor;
 
-        /*/// <summary>
+        /// <summary>
         /// Invoked before a <see cref="API.Features.Player"/> interacts with an elevator.
         /// </summary>
-        public static event CustomEventHandler<InteractingElevatorEventArgs> InteractingElevator;*/
+        public static event CustomEventHandler<InteractingElevatorEventArgs> InteractingElevator;
 
         /// <summary>
         /// Invoked before a <see cref="API.Features.Player"/> interacts with a locker.
@@ -370,10 +370,10 @@ namespace Exiled.Events.Handlers
         /// </summary>
         public static event CustomEventHandler<DryfiringWeaponEventArgs> DryfiringWeapon;
 
-        /*/// <summary>
+        /// <summary>
         /// Invoked after a <see cref="API.Features.Player"/> presses the voicechat key.
         /// </summary>
-        public static event CustomEventHandler<VoiceChattingEventArgs> VoiceChatting;*/
+        public static event CustomEventHandler<VoiceChattingEventArgs> VoiceChatting;
 
         /// <summary>
         /// Invoked before a <see cref="API.Features.Player"/> makes noise.
@@ -390,10 +390,10 @@ namespace Exiled.Events.Handlers
         /// </summary>
         public static event CustomEventHandler<LandingEventArgs> Landing;
 
-        /*/// <summary>
+        /// <summary>
         /// Invoked after a <see cref="API.Features.Player"/> presses the transmission key.
         /// </summary>
-        public static event CustomEventHandler<TransmittingEventArgs> Transmitting;*/
+        public static event CustomEventHandler<TransmittingEventArgs> Transmitting;
 
         /// <summary>
         /// Invoked before a <see cref="API.Features.Player"/> changes move state.
@@ -727,11 +727,11 @@ namespace Exiled.Events.Handlers
         /// <param name="ev">The <see cref="InteractingDoorEventArgs"/> instance.</param>
         public static void OnInteractingDoor(InteractingDoorEventArgs ev) => InteractingDoor.InvokeSafely(ev);
 
-        /*/// <summary>
+        /// <summary>
         /// Called before a <see cref="API.Features.Player"/> interacts with an elevator.
         /// </summary>
         /// <param name="ev">The <see cref="InteractingElevatorEventArgs"/> instance.</param>
-        public static void OnInteractingElevator(InteractingElevatorEventArgs ev) => InteractingElevator.InvokeSafely(ev);*/
+        public static void OnInteractingElevator(InteractingElevatorEventArgs ev) => InteractingElevator.InvokeSafely(ev);
 
         /// <summary>
         /// Called before a <see cref="API.Features.Player"/> interacts with a locker.
@@ -877,11 +877,11 @@ namespace Exiled.Events.Handlers
         /// <param name="ev">The <see cref="DryfiringWeaponEventArgs"/> instance.</param>
         public static void OnDryfiringWeapon(DryfiringWeaponEventArgs ev) => DryfiringWeapon.InvokeSafely(ev);
 
-        /*/// <summary>
+        /// <summary>
         /// Invoked after a <see cref="API.Features.Player"/> presses the voicechat key.
         /// </summary>
         /// <param name="ev">The <see cref="VoiceChattingEventArgs"/> instance.</param>
-        public static void OnVoiceChatting(VoiceChattingEventArgs ev) => VoiceChatting.InvokeSafely(ev);*/
+        public static void OnVoiceChatting(VoiceChattingEventArgs ev) => VoiceChatting.InvokeSafely(ev);
 
         /// <summary>
         /// Called before a <see cref="API.Features.Player"/> makes noise.
@@ -901,11 +901,11 @@ namespace Exiled.Events.Handlers
         /// <param name="ev">The <see cref="LandingEventArgs"/> instance.</param>
         public static void OnLanding(LandingEventArgs ev) => Landing.InvokeSafely(ev);
 
-        /*/// <summary>
+        /// <summary>
         /// Called after a <see cref="API.Features.Player"/> presses the transmission key.
         /// </summary>
         /// <param name="ev">The <see cref="TransmittingEventArgs"/> instance.</param>
-        public static void OnTransmitting(TransmittingEventArgs ev) => Transmitting.InvokeSafely(ev);*/
+        public static void OnTransmitting(TransmittingEventArgs ev) => Transmitting.InvokeSafely(ev);
 
         /// <summary>
         /// Called before a <see cref="API.Features.Player"/> changes move state.

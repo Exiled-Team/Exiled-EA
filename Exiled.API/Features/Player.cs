@@ -1562,7 +1562,7 @@ namespace Exiled.API.Features
         /// <param name="cuffer">The cuffer player.</param>
         public void Handcuff(Player cuffer)
         {
-            if (cuffer?.ReferenceHub is null)
+            if (cuffer?.ReferenceHub == null)
                 return;
 
             if (!IsCuffed && (Vector3.Distance(Position, cuffer.Position) <= 130f))
@@ -1856,7 +1856,7 @@ namespace Exiled.API.Features
         /// <param name="reason">The ban reason.</param>
         /// <param name="issuer">The ban issuer.</param>
         public void Ban(int duration, string reason, Player issuer = null)
-            => BanPlayer.BanUser(ReferenceHub, issuer is null || issuer.ReferenceHub is null ? Server.Host.ReferenceHub : issuer.ReferenceHub, reason, duration);
+            => BanPlayer.BanUser(ReferenceHub, issuer is null || issuer.ReferenceHub == null ? Server.Host.ReferenceHub : issuer.ReferenceHub, reason, duration);
 
         /// <summary>
         /// Kicks the player.

@@ -5,14 +5,11 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-/*
 namespace Exiled.Events.EventArgs.Player
 {
-    using API.Features.Items;
-    using Assets._Scripts.Dissonance;
-
     using Exiled.API.Features;
     using Exiled.Events.EventArgs.Interfaces;
+    using PlayerRoles.Voice;
 
     /// <summary>
     ///     Contains all information after a player presses the voicechat key.
@@ -25,11 +22,8 @@ namespace Exiled.Events.EventArgs.Player
         /// <param name="player">
         ///     <inheritdoc cref="Player" />
         /// </param>
-        /// <param name="radio">
-        ///     <inheritdoc cref="Radio" />
-        /// </param>
-        /// <param name="dissonanceUserSetup">
-        ///     <inheritdoc cref="DissonanceUserSetup" />
+        /// <param name="voiceModule">
+        ///     <inheritdoc cref="VoiceModule" />
         /// </param>
         /// <param name="isVoiceChatting">
         ///     <inheritdoc cref="IsVoiceChatting" />
@@ -37,24 +31,18 @@ namespace Exiled.Events.EventArgs.Player
         /// <param name="isAllowed">
         ///     <inheritdoc cref="IsAllowed" />
         /// </param>
-        public VoiceChattingEventArgs(Player player, Radio radio, DissonanceUserSetup dissonanceUserSetup, bool isVoiceChatting, bool isAllowed = true)
+        public VoiceChattingEventArgs(Player player, VoiceModuleBase voiceModule, bool isVoiceChatting, bool isAllowed = true)
         {
             Player = player;
-            Radio = radio;
-            DissonanceUserSetup = dissonanceUserSetup;
+            VoiceModule = voiceModule;
             IsVoiceChatting = isVoiceChatting;
             IsAllowed = isAllowed;
         }
 
         /// <summary>
-        ///     Gets the player's <see cref="API.Features.Items.Radio" /> component.
+        ///     Gets the <see cref="Player"/>'s <see cref="VoiceModuleBase" />.
         /// </summary>
-        public Radio Radio { get; }
-
-        /// <summary>
-        ///     Gets the <see cref="API.Features.Items.Radio" />'s DissonanceUserSetup.
-        /// </summary>
-        public DissonanceUserSetup DissonanceUserSetup { get; }
+        public VoiceModuleBase VoiceModule { get; }
 
         /// <summary>
         ///     Gets a value indicating whether or not the player is voicechatting.
@@ -72,4 +60,3 @@ namespace Exiled.Events.EventArgs.Player
         public Player Player { get; }
     }
 }
-*/

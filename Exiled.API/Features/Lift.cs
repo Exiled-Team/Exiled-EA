@@ -76,14 +76,22 @@ namespace Exiled.API.Features
         public Transform Transform => GameObject.transform;
 
         /// <summary>
-        /// Gets the lift's position.
+        /// Gets or sets the lift's position.
         /// </summary>
-        public Vector3 Position => Base.transform.position;
+        public Vector3 Position
+        {
+            get => Base.transform.position;
+            set => Base.transform.position = value;
+        }
 
         /// <summary>
-        /// Gets the lift's rotation.
+        /// Gets or sets the lift's rotation.
         /// </summary>
-        public Quaternion Rotation => Base.transform.rotation;
+        public Quaternion Rotation
+        {
+            get => Base.transform.rotation;
+            set => Base.transform.rotation = value;
+        }
 
         /// <summary>
         /// Gets or sets the lift's <see cref="ElevatorChamber"/> status.
@@ -145,6 +153,22 @@ namespace Exiled.API.Features
         /// Gets the <see cref="CurrentDestination"/>.
         /// </summary>
         public ElevatorDoor CurrentDestination => Base.CurrentDestination;
+
+        /// <summary>
+        /// Compares two operands: <see cref="Lift"/> and <see cref="Lift"/>.
+        /// </summary>
+        /// <param name="left">The first <see cref="Lift"/> to compare.</param>
+        /// <param name="right">The second <see cref="Lift"/> to compare.</param>
+        /// <returns><see langword="true"/> if the values are equal.</returns>
+        public static bool operator ==(Lift left, Lift right) => left.Base.Equals(right.Base);
+
+        /// <summary>
+        /// Compares two operands: <see cref="Lift"/> and <see cref="Lift"/>.
+        /// </summary>
+        /// <param name="left">The first <see cref="Lift"/> to compare.</param>
+        /// <param name="right">The second <see cref="Lift"/> to compare.</param>
+        /// <returns><see langword="true"/> if the values are not equal.</returns>
+        public static bool operator !=(Lift left, Lift right) => !(left == right);
 
         /// <summary>
         /// Gets a <see cref="IEnumerable{T}"/> of <see cref="Lift"/> which contains all the <see cref="Lift"/> instances from the specified <see cref="Status"/>.
@@ -211,6 +235,12 @@ namespace Exiled.API.Features
         /// <param name="isForced">Indicates whether the start will be forced or not.</param>
         /// <returns><see langword="true"/> if the lift was started successfully; otherwise, <see langword="false"/>.</returns>
         public bool TryStart(int level, bool isForced = false) => ElevatorManager.TrySetDestination(Base.AssignedGroup, level, isForced);
+
+        /// <inheritdoc/>
+        public override bool Equals(object obj) => Base.Equals(obj);
+
+        /// <inheritdoc/>
+        public override int GetHashCode() => Base.GetHashCode();
 
         /// <summary>
         /// Returns the Lift in a human-readable format.

@@ -76,7 +76,7 @@ namespace Exiled.API.Features
         {
             get
             {
-                if (tantrumPrefab is null)
+                if (tantrumPrefab == null)
                 {
                     Scp173GameRole scp173Role = RoleTypeId.Scp173.GetRoleBase() as Scp173GameRole;
 

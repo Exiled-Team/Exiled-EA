@@ -205,7 +205,7 @@ namespace Exiled.Events.Patches.Generic
                             continue;
 
                         // If for some reason the player/their ref hub is null
-                        if (target?.ReferenceHub is null)
+                        if (target?.ReferenceHub == null)
                             continue;
 
                         if (player.IsAlive && (target.IsInvisible || PlayerCannotSee(player, target.Id)))
