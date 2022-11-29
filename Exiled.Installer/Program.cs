@@ -23,7 +23,7 @@ namespace Exiled.Installer
 
     using Octokit;
 
-    using Version = SemVer.Version;
+    using Version = SemanticVersioning.Version;
 
     internal enum PathResolution
     {
@@ -90,7 +90,7 @@ namespace Exiled.Installer
                     throw new FileNotFoundException("Check the validation of the path parameter");
                 }
 
-                if (!(args.GitHubToken is null))
+                if (args.GitHubToken is not null)
                 {
                     Console.WriteLine(Resources.Program_MainSafe_Token_detected__Using_the_token___);
                     GitHubClient.Credentials = new Credentials(args.GitHubToken, AuthenticationType.Bearer);
@@ -137,7 +137,7 @@ namespace Exiled.Installer
                 using TarInputStream tarInputStream = new (gzInputStream, null);
 
                 TarEntry entry;
-                while (!((entry = tarInputStream.GetNextEntry()) is null))
+                while ((entry = tarInputStream.GetNextEntry()) is not null)
                 {
                     entry.Name = entry.Name.Replace('/', Path.DirectorySeparatorChar);
                     ProcessTarEntry(args, targetFilePath, tarInputStream, entry);

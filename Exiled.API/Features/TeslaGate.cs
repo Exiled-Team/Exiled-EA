@@ -11,6 +11,7 @@ namespace Exiled.API.Features
     using System.Collections.Generic;
     using System.Linq;
 
+    using Hazards;
     using MEC;
     using PlayerRoles;
     using UnityEngine;
@@ -31,10 +32,7 @@ namespace Exiled.API.Features
         /// Initializes a new instance of the <see cref="TeslaGate"/> class.
         /// </summary>
         /// <param name="baseTeslaGate">The <see cref="BaseTeslaGate"/> instance.</param>
-        internal TeslaGate(BaseTeslaGate baseTeslaGate)
-        {
-            Base = baseTeslaGate;
-        }
+        internal TeslaGate(BaseTeslaGate baseTeslaGate) => Base = baseTeslaGate;
 
         /// <summary>
         /// Gets a <see cref="IEnumerable{T}"/> of <see cref="TeslaGate"/> which contains all the <see cref="TeslaGate"/> instances.
@@ -170,30 +168,25 @@ namespace Exiled.API.Features
             set => Base.next079burst = value;
         }
 
-        /*
         /// <summary>
         /// Gets a <see cref="List{T}"/> of <see cref="UnityEngine.GameObject"/> which contains all the tantrums to destroy.
         /// </summary>
-        public List<GameObject> TantrumsToDestroy
-        {
-            get => Base.TantrumsToBeDestroyed;
-        }
-        */
+        public List<TantrumEnvironmentalHazard> TantrumsToDestroy => Base.TantrumsToBeDestroyed;
 
         /// <summary>
         /// Gets a <see cref="IEnumerable{T}"/> of <see cref="Player"/> which contains all the players inside the hurt range.
         /// </summary>
-        public IEnumerable<Player> PlayersInHurtRange => Player.List.Where(player => Base.PlayerInHurtRange(player.GameObject));
+        public IEnumerable<Player> PlayersInHurtRange => Player.List.Where(IsPlayerInHurtRange);
 
         /// <summary>
         /// Gets a <see cref="IEnumerable{T}"/> of <see cref="Player"/> which contains all the players inside the idle range.
         /// </summary>
-        public IEnumerable<Player> PlayersInIdleRange => Player.List.Where(player => Base.PlayerInIdleRange(player.ReferenceHub));
+        public IEnumerable<Player> PlayersInIdleRange => Player.List.Where(IsPlayerInIdleRange);
 
         /// <summary>
         /// Gets a <see cref="IEnumerable{T}"/> of <see cref="Player"/> which contains all the players inside the trigger range.
         /// </summary>
-        public IEnumerable<Player> PlayersInTriggerRange => Player.List.Where(player => Base.PlayerInRange(player.ReferenceHub));
+        public IEnumerable<Player> PlayersInTriggerRange => Player.List.Where(IsPlayerInTriggerRange);
 
         /// <summary>
         /// Gets the <see cref="TeslaGate"/> belonging to the <see cref="BaseTeslaGate"/>.
@@ -235,31 +228,29 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="player">The <see cref="Player"/> to check.</param>
         /// <returns><see langword="true"/> if the given <see cref="Player"/> is in the hurt range of the tesla gate; otherwise, <see langword="false"/>.</returns>
-        public bool PlayerInHurtRange(Player player) => Base.PlayerInHurtRange(player.GameObject);
+        public bool IsPlayerInHurtRange(Player player) => Vector3.Distance(Position, player.Position) <= Base.sizeOfTrigger * 2.2f;
 
         /// <summary>
         /// Gets a value indicating whether the <see cref="Player"/> is in the idle range of a specific tesla gate.
         /// </summary>
         /// <param name="player">The <see cref="Player"/> to check.</param>
         /// <returns><see langword="true"/> if the given <see cref="Player"/> is in the idle range of the tesla gate; otherwise, <see langword="false"/>.</returns>
-        public bool PlayerInIdleRange(Player player) => Base.PlayerInIdleRange(player.ReferenceHub);
+        public bool IsPlayerInIdleRange(Player player) => Base.PlayerInIdleRange(player.ReferenceHub);
 
         /// <summary>
         /// Gets a value indicating whether the <see cref="Player"/> is in the trigger range of a specific tesla gate.
         /// </summary>
         /// <param name="player">The <see cref="Player"/> to check.</param>
         /// <returns><see langword="true"/> if the given <see cref="Player"/> is in the trigger range of the tesla gate; otherwise, <see langword="false"/>.</returns>
-        public bool PlayerInTriggerRange(Player player) => Base.PlayerInRange(player.ReferenceHub);
+        public bool IsPlayerInTriggerRange(Player player) => Base.PlayerInRange(player.ReferenceHub);
 
-        /*
         /// <summary>
         /// Gets a value indicating whether the tesla gate can be idle by a specific <see cref="Player"/>.
         /// </summary>
         /// <param name="player">The <see cref="Player"/> to check.</param>
         /// <returns><see langword="true"/> if the given <see cref="Player"/> can idle the tesla gate; otherwise, <see langword="false"/>.</returns>
         public bool CanBeIdle(Player player) => player.IsAlive && !IgnoredPlayers.Contains(player) && !IgnoredRoles.Contains(player.Role) &&
-                                                !IgnoredTeams.Contains(player.Role.Team) && PlayerInIdleRange(player);
-                                                */
+                                                !IgnoredTeams.Contains(player.Role.Team) && IsPlayerInIdleRange(player);
 
         /// <summary>
         /// Gets a value indicating whether the tesla gate can be triggered by a specific <see cref="Player"/>.
@@ -267,6 +258,6 @@ namespace Exiled.API.Features
         /// <param name="player">The <see cref="Player"/> to check.</param>
         /// <returns><see langword="true"/> if the given <see cref="Player"/> can trigger the tesla gate; otherwise, <see langword="false"/>.</returns>
         public bool CanBeTriggered(Player player) => !IgnoredPlayers.Contains(player) && !IgnoredRoles.Contains(player.Role) &&
-                                                     !IgnoredTeams.Contains(player.Role.Team) && PlayerInTriggerRange(player);
+                                                     !IgnoredTeams.Contains(player.Role.Team) && IsPlayerInTriggerRange(player);
     }
 }

@@ -25,7 +25,7 @@
         <Platforms>AnyCPU</Platforms>
     </PropertyGroup>
 
-    <Import Project="../EXILED.props"/>
+    <Import Project="../EXILED.props" />
 
     <PropertyGroup Condition="$(Configuration) == 'Release'">
         <PublishSingleFile>true</PublishSingleFile>
@@ -34,12 +34,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <None Update="..\assets\Exiled_Icon.ico" Pack="true"/>
+        <None Update="..\assets\Exiled_Icon.ico" Pack="true" />
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="StyleCop.Analyzers" Version="1.1.118" IncludeAssets="All" PrivateAssets="All"/>
-        <PackageReference Include="dnlib" Version="3.3.2"/>
+        <PackageReference Include="StyleCop.Analyzers" Version="1.1.118" IncludeAssets="All" PrivateAssets="All" />
+        <PackageReference Include="dnlib" Version="3.6.0" />
     </ItemGroup>
 
 </Project>

@@ -19,10 +19,10 @@
     <!-- Enables public beta warning via the PUBLIC_BETA constant -->
     <PublicBeta>false</PublicBeta>
 
-    <HarmonyVersion>2.2.1</HarmonyVersion>
-    <YamlDotNetVersion>11.2.1</YamlDotNetVersion>
+    <HarmonyVersion>2.2.2</HarmonyVersion>
+    <YamlDotNetVersion>12.0.2</YamlDotNetVersion>
     <StyleCopVersion>1.1.118</StyleCopVersion>
-    <SemanticVersioningVersion>1.3.0</SemanticVersioningVersion>
+    <SemanticVersioningVersion>2.0.2</SemanticVersioningVersion>
 
     <Copyright>Copyright © $(Authors) 2020 - $([System.DateTime]::Now.ToString("yyyy"))</Copyright>
     <RepositoryType>Git</RepositoryType>
