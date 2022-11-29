@@ -10,6 +10,7 @@ namespace Exiled.Events
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
+    using System.Drawing;
     using System.Reflection;
 
     using API.Enums;
@@ -82,7 +83,6 @@ namespace Exiled.Events
             Handlers.Player.ChangingRole += Handlers.Internal.Round.OnChangingRole;
             CharacterClassManager.OnRoundStarted += Handlers.Server.OnRoundStarted;
 
-            // PlayerMovementSync.OnPlayerSpawned += Handlers.Player.OnSpawned;
             InventorySystem.InventoryExtensions.OnItemAdded += Handlers.Player.OnItemAdded;
 
             ServerConsole.ReloadServerName();
@@ -106,7 +106,6 @@ namespace Exiled.Events
             Handlers.Player.ChangingRole -= Handlers.Internal.Round.OnChangingRole;
             CharacterClassManager.OnRoundStarted += Handlers.Server.OnRoundStarted;
 
-            // PlayerMovementSync.OnPlayerSpawned -= Handlers.Player.OnSpawned;
             InventorySystem.InventoryExtensions.OnItemAdded -= Handlers.Player.OnItemAdded;
         }
 

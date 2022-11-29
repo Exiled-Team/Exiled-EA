@@ -11,10 +11,13 @@ namespace Exiled.API.Features
     using System.Collections.Generic;
     using System.Reflection;
 
+    using CustomPlayerEffects;
+    using GameCore;
     using MEC;
 
     using Mirror;
     using PlayerRoles;
+    using PlayerRoles.RoleAssign;
     using RoundRestarting;
 
     using UnityEngine;
@@ -111,6 +114,7 @@ namespace Exiled.API.Features
             {
                 ServerConsole.FriendlyFire = value;
                 ServerConfigSynchronizer.Singleton.RefreshMainBools();
+
                 PlayerStatsSystem.AttackerDamageHandler.RefreshConfigs();
             }
         }
@@ -130,35 +134,24 @@ namespace Exiled.API.Features
             set => CustomNetworkManager.slots = value;
         }
 
-        /*
         /// <summary>
-        /// Gets or sets a value indicating whether or not later join is enabled.
+        /// Gets a value indicating whether or not late join is enabled.
         /// </summary>
-        public static bool LaterJoinEnabled
-        {
-            get => CharacterClassManager.LaterJoinEnabled;
-            set => CharacterClassManager.LaterJoinEnabled = value;
-        }
+        public static bool LateJoinEnabled => LateJoinTime > 0;
 
         /// <summary>
-        /// Gets or sets the late join time, in seconds. If a player joins less than this many seconds into a game, they will be given a random class.
+        /// Gets the late join time, in seconds. If a player joins less than this many seconds into a game, they will be given a random class.
         /// </summary>
-        public static float LaterJoinTime
-        {
-            get => CharacterClassManager.LaterJoinTime;
-            set => CharacterClassManager.LaterJoinTime = value;
-        }
-
+        public static float LateJoinTime => ConfigFile.ServerConfig.GetFloat(RoleAssigner.LateJoinKey, 0f);
 
         /// <summary>
         /// Gets or sets the spawn protection time, in seconds.
         /// </summary>
         public static float SpawnProtectTime
         {
-            get => CharacterClassManager.SProtectedDuration;
-            set => CharacterClassManager.SProtectedDuration = value;
+            get => SpawnProtected.SpawnDuration;
+            set => SpawnProtected.SpawnDuration = value;
         }
-                */
 
         /// <summary>
         /// Gets or sets a value indicating whether the server is marked as Heavily Modded.
@@ -196,19 +189,13 @@ namespace Exiled.API.Features
         /// Restarts the server, reconnects all players.
         /// </summary>
         /// <seealso cref="RestartRedirect(ushort)"/>
-        public static void Restart()
-        {
-            Round.Restart(false, true, ServerStatic.NextRoundAction.Restart);
-        }
+        public static void Restart() => Round.Restart(false, true, ServerStatic.NextRoundAction.Restart);
 
         /// <summary>
         /// Shutdowns the server, disconnects all players.
         /// </summary>
         /// <seealso cref="ShutdownRedirect(ushort)"/>
-        public static void Shutdown()
-        {
-            global::Shutdown.Quit();
-        }
+        public static void Shutdown() => global::Shutdown.Quit();
 
         /// <summary>
         /// Redirects players to a server on another port, restarts the current server.
@@ -234,6 +221,7 @@ namespace Exiled.API.Features
         {
             NetworkServer.SendToAll(new RoundRestartMessage(RoundRestartType.RedirectRestart, 0.0f, redirectPort, true, false));
             Timing.CallDelayed(0.5f, Shutdown);
+
             return true;
         }
 

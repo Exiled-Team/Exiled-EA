@@ -10,7 +10,6 @@ namespace Exiled.Events.EventArgs.Player
     using System;
 
     using API.Features;
-    using CustomPlayerEffects;
     using Exiled.API.Extensions;
     using Exiled.API.Features.Roles;
     using Interfaces;
@@ -36,39 +35,37 @@ namespace Exiled.Events.EventArgs.Player
             Player = player;
             RoleType = roleType;
 
-            (Vector3 position, float rotation) = roleType.GetRandomSpawnProperties();
+            (Vector3 position, Vector3 rotation) = roleType.GetRandomSpawnProperties();
 
             if (position == Vector3.zero && player.Role.Type == RoleTypeId.Spectator)
             {
-                Position = (player.Role as SpectatorRole).DeathPosition.Position;
-
-                // RotationY = new PlayerMovementSync.PlayerRotation(0f, 0f);
+                Position = player.Role.As<SpectatorRole>().DeathPosition.Position;
+                Rotation = Vector3.zero;
             }
             else
             {
                 Position = position;
-
-                // RotationY = new PlayerMovementSync.PlayerRotation(0f, rotation);
+                Rotation = rotation;
             }
         }
 
         /// <summary>
-        ///     Gets the player role type.
+        ///     Gets the <see cref="Player"/>'s role type.
         /// </summary>
         public RoleTypeId RoleType { get; }
 
         /// <summary>
-        ///     Gets or sets the player's spawning position.
+        ///     Gets or sets the <see cref="Player"/>'s spawning position.
         /// </summary>
         public Vector3 Position { get; set; }
 
-        /*/// <summary>
-        ///     Gets or sets the rotation y axis of the player.
+        /// <summary>
+        ///     Gets or sets the <see cref="Player"/>'s rotation.
         /// </summary>
-        public PlayerMovementSync.PlayerRotation RotationY { get; set; }*/
+        public Vector3 Rotation { get; set; }
 
         /// <summary>
-        ///     Gets the spawning player.
+        ///     Gets the spawning <see cref="Player"/>.
         /// </summary>
         public Player Player { get; }
     }

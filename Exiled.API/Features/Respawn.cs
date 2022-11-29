@@ -144,9 +144,7 @@ namespace Exiled.API.Features
         public static void ForceWave(SpawnableTeamType team, bool playEffects = false)
         {
             if (playEffects)
-            {
                 RespawnEffectsController.ExecuteAllEffects(RespawnEffectsController.EffectType.Selection, team);
-            }
 
             RespawnManager.Singleton.ForceSpawnTeam(team);
         }

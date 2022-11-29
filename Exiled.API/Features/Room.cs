@@ -17,7 +17,10 @@ namespace Exiled.API.Features
     using Interactables.Interobjects.DoorUtils;
     using Items;
     using MapGeneration;
+    using MEC;
     using Mirror;
+    using PlayerRoles.PlayableScps.Scp079;
+    using PlayerRoles.PlayableScps.Scp079.Cameras;
     using UnityEngine;
 
     /// <summary>
@@ -75,15 +78,10 @@ namespace Exiled.API.Features
         /// </summary>
         public TeslaGate TeslaGate { get; private set; }
 
-        /*
         /// <summary>
         /// Gets a <see cref="IEnumerable{T}"/> of <see cref="Player"/> in the <see cref="Room"/>.
         /// </summary>
-        public IEnumerable<Player> Players
-        {
-            get => Player.List.Where(player => player.IsAlive && !(player.CurrentRoom is null) && (player.CurrentRoom.Transform == Transform));
-        }
-        */
+        public IEnumerable<Player> Players => Player.List.Where(player => player.IsAlive && player.CurrentRoom is not null && (player.CurrentRoom.Transform == Transform));
 
         /// <summary>
         /// Gets a <see cref="IEnumerable{T}"/> of <see cref="Door"/> in the <see cref="Room"/>.
@@ -186,15 +184,14 @@ namespace Exiled.API.Features
             ? RoomIdentToRoomDict[roomIdentifier]
             : null;
 
-        /*
         /// <summary>
         /// Gets a <see cref="Room"/> given the specified <see cref="Vector3"/>.
         /// </summary>
         /// <param name="position">The <see cref="Vector3"/> to search for.</param>
         /// <returns>The <see cref="Room"/> with the given <see cref="Vector3"/> or <see langword="null"/> if not found.</returns>
-        public static Room Get(Vector3 position) => List.FirstOrDefault(x => x.RoomIdentifier.UniqueId == RoomIdUtils.RoomAtPosition(position).UniqueId)
-                                                    ?? List.FirstOrDefault(x => x.RoomIdentifier.UniqueId == RoomIdUtils.RoomAtPositionRaycasts(position).UniqueId);
-        */
+        public static Room Get(Vector3 position)
+            => List.FirstOrDefault(x => x.RoomIdentifier == RoomIdUtils.RoomAtPosition(position))
+            ?? List.FirstOrDefault(x => x.RoomIdentifier == RoomIdUtils.RoomAtPositionRaycasts(position));
 
         /// <summary>
         /// Gets a <see cref="IEnumerable{T}"/> of <see cref="Room"/> given the specified <see cref="ZoneType"/>.
@@ -218,6 +215,7 @@ namespace Exiled.API.Features
         public static Room Random(ZoneType zoneType = ZoneType.Unspecified)
         {
             List<Room> rooms = zoneType is not ZoneType.Unspecified ? Get(r => r.Zone == zoneType).ToList() : RoomsValue;
+
             return rooms[UnityEngine.Random.Range(0, rooms.Count)];
         }
 
@@ -244,7 +242,8 @@ namespace Exiled.API.Features
 
             if (duration < 0)
                 return;
-            MEC.Timing.CallDelayed(duration, UnlockAll);
+
+            Timing.CallDelayed(duration, UnlockAll);
         }
 
         /// <summary>
@@ -300,6 +299,7 @@ namespace Exiled.API.Features
         {
             // Try to remove brackets if they exist.
             rawName = rawName.RemoveBracketsOnEndOfName();
+
             return rawName switch
             {
                 "LCZ_Armory" => RoomType.LczArmory,
@@ -369,30 +369,30 @@ namespace Exiled.API.Features
             };
         }
 
-        /*
-        private void FindObjectsInRoom(out List<Camera079> cameraList, out List<Door> doors, out TeslaGate teslaGate, out FlickerableLightController flickerableLightController)
+        /*private void FindObjectsInRoom(out List<Scp079Camera> cameraList, out List<Door> doors, out TeslaGate teslaGate, out FlickerableLightController flickerableLightController)
         {
-            cameraList = new List<Camera079>();
+            cameraList = new List<Scp079Camera>();
             doors = new List<Door>();
             teslaGate = null;
             flickerableLightController = null;
 
             if (Scp079Interactable.InteractablesByRoomId.ContainsKey(RoomIdentifier.UniqueId))
             {
-                foreach (Scp079Interactable scp079Interactable in Scp079Interactable.InteractablesByRoomId[RoomIdentifier.UniqueId])
+                foreach (Scp079InteractableBase scp079Interactable in Scp079Interactable.InteractablesByRoomId[RoomIdentifier.UniqueId])
                 {
                     try
                     {
                         if (scp079Interactable is null)
                             continue;
-                        switch (scp079Interactable.type)
+
+                        switch (scp079Interactable.GetType())
                         {
                             case Scp079Interactable.InteractableType.Door:
                                 if (scp079Interactable.TryGetComponent(out DoorVariant doorVariant))
                                     doors.Add(Door.Get(doorVariant, this));
                                 break;
                             case Scp079Interactable.InteractableType.Camera:
-                                if (scp079Interactable.TryGetComponent(out Camera079 camera))
+                                if (scp079Interactable.TryGetComponent(out Scp079Camera camera))
                                     cameraList.Add(camera);
                                 break;
                             case Scp079Interactable.InteractableType.LightController:
@@ -406,9 +406,9 @@ namespace Exiled.API.Features
                                 break;
                         }
                     }
-                    catch (Exception e)
+                    catch (Exception exception)
                     {
-                        Log.Error($"{nameof(FindObjectsInRoom)}: Exception cause {e.Message}\n{scp079Interactable is null} {scp079Interactable?.type is null}");
+                        Log.Error($"{nameof(FindObjectsInRoom)}: Exception cause {exception.Message}\n{scp079Interactable is null} {scp079Interactable?.type is null}");
                     }
                 }
             }
@@ -417,8 +417,7 @@ namespace Exiled.API.Features
             {
                 flickerableLightController = FlickerableLightController.Instances.Single(x => x.transform.position.y > 900);
             }
-        }
-        */
+        }*/
 
         private void Awake()
         {
@@ -427,19 +426,23 @@ namespace Exiled.API.Features
             RoomIdentifier = gameObject.GetComponent<RoomIdentifier>();
             RoomIdentToRoomDict.Add(RoomIdentifier, this);
 
-            /*
-            FindObjectsInRoom(out List<Camera079> cameras, out List<Door> doors, out TeslaGate teslagate, out FlickerableLightController flickerableLightController);
+            /*FindObjectsInRoom(
+                out List<Scp079Camera> cameras,
+                out List<Door> doors,
+                out TeslaGate teslagate,
+                out FlickerableLightController flickerableLightController);
+
             Doors = doors;
             Cameras = Camera.Get(cameras);
             TeslaGate = teslagate;
-            if (flickerableLightController is null)
+
+            if (flickerableLightController == null)
             {
                 if (!gameObject.TryGetComponent(out flickerableLightController))
                     flickerableLightController = gameObject.AddComponent<FlickerableLightController>();
             }
 
-            FlickerableLightController = flickerableLightController;
-            */
+            FlickerableLightController = flickerableLightController;*/
         }
     }
 }

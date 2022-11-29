@@ -7,8 +7,11 @@
 
 namespace Exiled.API.Features
 {
-    using PlayerRoles;
+    using Mirror;
+    using PlayerRoles.Voice;
     using UnityEngine;
+
+    using GameIntercom = PlayerRoles.Voice.Intercom;
 
     /// <summary>
     /// A set of tools to easily handle the Intercom.
@@ -20,7 +23,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets the <see cref="intercomDisplay"/>.
         /// </summary>
-        public static PlayerRoles.Voice.IntercomDisplay IntercomDisplay => intercomDisplay ??= PlayerRoles.Voice.IntercomDisplay._singleton;
+        public static PlayerRoles.Voice.IntercomDisplay IntercomDisplay => intercomDisplay ??= IntercomDisplay._singleton;
 
         /// <summary>
         /// Gets or sets the text displayed on the intercom screen.
@@ -36,45 +39,38 @@ namespace Exiled.API.Features
         /// </summary>
         public static PlayerRoles.Voice.IntercomState State
         {
-            get => PlayerRoles.Voice.Intercom.State;
-            set => PlayerRoles.Voice.Intercom.State = value;
+            get => GameIntercom.State;
+            set => GameIntercom.State = value;
         }
 
         /// <summary>
         /// Gets the intercom's <see cref="UnityEngine.GameObject"/>.
         /// </summary>
-        public static GameObject GameObject => PlayerRoles.Voice.Intercom._singleton.gameObject;
+        public static GameObject GameObject => GameIntercom._singleton.gameObject;
 
         /// <summary>
         /// Gets the intercom's <see cref="UnityEngine.Transform"/>.
         /// </summary>
-        public static Transform Transform => PlayerRoles.Voice.Intercom._singleton.transform;
+        public static Transform Transform => GameIntercom._singleton.transform;
 
-        /*
         /// <summary>
         /// Gets a value indicating whether or not the intercom is currently being used.
         /// </summary>
-        public static bool InUse
-        {
-            get => State is BaseIntercom.State.Transmitting or BaseIntercom.State.TransmittingBypass or BaseIntercom.State.AdminSpeaking;
-        }
+        public static bool InUse => State is IntercomState.InUse or IntercomState.Starting;
 
         /// <summary>
         /// Gets the <see cref="Player"/> that is using the intercom.
         /// </summary>
         /// <remarks>Will be <see langword="null"/> if <see cref="InUse"/> is <see langword="false"/>.</remarks>
-        public static Player Speaker
-        {
-            get => !InUse ? null : Player.Get(BaseIntercom.host.speaker);
-        }
+        public static Player Speaker => !InUse ? null : Player.Get(GameIntercom._singleton._curSpeaker);
 
         /// <summary>
         /// Gets or sets the remaining cooldown of the intercom.
         /// </summary>
-        public static float RemainingCooldown
+        public static double RemainingCooldown
         {
-            get => BaseIntercom.host.remainingCooldown;
-            set => BaseIntercom.host.remainingCooldown = value;
+            get => GameIntercom._singleton.Network_nextTime - NetworkTime.time;
+            set => GameIntercom._singleton.Network_nextTime = NetworkTime.time + value;
         }
 
         /// <summary>
@@ -82,16 +78,15 @@ namespace Exiled.API.Features
         /// </summary>
         public static float SpeechRemainingTime
         {
-            get => !InUse ? 0f : BaseIntercom.host.speechRemainingTime;
-            set => BaseIntercom.host.speechRemainingTime = value;
+            get => !InUse ? 0f : GameIntercom._singleton.RemainingTime;
+            set => GameIntercom._singleton._nextTime = NetworkTime.time + value;
         }
 
         /// <summary>
         /// Plays the intercom's sound.
         /// </summary>
-        /// <param name="start">Sets a value indicating whether or not the sound is the intercom's start speaking sound.</param>
-        /// <param name="transmitterId">Sets the transmitterId.</param>
-        public static void PlaySound(bool start, int transmitterId = 0) => BaseIntercom.host.RpcPlaySound(start, transmitterId);
+        /// <param name="isStarting">Sets a value indicating whether or not the sound is the intercom's start speaking sound.</param>
+        public static void PlaySound(bool isStarting) => GameIntercom._singleton.RpcPlayClip(isStarting);
 
         /// <summary>
         /// Reset the intercom's cooldown.
@@ -104,10 +99,7 @@ namespace Exiled.API.Features
         public static void Timeout()
         {
             if (InUse)
-            {
                 SpeechRemainingTime = -1f;
-            }
         }
-        */
     }
 }

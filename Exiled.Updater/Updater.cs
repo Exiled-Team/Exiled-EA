@@ -113,7 +113,7 @@ namespace Exiled.Updater
                 Timeout = TimeSpan.FromSeconds(480),
             };
 
-            client.DefaultRequestHeaders.Add("User-Agent", $"Exiled.Updater (https://github.com/galaxy119/EXILED, {Assembly.GetName().Version.ToString(3)})");
+            client.DefaultRequestHeaders.Add("User-Agent", $"Exiled.Updater (https://github.com/Exiled-Team/EXILED, {Assembly.GetName().Version.ToString(3)})");
 
             return client;
         }

@@ -149,16 +149,10 @@ namespace Exiled.API.Features
             }
         }
 
-        /*
         /// <summary>
-        /// Gets or sets a value indicating whether or not SCP-106 can walk through the door.
+        /// Gets a value indicating whether or not SCP-106 can walk through the door.
         /// </summary>
-        public bool AllowsScp106
-        {
-            get => Base.UsedBy106;
-            set => Base.UsedBy106 = value;
-        }
-        */
+        public bool AllowsScp106 => Base is IScp106PassableDoor door && door.IsScp106Passable;
 
         /// <summary>
         /// Gets a value indicating whether or not the door is locked.

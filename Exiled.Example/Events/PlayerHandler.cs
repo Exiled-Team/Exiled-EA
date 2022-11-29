@@ -33,6 +33,7 @@ namespace Exiled.Example.Events
         {
             if (ev.Player is null)
                 return;
+
             Log.Info($"{ev.Target.Nickname} ({ev.Target.Role}) died from {ev.Player.CurrentItem}! {ev.Player.Nickname} ({ev.Player.Role}) killed him!");
         }
 
@@ -40,11 +41,13 @@ namespace Exiled.Example.Events
         public void OnChangingRole(ChangingRoleEventArgs ev)
         {
             Log.Info($"{ev.Player.Nickname} ({ev.Player.Role}) is changing his role! The new role will be {ev.NewRole}!");
+
             if (ev.NewRole == RoleTypeId.Tutorial)
             {
                 ev.Items.Clear();
                 ev.Items.Add(ItemType.Flashlight);
                 ev.Items.Add(ItemType.Medkit);
+
                 Timing.CallDelayed(0.5f, () => ev.Player.AddItem(ItemType.Radio));
             }
         }
@@ -62,6 +65,7 @@ namespace Exiled.Example.Events
                         firearm.Recoil = new RecoilSettings(0, 0, 0, 0, 0);
                     }
                 });
+
             Log.Info($"{ev.Player.Nickname} is changing his {(ev.Player?.CurrentItem is null ? "NONE" : ev.Player?.CurrentItem?.Type.ToString())} item to {(ev.NewItem is null ? "NONE" : ev.NewItem.Type.ToString())}!");
         }
 
@@ -152,6 +156,7 @@ namespace Exiled.Example.Events
         public void OnUsingItem(UsingItemEventArgs ev)
         {
             Log.Info($"{ev.Player.Nickname} is trying to use {ev.Item.Type}.");
+
             if (ev.Item.Type == ItemType.Adrenaline)
             {
                 Log.Info($"{ev.Player.Nickname} was stopped from using their {ev.Item.Type}!");
@@ -175,6 +180,7 @@ namespace Exiled.Example.Events
         public void OnReceivingEffect(ReceivingEffectEventArgs ev)
         {
             Log.Info($"{ev.Player.Nickname} is receiving effect {ev.Effect}. Duration: {ev.Duration} New Intensity: {ev.State} Old Intensity: {ev.CurrentState}");
+
             if (ev.Effect is Invigorated)
             {
                 Log.Info($"{ev.Player.Nickname} is being rejected the {nameof(Invigorated)} effect!");
@@ -192,6 +198,7 @@ namespace Exiled.Example.Events
         public void OnDroppingItem(DroppingItemEventArgs ev)
         {
             Log.Info($"{ev.Player.Nickname} is dropping {ev.Item.Type}!");
+
             if (ev.Item.Type == ItemType.Adrenaline)
                 ev.IsAllowed = false;
         }
@@ -202,6 +209,7 @@ namespace Exiled.Example.Events
             if (ev.RoleType == RoleTypeId.Scientist)
             {
                 ev.Position = new Vector3(53f, 1020f, -44f);
+
                 Timing.CallDelayed(1f, () => ev.Player.CurrentItem = Item.Create(ItemType.GunCrossvec));
                 Timing.CallDelayed(1f, () => ev.Player.AddItem(ItemType.GunLogicer));
             }
@@ -212,6 +220,7 @@ namespace Exiled.Example.Events
         {
             if (ev.Player.Role == RoleTypeId.Scientist)
                 ev.NewRole = RoleTypeId.Tutorial;
+
             Log.Info($"{ev.Player.Nickname} is trying to escape! Their new role will be {ev.NewRole}");
         }
 
@@ -219,6 +228,7 @@ namespace Exiled.Example.Events
         public void OnHurting(HurtingEventArgs ev)
         {
             Log.Info($"{ev.Target} is being hurt by {ev.DamageHandler.Type}");
+
             if (ev.Target.Role == RoleTypeId.Scientist)
             {
                 Log.Info("Target is a nerd, setting damage to 1 because it's mean to bully nerds.");

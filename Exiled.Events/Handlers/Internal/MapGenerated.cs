@@ -21,6 +21,7 @@ namespace Exiled.Events.Handlers.Internal
     using MapGeneration.Distributors;
     using MEC;
     using NorthwoodLib.Pools;
+    using PlayerRoles.PlayableScps.Scp079.Cameras;
     using UnityEngine;
 
     using Broadcast = Broadcast;
@@ -52,26 +53,25 @@ namespace Exiled.Events.Handlers.Internal
 
         private static void GenerateCache()
         {
-            /*
-            Warhead.Controller = PlayerManager.localPlayer.GetComponent<AlphaWarheadController>();
             Warhead.SitePanel = Object.FindObjectOfType<AlphaWarheadNukesitePanel>();
             Warhead.OutsitePanel = Object.FindObjectOfType<AlphaWarheadOutsitePanel>();
-            Server.Host = new Player(PlayerManager.localPlayer);
-            Server.Broadcast = PlayerManager.localPlayer.GetComponent<Broadcast>();
-            Server.BanPlayer = PlayerManager.localPlayer.GetComponent<BanPlayer>();
+            Server.Host = new Player(ReferenceHub.HostHub);
+            Server.Broadcast = ReferenceHub.HostHub.GetComponent<Broadcast>();
             Scp914.Scp914Controller = Object.FindObjectOfType<Scp914Controller>();
+
             GenerateTeslaGates();
             GenerateCameras();
             GenerateRooms();
             GenerateWindow();
-            GenerateLifts();
             GeneratePocketTeleports();
             GenerateAttachments();
             GenerateLockers();
-            Map.AmbientSoundPlayer = PlayerManager.localPlayer.GetComponent<AmbientSoundPlayer>();
+
+            Map.AmbientSoundPlayer = ReferenceHub.HostHub.GetComponent<AmbientSoundPlayer>();
+
             Handlers.Map.OnGenerated();
+
             Timing.CallDelayed(0.1f, Handlers.Server.OnWaitingForPlayers);
-            */
         }
 
         private static void GenerateRooms()
@@ -95,19 +95,11 @@ namespace Exiled.Events.Handlers.Internal
                 Window.WindowValue.Add(Window.Get(breakableWindow));
         }
 
-        /*
         private static void GenerateCameras()
         {
-            foreach (Camera079 camera079 in Object.FindObjectsOfType<Camera079>())
+            foreach (Scp079Camera camera079 in Object.FindObjectsOfType<Scp079Camera>())
                 Camera.CamerasValue.Add(new Camera(camera079));
         }
-
-        private static void GenerateLifts()
-        {
-            foreach (global::Lift lift in Object.FindObjectsOfType<global::Lift>())
-                Lift.LiftsValue.Add(new Lift(lift));
-        }
-        */
 
         private static void GenerateTeslaGates()
         {
@@ -127,12 +119,14 @@ namespace Exiled.Events.Handlers.Internal
                     continue;
 
                 Item item = Item.Create(type);
+
                 if (item is not Firearm firearm)
                     continue;
 
                 Firearm.FirearmInstances.Add(firearm);
                 uint code = 1;
                 List<AttachmentIdentifier> attachmentIdentifiers = new();
+
                 foreach (Attachment att in firearm.Attachments)
                 {
                     attachmentIdentifiers.Add(new AttachmentIdentifier(code, att.Name, att.Slot));

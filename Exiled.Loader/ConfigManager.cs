@@ -297,10 +297,10 @@ namespace Exiled.Loader
             ServerStatic.PermissionsHandler = new PermissionsHandler(ref ServerStatic.RolesConfig, ref ServerStatic.SharedGroupsConfig, ref ServerStatic.SharedGroupsMembersConfig);
             ServerStatic.GetPermissionsHandler().RefreshPermissions();
 
-            foreach (Player p in Player.List)
+            foreach (Player player in Player.List)
             {
-                p.ReferenceHub.serverRoles.SetGroup(null, false);
-                p.ReferenceHub.serverRoles.RefreshPermissions();
+                player.ReferenceHub.serverRoles.SetGroup(null, false);
+                player.ReferenceHub.serverRoles.RefreshPermissions();
             }
         }
     }

@@ -39,7 +39,7 @@ namespace Exiled.CustomItems
 
             Exiled.Events.Handlers.Player.ChangingRole += playerHandler.OnChangingRole;
 
-            harmony = new Harmony($"com.{nameof(CustomItems)}.galaxy119-{DateTime.Now.Ticks}");
+            harmony = new Harmony($"com.{nameof(CustomItems)}.ExiledTeam-{DateTime.Now.Ticks}");
             harmony.PatchAll();
 
             base.OnEnabled();

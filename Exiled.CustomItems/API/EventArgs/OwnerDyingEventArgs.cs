@@ -34,6 +34,7 @@ namespace Exiled.CustomItems.API.EventArgs
                 Log.Warn("Target is null");
             if (ev.DamageHandler.Base is null)
                 Log.Warn("handler base is null");
+
             Item = item;
         }
 

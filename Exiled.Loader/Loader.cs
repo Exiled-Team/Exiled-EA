@@ -318,9 +318,9 @@ namespace Exiled.Loader
                         toLoad.Remove(plugin);
                     }
                 }
-                catch (Exception e)
+                catch (Exception exception)
                 {
-                    Log.Error($"Plugin \"{plugin.Name}\" threw an exeption while enabling: {e}");
+                    Log.Error($"Plugin \"{plugin.Name}\" threw an exeption while enabling: {exception}");
                 }
             }
 

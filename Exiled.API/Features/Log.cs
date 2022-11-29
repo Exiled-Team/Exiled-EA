@@ -151,6 +151,7 @@ namespace Exiled.API.Features
                 return;
 
             Error(message);
+
             throw new System.Exception(message.ToString());
         }
     }
