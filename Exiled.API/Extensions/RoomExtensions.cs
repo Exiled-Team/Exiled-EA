@@ -1,4 +1,4 @@
-﻿// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
 // <copyright file="RoomExtensions.cs" company="Exiled Team">
 // Copyright (c) Exiled Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
@@ -26,23 +26,23 @@ namespace Exiled.API.Extensions
         /// </summary>
         /// <param name="room">The room to be checked.</param>
         /// <returns>Returns whether the <see cref="RoomType"/> is a checkpoint or not.</returns>
-        public static bool IsCheckpoint(this RoomType room) => room is RoomType.LczChkpA
-            or RoomType.LczChkpB or RoomType.HczEzCheckpoint
-            or RoomType.HczChkpA or RoomType.HczChkpB;
+        public static bool IsCheckpoint(this RoomType room) => room is RoomType.LczCheckpointA
+            or RoomType.LczCheckpointB or RoomType.HczCheckpointToEntranceZone
+            or RoomType.HczCheckpointA or RoomType.HczCheckpointB;
 
         /// <summary>
         /// Checks if a <see cref="RoomType">room type</see> is a Lcz checkpoint.
         /// </summary>
         /// <param name="room">The room to be checked.</param>
         /// <returns>Returns whether the <see cref="RoomType"/> is a Lcz checkpoint or not.</returns>
-        public static bool IsLczCheckpoint(this RoomType room) => room is RoomType.LczChkpA or RoomType.LczChkpB;
+        public static bool IsLczCheckpoint(this RoomType room) => room is RoomType.LczCheckpointA or RoomType.LczCheckpointB;
 
         /// <summary>
         /// Checks if a <see cref="RoomType">room type</see> is a Hcz checkpoint.
         /// </summary>
         /// <param name="room">The room to be checked.</param>
         /// <returns>Returns whether the <see cref="RoomType"/> is a Hcz checkpoint or not.</returns>
-        public static bool IsHczCheckpoint(this RoomType room) => room is RoomType.HczChkpA or RoomType.HczChkpB;
+        public static bool IsHczCheckpoint(this RoomType room) => room is RoomType.HczCheckpointA or RoomType.HczCheckpointB;
 
         /// <summary>
         ///  Checks if a <see cref="RoomType">room type</see> contains any SCP.

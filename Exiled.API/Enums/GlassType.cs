@@ -21,7 +21,7 @@ namespace Exiled.API.Enums
         Unknown,
 
         /// <summary>
-        /// Represents all the Window in <see cref="RoomType.LczGlassBox"/>.
+        /// Represents all the Window in <see cref="RoomType.LczGlassroom"/>.
         /// </summary>
         GR18,
 
@@ -31,7 +31,7 @@ namespace Exiled.API.Enums
         Scp049,
 
         /// <summary>
-        /// Represents all the Window in <see cref="RoomType.HczHid"/>.
+        /// Represents all the Window in <see cref="RoomType.HczMicroHID"/>.
         /// </summary>
         MicroHid,
 

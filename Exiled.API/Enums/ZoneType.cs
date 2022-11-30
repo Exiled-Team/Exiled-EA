@@ -26,19 +26,9 @@ namespace Exiled.API.Enums
     public enum ZoneType
     {
         /// <summary>
-        /// The Surface Zone.
+        /// An unspecified zone.
         /// </summary>
-        Surface,
-
-        /// <summary>
-        /// The Entrance Zone.
-        /// </summary>
-        Entrance,
-
-        /// <summary>
-        /// The Heavy Containment Zone.
-        /// </summary>
-        HeavyContainment,
+        Unspecified,
 
         /// <summary>
         /// The Light Containment Zone.
@@ -46,8 +36,23 @@ namespace Exiled.API.Enums
         LightContainment,
 
         /// <summary>
-        /// An unspecified zone.
+        /// The Heavy Containment Zone.
         /// </summary>
-        Unspecified,
+        HeavyContainment,
+
+        /// <summary>
+        /// The Entrance Zone.
+        /// </summary>
+        Entrance,
+
+        /// <summary>
+        /// The Surface Zone.
+        /// </summary>
+        Surface,
+
+        /// <summary>
+        /// An unknown type of zone.
+        /// </summary>
+        Other,
     }
 }
