@@ -23,12 +23,12 @@ namespace Exiled.Events.Patches.Events.Item
 
     using static HarmonyLib.AccessTools;
 
-    using Player = Exiled.API.Features.Player;
+    using Player = API.Features.Player;
 
     /// <summary>
     ///     Patches
     ///     <see cref="AttachmentsServerHandler.ServerReceivePreference(NetworkConnection, AttachmentsSetupPreference)" />.
-    ///     Adds the <see cref="Handlers.Item.ReceivingPreference" /> event.
+    ///     Adds the <see cref="Item.ReceivingPreference" /> event.
     /// </summary>
     [HarmonyPatch(typeof(AttachmentsServerHandler), nameof(AttachmentsServerHandler.ServerReceivePreference))]
     internal static class ReceivingPreference
@@ -40,15 +40,12 @@ namespace Exiled.Events.Patches.Events.Item
             int index = newInstructions.FindLastIndex(instruction => instruction.opcode == OpCodes.Ldloc_1);
 
             LocalBuilder ev = generator.DeclareLocal(typeof(ReceivingPreferenceEventArgs));
-
             LocalBuilder curCode = generator.DeclareLocal(typeof(uint));
 
             Label cdc = generator.DefineLabel();
             Label ret = generator.DefineLabel();
 
             newInstructions[index].labels.Add(cdc);
-
-            index = newInstructions.FindLastIndex(instruction => instruction.opcode == OpCodes.Ldloc_1);
 
             newInstructions.InsertRange(
                 index,
