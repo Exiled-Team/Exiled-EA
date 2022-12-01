@@ -21,7 +21,7 @@ namespace Exiled.Events.Patches.Generic
     /// <summary>
     /// Patches <see cref="global::Ragdoll.UpdateCleanup"/>.
     /// </summary>
-    // [HarmonyPatch(typeof(global::Ragdoll), nameof(global::Ragdoll.UpdateCleanup))]
+    [HarmonyPatch(typeof(global::Ragdoll), nameof(global::Ragdoll.UpdateCleanup))]
     internal class RagdollCleanUpPatch
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
@@ -30,6 +30,8 @@ namespace Exiled.Events.Patches.Generic
 
             Label ret = generator.DefineLabel();
 
+            // if (Ragdoll.IgnoredRagdolls.Contains(this))
+            //   return;
             newInstructions.InsertRange(
                 0,
                 new CodeInstruction[]

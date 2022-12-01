@@ -14,7 +14,7 @@ namespace Exiled.Events.Patches.Generic
     /// <summary>
     /// Patch the <see cref="ServerConsole.ReloadServerName"/>.
     /// </summary>
-    // [HarmonyPatch(typeof(ServerConsole), nameof(ServerConsole.ReloadServerName))]
+    [HarmonyPatch(typeof(ServerConsole), nameof(ServerConsole.ReloadServerName))]
     internal static class ServerNamePatch
     {
         private static void Postfix()

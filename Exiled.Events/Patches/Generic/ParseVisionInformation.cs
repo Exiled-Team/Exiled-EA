@@ -5,25 +5,29 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-/*
 namespace Exiled.Events.Patches.Generic
 {
     using System.Collections.Generic;
     using System.Reflection.Emit;
 
     using Exiled.API.Features;
-
+    using Exiled.API.Features.Roles;
     using HarmonyLib;
 
     using NorthwoodLib.Pools;
+
+    using PlayableScps;
     using PlayerRoles;
+
     using static HarmonyLib.AccessTools;
 
+    using ExiledEvents = Exiled.Events.Events;
+
     /// <summary>
-    /// Patches <see cref="PlayableScps.Scp096.UpdateVision"/>.
-    /// Adds the <see cref="Scp096.TurnedPlayers"/> support.
+    /// Patches <see cref="Scp096.UpdateVision"/>.
+    /// Adds the <see cref="Scp096Role.TurnedPlayers"/> support.
     /// </summary>
-    // [HarmonyPatch(typeof(PlayableScps.Scp096), nameof(PlayableScps.Scp096.UpdateVision))]
+    [HarmonyPatch(typeof(Scp096), nameof(Scp096.UpdateVision))]
     internal static class ParseVisionInformation
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
@@ -37,7 +41,7 @@ namespace Exiled.Events.Patches.Generic
             // Quick check if it's the end
             if (index + 1 >= newInstructions.Count)
             {
-                Log.Error($"Couldn't patch '{typeof(PlayableScps.Scp096).FullName}.{nameof(PlayableScps.Scp096.UpdateVision)}': invalid index - {index}");
+                Log.Error($"Couldn't patch '{typeof(Scp096).FullName}.{nameof(Scp096.UpdateVision)}': invalid index - {index}");
                 ListPool<CodeInstruction>.Shared.Return(newInstructions);
                 yield break;
             }
@@ -60,25 +64,27 @@ namespace Exiled.Events.Patches.Generic
                 index,
                 new[]
                 {
-                    // if (characterClassManager.CurClass == RoleTypeId.Tutorial && !Exiled.Events.Events.Instance.Config.CanTutorialTriggerScp096)
+                    // if (referenceHub.roleManager.CurrentRole.RoleTypeId == RoleTypeId.Tutorial && !ExiledEvents.Instance.Config.CanTutorialTriggerScp096)
                     //      continue;
                     // START
-                    new(OpCodes.Ldloc_S, 4),
-                    new(OpCodes.Ldfld, Field(typeof(CharacterClassManager), nameof(CharacterClassManager.CurClass))),
+                    new(OpCodes.Ldloc_2),
+                    new(OpCodes.Ldfld, Field(typeof(ReferenceHub), nameof(ReferenceHub.roleManager))),
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(PlayerRoleManager), nameof(PlayerRoleManager.CurrentRole))),
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(PlayerRoleBase), nameof(PlayerRoleBase.RoleTypeId))),
                     new(OpCodes.Ldc_I4_S, (sbyte)RoleTypeId.Tutorial),
                     new(OpCodes.Bne_Un_S, secondCheckPointer),
 
-                    new(OpCodes.Call, PropertyGetter(typeof(Exiled.Events.Events), nameof(Exiled.Events.Events.Instance))),
+                    new(OpCodes.Call, PropertyGetter(typeof(ExiledEvents), nameof(ExiledEvents.Instance))),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(Plugin<Config>), nameof(Plugin<Config>.Config))),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(Config), nameof(Config.CanTutorialTriggerScp096))),
                     new(OpCodes.Brfalse_S, continueLabel),
 
                     // END
-                    // if (API.Features.Scp096.TurnedPlayers.Contains(Player.Get(referenceHub)))
+                    // if (Scp096Role.TurnedPlayers.Contains(Player.Get(referenceHub)))
                     //      continue;
                     // START
-                    new CodeInstruction(OpCodes.Call, PropertyGetter(typeof(Scp096), nameof(Scp096.TurnedPlayers))).WithLabels(secondCheckPointer),
-                    new(OpCodes.Ldloc_3),
+                    new CodeInstruction(OpCodes.Call, PropertyGetter(typeof(Scp096Role), nameof(Scp096Role.TurnedPlayers))).WithLabels(secondCheckPointer),
+                    new(OpCodes.Ldloc_2),
                     new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
                     new(OpCodes.Callvirt, Method(typeof(HashSet<Player>), nameof(HashSet<Player>.Contains))),
                     new(OpCodes.Brtrue_S, continueLabel),
@@ -93,4 +99,3 @@ namespace Exiled.Events.Patches.Generic
         }
     }
 }
-*/

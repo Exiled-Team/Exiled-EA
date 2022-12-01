@@ -23,13 +23,14 @@ namespace Exiled.Events.Patches.Generic
     /// <summary>
     /// Patches <see cref="Scp079Generator.Start"/>.
     /// </summary>
-    // [HarmonyPatch(typeof(Scp079Generator), nameof(Scp079Generator.Start))]
+    [HarmonyPatch(typeof(Scp079Generator), nameof(Scp079Generator.Start))]
     internal class GeneratorListAdd
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> codeInstructions)
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Shared.Rent(codeInstructions);
 
+            // Generator.GeneratorValues.Add(new Generator(this))
             newInstructions.InsertRange(
                 0,
                 new CodeInstruction[]

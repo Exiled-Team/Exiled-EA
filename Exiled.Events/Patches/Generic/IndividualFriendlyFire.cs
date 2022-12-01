@@ -143,7 +143,7 @@ namespace Exiled.Events.Patches.Generic
     /// <summary>
     /// Patches <see cref="HitboxIdentity.CheckFriendlyFire(ReferenceHub, ReferenceHub, bool)"/>.
     /// </summary>
-    // [HarmonyPatch(typeof(HitboxIdentity), nameof(HitboxIdentity.CheckFriendlyFire), typeof(ReferenceHub), typeof(ReferenceHub), typeof(bool))]
+    [HarmonyPatch(typeof(HitboxIdentity), nameof(HitboxIdentity.CheckFriendlyFire), typeof(ReferenceHub), typeof(ReferenceHub), typeof(bool))]
     internal static class HitboxIdentityCheckFriendlyFire
     {
         private static bool Prefix(ReferenceHub attacker, ReferenceHub victim, ref bool __result)
@@ -151,17 +151,16 @@ namespace Exiled.Events.Patches.Generic
             try
             {
                 bool currentResult = IndividualFriendlyFire.CheckFriendlyFirePlayerHitbox(attacker, victim);
+
                 if (!currentResult)
-                {
                     return true;
-                }
 
                 __result = currentResult;
                 return false;
             }
-            catch (Exception e)
+            catch (Exception exception)
             {
-                Log.Error($"{e}");
+                Log.Error($"{exception}");
                 return true;
             }
         }
@@ -170,7 +169,7 @@ namespace Exiled.Events.Patches.Generic
     /// <summary>
     /// Patches <see cref="AttackerDamageHandler.ProcessDamage(ReferenceHub)"/> to allow or disallow friendly fire.
     /// </summary>
-    // [HarmonyPatch(typeof(AttackerDamageHandler), nameof(AttackerDamageHandler.ProcessDamage))]
+    [HarmonyPatch(typeof(AttackerDamageHandler), nameof(AttackerDamageHandler.ProcessDamage))]
     internal static class ProcessDamagePatch
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
@@ -178,8 +177,11 @@ namespace Exiled.Events.Patches.Generic
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Shared.Rent(instructions);
 
             int offset = -1;
-            int index = newInstructions.FindLastIndex(instruction => instruction.Calls(PropertyGetter(typeof(AttackerDamageHandler), nameof(AttackerDamageHandler.Attacker)))) + offset;
+            int index = newInstructions.FindLastIndex(
+                instruction => instruction.Calls(PropertyGetter(typeof(AttackerDamageHandler), nameof(AttackerDamageHandler.Attacker)))) + offset;
+
             LocalBuilder ffMulti = generator.DeclareLocal(typeof(float));
+
             Label uniqueFFMulti = generator.DefineLabel();
             Label normalProcessing = generator.DefineLabel();
 
@@ -187,24 +189,23 @@ namespace Exiled.Events.Patches.Generic
                 index,
                 new CodeInstruction[]
                 {
+                    // Load Attacker (this.Attacker.Hub)
                     new CodeInstruction(OpCodes.Ldarg_0).MoveLabelsFrom(newInstructions[index]),
-
                     new(OpCodes.Callvirt, PropertyGetter(typeof(AttackerDamageHandler), nameof(AttackerDamageHandler.Attacker))),
-
-                    // Load Attacker
                     new(OpCodes.Ldfld, Field(typeof(Footprint), nameof(Footprint.Hub))),
 
-                    // Load Target
+                    // Load Target (ply)
                     new(OpCodes.Ldarg_1),
 
                     // Set default FF to 1.
                     new(OpCodes.Ldc_I4_1),
 
+                    // ffMulti
                     new(OpCodes.Stloc, ffMulti.LocalIndex),
-
                     new(OpCodes.Ldloca, ffMulti.LocalIndex),
 
                     // Pass over Player hubs, and FF multiplier.
+                    // CheckFriendlyFirePlayerRules(this.Attacker.Hub, ply, ffMulti)
                     new(OpCodes.Call, Method(typeof(IndividualFriendlyFire), nameof(IndividualFriendlyFire.CheckFriendlyFirePlayerRules), new[] { typeof(ReferenceHub), typeof(ReferenceHub), typeof(float).MakeByRefType() })),
 
                     // If we have rules, we branch to custom logic, otherwise, default to NW logic.
@@ -233,6 +234,8 @@ namespace Exiled.Events.Patches.Generic
                     new(OpCodes.Callvirt, PropertyGetter(typeof(AttackerDamageHandler), nameof(AttackerDamageHandler.Damage))),
                     new(OpCodes.Mul),
                     new(OpCodes.Callvirt, PropertySetter(typeof(AttackerDamageHandler), nameof(AttackerDamageHandler.Damage))),
+
+                    // Game code, the two instructions before ProcessDamage
                     new(OpCodes.Ldarg_0),
                     new(OpCodes.Ldarg_1),
 
@@ -249,20 +252,21 @@ namespace Exiled.Events.Patches.Generic
     /// <summary>
     /// Patches <see cref="FlashbangGrenade.PlayExplosionEffects()"/>.
     /// </summary>
-    // [HarmonyPatch(typeof(FlashbangGrenade), nameof(FlashbangGrenade.PlayExplosionEffects))]
+    [HarmonyPatch(typeof(FlashbangGrenade), nameof(FlashbangGrenade.PlayExplosionEffects))]
     internal static class FlashbangGrenadePlayExplosionEffectsPatch
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Shared.Rent(instructions);
 
-            const int offset = 1;
-            const int instructionsToRemove = 9;
-            int index = newInstructions.FindLastIndex(code => code.opcode == OpCodes.Brtrue_S) + offset;
+            const int offset = -8;
+            const int instructionsToRemove = 7;
+            int index = newInstructions.FindLastIndex(code => code.opcode == OpCodes.Brfalse_S) + offset;
 
+            // HitboxIdentity.CheckFriendlyFire(RoleTypeId, RoleTypeId, false)
             newInstructions.RemoveRange(index, instructionsToRemove);
 
-            // HitboxIdentity.CheckFriendlyFire(ReferenceHub, ReferenceHub, false)
+            // CheckFriendlyFirePlayer(this.PreviousOwner.Hub, referenceHub)
             newInstructions.InsertRange(
                 index,
                 new CodeInstruction[]
@@ -272,10 +276,10 @@ namespace Exiled.Events.Patches.Generic
                     new(OpCodes.Ldflda, Field(typeof(FlashbangGrenade), nameof(FlashbangGrenade.PreviousOwner))),
                     new(OpCodes.Ldfld, Field(typeof(Footprint), nameof(Footprint.Hub))),
 
-                    // KeyValuePair<GameObject, ReferenceHub>.Value (target ReferenceHub)
-                    new(OpCodes.Ldloca_S, 2),
-                    new(OpCodes.Call, PropertyGetter(typeof(KeyValuePair<GameObject, ReferenceHub>), nameof(KeyValuePair<GameObject, ReferenceHub>.Value))),
+                    // referenceHub
+                    new(OpCodes.Ldloc_2),
 
+                    // CheckFriendlyFirePlayer(this.PreviousOwner.Hub, referenceHub)
                     new(OpCodes.Call, Method(typeof(IndividualFriendlyFire), nameof(IndividualFriendlyFire.CheckFriendlyFirePlayer))),
                 });
 

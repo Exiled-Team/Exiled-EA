@@ -32,7 +32,7 @@ namespace Exiled.Events.Patches.Generic
     /// <summary>
     /// Patches <see cref="InventoryExtensions.ServerAddItem"/> to help manage <see cref="Player.Items"/>.
     /// </summary>
-    // [HarmonyPatch(typeof(InventoryExtensions), nameof(InventoryExtensions.ServerAddItem))]
+    [HarmonyPatch(typeof(InventoryExtensions), nameof(InventoryExtensions.ServerAddItem))]
     internal static class InventoryControlAddPatch
     {
         private static IEnumerable<CodeInstruction> Transpiler(
@@ -46,6 +46,7 @@ namespace Exiled.Events.Patches.Generic
                     (i.opcode == OpCodes.Callvirt) &&
                     ((MethodInfo)i.operand == Method(typeof(ItemBase), nameof(ItemBase.OnAdded)))) + offset;
 
+            // AddItem(Player.Get(inv._hub), itemInstance)
             newInstructions.InsertRange(
                 index,
                 new CodeInstruction[]
@@ -74,7 +75,7 @@ namespace Exiled.Events.Patches.Generic
     /// <summary>
     /// Patches <see cref="InventoryExtensions.ServerDropItem"/> to help manage <see cref="Player.Items"/>.
     /// </summary>
-    // [HarmonyPatch(typeof(InventoryExtensions), nameof(InventoryExtensions.ServerRemoveItem))]
+    [HarmonyPatch(typeof(InventoryExtensions), nameof(InventoryExtensions.ServerRemoveItem))]
     internal static class InventoryControlRemovePatch
     {
         private static IEnumerable<CodeInstruction> Transpiler(
@@ -85,14 +86,20 @@ namespace Exiled.Events.Patches.Generic
             const int offset = 1;
             int index = newInstructions.FindIndex(i => i.opcode == OpCodes.Throw) + offset;
 
+            // RemoveItem(Player.Get(inv._hub), itemSerial)
             newInstructions.InsertRange(
                 index,
                 new[]
                 {
+                    // Player.Get(inv._hub)
                     new CodeInstruction(OpCodes.Ldarg_0).MoveLabelsFrom(newInstructions[index]),
                     new(OpCodes.Ldfld, Field(typeof(Inventory), nameof(Inventory._hub))),
                     new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
+
+                    // itemSerial
                     new(OpCodes.Ldarg_1),
+
+                    // RemoveItem(Player.Get(inv._hub), itemSerial)
                     new(OpCodes.Call, Method(typeof(InventoryControlRemovePatch), nameof(RemoveItem))),
                 });
 
@@ -129,7 +136,9 @@ namespace Exiled.Events.Patches.Generic
                 Log.Debug($"{item.Type} ({item.Serial})");
 #endif
             ItemBase itemBase = player.Inventory.UserInventory.Items[serial];
+
             player.ItemsValue.Remove(Item.Get(itemBase));
+
             Timing.CallDelayed(
                 0.15f,
                 () =>

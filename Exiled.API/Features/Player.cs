@@ -363,9 +363,9 @@ namespace Exiled.API.Features
         public bool IsInvisible { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether or not the player has the scotopia effect in darkened rooms.
+        /// Gets value indicating whether or not the <see cref="Player"/> is in darkness.
         /// </summary>
-        public bool? HasScotopia { get; set; } = null;
+        public bool IsInDarknes => Role.FirstPersonController.InDarkness;
 
         /// <summary>
         /// Gets a value indicating whether or not the player has Do Not Track (DNT) enabled. If this value is <see langword="true"/>, data about the player unrelated to server security shouldn't be stored.

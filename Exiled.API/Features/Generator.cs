@@ -30,10 +30,7 @@ namespace Exiled.API.Features
         /// Initializes a new instance of the <see cref="Generator"/> class.
         /// </summary>
         /// <param name="scp079Generator">The <see cref="Scp079Generator"/>.</param>
-        internal Generator(Scp079Generator scp079Generator)
-        {
-            Base = scp079Generator;
-        }
+        internal Generator(Scp079Generator scp079Generator) => Base = scp079Generator;
 
         /// <summary>
         /// Gets a <see cref="IEnumerable{T}"/> of <see cref="Generator"/> which contains all the <see cref="Generator"/> instances.

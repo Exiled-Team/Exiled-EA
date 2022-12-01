@@ -29,6 +29,7 @@ namespace Exiled.Events.Patches.Generic
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Shared.Rent(instructions);
 
+            // Recontainer.Base = null;
             newInstructions.InsertRange(
                 0,
                 new CodeInstruction[]

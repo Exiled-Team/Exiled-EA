@@ -21,11 +21,11 @@ namespace Exiled.Events.Patches.Generic
     /// <summary>
     /// Patches <see cref="HintDisplay.Show(Hint)"/>.
     /// </summary>
-    // [HarmonyPatch(typeof(HintDisplay), nameof(HintDisplay.Show))]
+    [HarmonyPatch(typeof(HintDisplay), nameof(HintDisplay.Show))]
     internal static class PlayerHasHint
     {
         // Creating a list for coroutine check
-        private static Dictionary<Player, CoroutineHandle> playerHasHintCoroutines = new();
+        private static readonly Dictionary<Player, CoroutineHandle> PlayerHasHintCoroutines = new();
 
         private static void Postfix(HintDisplay __instance, Hint hint)
         {
@@ -34,14 +34,14 @@ namespace Exiled.Events.Patches.Generic
                 return;
 
             // If Player value has couroutine, kill it
-            if (playerHasHintCoroutines.TryGetValue(player, out CoroutineHandle oldcoroutine))
+            if (PlayerHasHintCoroutines.TryGetValue(player, out CoroutineHandle oldcoroutine))
             {
                 // Kill the coroutine
                 Timing.KillCoroutines(oldcoroutine);
             }
 
             // Create a new couroutine and assing the value to the player
-            playerHasHintCoroutines[player] = Timing.RunCoroutine(HasHintToFalse(player, hint.DurationScalar));
+            PlayerHasHintCoroutines[player] = Timing.RunCoroutine(HasHintToFalse(player, hint.DurationScalar));
 
             // If it is false, then to true
             if (!player.HasHint)
@@ -58,7 +58,7 @@ namespace Exiled.Events.Patches.Generic
                 yield break;
 
             player.HasHint = false;
-            playerHasHintCoroutines.Remove(player);
+            PlayerHasHintCoroutines.Remove(player);
         }
     }
 }
