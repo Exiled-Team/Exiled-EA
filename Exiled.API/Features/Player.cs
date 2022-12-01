@@ -363,7 +363,7 @@ namespace Exiled.API.Features
         public bool IsInvisible { get; set; }
 
         /// <summary>
-        /// Gets value indicating whether or not the <see cref="Player"/> is in darkness.
+        /// Gets a value indicating whether or not the <see cref="Player"/> is in darkness.
         /// </summary>
         public bool IsInDarknes => Role.FirstPersonController.InDarkness;
 
