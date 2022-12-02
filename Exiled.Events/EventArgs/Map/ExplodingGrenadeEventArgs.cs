@@ -52,12 +52,14 @@ namespace Exiled.Events.EventArgs.Map
             GrenadeType = GrenadeDictionary[grenade.GetType()];
             Grenade = grenade;
             TargetsToAffect = ListPool<Player>.Shared.Rent();
+
             foreach (Collider collider in targets)
             {
                 if (Grenade is not ExplosionGrenade || !collider.TryGetComponent(out IDestructible destructible) || !ReferenceHub.TryGetHubNetID(destructible.NetworkId, out ReferenceHub hub))
                     continue;
 
                 Player player = Player.Get(hub);
+
                 if (player is null)
                     continue;
 

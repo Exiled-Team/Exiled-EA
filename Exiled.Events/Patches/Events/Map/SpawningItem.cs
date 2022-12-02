@@ -22,8 +22,8 @@ namespace Exiled.Events.Patches.Events.Map
     using static HarmonyLib.AccessTools;
 
     /// <summary>
-    ///     Patches <see cref="MapGeneration.Distributors.ItemDistributor.SpawnPickup" />.
-    ///     Adds the <see cref="Handlers.Map.SpawningItem" /> and <see cref="Handlers.Map.SpawningItem" /> events.
+    ///     Patches <see cref="ItemDistributor.SpawnPickup" />.
+    ///     Adds the <see cref="Map.SpawningItem" /> and <see cref="Map.SpawningItem" /> events.
     /// </summary>
     [HarmonyPatch(typeof(ItemDistributor), nameof(ItemDistributor.SpawnPickup))]
     internal static class SpawningItem

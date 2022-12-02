@@ -17,10 +17,11 @@ namespace Exiled.Events.Patches.Events.Map
     using InventorySystem.Items.Firearms.Modules;
 
     using NorthwoodLib.Pools;
+    using UnityEngine;
 
     using static HarmonyLib.AccessTools;
 
-    using Player = Exiled.API.Features.Player;
+    using Player = API.Features.Player;
 
     /// <summary>
     ///     Patches <see cref="StandardHitregBase.PlaceBulletholeDecal" />.
@@ -32,26 +33,52 @@ namespace Exiled.Events.Patches.Events.Map
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Shared.Rent(instructions);
+
             const int offset = 0;
             int index = 0 + offset;
+
             Label returnLabel = generator.DefineLabel();
+
             LocalBuilder ev = generator.DeclareLocal(typeof(EventArgs.Map.PlacingBulletHole));
 
             newInstructions.InsertRange(
                 index,
                 new CodeInstruction[]
                 {
+                    // Player.Get(this.Hub)
                     new(OpCodes.Ldarg_0),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(SingleBulletHitreg), nameof(SingleBulletHitreg.Hub))),
                     new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
+
+                    // hit
                     new(OpCodes.Ldarg_2),
+
+                    // var ev = new PlacingBulletHole(Player, RaycastHit)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(EventArgs.Map.PlacingBulletHole))[0]),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),
-                    new(OpCodes.Stloc, ev.LocalIndex),
+                    new(OpCodes.Stloc_S, ev.LocalIndex),
+
+                    // Map.OnPlacingBulletHole(ev)
                     new(OpCodes.Call, Method(typeof(Map), nameof(Map.OnPlacingBulletHole))),
+
+                    // if (!ev.IsAllowed)
+                    //     return;
                     new(OpCodes.Callvirt, PropertyGetter(typeof(EventArgs.Map.PlacingBulletHole), nameof(EventArgs.Map.PlacingBulletHole.IsAllowed))),
                     new(OpCodes.Brfalse, returnLabel),
+
+                    // hit.info = ev.Position
+                    new(OpCodes.Ldarga_S, 2),
+                    new(OpCodes.Ldloc_S, ev.LocalIndex),
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(EventArgs.Map.PlacingBulletHole), nameof(EventArgs.Map.PlacingBulletHole.Position))),
+                    new(OpCodes.Callvirt, PropertySetter(typeof(RaycastHit), nameof(RaycastHit.point))),
+
+                    // hit.normal = ev.Rotation
+                    new(OpCodes.Ldarga_S, 2),
+                    new(OpCodes.Ldloc_S, ev.LocalIndex),
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(EventArgs.Map.PlacingBulletHole), nameof(EventArgs.Map.PlacingBulletHole.Rotation))),
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(Quaternion), nameof(Quaternion.normalized))),
+                    new(OpCodes.Callvirt, PropertySetter(typeof(RaycastHit), nameof(RaycastHit.normal))),
                 });
 
             newInstructions[newInstructions.Count - 1].labels.Add(returnLabel);

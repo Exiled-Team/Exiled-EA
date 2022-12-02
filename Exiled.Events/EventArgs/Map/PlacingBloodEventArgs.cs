@@ -24,26 +24,32 @@ namespace Exiled.Events.EventArgs.Map
         /// <param name="player">
         ///     <inheritdoc cref="Player" />
         /// </param>
-        /// <param name="position">
-        ///     <inheritdoc cref="Position" />
+        /// <param name="target">
+        ///     <inheritdoc cref="Target" />
         /// </param>
-        /// <param name="type">
-        ///     <inheritdoc cref="Type" />
-        /// </param>
-        /// <param name="multiplier">
-        ///     <inheritdoc cref="Multiplier" />
+        /// <param name="hit">
+        ///     <inheritdoc cref="RaycastHit" />
         /// </param>
         /// <param name="isAllowed">
         ///     <inheritdoc cref="IsAllowed" />
         /// </param>
-        public PlacingBloodEventArgs(Player player, Vector3 position, int type, float multiplier, bool isAllowed = true)
+        public PlacingBloodEventArgs(Player player, Player target, RaycastHit hit, bool isAllowed = true)
         {
             Player = player;
-            Position = position;
-            Type = (BloodType)type;
-            Multiplier = multiplier;
+            Target = target;
+            Position = hit.point;
             IsAllowed = isAllowed;
         }
+
+        /// <summary>
+        ///     Gets the <see cref="Player"/> who's placing the blood.
+        /// </summary>
+        public Player Player { get; }
+
+        /// <summary>
+        ///     Gets the target's <see cref="Player"/> instance.
+        /// </summary>
+        public Player Target { get; }
 
         /// <summary>
         ///     Gets or sets the blood placing position.
@@ -51,23 +57,8 @@ namespace Exiled.Events.EventArgs.Map
         public Vector3 Position { get; set; }
 
         /// <summary>
-        ///     Gets or sets the blood type.
-        /// </summary>
-        public BloodType Type { get; set; }
-
-        /// <summary>
-        ///     Gets or sets the blood multiplier.
-        /// </summary>
-        public float Multiplier { get; set; }
-
-        /// <summary>
         ///     Gets or sets a value indicating whether or not the blood can be placed.
         /// </summary>
         public bool IsAllowed { get; set; }
-
-        /// <summary>
-        ///     Gets the player who's placing the blood.
-        /// </summary>
-        public Player Player { get; }
     }
 }

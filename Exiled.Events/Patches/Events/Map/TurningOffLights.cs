@@ -20,7 +20,7 @@ namespace Exiled.Events.Patches.Events.Map
 
     /// <summary>
     /// Patches <see cref="FlickerableLightController.ServerFlickerLights"/>.
-    /// Adds the <see cref="Exiled.Events.Handlers.Map.TurningOffLights"/> event.
+    /// Adds the <see cref="Handlers.Map.TurningOffLights"/> event.
     /// </summary>
     [HarmonyPatch(typeof(FlickerableLightController), nameof(FlickerableLightController.ServerFlickerLights))]
     internal static class TurningOffLights
@@ -37,19 +37,30 @@ namespace Exiled.Events.Patches.Events.Map
                 0,
                 new CodeInstruction[]
                 {
+                    // this
                     new(OpCodes.Ldarg_0),
+
+                    // dur
                     new(OpCodes.Ldarg_1),
+
+                    // true
                     new(OpCodes.Ldc_I4_1),
+
+                    // var ev = new TurningOffLightsEventArgs(FlickerableLightController, float, bool)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(TurningOffLightsEventArgs))[0]),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),
                     new(OpCodes.Stloc_S, ev.LocalIndex),
 
+                    // Map.OnTurningOffLights(ev)
                     new(OpCodes.Call, Method(typeof(Handlers.Map), nameof(Handlers.Map.OnTurningOffLights))),
 
+                    // if (!ev.IsAllowed)
+                    //   return;
                     new(OpCodes.Callvirt, PropertyGetter(typeof(TurningOffLightsEventArgs), nameof(TurningOffLightsEventArgs.IsAllowed))),
                     new(OpCodes.Brfalse_S, retLabel),
 
+                    // dur = ev.TurningOffLightsEventArgs.Duration
                     new(OpCodes.Ldloc_S, ev.LocalIndex),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(TurningOffLightsEventArgs), nameof(TurningOffLightsEventArgs.Duration))),
                     new(OpCodes.Starg_S, 1),

@@ -57,9 +57,12 @@ namespace Exiled.Events.Patches.Events.Map
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Shared.Rent(instructions);
+
             int offset = 1;
             int index = newInstructions.FindIndex(i => i.opcode == OpCodes.Stloc_3) + offset;
+
             Label returnLabel = generator.DefineLabel();
+
             LocalBuilder ev = generator.DeclareLocal(typeof(ExplodingGrenadeEventArgs));
 
             newInstructions.InsertRange(

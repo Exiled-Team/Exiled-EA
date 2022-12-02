@@ -5,7 +5,6 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-/*
 namespace Exiled.Events.Patches.Events.Map
 {
     using System.Collections.Generic;
@@ -28,11 +27,13 @@ namespace Exiled.Events.Patches.Events.Map
 
     using static HarmonyLib.AccessTools;
 
+    using ExiledEvents = Exiled.Events.Events;
+
     /// <summary>
     /// Patches <see cref="FlashbangGrenade.PlayExplosionEffects()"/>.
     /// Adds the <see cref="Handlers.Map.OnExplodingGrenade"/> event.
     /// </summary>
-    // [HarmonyPatch(typeof(FlashbangGrenade), nameof(FlashbangGrenade.PlayExplosionEffects))]
+    [HarmonyPatch(typeof(FlashbangGrenade), nameof(FlashbangGrenade.PlayExplosionEffects))]
     internal static class ExplodingFlashGrenade
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
@@ -40,16 +41,20 @@ namespace Exiled.Events.Patches.Events.Map
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Shared.Rent(instructions);
 
             // Remove check if player is thrower. Grenade on self should affect themself.
-            int removeSelfCheckOffset = -4;
+            int removeSelfCheckOffset = -3;
             int removeSelfCheck = newInstructions.FindIndex(instruction => instruction.LoadsField(Field(typeof(Footprint), nameof(Footprint.Hub)))) + removeSelfCheckOffset;
-            newInstructions.RemoveRange(removeSelfCheck, 7);
 
-            int offset = -3;
+            newInstructions.RemoveRange(removeSelfCheck, 6);
+
+            int offset = -2;
             int index = newInstructions.FindLastIndex(i => (i.opcode == OpCodes.Call) && ((MethodInfo)i.operand == Method(typeof(FlashbangGrenade), nameof(FlashbangGrenade.ProcessPlayer)))) + offset;
+
             Label returnLabel = generator.DefineLabel();
+
             LocalBuilder ev = generator.DeclareLocal(typeof(ExplodingGrenadeEventArgs));
             LocalBuilder list = generator.DeclareLocal(typeof(List<ReferenceHub>));
-            int instructionsToRemove = 4;
+
+            int instructionsToRemove = 3;
 
             newInstructions.RemoveRange(index, instructionsToRemove);
 
@@ -67,10 +72,9 @@ namespace Exiled.Events.Patches.Events.Map
                 index,
                 new CodeInstruction[]
                 {
-                    // list.Add(allHub.Value)
+                    // list.Add(referenceHub)
                     new(OpCodes.Ldloc, list.LocalIndex),
-                    new(OpCodes.Ldloca_S, 2),
-                    new(OpCodes.Call, PropertyGetter(typeof(KeyValuePair<GameObject, ReferenceHub>), nameof(KeyValuePair<GameObject, ReferenceHub>.Value))),
+                    new(OpCodes.Ldloc_S, 2),
                     new(OpCodes.Callvirt, Method(typeof(List<ReferenceHub>), nameof(List<ReferenceHub>.Add))),
                 });
 
@@ -132,16 +136,11 @@ namespace Exiled.Events.Patches.Events.Map
         {
             foreach (Player player in players)
             {
-                if (Exiled.Events.Events.Instance.Config.CanFlashbangsAffectThrower && (Player.Get(grenade.PreviousOwner.Hub) == player))
-                {
+                if (ExiledEvents.Instance.Config.CanFlashbangsAffectThrower && (Player.Get(grenade.PreviousOwner.Hub) == player))
                     grenade.ProcessPlayer(player.ReferenceHub);
-                }
-                else if (HitboxIdentity.CheckFriendlyFire(grenade.PreviousOwner.Role, player.ReferenceHub.characterClassManager.CurClass))
-                {
+                else if (HitboxIdentity.CheckFriendlyFire(grenade.PreviousOwner.Hub, player.ReferenceHub))
                     grenade.ProcessPlayer(player.ReferenceHub);
-                }
             }
         }
     }
 }
-*/

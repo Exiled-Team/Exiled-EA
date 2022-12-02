@@ -38,10 +38,18 @@ namespace Exiled.Events.Patches.Events.Map
                 0,
                 new CodeInstruction[]
                 {
+                    // true
                     new(OpCodes.Ldc_I4_1),
+
+                    // var ev = new DecontaminatingEventArgs(bool)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(DecontaminatingEventArgs))[0]),
                     new(OpCodes.Dup),
+
+                    // Map.OnDecontaminating(ev)
                     new(OpCodes.Call, Method(typeof(Map), nameof(Map.OnDecontaminating))),
+
+                    // if (!ev.IsAllowed)
+                    //    return;
                     new(OpCodes.Callvirt, PropertyGetter(typeof(DecontaminatingEventArgs), nameof(DecontaminatingEventArgs.IsAllowed))),
                     new(OpCodes.Brfalse, returnLabel),
                 });

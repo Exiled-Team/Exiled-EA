@@ -44,21 +44,28 @@ namespace Exiled.Events.Patches.Events.Map
                 0,
                 new CodeInstruction[]
                 {
-                    // new ExplodingGrenadeEventArgs(Player.Get(PreviousOwner.Hub), this, Array.Empty<Collider>());
+                    // Player.Get(PreviousOwner.Hub)
                     new(OpCodes.Ldarg_0),
                     new(OpCodes.Ldflda, Field(typeof(Scp2176Projectile), nameof(Scp2176Projectile.PreviousOwner))),
                     new(OpCodes.Ldfld, Field(typeof(Footprint), nameof(Footprint.Hub))),
                     new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
+
+                    // this
                     new(OpCodes.Ldarg_0),
+
+                    // new Collider[0]
                     new(OpCodes.Ldc_I4_0),
                     new(OpCodes.Newarr, typeof(Collider)),
+
+                    // new ExplodingGrenadeEventArgs(Player, EffectGrenade, Collider[])
                     new(OpCodes.Newobj, DeclaredConstructor(typeof(ExplodingGrenadeEventArgs), new[] { typeof(Player), typeof(EffectGrenade), typeof(Collider[]) })),
                     new(OpCodes.Dup),
 
                     // Handlers.Map.OnExplodingGrenade(ev);
                     new(OpCodes.Call, Method(typeof(Map), nameof(Map.OnExplodingGrenade))),
 
-                    // if(!ev.IsAllowed) return;
+                    // if(!ev.IsAllowed)
+                    //     return;
                     new(OpCodes.Callvirt, PropertyGetter(typeof(ExplodingGrenadeEventArgs), nameof(ExplodingGrenadeEventArgs.IsAllowed))),
                     new(OpCodes.Brfalse_S, retLabel),
                 });
