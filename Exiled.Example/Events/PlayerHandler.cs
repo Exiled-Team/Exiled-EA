@@ -72,13 +72,7 @@ namespace Exiled.Example.Events
         /// <inheritdoc cref="Exiled.Events.Handlers.Scp106.OnTeleporting(TeleportingEventArgs)"/>
         public void OnTeleporting(TeleportingEventArgs ev)
         {
-            Log.Info($"{ev.Player.Nickname} is teleporting to {ev.PortalPosition} as SCP-106!");
-        }
-
-        /// <inheritdoc cref="Exiled.Events.Handlers.Scp106.OnCreatingPortal(CreatingPortalEventArgs)"/>
-        public void OnCreatingPortal(CreatingPortalEventArgs ev)
-        {
-            Log.Info($"{ev.Player.Nickname} is creating a portal as SCP-106, in the position: {ev.Position}");
+            Log.Info($"{ev.Player.Nickname} is teleporting to {ev.Position} as SCP-106!");
         }
 
         /// <inheritdoc cref="Exiled.Events.Handlers.Scp914.OnActivating(ActivatingEventArgs)"/>

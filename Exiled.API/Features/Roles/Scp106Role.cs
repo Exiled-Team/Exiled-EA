@@ -57,18 +57,6 @@ namespace Exiled.API.Features.Roles
         public Door InsideDoor => null; // TODO
 
         /// <summary>
-        /// Gets or sets the location of SCP-106's portal.
-        /// </summary>
-        /// <remarks>
-        /// Note: Every alive SCP-106 uses the same portal.
-        /// </remarks>
-        public Vector3 PortalPosition
-        {
-            get => Internal.Sinkhole.transform.position;
-            set => Internal.Sinkhole.transform.position = value;
-        }
-
-        /// <summary>
         /// Gets or sets the amount of time in between player captures.
         /// </summary>
         public float CaptureCooldown

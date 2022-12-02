@@ -23,23 +23,23 @@ namespace Exiled.Events.EventArgs.Scp106
         /// <param name="player">
         ///     <inheritdoc cref="Player" />
         /// </param>
-        /// <param name="portalPosition">
-        ///     <inheritdoc cref="PortalPosition" />
+        /// <param name="position">
+        ///     <inheritdoc cref="Position" />
         /// </param>
         /// <param name="isAllowed">
         ///     <inheritdoc cref="IsAllowed" />
         /// </param>
-        public TeleportingEventArgs(Player player, Vector3 portalPosition, bool isAllowed = true)
+        public TeleportingEventArgs(Player player, Vector3 position, bool isAllowed = true)
         {
             Player = player;
-            PortalPosition = portalPosition;
+            Position = position;
             IsAllowed = isAllowed;
         }
 
         /// <summary>
-        ///     Gets or sets the portal position.
+        ///     Gets or sets the teleporting position.
         /// </summary>
-        public Vector3 PortalPosition { get; set; }
+        public Vector3 Position { get; set; }
 
         /// <summary>
         ///     Gets or sets a value indicating whether or not SCP-106 can teleport using a portal.
