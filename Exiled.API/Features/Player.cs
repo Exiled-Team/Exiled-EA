@@ -360,7 +360,11 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets or sets a value indicating whether or not the player is invisible.
         /// </summary>
-        public bool IsInvisible { get; set; }
+        public bool IsInvisible
+        {
+            get => Role.FirstPersonController.FpcModule.Motor.IsInvisible;
+            set => Role.FirstPersonController.FpcModule.Motor.IsInvisible = true;
+        }
 
         /// <summary>
         /// Gets a value indicating whether or not the <see cref="Player"/> is in darkness.
