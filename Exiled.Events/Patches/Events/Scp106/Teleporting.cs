@@ -18,6 +18,7 @@ namespace Exiled.Events.Patches.Events.Scp106
 
     using NorthwoodLib.Pools;
     using PlayerRoles.PlayableScps.Scp106;
+    using PlayerRoles.PlayableScps.Subroutines;
     using UnityEngine;
 
     using static HarmonyLib.AccessTools;
@@ -63,7 +64,7 @@ namespace Exiled.Events.Patches.Events.Scp106
                 {
                     // Player.Get(base.Owner)
                     new(OpCodes.Ldarg_0),
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(Scp106HuntersAtlasAbility), nameof(Scp106HuntersAtlasAbility.Owner))),
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(ScpKeySubroutine<Scp106Role>), nameof(ScpKeySubroutine<Scp106Role>.Owner))),
                     new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
 
                     // position

@@ -118,7 +118,7 @@ namespace Exiled.Events.Patches.Events.Scp049
                     new(OpCodes.Ldc_I4_1),
                 });
 
-            newInstructions[newInstructions.Count - 1].labels.Add(ret);
+            newInstructions[newInstructions.Count - 1].WithLabels(ret);
 
             for (int z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];

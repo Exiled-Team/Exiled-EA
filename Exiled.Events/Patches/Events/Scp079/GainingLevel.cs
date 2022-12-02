@@ -5,7 +5,6 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-/*
 namespace Exiled.Events.Patches.Events.Scp079
 {
     using System.Collections.Generic;
@@ -17,23 +16,27 @@ namespace Exiled.Events.Patches.Events.Scp079
     using HarmonyLib;
 
     using NorthwoodLib.Pools;
-
+    using PlayerRoles.PlayableScps.Scp079;
+    using PlayerRoles.PlayableScps.Subroutines;
     using UnityEngine;
 
     using static HarmonyLib.AccessTools;
 
-    using Player = Exiled.API.Features.Player;
+    using Player = API.Features.Player;
 
     /// <summary>
-    ///     Patches <see cref="Scp079PlayerScript.Lvl" />.
+    ///     Patches <see cref="Scp079TierManager.AccessTierIndex" />.
     ///     Adds the <see cref="Scp079.GainingLevel" /> event.
     /// </summary>
-    // [HarmonyPatch(typeof(Scp079PlayerScript), nameof(Scp079PlayerScript.Lvl), MethodType.Setter)]
+    [HarmonyPatch(typeof(Scp079TierManager), nameof(Scp079TierManager.AccessTierIndex), MethodType.Setter)]
     internal static class GainingLevel
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Shared.Rent(instructions);
+
+            const int offset = 1;
+            int index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Ret) + offset;
 
             Label returnLabel = generator.DefineLabel();
 
@@ -48,25 +51,45 @@ namespace Exiled.Events.Patches.Events.Scp079
             // if (!ev.IsAllowed)
             //     return;
             newInstructions.InsertRange(
-                0,
+                index,
                 new CodeInstruction[]
                 {
+                    // Player.Get(base.Owner)
                     new(OpCodes.Ldarg_0),
-                    new(OpCodes.Call, PropertyGetter(typeof(Scp079PlayerScript), nameof(Scp079PlayerScript.gameObject))),
-                    new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(GameObject) })),
+                    new(OpCodes.Call, PropertyGetter(typeof(ScpStandardSubroutine<Scp079Role>), nameof(ScpStandardSubroutine<Scp079Role>.Owner))),
+                    new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
+
+                    // value + 1
                     new(OpCodes.Ldarg_1),
                     new(OpCodes.Ldc_I4_1),
+                    new(OpCodes.Add),
+
+                    // true
+                    new(OpCodes.Ldc_I4_1),
+
+                    // var ev = new GainingLevelEventArgs(Player, int, bool)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(GainingLevelEventArgs))[0]),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),
+                    new(OpCodes.Stloc_S, ev.LocalIndex),
+
+                    // Scp079.OnGainingLevel(ev)
                     new(OpCodes.Call, Method(typeof(Scp079), nameof(Scp079.OnGainingLevel))),
-                    new(OpCodes.Call, PropertyGetter(typeof(GainingLevelEventArgs), nameof(GainingLevelEventArgs.NewLevel))),
-                    new(OpCodes.Starg_S, 1),
+
+                    // if (!ev.IsAllowed)
+                    //    return;
                     new(OpCodes.Callvirt, PropertyGetter(typeof(GainingLevelEventArgs), nameof(GainingLevelEventArgs.IsAllowed))),
                     new(OpCodes.Brfalse_S, returnLabel),
+
+                    // value = ev.NewLevel - 1
+                    new(OpCodes.Ldloc_S, ev.LocalIndex),
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(GainingLevelEventArgs), nameof(GainingLevelEventArgs.NewLevel))),
+                    new(OpCodes.Ldc_I4_1),
+                    new(OpCodes.Sub),
+                    new(OpCodes.Starg_S, 1),
                 });
 
-            newInstructions[newInstructions.Count - 1].labels.Add(returnLabel);
+            newInstructions[newInstructions.Count - 1].WithLabels(returnLabel);
 
             for (int z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
@@ -75,4 +98,3 @@ namespace Exiled.Events.Patches.Events.Scp079
         }
     }
 }
-*/
