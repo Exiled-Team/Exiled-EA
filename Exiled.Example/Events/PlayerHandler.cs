@@ -75,12 +75,6 @@ namespace Exiled.Example.Events
             Log.Info($"{ev.Player.Nickname} is teleporting to {ev.PortalPosition} as SCP-106!");
         }
 
-        /// <inheritdoc cref="Exiled.Events.Handlers.Scp106.OnContaining(ContainingEventArgs)"/>
-        public void OnContaining(ContainingEventArgs ev)
-        {
-            Log.Info($"{ev.Player.Nickname} is being contained as SCP-106!");
-        }
-
         /// <inheritdoc cref="Exiled.Events.Handlers.Scp106.OnCreatingPortal(CreatingPortalEventArgs)"/>
         public void OnCreatingPortal(CreatingPortalEventArgs ev)
         {

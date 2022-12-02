@@ -97,7 +97,6 @@ namespace Exiled.Example
             Exiled.Events.Handlers.Warhead.Starting += warheadHandler.OnStarting;
 
             Exiled.Events.Handlers.Scp106.Teleporting += playerHandler.OnTeleporting;
-            Exiled.Events.Handlers.Scp106.Containing += playerHandler.OnContaining;
             Exiled.Events.Handlers.Scp106.CreatingPortal += playerHandler.OnCreatingPortal;
 
             Exiled.Events.Handlers.Scp914.Activating += playerHandler.OnActivating;
@@ -140,7 +139,6 @@ namespace Exiled.Example
             Exiled.Events.Handlers.Warhead.Starting -= warheadHandler.OnStarting;
 
             Exiled.Events.Handlers.Scp106.Teleporting -= playerHandler.OnTeleporting;
-            Exiled.Events.Handlers.Scp106.Containing -= playerHandler.OnContaining;
             Exiled.Events.Handlers.Scp106.CreatingPortal -= playerHandler.OnCreatingPortal;
 
             Exiled.Events.Handlers.Scp914.Activating -= playerHandler.OnActivating;

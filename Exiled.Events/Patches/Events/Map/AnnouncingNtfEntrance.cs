@@ -46,7 +46,7 @@ namespace Exiled.Events.Patches.Events.Map
             // string[] unitInformation = unitNameClear.Split('-');
             // var ev = new AnnouncingNtfEntranceEventArgs(scpsLeft, unitInformation[0], int.Parse(unitInformation[1]));
             // Map.OnAnnouncingNtfEntrance(ev);
-            // if(!ev.IsAllowed)
+            // if (!ev.IsAllowed)
             //     return;
             // unitName = $"{ev.UnitName}-{ev.UnitNumber};
             // cassieUnitName = this.GetCassieUnitName(unitName);
@@ -88,7 +88,7 @@ namespace Exiled.Events.Patches.Events.Map
                     new(OpCodes.Stloc_S, ev.LocalIndex),
                     new(OpCodes.Call, Method(typeof(Map), nameof(Map.OnAnnouncingNtfEntrance))),
 
-                    // if(!ev.IsAllowed)
+                    // if (!ev.IsAllowed)
                     //     return;
                     new(OpCodes.Callvirt, PropertyGetter(typeof(AnnouncingNtfEntranceEventArgs), nameof(AnnouncingNtfEntranceEventArgs.IsAllowed))),
                     new(OpCodes.Brfalse_S, ret),

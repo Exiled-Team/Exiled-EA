@@ -64,7 +64,7 @@ namespace Exiled.Events.Patches.Events.Map
                     // Handlers.Map.OnExplodingGrenade(ev);
                     new(OpCodes.Call, Method(typeof(Map), nameof(Map.OnExplodingGrenade))),
 
-                    // if(!ev.IsAllowed)
+                    // if (!ev.IsAllowed)
                     //     return;
                     new(OpCodes.Callvirt, PropertyGetter(typeof(ExplodingGrenadeEventArgs), nameof(ExplodingGrenadeEventArgs.IsAllowed))),
                     new(OpCodes.Brfalse_S, retLabel),
