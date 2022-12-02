@@ -26,10 +26,10 @@ namespace Exiled.Events.Patches.Events.Scp096
     using Scp096 = PlayableScps.Scp096;
 
     /// <summary>
-    ///     Patches <see cref="PlayableScps.Scp096.ChargePlayer" />.
+    ///     Patches <see cref="Scp096.ChargePlayer" />.
     ///     Adds the <see cref="Handlers.Scp096.ChargingPlayer" /> event.
     /// </summary>
-    // [HarmonyPatch(typeof(Scp096), nameof(Scp096.ChargePlayer))]
+    [HarmonyPatch(typeof(Scp096), nameof(Scp096.ChargePlayer))]
     internal static class ChargingPlayer
     {
         /// <summary>

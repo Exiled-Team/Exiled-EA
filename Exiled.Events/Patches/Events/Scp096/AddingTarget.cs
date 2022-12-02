@@ -27,10 +27,10 @@ namespace Exiled.Events.Patches.Events.Scp096
     using Scp096 = PlayableScps.Scp096;
 
     /// <summary>
-    ///     Patches <see cref="PlayableScps.Scp096.AddTarget" />.
+    ///     Patches <see cref="Scp096.AddTarget" />.
     ///     Adds the <see cref="Handlers.Scp096.AddingTarget" /> event.
     /// </summary>
-    // [HarmonyPatch(typeof(Scp096), nameof(Scp096.AddTarget))]
+    [HarmonyPatch(typeof(Scp096), nameof(Scp096.AddTarget))]
     internal static class AddingTarget
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)

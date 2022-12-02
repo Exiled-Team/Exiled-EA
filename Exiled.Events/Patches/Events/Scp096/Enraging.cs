@@ -22,10 +22,10 @@ namespace Exiled.Events.Patches.Events.Scp096
     using Scp096 = PlayableScps.Scp096;
 
     /// <summary>
-    ///     Patches <see cref="PlayableScps.Scp096.Enrage" />.
+    ///     Patches <see cref="Scp096.Enrage" />.
     ///     Adds the <see cref="Handlers.Scp096.Enraging" /> event.
     /// </summary>
-    // [HarmonyPatch(typeof(Scp096), nameof(Scp096.Enrage))]
+    [HarmonyPatch(typeof(Scp096), nameof(Scp096.Enrage))]
     internal static class Enraging
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
@@ -56,7 +56,7 @@ namespace Exiled.Events.Patches.Events.Scp096
                     new(OpCodes.Brfalse_S, returnLabel),
                 });
 
-            newInstructions[newInstructions.Count - 1].labels.Add(returnLabel);
+            newInstructions[newInstructions.Count - 1].WithLabels(returnLabel);
 
             for (int z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];

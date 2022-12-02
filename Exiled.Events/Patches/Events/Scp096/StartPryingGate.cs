@@ -22,10 +22,10 @@ namespace Exiled.Events.Patches.Events.Scp096
     using Scp096 = PlayableScps.Scp096;
 
     /// <summary>
-    ///     Patches the <see cref="PlayableScps.Scp096.PryGate" /> method.
+    ///     Patches the <see cref="Scp096.PryGate" /> method.
     ///     Adds the <see cref="Handlers.Scp096.StartPryingGate" /> event.
     /// </summary>
-    // [HarmonyPatch(typeof(Scp096), nameof(Scp096.PryGate))]
+    [HarmonyPatch(typeof(Scp096), nameof(Scp096.PryGate))]
     internal static class StartPryingGate
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
@@ -57,7 +57,7 @@ namespace Exiled.Events.Patches.Events.Scp096
                     new(OpCodes.Brfalse_S, returnLabel),
                 });
 
-            newInstructions[newInstructions.Count - 1].labels.Add(returnLabel);
+            newInstructions[newInstructions.Count - 1].WithLabels(returnLabel);
 
             for (int z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];

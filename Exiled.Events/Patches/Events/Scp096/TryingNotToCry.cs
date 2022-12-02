@@ -24,10 +24,10 @@ namespace Exiled.Events.Patches.Events.Scp096
     using Scp096 = PlayableScps.Scp096;
 
     /// <summary>
-    ///     Patches the <see cref="PlayableScps.Scp096.TryNotToCry" /> method.
+    ///     Patches the <see cref="Scp096.TryNotToCry" /> method.
     ///     Adds the <see cref="Handlers.Scp096.TryingNotToCry" /> event.
     /// </summary>
-    // [HarmonyPatch(typeof(Scp096), nameof(Scp096.TryNotToCry))]
+    [HarmonyPatch(typeof(Scp096), nameof(Scp096.TryNotToCry))]
     internal static class TryingNotToCry
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
