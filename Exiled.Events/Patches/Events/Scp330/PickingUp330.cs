@@ -21,11 +21,11 @@ namespace Exiled.Events.Patches.Events.Scp330
 
     using static HarmonyLib.AccessTools;
 
-    using Player = Exiled.API.Features.Player;
+    using Player = API.Features.Player;
 
     /// <summary>
     ///     Patches the <see cref="Scp330Bag.ServerProcessPickup" /> method to add the
-    ///     <see cref="Handlers.Scp330.PickingUpScp330" /> event.
+    ///     <see cref="Scp330.PickingUpScp330" /> event.
     /// </summary>
     [HarmonyPatch(typeof(Scp330Bag), nameof(Scp330Bag.ServerProcessPickup))]
     internal static class PickingUp330
@@ -33,7 +33,9 @@ namespace Exiled.Events.Patches.Events.Scp330
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Shared.Rent(instructions);
+
             LocalBuilder ev = generator.DeclareLocal(typeof(PickingUpScp330EventArgs));
+
             Label continueLabel = generator.DefineLabel();
 
             // We put the event code right at the beginning of the method.
@@ -41,12 +43,19 @@ namespace Exiled.Events.Patches.Events.Scp330
                 0,
                 new[]
                 {
-                    // var ev = new PickingUpScp330EventArgs(Player.Get(ply), pickup);
+                    // if (pickup == null)
+                    //    goto continueLabel;
                     new(OpCodes.Ldarg_1),
                     new(OpCodes.Brfalse, continueLabel),
+
+                    // Player.Get(ply)
                     new(OpCodes.Ldarg_0),
                     new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
+
+                    // pickup
                     new(OpCodes.Ldarg_1),
+
+                    // var ev = new PickingUpScp330EventArgs(Player.Get(ply), pickup);
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(PickingUpScp330EventArgs))[0]),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),

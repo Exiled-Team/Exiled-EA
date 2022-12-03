@@ -8,7 +8,6 @@
 namespace Exiled.Events.Patches.Events.Scp330
 {
     using System.Collections.Generic;
-    using System.Reflection;
     using System.Reflection.Emit;
 
     using Exiled.Events.EventArgs.Player;
@@ -23,11 +22,11 @@ namespace Exiled.Events.Patches.Events.Scp330
 
     using static HarmonyLib.AccessTools;
 
-    using Player = Exiled.API.Features.Player;
+    using Player = API.Features.Player;
 
     /// <summary>
     ///     Patches <see cref="Scp330Bag.ServerOnUsingCompleted" />.
-    ///     Adds the <see cref="Handlers.Scp330.EatingScp330" /> and <see cref="Handlers.Scp330.EatenScp330" /> event.
+    ///     Adds the <see cref="Scp330.EatingScp330" /> and <see cref="Handlers.Scp330.EatenScp330" /> event.
     /// </summary>
     [HarmonyPatch(typeof(Scp330Bag), nameof(Scp330Bag.ServerOnUsingCompleted))]
     internal static class EatingScp330
@@ -37,9 +36,7 @@ namespace Exiled.Events.Patches.Events.Scp330
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Shared.Rent(instructions);
 
             int offset = -3;
-
-            int index = newInstructions.FindIndex(
-                instruction => (instruction.opcode == OpCodes.Callvirt) && ((MethodInfo)instruction.operand == Method(typeof(ICandy), nameof(ICandy.ServerApplyEffects)))) + offset;
+            int index = newInstructions.FindIndex(instruction => instruction.Calls(Method(typeof(ICandy), nameof(ICandy.ServerApplyEffects)))) + offset;
 
             Label returnLabel = generator.DefineLabel();
 
@@ -74,8 +71,7 @@ namespace Exiled.Events.Patches.Events.Scp330
             newInstructions[newInstructions.Count - 1].labels.Add(returnLabel);
 
             offset = -1;
-            index = newInstructions.FindIndex(instruction => (instruction.opcode == OpCodes.Call) && ((MethodInfo)instruction.operand == Method(typeof(Scp330Bag), nameof(Scp330Bag.ServerRefreshBag)))) +
-                    offset;
+            index = newInstructions.FindIndex(instruction => instruction.Calls(Method(typeof(Scp330Bag), nameof(Scp330Bag.ServerRefreshBag)))) + offset;
 
             newInstructions.InsertRange(
                 index,

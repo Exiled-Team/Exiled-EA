@@ -5,7 +5,6 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-/*
 namespace Exiled.Events.Patches.Events.Scp330
 {
     using System.Collections.Generic;
@@ -27,13 +26,13 @@ namespace Exiled.Events.Patches.Events.Scp330
 
     using static HarmonyLib.AccessTools;
 
-    using Player = Exiled.API.Features.Player;
+    using Player = API.Features.Player;
 
     /// <summary>
     ///     Patches the <see cref="Scp330Interobject.ServerInteract" /> method to add the
-    ///     <see cref="Handlers.Scp330.InteractingScp330" /> event.
+    ///     <see cref="Scp330.InteractingScp330" /> event.
     /// </summary>
-    // [HarmonyPatch(typeof(Scp330Interobject), nameof(Scp330Interobject.ServerInteract))]
+    [HarmonyPatch(typeof(Scp330Interobject), nameof(Scp330Interobject.ServerInteract))]
     public static class InteractingScp330
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
@@ -41,7 +40,6 @@ namespace Exiled.Events.Patches.Events.Scp330
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Shared.Rent(instructions);
 
             Label shouldNotSever = generator.DefineLabel();
-
             Label returnLabel = generator.DefineLabel();
 
             LocalBuilder eventHandler = generator.DeclareLocal(typeof(InteractingScp330EventArgs));
@@ -154,4 +152,3 @@ namespace Exiled.Events.Patches.Events.Scp330
         }
     }
 }
-*/
