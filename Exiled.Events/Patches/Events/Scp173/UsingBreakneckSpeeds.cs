@@ -5,7 +5,6 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-/*
 namespace Exiled.Events.Patches.Events.Scp173
 {
     using System.Collections.Generic;
@@ -18,52 +17,50 @@ namespace Exiled.Events.Patches.Events.Scp173
     using HarmonyLib;
 
     using NorthwoodLib.Pools;
+    using PlayerRoles.PlayableScps.Scp173;
+    using PlayerRoles.PlayableScps.Subroutines;
 
     using static HarmonyLib.AccessTools;
 
-    using Scp173 = PlayableScps.Scp173;
-
     /// <summary>
-    ///     Patches <see cref="PlayableScps.Scp173.ServerDoBreakneckSpeeds" />.
+    ///     Patches <see cref="Scp173BreakneckSpeedsAbility.IsActive" />.
     ///     Adds the <see cref="Handlers.Scp173.UsingBreakneckSpeeds" /> event.
     /// </summary>
-    // [HarmonyPatch(typeof(Scp173), nameof(Scp173.ServerDoBreakneckSpeeds))]
+    [HarmonyPatch(typeof(Scp173BreakneckSpeedsAbility), nameof(Scp173BreakneckSpeedsAbility.IsActive), MethodType.Setter)]
     internal static class UsingBreakneckSpeeds
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Shared.Rent(instructions);
 
-            Label returnLabel = newInstructions[newInstructions.Count - 1].labels[0];
+            Label returnLabel = generator.DefineLabel();
 
-            int offset = -1;
+            const int offset = 1;
+            int index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Ret) + offset;
 
-            int index = newInstructions.FindIndex(
-                instruction => (instruction.opcode == OpCodes.Ldfld) &&
-                               ((FieldInfo)instruction.operand == Field(typeof(Scp173), nameof(Scp173._breakneckSpeedsCooldownRemaining)))) + offset;
-
-            newInstructions.RemoveRange(index, 5);
-
-            // var ev = new UsingBreakneckSpeedsEventArgs(Player, Scp173._breakneckSpeedsCooldownRemaining == 0);
+            // var ev = new UsingBreakneckSpeedsEventArgs(Player.Get(base.Owner), this.Cooldown.Remaining == 0);
+            //
             // Handlers.Scp173.OnUsingBreakneckSpeeds(ev);
+            //
             // if (!ev.IsAllowed)
             //   return;
             newInstructions.InsertRange(
                 index,
                 new CodeInstruction[]
                 {
-                    // Player.Get(this.Hub)
+                    // Player.Get(base.Owner)
                     new(OpCodes.Ldarg_0),
-                    new(OpCodes.Ldfld, Field(typeof(Scp173), nameof(Scp173.Hub))),
+                    new(OpCodes.Call, PropertyGetter(typeof(ScpStandardSubroutine<Scp173Role>), nameof(ScpStandardSubroutine<Scp173Role>.Owner))),
                     new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
 
-                    // Scp173._breakneckSpeedsCooldownRemaining == 0
+                    // this.Cooldown.Remaining == 0
                     new(OpCodes.Ldarg_0),
-                    new(OpCodes.Ldfld, Field(typeof(Scp173), nameof(Scp173._breakneckSpeedsCooldownRemaining))),
+                    new(OpCodes.Ldfld, Field(typeof(Scp173BreakneckSpeedsAbility), nameof(Scp173BreakneckSpeedsAbility.Cooldown))),
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(AbilityCooldown), nameof(AbilityCooldown.Remaining))),
                     new(OpCodes.Ldc_R4, 0f),
                     new(OpCodes.Ceq),
 
-                    // new UsingBreakneckSpeedsEventArgs(...)
+                    // new UsingBreakneckSpeedsEventArgs(Player, bool)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(UsingBreakneckSpeedsEventArgs))[0]),
                     new(OpCodes.Dup),
 
@@ -76,6 +73,8 @@ namespace Exiled.Events.Patches.Events.Scp173
                     new(OpCodes.Brfalse_S, returnLabel),
                 });
 
+            newInstructions[newInstructions.Count - 1].WithLabels(returnLabel);
+
             for (int z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
@@ -83,4 +82,3 @@ namespace Exiled.Events.Patches.Events.Scp173
         }
     }
 }
-*/

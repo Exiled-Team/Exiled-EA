@@ -9,8 +9,9 @@ namespace Exiled.Events.EventArgs.Scp173
 {
     using Exiled.API.Features;
     using Exiled.Events.EventArgs.Interfaces;
+    using Hazards;
     using PlayerRoles.PlayableScps.Scp173;
-    using UnityEngine;
+    using PlayerRoles.PlayableScps.Subroutines;
 
     /// <summary>
     ///     Contains all information before the tantrum is placed.
@@ -26,8 +27,8 @@ namespace Exiled.Events.EventArgs.Scp173
         /// <param name="player">
         ///     <inheritdoc cref="Player" />
         /// </param>
-        /// <param name="gameObject">
-        ///     <inheritdoc cref="GameObject" />
+        /// <param name="tantrumHazard">
+        ///     <inheritdoc cref="TantrumHazard" />
         /// </param>
         /// <param name="cooldown">
         ///     <inheritdoc cref="Cooldown" />
@@ -35,11 +36,11 @@ namespace Exiled.Events.EventArgs.Scp173
         /// <param name="isAllowed">
         ///     <inheritdoc cref="IsAllowed" />
         /// </param>
-        public PlacingTantrumEventArgs(Scp173Role scp173, Player player, GameObject gameObject, float cooldown, bool isAllowed = true)
+        public PlacingTantrumEventArgs(Scp173Role scp173, Player player, TantrumEnvironmentalHazard tantrumHazard, AbilityCooldown cooldown, bool isAllowed = true)
         {
             Scp173 = scp173;
             Player = player;
-            GameObject = gameObject;
+            TantrumHazard = tantrumHazard;
             Cooldown = cooldown;
             IsAllowed = isAllowed;
         }
@@ -50,14 +51,14 @@ namespace Exiled.Events.EventArgs.Scp173
         public Scp173Role Scp173 { get; }
 
         /// <summary>
-        ///     Gets the tantrum <see cref="UnityEngine.GameObject" />.
+        ///     Gets the <see cref="TantrumEnvironmentalHazard" />.
         /// </summary>
-        public GameObject GameObject { get; }
+        public TantrumEnvironmentalHazard TantrumHazard { get; }
 
         /// <summary>
-        ///     Gets or sets the tantrum cooldown.
+        ///     Gets the tantrum <see cref="AbilityCooldown"/>.
         /// </summary>
-        public float Cooldown { get; set; }
+        public AbilityCooldown Cooldown { get; }
 
         /// <summary>
         ///     Gets or sets a value indicating whether or not the tantrum can be placed.

@@ -114,7 +114,7 @@ namespace Exiled.API.Features.Roles
                 if (SubroutineModule.TryGetSubroutine(out Scp173BlinkTimer ability))
                 {
                     ability._initialStopTime = NetworkTime.time;
-                    ability._totalCooldown *= ability._breakneckSpeedsAbility.IsActive ? 2 : 1;
+                    ability._totalCooldown = value;
                 }
             }
         }

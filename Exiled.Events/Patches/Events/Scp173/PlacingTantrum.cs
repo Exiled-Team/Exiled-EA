@@ -5,7 +5,6 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-/*
 namespace Exiled.Events.Patches.Events.Scp173
 {
     using System.Collections.Generic;
@@ -19,16 +18,17 @@ namespace Exiled.Events.Patches.Events.Scp173
     using Mirror;
 
     using NorthwoodLib.Pools;
-
+    using PlayerRoles.PlayableScps.Scp173;
+    using PlayerRoles.PlayableScps.Subroutines;
     using UnityEngine;
 
     using static HarmonyLib.AccessTools;
 
     /// <summary>
-    /// Patches <see cref="PlayableScps.Scp173.ServerDoTantrum"/>.
+    /// Patches <see cref="Scp173TantrumAbility.ServerProcessCmd(NetworkReader)"/>.
     /// Adds the <see cref="Handlers.Scp173.PlacingTantrum"/> event.
     /// </summary>
-    // [HarmonyPatch(typeof(PlayableScps.Scp173), nameof(PlayableScps.Scp173.ServerDoTantrum))]
+    [HarmonyPatch(typeof(Scp173TantrumAbility), nameof(Scp173TantrumAbility.ServerProcessCmd))]
     internal static class PlacingTantrum
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
@@ -39,11 +39,10 @@ namespace Exiled.Events.Patches.Events.Scp173
 
             LocalBuilder ev = generator.DeclareLocal(typeof(PlacingTantrumEventArgs));
 
-            int offset = -2;
-
+            const int offset = -3;
             int index = newInstructions.FindIndex(
-                instruction => (instruction.opcode == OpCodes.Call) &&
-                               ((MethodInfo)instruction.operand == Method(typeof(NetworkServer), nameof(NetworkServer.Spawn), new[] { typeof(GameObject), typeof(NetworkConnection) }))) + offset;
+                instruction => instruction.Calls(
+                    Method(typeof(NetworkServer), nameof(NetworkServer.Spawn), new[] { typeof(GameObject), typeof(NetworkConnection) }))) + offset;
 
             // var ev = new PlacingTantrumEventArgs(this, Player, gameObject, cooldown, true);
             //
@@ -57,24 +56,26 @@ namespace Exiled.Events.Patches.Events.Scp173
                 index,
                 new CodeInstruction[]
                 {
-                    // this
-                    new CodeInstruction(OpCodes.Ldarg_0).MoveLabelsFrom(newInstructions[index]),
-                    new(OpCodes.Dup),
+                    // base.ScpRole
+                    new (OpCodes.Ldarg_0),
+                    new (OpCodes.Call, PropertyGetter(typeof(ScpStandardSubroutine<Scp173Role>), nameof(ScpStandardSubroutine<Scp173Role>.ScpRole))),
 
-                    // Player.Get(this.Hub)
-                    new(OpCodes.Ldfld, Field(typeof(PlayableScps.Scp173), nameof(PlayableScps.Scp173.Hub))),
+                    // Player.Get(base.Hub)
+                    new(OpCodes.Ldarg_0),
+                    new(OpCodes.Call, PropertyGetter(typeof(ScpStandardSubroutine<Scp173Role>), nameof(ScpStandardSubroutine<Scp173Role>.Owner))),
                     new(OpCodes.Call, Method(typeof(API.Features.Player), nameof(API.Features.Player.Get), new[] { typeof(ReferenceHub) })),
 
-                    // gameObject
-                    new(OpCodes.Ldloc_0),
+                    // tantrumEnvironmentalHazard
+                    new(OpCodes.Ldloc_1),
 
-                    // cooldown
-                    new(OpCodes.Ldc_R4, PlayableScps.Scp173.TantrumBaseCooldown),
+                    // this.Cooldown
+                    new(OpCodes.Ldarg_0),
+                    new(OpCodes.Ldfld, Field(typeof(Scp173TantrumAbility), nameof(Scp173TantrumAbility.Cooldown))),
 
                     // true
                     new(OpCodes.Ldc_I4_1),
 
-                    // var ev = new PlacingTantrumEventArgs(...)
+                    // var ev = new PlacingTantrumEventArgs(Scp173Role, Player, TantrumEnvironmentalHazard, AbilityCooldown, bool)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(PlacingTantrumEventArgs))[0]),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),
@@ -89,23 +90,6 @@ namespace Exiled.Events.Patches.Events.Scp173
                     new(OpCodes.Brfalse_S, returnLabel),
                 });
 
-            offset = 1;
-
-            index = newInstructions.FindIndex(
-                instruction => (instruction.opcode == OpCodes.Call) &&
-                               ((MethodInfo)instruction.operand == Method(typeof(NetworkServer), nameof(NetworkServer.Spawn), new[] { typeof(GameObject), typeof(NetworkConnection) }))) + offset;
-
-            newInstructions.InsertRange(
-                index,
-                new CodeInstruction[]
-                {
-                    // this._tantrumCooldownRemaining = ev.Cooldown
-                    new(OpCodes.Ldarg_0),
-                    new(OpCodes.Ldloc_S, ev.LocalIndex),
-                    new(OpCodes.Call, PropertyGetter(typeof(PlacingTantrumEventArgs), nameof(PlacingTantrumEventArgs.Cooldown))),
-                    new(OpCodes.Stfld, Field(typeof(PlayableScps.Scp173), nameof(PlayableScps.Scp173._tantrumCooldownRemaining))),
-                });
-
             for (int z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
@@ -113,4 +97,3 @@ namespace Exiled.Events.Patches.Events.Scp173
         }
     }
 }
-*/

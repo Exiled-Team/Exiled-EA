@@ -5,12 +5,10 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-/*
 namespace Exiled.Events.Patches.Events.Scp173
 {
     using System.Collections.Generic;
     using System.Linq;
-    using System.Reflection;
     using System.Reflection.Emit;
 
     using Exiled.API.Features;
@@ -19,68 +17,72 @@ namespace Exiled.Events.Patches.Events.Scp173
     using HarmonyLib;
 
     using NorthwoodLib.Pools;
-
+    using PlayerRoles.PlayableScps.Scp173;
+    using PlayerRoles.PlayableScps.Subroutines;
     using UnityEngine;
 
     using static HarmonyLib.AccessTools;
 
-    using Scp173 = PlayableScps.Scp173;
-
     /// <summary>
-    ///     Patches <see cref="PlayableScps.Scp173.ServerHandleBlinkMessage" />.
+    ///     Patches <see cref="Scp173BlinkTimer.ServerBlink(Vector3)" />.
     ///     Adds the <see cref="Handlers.Scp173.Blinking" /> event.
     /// </summary>
-    // [HarmonyPatch(typeof(Scp173), nameof(Scp173.ServerHandleBlinkMessage))]
+    [HarmonyPatch(typeof(Scp173BlinkTimer), nameof(Scp173BlinkTimer.ServerBlink))]
     internal static class Blinking
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Shared.Rent(instructions);
-            int offset = -13;
-            int index = newInstructions.FindIndex(
-                i => (i.opcode == OpCodes.Callvirt) && ((MethodInfo)i.operand ==
-                                                        Method(typeof(PlayerMovementSync), nameof(PlayerMovementSync.ForcePosition), new[] { typeof(Vector3) }))) + offset;
+
             LocalBuilder ev = generator.DeclareLocal(typeof(BlinkingEventArgs));
+
             Label returnLabel = generator.DefineLabel();
 
             newInstructions.InsertRange(
-                index,
+                0,
                 new[]
                 {
-                    new CodeInstruction(OpCodes.Ldarg_0).MoveLabelsFrom(newInstructions[index]),
-                    new(OpCodes.Ldfld, Field(typeof(Scp173), nameof(Scp173.Hub))),
+                    // Player.Get(base.Owner)
+                    new CodeInstruction(OpCodes.Ldarg_0),
+                    new(OpCodes.Call, PropertyGetter(typeof(ScpStandardSubroutine<Scp173Role>), nameof(ScpStandardSubroutine<Scp173Role>.Owner))),
                     new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
 
+                    // this._observers.Observers
                     new(OpCodes.Ldarg_0),
-                    new(OpCodes.Ldfld, Field(typeof(Scp173), nameof(Scp173._observingPlayers))),
+                    new(OpCodes.Ldfld, Field(typeof(Scp173BlinkTimer), nameof(Scp173BlinkTimer._observers))),
+                    new(OpCodes.Ldfld, Field(typeof(Scp173ObserversTracker), nameof(Scp173ObserversTracker.Observers))),
                     new(OpCodes.Call, Method(typeof(Blinking), nameof(GetObservingPlayers))),
+
+                    // pos
                     new(OpCodes.Ldarg_1),
+
+                    // var ev = new BlinkingEventArgs(Player, List<Player>, Vector3)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(BlinkingEventArgs))[0]),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),
                     new(OpCodes.Stloc, ev.LocalIndex),
+
+                    // Handlers.Scp173.OnBlinking(ev)
                     new(OpCodes.Call, Method(typeof(Handlers.Scp173), nameof(Handlers.Scp173.OnBlinking))),
+
+                    // if (!ev.IsAllowed)
+                    //    return;
                     new(OpCodes.Callvirt, PropertyGetter(typeof(BlinkingEventArgs), nameof(BlinkingEventArgs.IsAllowed))),
                     new(OpCodes.Brfalse, returnLabel),
+
+                    // pos = ev.BlinkPosition
                     new(OpCodes.Ldloc, ev.LocalIndex),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(BlinkingEventArgs), nameof(BlinkingEventArgs.BlinkPosition))),
                     new(OpCodes.Starg, 1),
-                });
 
-            offset = 1;
-            index = newInstructions.FindLastIndex(
-                i => (i.opcode == OpCodes.Stfld) && ((FieldInfo)i.operand ==
-                                                     Field(typeof(Scp173), nameof(Scp173._blinkCooldownRemaining)))) + offset;
-
-            newInstructions.InsertRange(
-                index,
-                new[]
-                {
-                    new CodeInstruction(OpCodes.Ldarg_0).WithLabels(returnLabel),
+                    // this._totalCooldown = ev.BlinkCooldown
+                    new(OpCodes.Ldarg_0),
                     new(OpCodes.Ldloc, ev.LocalIndex),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(BlinkingEventArgs), nameof(BlinkingEventArgs.BlinkCooldown))),
-                    new(OpCodes.Stfld, Field(typeof(Scp173), nameof(Scp173._blinkCooldownRemaining))),
+                    new(OpCodes.Stfld, Field(typeof(Scp173BlinkTimer), nameof(Scp173BlinkTimer._totalCooldown))),
                 });
+
+            newInstructions[newInstructions.Count - 1].WithLabels(returnLabel);
 
             for (int z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
@@ -88,7 +90,6 @@ namespace Exiled.Events.Patches.Events.Scp173
             ListPool<CodeInstruction>.Shared.Return(newInstructions);
         }
 
-        private static List<Player> GetObservingPlayers(IEnumerable<ReferenceHub> hubs) => hubs.Select(Player.Get).ToList();
+        private static List<Player> GetObservingPlayers(HashSet<ReferenceHub> hubs) => hubs.Select(Player.Get).ToList();
     }
 }
-*/
