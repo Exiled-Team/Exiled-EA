@@ -7,8 +7,6 @@
 
 namespace Exiled.Events.Patches.Events.Scp244
 {
-#pragma warning disable SA1313
-
     using System.Collections.Generic;
     using System.Reflection.Emit;
 
@@ -36,17 +34,16 @@ namespace Exiled.Events.Patches.Events.Scp244
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Shared.Rent(instructions);
 
             Label returnFalse = generator.DefineLabel();
-
             Label continueProcessing = generator.DefineLabel();
 
-            LocalBuilder eventHandler = generator.DeclareLocal(typeof(DamagingScp244EventArgs));
+            LocalBuilder ev = generator.DeclareLocal(typeof(DamagingScp244EventArgs));
 
             // Remove grenade damage check, let event handler do it.
             newInstructions.RemoveRange(0, 5);
 
             int insertOffset = 5;
-
-            int index = newInstructions.FindIndex(instruction => instruction.Calls(PropertyGetter(typeof(Scp244DeployablePickup), nameof(Scp244DeployablePickup.ModelDestroyed)))) + insertOffset;
+            int index = newInstructions.FindIndex(
+                instruction => instruction.Calls(PropertyGetter(typeof(Scp244DeployablePickup), nameof(Scp244DeployablePickup.ModelDestroyed)))) + insertOffset;
 
             newInstructions.RemoveRange(index, 3);
 
@@ -55,25 +52,48 @@ namespace Exiled.Events.Patches.Events.Scp244
                 index,
                 new[]
                 {
+                    // if (this.State == 2) --> "this" is taken from the previous instruction
+                    //    return false;
                     new(OpCodes.Callvirt, PropertyGetter(typeof(Scp244DeployablePickup), nameof(Scp244DeployablePickup.State))),
                     new(OpCodes.Ldc_I4_2),
                     new(OpCodes.Beq_S, returnFalse),
+
+                    // this
                     new(OpCodes.Ldarg_0),
+
+                    // damage
                     new(OpCodes.Ldarg_1),
+
+                    // handler
                     new(OpCodes.Ldarg_2),
+
+                    // var ev = new DamagingScp244EventArgs(Scp244DeployablePickup, float, DamageHandlerBase)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(DamagingScp244EventArgs))[0]),
-                    new(OpCodes.Stloc, eventHandler.LocalIndex),
-                    new(OpCodes.Ldloc, eventHandler.LocalIndex),
+                    new(OpCodes.Dup),
+                    new(OpCodes.Dup),
+                    new(OpCodes.Stloc, ev.LocalIndex),
+
+                    // Scp244.OnDamagingScp244(ev)
                     new(OpCodes.Call, Method(typeof(Scp244), nameof(Scp244.OnDamagingScp244))),
-                    new(OpCodes.Ldloc, eventHandler.LocalIndex),
+
+                    // if (!ev.IsAllowed)
+                    //    goto continueProcessing;
                     new(OpCodes.Callvirt, PropertyGetter(typeof(DamagingScp244EventArgs), nameof(DamagingScp244EventArgs.IsAllowed))),
                     new(OpCodes.Brtrue_S, continueProcessing),
+
+                    // return false;
                     new CodeInstruction(OpCodes.Ldc_I4_0).WithLabels(returnFalse),
                     new(OpCodes.Ret),
+
+                    // reload "this"
                     new CodeInstruction(OpCodes.Ldarg_0).WithLabels(continueProcessing),
+
+                    // this._health
                     new CodeInstruction(OpCodes.Ldarg_0),
                     new(OpCodes.Ldfld, Field(typeof(Scp244DeployablePickup), nameof(Scp244DeployablePickup._health))),
-                    new(OpCodes.Ldloc, eventHandler.LocalIndex),
+
+                    // ev.DamageHandler.Damage
+                    new(OpCodes.Ldloc, ev.LocalIndex),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(DamagingScp244EventArgs), nameof(DamagingScp244EventArgs.DamageHandler))),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(DamageHandler), nameof(DamageHandler.Damage))),
                 });
