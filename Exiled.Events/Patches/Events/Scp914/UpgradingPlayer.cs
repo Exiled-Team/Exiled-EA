@@ -7,6 +7,7 @@
 
 namespace Exiled.Events.Patches.Events.Scp914
 {
+    using System;
     using System.Collections.Generic;
     using System.Reflection.Emit;
 
@@ -16,40 +17,43 @@ namespace Exiled.Events.Patches.Events.Scp914
     using global::Scp914;
 
     using HarmonyLib;
-
+    using InventorySystem.Items;
     using NorthwoodLib.Pools;
 
     using UnityEngine;
 
     using static HarmonyLib.AccessTools;
 
-    using Scp914 = Exiled.Events.Handlers.Scp914;
+    using Scp914 = Handlers.Scp914;
 
     /// <summary>
-    ///     Patches <see cref="Scp914Upgrader.ProcessPlayer" /> to add the <see cref="Handlers.Scp914.UpgradingPlayer" />
-    ///     event.
+    ///     Patches <see cref="Scp914Upgrader.ProcessPlayer(ReferenceHub, bool, bool, Vector3, Scp914KnobSetting)" />
+    ///     to add the <see cref="Scp914.UpgradingPlayer" /> event.
     /// </summary>
-    // [HarmonyPatch(typeof(Scp914Upgrader), nameof(Scp914Upgrader.ProcessPlayer))]
+    [HarmonyPatch(typeof(Scp914Upgrader), nameof(Scp914Upgrader.ProcessPlayer))]
     internal static class UpgradingPlayer
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Shared.Rent(instructions);
-            int index = 0;
+
+            const int offset = 1;
+            int index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Ret) + offset;
 
             Label returnLabel = generator.DefineLabel();
+            List<Label> oldLabels = newInstructions[index].labels;
 
             LocalBuilder curSetting = generator.DeclareLocal(typeof(Scp914KnobSetting));
             LocalBuilder ev = generator.DeclareLocal(typeof(UpgradingPlayerEventArgs));
 
-            newInstructions.RemoveRange(index, 12);
+            newInstructions.RemoveRange(index, 9);
 
             newInstructions.InsertRange(
                 index,
-                new CodeInstruction[]
+                new[]
                 {
                     // Player.Get(ply)
-                    new(OpCodes.Ldarg_0),
+                    new CodeInstruction(OpCodes.Ldarg_0).WithLabels(oldLabels),
                     new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
 
                     // upgradeInventory
@@ -77,6 +81,8 @@ namespace Exiled.Events.Patches.Events.Scp914
                     //    return;
                     new(OpCodes.Callvirt, PropertyGetter(typeof(UpgradingPlayerEventArgs), nameof(UpgradingPlayerEventArgs.IsAllowed))),
                     new(OpCodes.Brfalse_S, returnLabel),
+
+                    // load "ev" three times
                     new(OpCodes.Ldloc_S, ev.LocalIndex),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),
@@ -94,7 +100,7 @@ namespace Exiled.Events.Patches.Events.Scp914
                     new(OpCodes.Starg_S, 4),
 
                     // curSetting = setting;
-                    new(OpCodes.Ldarg, 4),
+                    new(OpCodes.Ldarg_S, 4),
                     new(OpCodes.Stloc_S, curSetting.LocalIndex),
 
                     // ev.Player.Teleport(ev.OutputPosition);
@@ -105,7 +111,8 @@ namespace Exiled.Events.Patches.Events.Scp914
                     new(OpCodes.Callvirt, Method(typeof(Player), nameof(Player.Teleport), new[] { typeof(Vector3) })),
                 });
 
-            index = newInstructions.FindIndex(i => i.opcode == OpCodes.Ldsfld);
+            index = newInstructions.FindIndex(
+                instruction => instruction.LoadsField(Field(typeof(Action<ItemBase, Scp914KnobSetting>), nameof(Scp914Upgrader.OnInventoryItemUpgraded))));
 
             Label continueLabel = generator.DefineLabel();
 
@@ -125,14 +132,14 @@ namespace Exiled.Events.Patches.Events.Scp914
                     new(OpCodes.Ldarg_0),
                     new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
 
-                    // ItemBase item = GetItem
-                    new(OpCodes.Ldloc_S, 7),
+                    // itemBase
+                    new(OpCodes.Ldloc_S, 6),
 
                     // setting
                     new(OpCodes.Ldarg_S, 4),
                     new(OpCodes.Ldc_I4_1),
 
-                    // var ev = new UpgradingInventoryItemEventArgs(player, item, setting)
+                    // var ev = new UpgradingInventoryItemEventArgs(player, itemBase, setting)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(UpgradingInventoryItemEventArgs))[0]),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),
@@ -145,9 +152,9 @@ namespace Exiled.Events.Patches.Events.Scp914
                     //    return;
                     new(OpCodes.Callvirt, PropertyGetter(typeof(UpgradingInventoryItemEventArgs), nameof(UpgradingInventoryItemEventArgs.IsAllowed))),
                     new(OpCodes.Brfalse_S, continueLabel),
-                    new(OpCodes.Ldloc_S, ev2.LocalIndex),
 
                     // setting = ev.KnobSetting
+                    new(OpCodes.Ldloc_S, ev2.LocalIndex),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(UpgradingInventoryItemEventArgs), nameof(UpgradingInventoryItemEventArgs.KnobSetting))),
                     new(OpCodes.Starg_S, 4),
                 });

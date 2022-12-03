@@ -29,11 +29,11 @@ namespace Exiled.Events.Patches.Events.Scp914
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Shared.Rent(instructions);
 
-            // The first index offset.
             const int offset = 0;
-
             int index = newInstructions.FindLastIndex(instruction => instruction.opcode == OpCodes.Ldloc_1) + offset;
+
             LocalBuilder ev = generator.DeclareLocal(typeof(UpgradingItemEventArgs));
+
             Label returnLabel = generator.DefineLabel();
 
             newInstructions.InsertRange(
@@ -48,6 +48,8 @@ namespace Exiled.Events.Patches.Events.Scp914
 
                     // knobSetting
                     new(OpCodes.Ldarg_3),
+
+                    // true
                     new(OpCodes.Ldc_I4_1),
 
                     // var ev = new UpgradingItemEventArgs(pickup, outputPos, knobSetting)
@@ -63,10 +65,10 @@ namespace Exiled.Events.Patches.Events.Scp914
                     //    return;
                     new(OpCodes.Callvirt, PropertyGetter(typeof(UpgradingItemEventArgs), nameof(UpgradingItemEventArgs.IsAllowed))),
                     new(OpCodes.Brfalse_S, returnLabel),
-                    new(OpCodes.Ldloc_S, ev.LocalIndex),
-                    new(OpCodes.Dup),
 
                     // outputPos = ev.OutputPosition
+                    new(OpCodes.Ldloc_S, ev.LocalIndex),
+                    new(OpCodes.Dup),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(UpgradingItemEventArgs), nameof(UpgradingItemEventArgs.OutputPosition))),
                     new(OpCodes.Stloc_0),
 
