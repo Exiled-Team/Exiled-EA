@@ -70,10 +70,13 @@ namespace Exiled.Events
             base.OnEnabled();
 
             Stopwatch watch = Stopwatch.StartNew();
+
             Patch();
 
             watch.Stop();
+
             Log.Info($"Patching completed in {watch.Elapsed}");
+
             SceneManager.sceneUnloaded += Handlers.Internal.SceneUnloaded.OnSceneUnloaded;
             MapGeneration.SeedSynchronizer.OnMapGenerated += Handlers.Internal.MapGenerated.OnMapGenerated;
 
@@ -81,6 +84,7 @@ namespace Exiled.Events
             Handlers.Server.RestartingRound += Handlers.Internal.Round.OnRestartingRound;
             Handlers.Server.RoundStarted += Handlers.Internal.Round.OnRoundStarted;
             Handlers.Player.ChangingRole += Handlers.Internal.Round.OnChangingRole;
+
             CharacterClassManager.OnRoundStarted += Handlers.Server.OnRoundStarted;
 
             InventorySystem.InventoryExtensions.OnItemAdded += Handlers.Player.OnItemAdded;
@@ -104,7 +108,8 @@ namespace Exiled.Events
             Handlers.Server.RestartingRound -= Handlers.Internal.Round.OnRestartingRound;
             Handlers.Server.RoundStarted -= Handlers.Internal.Round.OnRoundStarted;
             Handlers.Player.ChangingRole -= Handlers.Internal.Round.OnChangingRole;
-            CharacterClassManager.OnRoundStarted += Handlers.Server.OnRoundStarted;
+
+            CharacterClassManager.OnRoundStarted -= Handlers.Server.OnRoundStarted;
 
             InventorySystem.InventoryExtensions.OnItemAdded -= Handlers.Player.OnItemAdded;
         }

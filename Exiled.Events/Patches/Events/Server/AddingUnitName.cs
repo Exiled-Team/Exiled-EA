@@ -1,11 +1,10 @@
-﻿// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
 // <copyright file="AddingUnitName.cs" company="Exiled Team">
 // Copyright (c) Exiled Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
 
-/*
 namespace Exiled.Events.Patches.Events.Server
 {
     using System.Collections.Generic;
@@ -16,16 +15,16 @@ namespace Exiled.Events.Patches.Events.Server
     using HarmonyLib;
 
     using NorthwoodLib.Pools;
-
+    using Respawning;
     using Respawning.NamingRules;
 
     using static HarmonyLib.AccessTools;
 
     /// <summary>
-    /// Patches <see cref="UnitNamingRule.AddCombination"/>.
+    /// Patches <see cref="UnitNameMessageHandler.SendNew(SpawnableTeamType, UnitNamingRule)"/>.
     /// Adds the <see cref="Handlers.Server.AddingUnitName"/> event.
     /// </summary>
-    // [HarmonyPatch(typeof(UnitNamingRule), nameof(UnitNamingRule.AddCombination))]
+    [HarmonyPatch(typeof(UnitNameMessageHandler), nameof(UnitNameMessageHandler.SendNew))]
     internal static class AddingUnitName
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
@@ -33,36 +32,31 @@ namespace Exiled.Events.Patches.Events.Server
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Shared.Rent(instructions);
 
             Label returnLabel = generator.DefineLabel();
-            Label skipLabel = generator.DefineLabel();
 
             newInstructions.InsertRange(
                 0,
                 new CodeInstruction[]
                 {
+                    // rule
                     new(OpCodes.Ldarg_1),
+
+                    // true
                     new(OpCodes.Ldc_I4_1),
 
+                    // var ev = new AddingUnitNameEventArgs(UnitNamingRule, bool)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(AddingUnitNameEventArgs))[0]),
-
-                    new(OpCodes.Dup),
                     new(OpCodes.Dup),
 
+                    // Handlers.Server.OnAddingUnitName(ev)
                     new(OpCodes.Call, Method(typeof(Handlers.Server), nameof(Handlers.Server.OnAddingUnitName))),
+
+                    // if (!ev.IsAllowed)
+                    //    return;
                     new(OpCodes.Callvirt, PropertyGetter(typeof(AddingUnitNameEventArgs), nameof(AddingUnitNameEventArgs.IsAllowed))),
-                    new(OpCodes.Brfalse_S, skipLabel),
-
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(AddingUnitNameEventArgs), nameof(AddingUnitNameEventArgs.UnitName))),
-                    new(OpCodes.Starg_S, 1),
+                    new(OpCodes.Brfalse_S, returnLabel),
                 });
 
-            newInstructions.InsertRange(
-                newInstructions.Count - 1,
-                new[]
-                {
-                    new(OpCodes.Br_S, returnLabel),
-                    new CodeInstruction(OpCodes.Pop).WithLabels(skipLabel),
-                    new CodeInstruction(OpCodes.Ret).WithLabels(returnLabel),
-                });
+            newInstructions[newInstructions.Count - 1].WithLabels(returnLabel);
 
             for (int z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
@@ -71,4 +65,3 @@ namespace Exiled.Events.Patches.Events.Server
         }
     }
 }
-*/

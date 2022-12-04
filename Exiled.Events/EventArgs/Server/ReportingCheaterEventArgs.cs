@@ -33,12 +33,7 @@ namespace Exiled.Events.EventArgs.Server
         /// <param name="isAllowed">
         ///     <inheritdoc cref="IsAllowed" />
         /// </param>
-        public ReportingCheaterEventArgs(
-            Player issuer,
-            Player target,
-            int serverPort,
-            string reason,
-            bool isAllowed = true)
+        public ReportingCheaterEventArgs(Player issuer, Player target, int serverPort, string reason, bool isAllowed = true)
         {
             Player = issuer;
             Target = target;

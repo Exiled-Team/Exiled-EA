@@ -5,7 +5,6 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-/*
 namespace Exiled.Events.Patches.Events.Server
 {
     using System.Collections.Generic;
@@ -18,76 +17,112 @@ namespace Exiled.Events.Patches.Events.Server
     using HarmonyLib;
 
     using NorthwoodLib.Pools;
+    using UnityEngine;
 
     using static HarmonyLib.AccessTools;
 
-    using Player = Exiled.API.Features.Player;
+    using Player = API.Features.Player;
 
     /// <summary>
-    ///     Patches
-    ///     <see
-    ///         cref="CheaterReport.IssueReport(GameConsoleTransmission, string, string, string, string, string, string, ref string, ref byte[], string, int, string, string)" />
-    ///     and <see cref="CheaterReport.UserCode_CmdReport(int, string, byte[], bool)" />.
+    ///     Patches <see cref="CheaterReport.UserCode_CmdReport(uint, string, byte[], bool)" />.
     ///     Adds the <see cref="Server.ReportingCheater" /> and <see cref="Server.LocalReporting" /> events.
     /// </summary>
-    // [HarmonyPatch(typeof(CheaterReport), nameof(CheaterReport.UserCode_CmdReport))]
+    [HarmonyPatch(typeof(CheaterReport), nameof(CheaterReport.UserCode_CmdReport))]
     internal static class Reporting
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Shared.Rent(instructions);
 
-            LocalBuilder mem_0x01 = generator.DeclareLocal(typeof(LocalReportingEventArgs));
-            LocalBuilder mem_0x02 = generator.DeclareLocal(typeof(ReportingCheaterEventArgs));
+            LocalBuilder evLocalReporting = generator.DeclareLocal(typeof(LocalReportingEventArgs));
+            LocalBuilder evReportingCheater = generator.DeclareLocal(typeof(ReportingCheaterEventArgs));
 
-            const int offset = -4;
-            int index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Ldc_I4_7);
+            int offset = -2;
+            int index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Newarr) + offset;
 
             Label ret = generator.DefineLabel();
 
             newInstructions.InsertRange(
                 index,
-                new CodeInstruction[]
+                new[]
                 {
-                    new(OpCodes.Ldloc_3),
-                    new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
+                    // Player.Get(base.gameObject)
+                    new CodeInstruction(OpCodes.Ldarg_0).MoveLabelsFrom(newInstructions[index]),
+                    new(OpCodes.Call, PropertyGetter(typeof(Component), nameof(Component.gameObject))),
+                    new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(GameObject) })),
+
+                    // Player.Get(referenceHub)
                     new(OpCodes.Ldloc_2),
                     new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
+
+                    // reason
                     new(OpCodes.Ldarg_2),
+
+                    // true
                     new(OpCodes.Ldc_I4_1),
+
+                    // var ev = new LocalReportingEventArgs(Player, Player, string, bool)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(LocalReportingEventArgs))[0]),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),
-                    new(OpCodes.Stloc_S, mem_0x01.LocalIndex),
+                    new(OpCodes.Stloc_S, evLocalReporting.LocalIndex),
+
+                    // Server.OnLocalReporting(ev)
                     new(OpCodes.Call, Method(typeof(Server), nameof(Server.OnLocalReporting))),
+
+                    // if (!ev.IsAllowed)
+                    //    return;
                     new(OpCodes.Callvirt, PropertyGetter(typeof(LocalReportingEventArgs), nameof(LocalReportingEventArgs.IsAllowed))),
                     new(OpCodes.Brfalse_S, ret),
-                    new(OpCodes.Ldloc_S, mem_0x01.LocalIndex),
+
+                    // reason = ev.Reason
+                    new(OpCodes.Ldloc_S, evLocalReporting.LocalIndex),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(LocalReportingEventArgs), nameof(LocalReportingEventArgs.Reason))),
                     new(OpCodes.Starg_S, 2),
                 });
 
-            index = newInstructions.FindLastIndex(instruction => instruction.opcode == OpCodes.Ldarg_0) + offset;
+            offset = -2;
+            index = newInstructions.FindLastIndex(
+                instruction => instruction.StoresField(Field(typeof(CheaterReport), nameof(CheaterReport._lastReport)))) + offset;
 
             newInstructions.InsertRange(
                 index,
                 new[]
                 {
-                    new CodeInstruction(OpCodes.Ldloc_3).MoveLabelsFrom(newInstructions[index]),
-                    new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
+                    // Player.Get(base.gameObject)
+                    new CodeInstruction(OpCodes.Ldarg_0).MoveLabelsFrom(newInstructions[index]),
+                    new(OpCodes.Call, PropertyGetter(typeof(Component), nameof(Component.gameObject))),
+                    new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(GameObject) })),
+
+                    // Player.Get(referenceHub)
                     new(OpCodes.Ldloc_2),
                     new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
-                    new(OpCodes.Ldsfld, Field(typeof(ServerConsole), nameof(ServerConsole.Port))),
+
+                    // ServerConsole.PortToReport
+                    new(OpCodes.Ldsfld, Field(typeof(ServerConsole), nameof(ServerConsole.PortToReport))),
+
+                    // reason
                     new(OpCodes.Ldarg_2),
+
+                    // true
                     new(OpCodes.Ldc_I4_1),
+
+                    // var ev = new ReportingCheaterEventArgs(Player, Player, int, string, bool)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(ReportingCheaterEventArgs))[0]),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),
-                    new(OpCodes.Stloc_S, mem_0x02.LocalIndex),
+                    new(OpCodes.Stloc_S, evReportingCheater.LocalIndex),
+
+                    // Server.OnReportingCheater(ev)
                     new(OpCodes.Call, Method(typeof(Server), nameof(Server.OnReportingCheater))),
+
+                    // if (!ev.IsAllowed)
+                    //    return;
                     new(OpCodes.Callvirt, PropertyGetter(typeof(ReportingCheaterEventArgs), nameof(ReportingCheaterEventArgs.IsAllowed))),
                     new(OpCodes.Brfalse_S, ret),
-                    new(OpCodes.Ldloc_S, mem_0x02.LocalIndex),
+
+                    // reason = ev.Reason
+                    new(OpCodes.Ldloc_S, evReportingCheater.LocalIndex),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(ReportingCheaterEventArgs), nameof(ReportingCheaterEventArgs.Reason))),
                     new(OpCodes.Starg_S, 2),
                 });
@@ -101,4 +136,3 @@ namespace Exiled.Events.Patches.Events.Server
         }
     }
 }
-*/
