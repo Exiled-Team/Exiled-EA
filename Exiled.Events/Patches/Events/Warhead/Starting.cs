@@ -30,19 +30,16 @@ namespace Exiled.Events.Patches.Events.Warhead
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Shared.Rent(instructions);
 
-            // The index offset.
             const int offset = 0;
 
-            // Search for the last "ldsfld".
             int index = newInstructions.FindLastIndex(instruction => instruction.opcode == OpCodes.Ldsfld) + offset;
 
-            // Get the return label.
             Label returnLabel = generator.DefineLabel();
 
             // if (!Warhead.CanBeStarted)
             //   return;
             //
-            // var ev = new StartingEventArgs(Player.Get(this._hub), true);
+            // var ev = new StartingEventArgs(Player.Get(component), true);
             //
             // Handlers.Warhead.OnStarting(ev);
             //
@@ -52,20 +49,32 @@ namespace Exiled.Events.Patches.Events.Warhead
                 index,
                 new[]
                 {
-                    new CodeInstruction(OpCodes.Call, PropertyGetter(typeof(Warhead), nameof(Warhead.CanBeStarted))).MoveLabelsFrom(newInstructions[index]),
+                    // if (!Warhead.CanBestarted)
+                    //    return;
+                    new CodeInstruction(OpCodes.Call, PropertyGetter(typeof(Warhead), nameof(Warhead.CanBeStarted))),
                     new(OpCodes.Brfalse_S, returnLabel),
-                    new(OpCodes.Ldarg_0),
-                    new(OpCodes.Ldfld, Field(typeof(PlayerInteract), nameof(PlayerInteract._hub))),
+
+                    // Player.Get(component)
+                    new(OpCodes.Ldloc_1),
                     new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
+
+                    // true
                     new(OpCodes.Ldc_I4_1),
+
+                    // var ev = new StartingEventArgs(Player, bool);
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(StartingEventArgs))[0]),
                     new(OpCodes.Dup),
+
+                    // Handlers.Warhead.OnStarting(ev);
                     new(OpCodes.Call, Method(typeof(Handlers.Warhead), nameof(Handlers.Warhead.OnStarting))),
+
+                    // if (!ev.IsAllowed)
+                    //    return;
                     new(OpCodes.Call, PropertyGetter(typeof(StartingEventArgs), nameof(StartingEventArgs.IsAllowed))),
                     new(OpCodes.Brfalse_S, returnLabel),
                 });
 
-            newInstructions[newInstructions.Count - 1].labels.Add(returnLabel);
+            newInstructions[newInstructions.Count - 1].WithLabels(returnLabel);
 
             for (int z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];

@@ -5,7 +5,6 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-/*
 namespace Exiled.Events.Patches.Events.Warhead
 {
     using System.Collections.Generic;
@@ -23,26 +22,21 @@ namespace Exiled.Events.Patches.Events.Warhead
 
     using static HarmonyLib.AccessTools;
 
-    using Warhead = Exiled.Events.Handlers.Warhead;
+    using Warhead = Handlers.Warhead;
 
     /// <summary>
-    ///     Patches <see cref="AlphaWarheadController.CancelDetonation(GameObject)" />.
-    ///     Adds the <see cref="Handlers.Warhead.Stopping" /> event.
+    ///     Patches <see cref="AlphaWarheadController.CancelDetonation(ReferenceHub)" />.
+    ///     Adds the <see cref="Warhead.Stopping" /> event.
     /// </summary>
-    // [HarmonyPatch(typeof(AlphaWarheadController), nameof(AlphaWarheadController.CancelDetonation), typeof(GameObject))]
+    [HarmonyPatch(typeof(AlphaWarheadController), nameof(AlphaWarheadController.CancelDetonation), typeof(ReferenceHub))]
     internal static class Stopping
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Shared.Rent(instructions);
 
-            // Search for "call" with method "ServerLogs::AddLog" and then add 1 to insert method after "ServerLogs::AddLog".
-            int index = newInstructions.FindIndex(instruction => (instruction.opcode == OpCodes.Call) && ((MethodInfo)instruction.operand == Method(typeof(ServerLogs), nameof(ServerLogs.AddLog)))) + 1;
-
-            // Get the count to find the previous index
             int oldCount = newInstructions.Count;
 
-            // Generate the return label.
             Label returnLabel = generator.DefineLabel();
 
             // if(!this.inProgress)
@@ -55,30 +49,38 @@ namespace Exiled.Events.Patches.Events.Warhead
             // if(!ev.IsAllowed || Warhead.IsWarheadLocked)
             //   return;
             newInstructions.InsertRange(
-                index,
+                0,
                 new CodeInstruction[]
                 {
+                    // if (!this.InProgress)
+                    //    return;
                     new(OpCodes.Ldarg_0),
-                    new(OpCodes.Ldfld, Field(typeof(AlphaWarheadController), nameof(AlphaWarheadController.inProgress))),
+                    new(OpCodes.Ldfld, Field(typeof(AlphaWarheadController), nameof(AlphaWarheadController.InProgress))),
                     new(OpCodes.Brfalse_S, returnLabel),
+
+                    // Player.Get(disabler)
                     new(OpCodes.Ldarg_1),
-                    new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(GameObject) })),
+                    new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
+
+                    // true
                     new(OpCodes.Ldc_I4_1),
+
+                    // var ev = new StoppingEventArgs(Player, bool);
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(StoppingEventArgs))[0]),
                     new(OpCodes.Dup),
+
+                    // Handlers.Warhead.OnStopping(ev);
                     new(OpCodes.Call, Method(typeof(Warhead), nameof(Warhead.OnStopping))),
+
+                    // if(!ev.IsAllowed || Warhead.IsWarheadLocked)
+                    //   return;
                     new(OpCodes.Callvirt, PropertyGetter(typeof(StoppingEventArgs), nameof(StoppingEventArgs.IsAllowed))),
                     new(OpCodes.Brfalse_S, returnLabel),
                     new(OpCodes.Call, PropertyGetter(typeof(API.Features.Warhead), nameof(API.Features.Warhead.IsLocked))),
                     new(OpCodes.Brtrue_S, returnLabel),
                 });
 
-            // Add the starting labels to the first injected instruction.
-            // Calculate the difference and get the valid index - is better and easy than using a list
-            newInstructions[index].MoveLabelsFrom(newInstructions[(newInstructions.Count - oldCount) + index]);
-
-            // Add the label to the last instruction.
-            newInstructions[newInstructions.Count - 1].labels.Add(returnLabel);
+            newInstructions[newInstructions.Count - 1].WithLabels(returnLabel);
 
             for (int z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
@@ -87,4 +89,3 @@ namespace Exiled.Events.Patches.Events.Warhead
         }
     }
 }
-*/

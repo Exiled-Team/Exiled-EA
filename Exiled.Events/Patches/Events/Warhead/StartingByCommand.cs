@@ -5,7 +5,6 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-/*
 namespace Exiled.Events.Patches.Events.Warhead
 {
 #pragma warning disable SA1402
@@ -16,7 +15,6 @@ namespace Exiled.Events.Patches.Events.Warhead
     using CommandSystem;
     using CommandSystem.Commands.RemoteAdmin.ServerEvent;
     using CommandSystem.Commands.RemoteAdmin.Warhead;
-
     using Exiled.API.Features;
     using Exiled.Events.EventArgs.Warhead;
 
@@ -26,7 +24,7 @@ namespace Exiled.Events.Patches.Events.Warhead
 
     using static HarmonyLib.AccessTools;
 
-    using Warhead = Exiled.Events.Handlers.Warhead;
+    using Warhead = Handlers.Warhead;
 
     /// <summary>
     ///     Contains the instructions we will insert into multiple methods.
@@ -42,38 +40,55 @@ namespace Exiled.Events.Patches.Events.Warhead
         internal static void InsertInstructions(int index, ILGenerator generator, ref List<CodeInstruction> instructions)
         {
             Label cdcLabel = generator.DefineLabel();
+
             CodeInstruction[] instructionsToInsert =
             {
+                // Player.Get(sender)
                 new CodeInstruction(OpCodes.Ldarg_2).MoveLabelsFrom(instructions[index]),
                 new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ICommandSender) })),
+
+                // true
                 new(OpCodes.Ldc_I4_1),
+
+                // var ev = new StartingEventArgs(Player, bool)
                 new(OpCodes.Newobj, GetDeclaredConstructors(typeof(StartingEventArgs))[0]),
                 new(OpCodes.Dup),
+
+                // Warhead.OnStarting(ev)
                 new(OpCodes.Call, Method(typeof(Warhead), nameof(Warhead.OnStarting))),
+
+                // if (!ev.IsAllowed)
+                //    goto cdcLabel;
                 new(OpCodes.Callvirt, PropertyGetter(typeof(StartingEventArgs), nameof(StartingEventArgs.IsAllowed))),
                 new(OpCodes.Brtrue, cdcLabel),
+
+                // response = "Action prevented by a plugin."
                 new(OpCodes.Ldarg_3),
                 new(OpCodes.Ldstr, "Action prevented by a plugin."),
                 new(OpCodes.Stind_Ref),
+
+                // return false
                 new(OpCodes.Ldc_I4_0),
                 new(OpCodes.Ret),
             };
 
             instructions.InsertRange(index, instructionsToInsert);
-            instructions[index + instructionsToInsert.Length].labels.Add(cdcLabel);
+
+            instructions[index + instructionsToInsert.Length].WithLabels(cdcLabel);
         }
     }
 
     /// <summary>
     ///     Patches <see cref="CommandSystem.Commands.RemoteAdmin.Warhead.DetonateCommand.Execute" /> to add the
-    ///     <see cref="Handlers.Warhead.Starting" /> event when triggered by a command.
+    ///     <see cref="Warhead.Starting" /> event when triggered by a command.
     /// </summary>
-    // [HarmonyPatch(typeof(DetonateCommand), nameof(DetonateCommand.Execute))]
+    [HarmonyPatch(typeof(DetonateCommand), nameof(DetonateCommand.Execute))]
     internal static class StartingByDetonateCommand
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Shared.Rent(instructions);
+
             const int offset = 1;
             int index = newInstructions.FindIndex(i => i.opcode == OpCodes.Ret) + offset;
 
@@ -87,15 +102,16 @@ namespace Exiled.Events.Patches.Events.Warhead
     }
 
     /// <summary>
-    ///     Patches <see cref="CommandSystem.Commands.RemoteAdmin.Warhead.InstantCommand.Execute" /> to add the
-    ///     <see cref="Handlers.Warhead.Starting" /> event when triggered by a command.
+    ///     Patches <see cref="InstantCommand.Execute" /> to add the
+    ///     <see cref="Warhead.Starting" /> event when triggered by a command.
     /// </summary>
-    // [HarmonyPatch(typeof(InstantCommand), nameof(InstantCommand.Execute))]
+    [HarmonyPatch(typeof(InstantCommand), nameof(InstantCommand.Execute))]
     internal static class StartingByInstantCommand
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Shared.Rent(instructions);
+
             const int offset = 1;
             int index = newInstructions.FindIndex(i => i.opcode == OpCodes.Ret) + offset;
 
@@ -109,15 +125,16 @@ namespace Exiled.Events.Patches.Events.Warhead
     }
 
     /// <summary>
-    ///     Patches <see cref="CommandSystem.Commands.RemoteAdmin.ServerEvent.DetonationStartCommand.Execute" /> to add the
-    ///     <see cref="Handlers.Warhead.Starting" /> event when triggered by a command.
+    ///     Patches <see cref="DetonationStartCommand.Execute" /> to add the
+    ///     <see cref="Warhead.Starting" /> event when triggered by a command.
     /// </summary>
-    // [HarmonyPatch(typeof(DetonationStartCommand), nameof(DetonationStartCommand.Execute))]
+    [HarmonyPatch(typeof(DetonationStartCommand), nameof(DetonationStartCommand.Execute))]
     internal static class StartingByEventDetonateCommand
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Shared.Rent(instructions);
+
             const int offset = 1;
             int index = newInstructions.FindIndex(i => i.opcode == OpCodes.Ret) + offset;
 
@@ -131,15 +148,16 @@ namespace Exiled.Events.Patches.Events.Warhead
     }
 
     /// <summary>
-    ///     Patches <see cref="CommandSystem.Commands.RemoteAdmin.ServerEvent.DetonationInstantCommand.Execute" /> to add the
-    ///     <see cref="Handlers.Warhead.Starting" /> event when triggered by a command.
+    ///     Patches <see cref="DetonationInstantCommand.Execute" /> to add the
+    ///     <see cref="Warhead.Starting" /> event when triggered by a command.
     /// </summary>
-    // [HarmonyPatch(typeof(DetonationInstantCommand), nameof(DetonationInstantCommand.Execute))]
+    [HarmonyPatch(typeof(DetonationInstantCommand), nameof(DetonationInstantCommand.Execute))]
     internal static class StartingByEventInstantDetonateCommand
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Shared.Rent(instructions);
+
             const int offset = 1;
             int index = newInstructions.FindIndex(i => i.opcode == OpCodes.Ret) + offset;
 
@@ -152,4 +170,3 @@ namespace Exiled.Events.Patches.Events.Warhead
         }
     }
 }
-*/

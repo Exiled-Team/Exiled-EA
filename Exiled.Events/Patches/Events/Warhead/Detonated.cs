@@ -29,11 +29,11 @@ namespace Exiled.Events.Patches.Events.Warhead
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Shared.Rent(instructions);
 
-            // Warhead.OnDetonated();
             newInstructions.InsertRange(
                 0,
                 new CodeInstruction[]
                 {
+                    // Warhead.OnDetonated();
                     new(OpCodes.Call, Method(typeof(Warhead), nameof(Warhead.OnDetonated))),
                 });
 

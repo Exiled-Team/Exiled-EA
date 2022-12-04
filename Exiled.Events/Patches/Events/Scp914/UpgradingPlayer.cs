@@ -41,7 +41,6 @@ namespace Exiled.Events.Patches.Events.Scp914
             int index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Ret) + offset;
 
             Label returnLabel = generator.DefineLabel();
-            List<Label> oldLabels = newInstructions[index].labels;
 
             LocalBuilder curSetting = generator.DeclareLocal(typeof(Scp914KnobSetting));
             LocalBuilder ev = generator.DeclareLocal(typeof(UpgradingPlayerEventArgs));
@@ -53,7 +52,7 @@ namespace Exiled.Events.Patches.Events.Scp914
                 new[]
                 {
                     // Player.Get(ply)
-                    new CodeInstruction(OpCodes.Ldarg_0).WithLabels(oldLabels),
+                    new CodeInstruction(OpCodes.Ldarg_0).MoveLabelsFrom(newInstructions[index]),
                     new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
 
                     // upgradeInventory

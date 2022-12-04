@@ -5,7 +5,6 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-/*
 namespace Exiled.Events.Patches.Events.Warhead
 {
     using System.Collections.Generic;
@@ -21,31 +20,23 @@ namespace Exiled.Events.Patches.Events.Warhead
 
     using static HarmonyLib.AccessTools;
 
-    using Warhead = Exiled.Events.Handlers.Warhead;
+    using Warhead = Handlers.Warhead;
 
     /// <summary>
     ///     Patch the <see cref="AlphaWarheadController.Update" />.
-    ///     Adds the <see cref="Handlers.Warhead.Starting" /> event.
+    ///     Adds the <see cref="Warhead.Starting" /> event.
     /// </summary>
-    // [HarmonyPatch(typeof(AlphaWarheadController), nameof(AlphaWarheadController.Update))]
+    [HarmonyPatch(typeof(AlphaWarheadController), nameof(AlphaWarheadController.ServerUpdateAutonuke))]
     internal static class StartingByServer
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Shared.Rent(instructions);
 
-            const int offset = -3;
-
-            // Search for the only call AlphaWarheadController.StartDetonation
+            const int offset = -4;
             int index = newInstructions.FindLastIndex(
-                            instruction => (instruction.opcode == OpCodes.Call) &&
-                                           ((MethodInfo)instruction.operand == Method(typeof(AlphaWarheadController), nameof(AlphaWarheadController.StartDetonation)))) +
-                        offset;
+                            instruction => instruction.Calls(Method(typeof(AlphaWarheadController), nameof(AlphaWarheadController.StartDetonation)))) + offset;
 
-            // Get the count to find the previous index
-            int oldCount = newInstructions.Count;
-
-            // Define a return label for us to use.
             Label returnLabel = generator.DefineLabel();
 
             // var ev = new StartingEventArgs(Server.Host, true);
@@ -58,21 +49,26 @@ namespace Exiled.Events.Patches.Events.Warhead
                 index,
                 new CodeInstruction[]
                 {
-                    new(OpCodes.Call, PropertyGetter(typeof(Server), nameof(Server.Host))),
+                    // Server.Host
+                    new CodeInstruction(OpCodes.Call, PropertyGetter(typeof(Server), nameof(Server.Host))).MoveLabelsFrom(newInstructions[index]),
+
+                    // true
                     new(OpCodes.Ldc_I4_1),
+
+                    // new StartingEventArgs(Player, bool)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(StartingEventArgs))[0]),
                     new(OpCodes.Dup),
+
+                    // Handlers.Warhead.OnStarting(ev);
                     new(OpCodes.Call, Method(typeof(Warhead), nameof(Warhead.OnStarting))),
+
+                    // if (!ev.IsAllowed)
+                    //   return;
                     new(OpCodes.Callvirt, PropertyGetter(typeof(StartingEventArgs), nameof(StartingEventArgs.IsAllowed))),
                     new(OpCodes.Brfalse_S, returnLabel),
                 });
 
-            // Add the starting labels to the first injected instruction.
-            // Calculate the difference and get the valid index - is better and easy than using a list
-            newInstructions[index].MoveLabelsFrom(newInstructions[(newInstructions.Count - oldCount) + index]);
-
-            // Add our return label to the method's natural ret instruction.
-            newInstructions[newInstructions.Count - 1].labels.Add(returnLabel);
+            newInstructions[newInstructions.Count - 1].WithLabels(returnLabel);
 
             for (int z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
@@ -81,4 +77,3 @@ namespace Exiled.Events.Patches.Events.Warhead
         }
     }
 }
-*/
