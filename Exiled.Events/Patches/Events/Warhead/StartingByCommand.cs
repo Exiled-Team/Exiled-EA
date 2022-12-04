@@ -79,7 +79,7 @@ namespace Exiled.Events.Patches.Events.Warhead
     }
 
     /// <summary>
-    ///     Patches <see cref="CommandSystem.Commands.RemoteAdmin.Warhead.DetonateCommand.Execute" /> to add the
+    ///     Patches <see cref="DetonateCommand.Execute" /> to add the
     ///     <see cref="Warhead.Starting" /> event when triggered by a command.
     /// </summary>
     [HarmonyPatch(typeof(DetonateCommand), nameof(DetonateCommand.Execute))]

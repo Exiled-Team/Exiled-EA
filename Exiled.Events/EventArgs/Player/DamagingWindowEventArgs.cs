@@ -53,7 +53,7 @@ namespace Exiled.Events.EventArgs.Player
         public bool IsAllowed { get; set; } = true;
 
         /// <summary>
-        ///     Gets the <see cref="Exiled.API.Features.Player" /> causing the damage.
+        ///     Gets the <see cref="API.Features.Player" /> causing the damage.
         /// </summary>
         public Player Player { get; }
     }

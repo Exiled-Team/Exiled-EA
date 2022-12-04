@@ -70,7 +70,7 @@ namespace Exiled.API.Features
         public RoomType Type { get; private set; }
 
         /// <summary>
-        /// Gets a reference to the room's <see cref="MapGeneration.RoomIdentifier"/>.
+        /// Gets a reference to the room's <see cref="RoomIdentifier"/>.
         /// </summary>
         public RoomIdentifier Identifier { get; private set; }
 

@@ -18,12 +18,12 @@ namespace Exiled.API.Features
     /// </summary>
     public static class Intercom
     {
-        private static PlayerRoles.Voice.IntercomDisplay intercomDisplay;
+        private static IntercomDisplay intercomDisplay;
 
         /// <summary>
         /// Gets the <see cref="intercomDisplay"/>.
         /// </summary>
-        public static PlayerRoles.Voice.IntercomDisplay IntercomDisplay => intercomDisplay ??= IntercomDisplay._singleton;
+        public static IntercomDisplay IntercomDisplay => intercomDisplay ??= IntercomDisplay._singleton;
 
         /// <summary>
         /// Gets or sets the text displayed on the intercom screen.
@@ -37,7 +37,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets or sets the current state of the intercom.
         /// </summary>
-        public static PlayerRoles.Voice.IntercomState State
+        public static IntercomState State
         {
             get => GameIntercom.State;
             set => GameIntercom.State = value;

@@ -4,7 +4,7 @@
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
-/*
+
 namespace Exiled.Events.Patches.Events.Scp330
 {
     using System.Collections.Generic;
@@ -29,7 +29,7 @@ namespace Exiled.Events.Patches.Events.Scp330
     using Player = API.Features.Player;
 
     /// <summary>
-    ///     Patches the <see cref="Scp330Interobject.ServerInteract" /> method to add the
+    ///     Patches the <see cref="Scp330Interobject.ServerInteract(ReferenceHub, byte)" /> method to add the
     ///     <see cref="Scp330.InteractingScp330" /> event.
     /// </summary>
     [HarmonyPatch(typeof(Scp330Interobject), nameof(Scp330Interobject.ServerInteract))]
@@ -49,7 +49,8 @@ namespace Exiled.Events.Patches.Events.Scp330
 
             // Find ServerPickupProcess, insert before it.
             int offset = -3;
-            int index = newInstructions.FindLastIndex(instruction => instruction.Calls(Method(typeof(Scp330Bag), nameof(Scp330Bag.ServerProcessPickup)))) + offset;
+            int index = newInstructions.FindLastIndex(
+                instruction => instruction.Calls(Method(typeof(Scp330Bag), nameof(Scp330Bag.ServerProcessPickup)))) + offset;
 
             newInstructions.InsertRange(
                 index,
@@ -130,16 +131,18 @@ namespace Exiled.Events.Patches.Events.Scp330
             ListPool<CodeInstruction>.Shared.Return(newInstructions);
         }
 
-        private static bool ServerProcessPickup(ReferenceHub ply, CandyKindID candy, out Scp330Bag bag)
+        private static bool ServerProcessPickup(ReferenceHub player, CandyKindID candy, out Scp330Bag bag)
         {
-            if (!Scp330Bag.TryGetBag(ply, out bag))
+            if (!Scp330Bag.TryGetBag(player, out bag))
             {
-                ply.inventory.ServerAddItem(ItemType.SCP330);
-                if (!Scp330Bag.TryGetBag(ply, out bag))
+                player.inventory.ServerAddItem(ItemType.SCP330);
+
+                if (!Scp330Bag.TryGetBag(player, out bag))
                     return false;
 
                 bag.Candies = new List<CandyKindID> { candy };
                 bag.ServerRefreshBag();
+
                 return true;
             }
 
@@ -151,4 +154,4 @@ namespace Exiled.Events.Patches.Events.Scp330
             return result;
         }
     }
-}*/
+}

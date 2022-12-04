@@ -22,7 +22,7 @@ namespace Exiled.API.Features.DamageHandlers
         private string genericEnvironmentDamageText;
         private Player player;
         private DamageType damageType;
-        private Features.DamageHandlers.DamageHandlerBase.CassieAnnouncement customCassieAnnouncement;
+        private DamageHandlerBase.CassieAnnouncement customCassieAnnouncement;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GenericDamageHandler"/> class.
@@ -34,7 +34,7 @@ namespace Exiled.API.Features.DamageHandlers
         /// <param name="damageType"> Damage type. </param>
         /// <param name="cassieAnnouncement"> Custom cassie announcment. </param>
         /// <param name="damageText"> Text to provide to player death screen. </param>
-        public GenericDamageHandler(Player player, Player attacker, float damage, DamageType damageType, Features.DamageHandlers.DamageHandlerBase.CassieAnnouncement cassieAnnouncement, string damageText = null)
+        public GenericDamageHandler(Player player, Player attacker, float damage, DamageType damageType, DamageHandlerBase.CassieAnnouncement cassieAnnouncement, string damageText = null)
             : base(DamageTextDefault)
         {
             this.player = player;

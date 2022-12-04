@@ -51,7 +51,7 @@ namespace Exiled.Events.EventArgs.Player
         public Player Target { get; }
 
         /// <summary>
-        ///     Gets or sets the <see cref="API.Features.DamageHandlers.CustomDamageHandler" />.
+        ///     Gets or sets the <see cref="CustomDamageHandler" />.
         /// </summary>
         public CustomDamageHandler DamageHandler { get; set; }
 

@@ -51,7 +51,7 @@ namespace Exiled.Events.EventArgs.Player
         public bool IsAllowed { get; set; }
 
         /// <summary>
-        ///     Gets the <see cref="Exiled.API.Features.Player" /> last user of the workstation.
+        ///     Gets the <see cref="API.Features.Player" /> last user of the workstation.
         /// </summary>
         public Player Player { get; }
     }

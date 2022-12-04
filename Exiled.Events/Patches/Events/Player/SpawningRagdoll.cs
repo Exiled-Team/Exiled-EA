@@ -25,11 +25,11 @@ namespace Exiled.Events.Patches.Events.Player
 
     using static HarmonyLib.AccessTools;
 
-    using Map = Exiled.API.Features.Map;
+    using Map = API.Features.Map;
 
     /// <summary>
     ///     Patches <see cref="Ragdoll.ServerSpawnRagdoll(ReferenceHub, DamageHandlerBase)" />.
-    ///     Adds the <see cref="Handlers.Player.SpawningRagdoll" /> event.
+    ///     Adds the <see cref="Player.SpawningRagdoll" /> event.
     /// </summary>
     // [HarmonyPatch(typeof(Ragdoll), nameof(Ragdoll.ServerSpawnRagdoll))]
     internal static class SpawningRagdoll

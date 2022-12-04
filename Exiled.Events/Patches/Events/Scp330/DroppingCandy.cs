@@ -26,7 +26,7 @@ namespace Exiled.Events.Patches.Events.Scp330
 
     /// <summary>
     ///     Patches the <see cref="Scp330NetworkHandler.ServerSelectMessageReceived(NetworkConnection, SelectScp330Message)" /> method to add the
-    ///     <see cref="Handlers.Scp330.DroppingScp330" /> event.
+    ///     <see cref="Scp330.DroppingScp330" /> event.
     /// </summary>
     [HarmonyPatch(typeof(Scp330NetworkHandler), nameof(Scp330NetworkHandler.ServerSelectMessageReceived))]
     internal static class DroppingCandy

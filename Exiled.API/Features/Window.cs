@@ -59,7 +59,7 @@ namespace Exiled.API.Features
         public Transform Transform => Base._transform;
 
         /// <summary>
-        /// Gets the <see cref="Exiled.API.Features.Room"/> the window is in.
+        /// Gets the <see cref="Features.Room"/> the window is in.
         /// </summary>
         public Room Room { get; }
 

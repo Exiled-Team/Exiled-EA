@@ -23,7 +23,7 @@ namespace Exiled.Events.Patches.Events.Player
 
     /// <summary>
     ///     Patch the <see cref="WorkstationController.NetworkStatus" />.
-    ///     Adds the <see cref="Handlers.Player.DeactivatingWorkstation" /> event.
+    ///     Adds the <see cref="Player.DeactivatingWorkstation" /> event.
     /// </summary>
     [HarmonyPatch(typeof(WorkstationController), nameof(WorkstationController.NetworkStatus), MethodType.Setter)]
     internal static class DeactivatingWorkstation

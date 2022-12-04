@@ -23,7 +23,7 @@ namespace Exiled.Events.Patches.Events.Scp106
 
     using static HarmonyLib.AccessTools;
 
-    using Player = Exiled.API.Features.Player;
+    using Player = API.Features.Player;
 
     /// <summary>
     ///     Patches <see cref="Scp106HuntersAtlasAbility.ServerProcessCmd" />.

@@ -25,7 +25,7 @@ namespace Exiled.Events.Patches.Events.Player
 
     /// <summary>
     ///     Patches <see cref="CustomLiteNetLib4MirrorTransport.ProcessConnectionRequest(ConnectionRequest)" />.
-    ///     Adds the <see cref="Handlers.Player.PreAuthenticating" /> event.
+    ///     Adds the <see cref="Player.PreAuthenticating" /> event.
     /// </summary>
     // [HarmonyPatch(typeof(CustomLiteNetLib4MirrorTransport), nameof(CustomLiteNetLib4MirrorTransport.ProcessConnectionRequest), typeof(ConnectionRequest))]
     internal static class PreAuthenticating
