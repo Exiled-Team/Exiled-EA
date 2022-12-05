@@ -7,7 +7,6 @@
 
 namespace Exiled.API.Features.Roles
 {
-    using PlayableScps;
     using PlayerRoles;
     using PlayerRoles.PlayableScps.Scp049.Zombies;
     using PlayerRoles.PlayableScps.Subroutines;

@@ -7,7 +7,6 @@
 
 namespace Exiled.Events.EventArgs.Map
 {
-    using API.Enums;
     using API.Features;
     using Interfaces;
 

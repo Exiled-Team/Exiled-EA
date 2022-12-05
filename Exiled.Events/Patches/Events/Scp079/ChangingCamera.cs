@@ -19,7 +19,6 @@ namespace Exiled.Events.Patches.Events.Scp079
     using PlayerRoles.PlayableScps.Scp079;
     using PlayerRoles.PlayableScps.Scp079.Cameras;
     using PlayerRoles.PlayableScps.Subroutines;
-    using UnityEngine;
 
     using static HarmonyLib.AccessTools;
 

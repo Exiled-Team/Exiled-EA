@@ -10,7 +10,6 @@ namespace Exiled.API.Features.Roles
     using PlayerRoles;
     using PlayerRoles.PlayableScps.Scp106;
     using PlayerRoles.PlayableScps.Subroutines;
-    using UnityEngine;
 
     using Scp106GameRole = PlayerRoles.PlayableScps.Scp106.Scp106Role;
 

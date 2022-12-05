@@ -8,7 +8,6 @@
 namespace Exiled.Events.Patches.Events.Warhead
 {
     using System.Collections.Generic;
-    using System.Reflection;
     using System.Reflection.Emit;
 
     using Exiled.API.Features;

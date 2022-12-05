@@ -12,12 +12,10 @@ namespace Exiled.API.Features
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Linq;
-    using System.Text.RegularExpressions;
 
     using Enums;
     using Exiled.API.Extensions;
     using Hazards;
-    using Hints;
     using InventorySystem.Items.Firearms.BasicMessages;
     using InventorySystem.Items.Pickups;
     using Items;

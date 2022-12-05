@@ -7,7 +7,6 @@
 
 namespace Exiled.Events.Patches.Events.Scp914
 {
-    using System;
     using System.Collections.Generic;
     using System.Reflection.Emit;
 
@@ -17,7 +16,6 @@ namespace Exiled.Events.Patches.Events.Scp914
     using global::Scp914;
 
     using HarmonyLib;
-    using InventorySystem.Items;
     using NorthwoodLib.Pools;
 
     using UnityEngine;

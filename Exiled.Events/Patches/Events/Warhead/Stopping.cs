@@ -8,7 +8,6 @@
 namespace Exiled.Events.Patches.Events.Warhead
 {
     using System.Collections.Generic;
-    using System.Reflection;
     using System.Reflection.Emit;
 
     using Exiled.API.Features;
@@ -17,8 +16,6 @@ namespace Exiled.Events.Patches.Events.Warhead
     using HarmonyLib;
 
     using NorthwoodLib.Pools;
-
-    using UnityEngine;
 
     using static HarmonyLib.AccessTools;
 

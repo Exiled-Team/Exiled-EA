@@ -18,8 +18,6 @@ namespace Exiled.Events.Patches.Fixes
 
     using NorthwoodLib.Pools;
 
-    using UnityEngine;
-
     using static HarmonyLib.AccessTools;
 
     /// <summary>

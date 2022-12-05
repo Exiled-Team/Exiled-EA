@@ -7,9 +7,6 @@
 
 namespace Exiled.Events.EventArgs.Player
 {
-    using System;
-    using System.Linq;
-
     using Exiled.API.Features;
     using Exiled.Events.EventArgs.Interfaces;
     using Interactables.Interobjects;

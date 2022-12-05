@@ -16,7 +16,6 @@ namespace Exiled.API.Features
     using MEC;
 
     using Mirror;
-    using PlayerRoles;
     using PlayerRoles.RoleAssign;
     using RoundRestarting;
 

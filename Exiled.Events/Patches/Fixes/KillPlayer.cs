@@ -13,8 +13,6 @@ namespace Exiled.Events.Patches.Fixes
     using API.Features.DamageHandlers;
     using EventArgs.Player;
 
-    using HarmonyLib;
-
     using Mirror;
 
     using PlayerStatsSystem;

@@ -8,7 +8,6 @@
 namespace Exiled.Events.Patches.Events.Scp106
 {
     using System.Collections.Generic;
-    using System.Reflection;
     using System.Reflection.Emit;
 
     using Exiled.Events.EventArgs.Scp106;
@@ -19,7 +18,6 @@ namespace Exiled.Events.Patches.Events.Scp106
     using NorthwoodLib.Pools;
     using PlayerRoles.PlayableScps.Scp106;
     using PlayerRoles.PlayableScps.Subroutines;
-    using UnityEngine;
 
     using static HarmonyLib.AccessTools;
 

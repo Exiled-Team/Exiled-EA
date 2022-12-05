@@ -14,8 +14,6 @@ namespace Exiled.API.Features
 
     using Respawning;
 
-    using UnityEngine;
-
     /// <summary>
     /// A set of tools to handle team respawns more easily.
     /// </summary>

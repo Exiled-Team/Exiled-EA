@@ -25,8 +25,6 @@ namespace Exiled.Events.Patches.Generic
     using PlayerRoles;
     using PlayerStatsSystem;
 
-    using UnityEngine;
-
     using static HarmonyLib.AccessTools;
 
     /// <summary>

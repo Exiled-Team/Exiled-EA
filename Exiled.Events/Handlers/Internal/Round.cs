@@ -7,8 +7,6 @@
 
 namespace Exiled.Events.Handlers.Internal
 {
-    using System.Collections.Generic;
-
     using API.Features;
     using API.Features.Items;
     using Exiled.API.Features.Roles;

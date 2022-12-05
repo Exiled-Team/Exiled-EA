@@ -12,7 +12,6 @@ namespace Exiled.Events.EventArgs.Scp079
     using Exiled.Events.EventArgs.Interfaces;
     using Interactables.Interobjects;
     using MapGeneration;
-    using PlayerRoles.PlayableScps.Scp079.Cameras;
 
     /// <summary>
     ///     Contains all information before SCP-079 changes rooms via elevator.

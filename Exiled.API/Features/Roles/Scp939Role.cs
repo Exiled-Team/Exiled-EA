@@ -10,8 +10,6 @@ namespace Exiled.API.Features.Roles
     using System.Collections.Generic;
 
     using PlayerRoles;
-    using PlayerRoles.PlayableScps.Scp173;
-    using PlayerRoles.PlayableScps.Scp939;
     using PlayerRoles.PlayableScps.Subroutines;
 
     using Scp939GameRole = PlayerRoles.PlayableScps.Scp939.Scp939Role;

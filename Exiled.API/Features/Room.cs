@@ -13,9 +13,6 @@ namespace Exiled.API.Features
     using System.Linq;
 
     using Enums;
-    using Extensions;
-    using Interactables;
-    using Interactables.Interobjects.DoorUtils;
     using Items;
     using MapGeneration;
     using MEC;

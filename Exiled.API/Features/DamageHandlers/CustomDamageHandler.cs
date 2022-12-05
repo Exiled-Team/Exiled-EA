@@ -11,12 +11,9 @@ namespace Exiled.API.Features.DamageHandlers
 
     using Enums;
     using Items;
-    using PlayerRoles;
     using PlayerStatsSystem;
 
     using UnityEngine;
-
-    using BaseAttackerHandler = PlayerStatsSystem.AttackerDamageHandler;
     using BaseFirearmHandler = PlayerStatsSystem.FirearmDamageHandler;
     using BaseHandler = PlayerStatsSystem.DamageHandlerBase;
 

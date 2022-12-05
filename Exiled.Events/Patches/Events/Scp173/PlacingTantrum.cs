@@ -8,7 +8,6 @@
 namespace Exiled.Events.Patches.Events.Scp173
 {
     using System.Collections.Generic;
-    using System.Reflection;
     using System.Reflection.Emit;
 
     using Exiled.Events.EventArgs.Scp173;
