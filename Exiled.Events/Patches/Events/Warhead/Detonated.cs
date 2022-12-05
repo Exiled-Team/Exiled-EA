@@ -29,12 +29,16 @@ namespace Exiled.Events.Patches.Events.Warhead
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Shared.Rent(instructions);
 
+            const int offset = 1;
+            int index = newInstructions.FindIndex(
+                instruction => instruction.Calls(Method(typeof(AlphaWarheadController), nameof(AlphaWarheadController.RpcShake)))) + offset;
+
             newInstructions.InsertRange(
-                0,
-                new CodeInstruction[]
+                index,
+                new[]
                 {
                     // Warhead.OnDetonated();
-                    new(OpCodes.Call, Method(typeof(Warhead), nameof(Warhead.OnDetonated))),
+                    new CodeInstruction(OpCodes.Call, Method(typeof(Warhead), nameof(Warhead.OnDetonated))),
                 });
 
             for (int z = 0; z < newInstructions.Count; z++)

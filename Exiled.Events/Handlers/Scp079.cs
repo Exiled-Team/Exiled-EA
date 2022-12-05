@@ -54,14 +54,9 @@ namespace Exiled.Events.Handlers
         public static event CustomEventHandler<LockingDownEventArgs> LockingDown;
 
         /// <summary>
-        ///     Invoked before SCP-079 uses a speaker.
+        ///     Invoked before SCP-079 changes a speaker status.
         /// </summary>
-        public static event CustomEventHandler<StartingSpeakerEventArgs> StartingSpeaker;
-
-        /// <summary>
-        ///     Invoked before SCP-079 finishes using a speaker.
-        /// </summary>
-        public static event CustomEventHandler<StoppingSpeakerEventArgs> StoppingSpeaker;
+        public static event CustomEventHandler<ChangingSpeakerStatusEventArgs> ChangingSpeakerStatus;
 
         /// <summary>
         ///     Invoked after Scp079 recontainment.
@@ -111,16 +106,10 @@ namespace Exiled.Events.Handlers
         public static void OnLockingDown(LockingDownEventArgs ev) => LockingDown.InvokeSafely(ev);
 
         /// <summary>
-        ///     Called before interacting with a speaker with SCP-079.
+        ///     Called while interacting with a speaker with SCP-079.
         /// </summary>
-        /// <param name="ev">The <see cref="StartingSpeakerEventArgs" /> instance.</param>
-        public static void OnStartingSpeaker(StartingSpeakerEventArgs ev) => StartingSpeaker.InvokeSafely(ev);
-
-        /// <summary>
-        ///     Called before SCP-079 finishes using a speaker.
-        /// </summary>
-        /// <param name="ev">The <see cref="StoppingEventArgs" /> instance.</param>
-        public static void OnStoppingSpeaker(StoppingSpeakerEventArgs ev) => StoppingSpeaker.InvokeSafely(ev);
+        /// <param name="ev">The <see cref="ChangingSpeakerStatusEventArgs" /> instance.</param>
+        public static void OnChangingSpeakerStatus(ChangingSpeakerStatusEventArgs ev) => ChangingSpeakerStatus.InvokeSafely(ev);
 
         /// <summary>
         ///     Called after SCP-079 is recontained.

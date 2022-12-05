@@ -111,7 +111,7 @@ namespace Exiled.Events.Patches.Events.Scp914
                 });
 
             index = newInstructions.FindIndex(
-                instruction => instruction.LoadsField(Field(typeof(Action<ItemBase, Scp914KnobSetting>), nameof(Scp914Upgrader.OnInventoryItemUpgraded))));
+                instruction => instruction.LoadsField(Field(typeof(Scp914Upgrader), nameof(Scp914Upgrader.OnInventoryItemUpgraded))));
 
             Label continueLabel = generator.DefineLabel();
 

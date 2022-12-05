@@ -8,6 +8,7 @@
 namespace Exiled.Events.EventArgs.Scp079
 {
     using API.Features;
+    using Exiled.API.Features.Roles;
     using Interactables.Interobjects.DoorUtils;
     using Player;
 
@@ -28,11 +29,8 @@ namespace Exiled.Events.EventArgs.Scp079
         /// <param name="auxiliaryPowerCost">
         ///     <inheritdoc cref="AuxiliaryPowerCost" />
         /// </param>
-        /// <param name="isAllowed">
-        ///     <inheritdoc cref="InteractingDoorEventArgs.IsAllowed" />
-        /// </param>
-        public TriggeringDoorEventArgs(Player player, DoorVariant door, float auxiliaryPowerCost, bool isAllowed = true)
-            : base(player, door, isAllowed)
+        public TriggeringDoorEventArgs(Player player, DoorVariant door, float auxiliaryPowerCost)
+            : base(player, door, auxiliaryPowerCost <= player.Role.As<Scp079Role>().Energy)
         {
             AuxiliaryPowerCost = auxiliaryPowerCost;
         }

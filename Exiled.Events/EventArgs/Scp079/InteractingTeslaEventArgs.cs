@@ -16,7 +16,7 @@ namespace Exiled.Events.EventArgs.Scp079
     /// <summary>
     ///     Contains all information before SCP-079 triggers a tesla gate.
     /// </summary>
-    public class InteractingTeslaEventArgs : IPlayerEvent, IDeniableEvent, ITeslaEvent
+    public class InteractingTeslaEventArgs : IPlayerEvent, ITeslaEvent, IDeniableEvent
     {
         /// <summary>
         ///     Initializes a new instance of the <see cref="InteractingTeslaEventArgs" /> class.
@@ -39,16 +39,6 @@ namespace Exiled.Events.EventArgs.Scp079
         }
 
         /// <summary>
-        ///     Gets or sets the amount of auxiliary power required to interact with a tesla gate through SCP-079.
-        /// </summary>
-        public float AuxiliaryPowerCost { get; set; }
-
-        /// <summary>
-        ///     Gets or sets a value indicating whether or not SCP-079 can interact with the tesla gate.
-        /// </summary>
-        public bool IsAllowed { get; set; }
-
-        /// <summary>
         ///     Gets the player who's controlling SCP-079.
         /// </summary>
         public Player Player { get; }
@@ -57,5 +47,15 @@ namespace Exiled.Events.EventArgs.Scp079
         ///     Gets the <see cref="API.Features.TeslaGate" /> that SCP-079 is triggering.
         /// </summary>
         public API.Features.TeslaGate Tesla { get; }
+
+        /// <summary>
+        ///     Gets or sets the amount of auxiliary power required to interact with a tesla gate through SCP-079.
+        /// </summary>
+        public float AuxiliaryPowerCost { get; set; }
+
+        /// <summary>
+        ///     Gets or sets a value indicating whether or not SCP-079 can interact with the tesla gate.
+        /// </summary>
+        public bool IsAllowed { get; set; }
     }
 }

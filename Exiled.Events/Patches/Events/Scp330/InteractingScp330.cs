@@ -133,6 +133,8 @@ namespace Exiled.Events.Patches.Events.Scp330
                     new(OpCodes.Ldc_R4, 0f),
                     new(OpCodes.Ldc_I4_0),
                     new(OpCodes.Callvirt, Method(typeof(Player), nameof(Player.EnableEffect), new[] { typeof(string), typeof(float), typeof(bool) })),
+
+                    // return;
                     new(OpCodes.Ret),
                 });
 
