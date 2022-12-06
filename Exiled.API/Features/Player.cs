@@ -76,7 +76,6 @@ namespace Exiled.API.Features
         private readonly HashSet<EActor> components = new();
 
         private ReferenceHub referenceHub;
-        private PlayerRoleBase playerRoleBase;
         private CustomHealthStat healthStat;
         private Role role;
 
@@ -89,7 +88,7 @@ namespace Exiled.API.Features
             readOnlyItems = ItemsValue.AsReadOnly();
             ReferenceHub = referenceHub;
 
-            Timing.CallDelayed(0.05f, () => Role = Role.Create(this, playerRoleBase.RoleTypeId));
+            Timing.CallDelayed(0.05f, () => Role = Role.Create(this, RoleManager.CurrentRole.RoleTypeId));
         }
 
         /// <summary>
@@ -101,7 +100,7 @@ namespace Exiled.API.Features
             readOnlyItems = ItemsValue.AsReadOnly();
             ReferenceHub = ReferenceHub.GetHub(gameObject);
 
-            Timing.CallDelayed(0.05f, () => Role = Role.Create(this, playerRoleBase.RoleTypeId));
+            Timing.CallDelayed(0.05f, () => Role = Role.Create(this, RoleManager.CurrentRole.RoleTypeId));
         }
 
         /// <summary>
@@ -154,7 +153,6 @@ namespace Exiled.API.Features
             private set
             {
                 referenceHub = value ?? throw new NullReferenceException("Player's ReferenceHub cannot be null!");
-                playerRoleBase = value.roleManager.CurrentRole;
                 GameObject = value.gameObject;
                 HintDisplay = value.hints;
                 Inventory = value.inventory;
@@ -544,7 +542,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets a value indicating whether or not the player is on the ground.
         /// </summary>
-        public bool IsGrounded => playerRoleBase is FpcStandardRoleBase fpcStandardRoleBase && fpcStandardRoleBase.FpcModule.IsGrounded;
+        public bool IsGrounded => Role.Base is FpcStandardRoleBase fpcStandardRoleBase && fpcStandardRoleBase.FpcModule.IsGrounded;
 
         /// <summary>
         /// Gets a value indicating whether or not the player is sprinting.
@@ -572,10 +570,10 @@ namespace Exiled.API.Features
         /// <returns><see cref="bool"/> indicating status.</returns>
         public bool IsNoClipEnabled
         {
-            get => playerRoleBase is FpcStandardRoleBase fpcStandardRoleBase && fpcStandardRoleBase.FpcModule.Noclip.IsActive;
+            get => Role.Base is FpcStandardRoleBase fpcStandardRoleBase && fpcStandardRoleBase.FpcModule.Noclip.IsActive;
             set
             {
-                if (playerRoleBase is FpcStandardRoleBase fpcStandardRoleBase)
+                if (Role.Base is FpcStandardRoleBase fpcStandardRoleBase)
                     fpcStandardRoleBase.FpcModule.Noclip.IsActive = value;
             }
         }
@@ -728,7 +726,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets the player's unit name.
         /// </summary>
-        public string UnitName => playerRoleBase is PlayerRoles.HumanRole humanRole ? humanRole.UnitName : string.Empty;
+        public string UnitName => Role.Base is PlayerRoles.HumanRole humanRole ? humanRole.UnitName : string.Empty;
 
         /// <summary>
         /// Gets or sets the player's health.
