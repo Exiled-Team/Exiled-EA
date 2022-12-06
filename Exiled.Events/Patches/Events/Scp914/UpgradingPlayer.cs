@@ -36,6 +36,7 @@ namespace Exiled.Events.Patches.Events.Scp914
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Shared.Rent(instructions);
 
             const int offset = 1;
+            const int labelOffset = -1;
             int index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Ret) + offset;
 
             Label returnLabel = generator.DefineLabel();
@@ -50,7 +51,7 @@ namespace Exiled.Events.Patches.Events.Scp914
                 new[]
                 {
                     // Player.Get(ply)
-                    new CodeInstruction(OpCodes.Ldarg_0).MoveLabelsFrom(newInstructions[index]),
+                    new CodeInstruction(OpCodes.Ldarg_0).WithLabels((Label)newInstructions[index - offset + labelOffset].operand),
                     new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
 
                     // upgradeInventory
