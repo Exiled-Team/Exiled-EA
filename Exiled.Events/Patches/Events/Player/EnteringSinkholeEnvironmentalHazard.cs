@@ -34,25 +34,37 @@ namespace Exiled.Events.Patches.Events.Player
 
             Label ret = generator.DefineLabel();
 
-            int offset = -1;
-            int index = newInstructions.FindIndex(i => i.Calls(Method(typeof(PlayerRolesUtils), nameof(PlayerRolesUtils.IsSCP)))) + offset;
+            int offset = -2;
+            int index = newInstructions.FindIndex(instruction => instruction.Calls(Method(typeof(PlayerRolesUtils), nameof(PlayerRolesUtils.IsSCP)))) + offset;
 
             newInstructions.InsertRange(
                 index,
                 new[]
                 {
+                    // Player.Get(player)
                     new CodeInstruction(OpCodes.Ldarg_1),
                     new(OpCodes.Call, Method(typeof(API.Features.Player), nameof(API.Features.Player.Get), new[] { typeof(ReferenceHub) })),
+
+                    // this
                     new(OpCodes.Ldarg_0),
+
+                    // true
                     new(OpCodes.Ldc_I4_1),
+
+                    // var ev = new EnteringEnvironmentalHazardEventArgs(Player, EnvironmentalHazard, bool)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(EnteringEnvironmentalHazardEventArgs))[0]),
                     new(OpCodes.Dup),
+
+                    // Handlers.Player.OnEnteringEnvironmentalHazard(ev)
                     new(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnEnteringEnvironmentalHazard))),
+
+                    // if (!ev.IsAllowed)
+                    //    return;
                     new(OpCodes.Callvirt, PropertyGetter(typeof(EnteringEnvironmentalHazardEventArgs), nameof(EnteringEnvironmentalHazardEventArgs.IsAllowed))),
                     new(OpCodes.Brfalse_S, ret),
                 });
 
-            newInstructions[newInstructions.Count - 1].labels.Add(ret);
+            newInstructions[newInstructions.Count - 1].WithLabels(ret);
 
             for (int z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
