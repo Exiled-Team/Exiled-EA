@@ -14,6 +14,7 @@ namespace Exiled.API.Features.DamageHandlers
     using PlayerStatsSystem;
 
     using UnityEngine;
+
     using BaseFirearmHandler = PlayerStatsSystem.FirearmDamageHandler;
     using BaseHandler = PlayerStatsSystem.DamageHandlerBase;
 
