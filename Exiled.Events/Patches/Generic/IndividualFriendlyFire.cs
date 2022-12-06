@@ -257,7 +257,8 @@ namespace Exiled.Events.Patches.Generic
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Shared.Rent(instructions);
 
-            const int offset = -8;
+            // Replace the original friendly fire check with the Exiled one
+            const int offset = -7;
             const int instructionsToRemove = 7;
             int index = newInstructions.FindLastIndex(code => code.opcode == OpCodes.Brfalse_S) + offset;
 

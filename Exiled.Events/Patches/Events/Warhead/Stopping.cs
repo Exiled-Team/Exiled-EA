@@ -36,7 +36,7 @@ namespace Exiled.Events.Patches.Events.Warhead
 
             Label returnLabel = generator.DefineLabel();
 
-            // if(!this.inProgress)
+            // if(!AlphaWarheadController.inProgress)
             //   return;
             //
             // var ev = new StoppingEventArgs(Player.Get(disabler), true);
@@ -49,10 +49,9 @@ namespace Exiled.Events.Patches.Events.Warhead
                 0,
                 new CodeInstruction[]
                 {
-                    // if (!this.InProgress)
+                    // if (!AlphaWarheadController.InProgress)
                     //    return;
-                    new(OpCodes.Ldarg_0),
-                    new(OpCodes.Ldfld, Field(typeof(AlphaWarheadController), nameof(AlphaWarheadController.InProgress))),
+                    new(OpCodes.Call, PropertyGetter(typeof(AlphaWarheadController), nameof(AlphaWarheadController.InProgress))),
                     new(OpCodes.Brfalse_S, returnLabel),
 
                     // Player.Get(disabler)

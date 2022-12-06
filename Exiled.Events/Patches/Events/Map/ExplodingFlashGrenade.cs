@@ -9,7 +9,6 @@ namespace Exiled.Events.Patches.Events.Map
 {
     using System.Collections.Generic;
     using System.Linq;
-    using System.Reflection;
     using System.Reflection.Emit;
 
     using Exiled.API.Features;
@@ -38,23 +37,24 @@ namespace Exiled.Events.Patches.Events.Map
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Shared.Rent(instructions);
 
-            // Remove check if player is thrower. Grenade on self should affect themself.
-            int removeSelfCheckOffset = -3;
-            int removeSelfCheck = newInstructions.FindIndex(instruction => instruction.LoadsField(Field(typeof(Footprint), nameof(Footprint.Hub)))) + removeSelfCheckOffset;
-
-            newInstructions.RemoveRange(removeSelfCheck, 6);
-
-            int offset = -2;
-            int index = newInstructions.FindLastIndex(i => (i.opcode == OpCodes.Call) && ((MethodInfo)i.operand == Method(typeof(FlashbangGrenade), nameof(FlashbangGrenade.ProcessPlayer)))) + offset;
-
             Label returnLabel = generator.DefineLabel();
 
             LocalBuilder ev = generator.DeclareLocal(typeof(ExplodingGrenadeEventArgs));
             LocalBuilder list = generator.DeclareLocal(typeof(List<ReferenceHub>));
 
-            int instructionsToRemove = 3;
+            // Remove check if player is thrower. Grenade on self should affect themself.
+            int removeSelfCheckOffset = -3;
+            int removeSelfCheck = newInstructions.FindIndex(
+                instruction => instruction.LoadsField(Field(typeof(Footprint), nameof(Footprint.Hub)))) + removeSelfCheckOffset;
 
-            newInstructions.RemoveRange(index, instructionsToRemove);
+            newInstructions.RemoveRange(removeSelfCheck, 6);
+
+            // Replace the original player processing with the Exiled one
+            int offset = -2;
+            int index = newInstructions.FindLastIndex(
+                instruction => instruction.Calls(Method(typeof(FlashbangGrenade), nameof(FlashbangGrenade.ProcessPlayer)))) + offset;
+
+            newInstructions.RemoveRange(index, 3);
 
             newInstructions.InsertRange(
                 0,
@@ -82,7 +82,7 @@ namespace Exiled.Events.Patches.Events.Map
                 {
                     // Player player = Player.Get(this.PreviousOwner.Hub)
                     new CodeInstruction(OpCodes.Ldarg_0).MoveLabelsFrom(newInstructions[newInstructions.Count - 1]),
-                    new(OpCodes.Ldfld, Field(typeof(FlashbangGrenade), nameof(FlashbangGrenade.PreviousOwner))),
+                    new(OpCodes.Ldflda, Field(typeof(FlashbangGrenade), nameof(FlashbangGrenade.PreviousOwner))),
                     new(OpCodes.Ldfld, Field(typeof(Footprint), nameof(Footprint.Hub))),
                     new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
 

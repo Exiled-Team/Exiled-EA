@@ -126,13 +126,9 @@ namespace Exiled.Events
                 Harmony.DEBUG = true;
 #endif
                 if (PatchByAttributes())
-                {
                     Log.Debug("Events patched successfully!", Loader.ShouldDebugBeShown);
-                }
                 else
-                {
                     Log.Error($"Patching failed!");
-                }
 #if DEBUG
                 Harmony.DEBUG = lastDebugStatus;
 #endif

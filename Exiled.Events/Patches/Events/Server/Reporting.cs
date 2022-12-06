@@ -99,7 +99,7 @@ namespace Exiled.Events.Patches.Events.Server
                     new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
 
                     // ServerConsole.PortToReport
-                    new(OpCodes.Ldsfld, Field(typeof(ServerConsole), nameof(ServerConsole.PortToReport))),
+                    new(OpCodes.Call, PropertyGetter(typeof(ServerConsole), nameof(ServerConsole.PortToReport))),
 
                     // reason
                     new(OpCodes.Ldarg_2),

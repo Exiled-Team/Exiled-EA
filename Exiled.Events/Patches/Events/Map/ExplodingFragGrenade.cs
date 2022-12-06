@@ -41,6 +41,7 @@ namespace Exiled.Events.Patches.Events.Map
         public static Collider[] TrimColliders(ExplodingGrenadeEventArgs ev, Collider[] colliderArray)
         {
             List<Collider> colliders = new();
+
             foreach (Collider collider in colliderArray)
             {
                 if (!collider.TryGetComponent(out IDestructible dest) ||
@@ -84,7 +85,9 @@ namespace Exiled.Events.Patches.Events.Map
                     new(OpCodes.Ldloc_3),
 
                     // ExplodingGrenadeEventArgs ev = new(player, position, grenade, colliders);
+                    //
                     // Map.OnExplodingGrenade(ev);
+                    //
                     // if(!ev.IsAllowed)
                     //     return;
                     new(OpCodes.Newobj, DeclaredConstructor(typeof(ExplodingGrenadeEventArgs), new[] { typeof(Player), typeof(Vector3), typeof(EffectGrenade), typeof(Collider[]) })),
