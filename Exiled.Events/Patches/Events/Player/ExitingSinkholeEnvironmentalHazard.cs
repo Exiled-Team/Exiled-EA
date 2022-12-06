@@ -59,7 +59,7 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnExitingEnvironmentalHazard))),
 
                     // if (!ev.IsAllowed)
-                    //    continue;
+                    //    return;
                     new(OpCodes.Callvirt, PropertyGetter(typeof(ExitingEnvironmentalHazardEventArgs), nameof(ExitingEnvironmentalHazardEventArgs.IsAllowed))),
                     new(OpCodes.Brfalse_S, ret),
                 });
