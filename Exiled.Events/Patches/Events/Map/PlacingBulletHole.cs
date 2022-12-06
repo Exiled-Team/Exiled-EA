@@ -34,15 +34,13 @@ namespace Exiled.Events.Patches.Events.Map
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Shared.Rent(instructions);
 
-            const int offset = 0;
-            int index = 0 + offset;
-
             Label returnLabel = generator.DefineLabel();
 
             LocalBuilder ev = generator.DeclareLocal(typeof(EventArgs.Map.PlacingBulletHole));
+            LocalBuilder rotation = generator.DeclareLocal(typeof(Quaternion));
 
             newInstructions.InsertRange(
-                index,
+                0,
                 new CodeInstruction[]
                 {
                     // Player.Get(this.Hub)
@@ -77,11 +75,13 @@ namespace Exiled.Events.Patches.Events.Map
                     new(OpCodes.Ldarga_S, 2),
                     new(OpCodes.Ldloc_S, ev.LocalIndex),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(EventArgs.Map.PlacingBulletHole), nameof(EventArgs.Map.PlacingBulletHole.Rotation))),
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(Quaternion), nameof(Quaternion.normalized))),
+                    new(OpCodes.Stloc_S, rotation),
+                    new(OpCodes.Ldloca_S, rotation),
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(Quaternion), nameof(Quaternion.eulerAngles))),
                     new(OpCodes.Callvirt, PropertySetter(typeof(RaycastHit), nameof(RaycastHit.normal))),
                 });
 
-            newInstructions[newInstructions.Count - 1].labels.Add(returnLabel);
+            newInstructions[newInstructions.Count - 1].WithLabels(returnLabel);
 
             for (int z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];

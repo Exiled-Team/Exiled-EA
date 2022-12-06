@@ -59,7 +59,7 @@ namespace Exiled.Events.Patches.Events.Map
 
                     // Player.Get(this.Hub)
                     new(OpCodes.Ldarg_0),
-                    new(OpCodes.Ldfld, Field(typeof(StandardHitregBase), nameof(StandardHitregBase.Hub))),
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(StandardHitregBase), nameof(StandardHitregBase.Hub))),
                     new(OpCodes.Call, Method(typeof(API.Features.Player), nameof(API.Features.Player.Get), new[] { typeof(ReferenceHub) })),
 
                     // Player.Get(target.NetworkId)
