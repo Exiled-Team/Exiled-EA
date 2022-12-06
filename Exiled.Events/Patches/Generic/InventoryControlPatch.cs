@@ -153,9 +153,7 @@ namespace Exiled.Events.Patches.Generic
                     }
 #if DEBUG
                     Log.Debug($"Item ({serial}) removed from {player.Nickname}");
-                    Log.Debug(
-
-                        $"Inventory Info (after): {player.Nickname} - {player.Items.Count} ({player.Inventory.UserInventory.Items.Count})");
+                    Log.Debug($"Inventory Info (after): {player.Nickname} - {player.Items.Count} ({player.Inventory.UserInventory.Items.Count})");
 
                     foreach (Item item in player.Items)
                         Log.Debug($"{item.Type} ({item.Serial})");
