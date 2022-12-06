@@ -80,7 +80,6 @@ namespace Exiled.Events.Patches.Events.Scp079
                     // var ev = new ChangingSpeakerStatusEventArgs(Player, bool)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(ChangingSpeakerStatusEventArgs))[0]),
                     new(OpCodes.Dup),
-                    new(OpCodes.Dup),
 
                     // Scp079.OnChangingSpeakerStatus(ev);
                     new(OpCodes.Call, Method(typeof(Scp079), nameof(Scp079.OnChangingSpeakerStatus))),

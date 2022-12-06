@@ -47,7 +47,7 @@ namespace Exiled.Events.Patches.Events.Scp330
             // Remove original "No scp can touch" logic.
             newInstructions.RemoveRange(0, 4);
 
-            // Find ServerPickupProcess, insert before it.
+            // Find ServerProcessPickup, insert before it.
             int offset = -3;
             int index = newInstructions.FindLastIndex(
                 instruction => instruction.Calls(Method(typeof(Scp330Bag), nameof(Scp330Bag.ServerProcessPickup)))) + offset;
@@ -85,11 +85,13 @@ namespace Exiled.Events.Patches.Events.Scp330
 
             newInstructions.RemoveRange(removeServerProcessIndex, 3);
 
-            // Remove NW server process logic.
+            // Replace NW server process logic.
             newInstructions.InsertRange(
                 removeServerProcessIndex,
                 new[]
                 {
+                    // ldarg.1 is already in the stack
+
                     // ev.Candy
                     new CodeInstruction(OpCodes.Ldloc, ev),
                     new CodeInstruction(OpCodes.Callvirt, PropertyGetter(typeof(InteractingScp330EventArgs), nameof(InteractingScp330EventArgs.Candy))),
@@ -133,6 +135,7 @@ namespace Exiled.Events.Patches.Events.Scp330
                     new(OpCodes.Ldc_R4, 0f),
                     new(OpCodes.Ldc_I4_0),
                     new(OpCodes.Callvirt, Method(typeof(Player), nameof(Player.EnableEffect), new[] { typeof(string), typeof(float), typeof(bool) })),
+                    new(OpCodes.Pop),
 
                     // return;
                     new(OpCodes.Ret),
@@ -140,7 +143,6 @@ namespace Exiled.Events.Patches.Events.Scp330
 
             // This will let us jump to the taken candies code and lock until ldarg_0, meaning we allow base game logic handle candy adding.
             int addTakenCandiesOffset = -1;
-
             int addTakenCandiesIndex = newInstructions.FindLastIndex(
                 instruction => instruction.LoadsField(Field(typeof(Scp330Interobject), nameof(Scp330Interobject._takenCandies)))) + addTakenCandiesOffset;
 
