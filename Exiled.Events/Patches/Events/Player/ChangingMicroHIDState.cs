@@ -68,7 +68,7 @@ namespace Exiled.Events.Patches.Events.Player
                 new CodeInstruction(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnChangingMicroHIDState))),
 
                 // if (!ev.IsAllowed)
-                // goto RETURN_LABEL
+                // goto skipLabel;
                 new CodeInstruction(OpCodes.Callvirt, PropertyGetter(typeof(ChangingMicroHIDStateEventArgs), nameof(ChangingMicroHIDStateEventArgs.IsAllowed))),
                 new CodeInstruction(OpCodes.Brfalse_S, skipLabel),
 
@@ -80,8 +80,7 @@ namespace Exiled.Events.Patches.Events.Player
                 new CodeInstruction(OpCodes.Br, continueLabel),
 
                 // this.State = state;
-                new CodeInstruction(OpCodes.Nop).WithLabels(skipLabel),
-                new CodeInstruction(OpCodes.Ldarg_0),
+                new CodeInstruction(OpCodes.Ldarg_0).WithLabels(skipLabel),
                 new CodeInstruction(OpCodes.Ldloc_0),
                 new CodeInstruction(OpCodes.Stfld, Field(typeof(MicroHIDItem), nameof(MicroHIDItem.State))),
 
