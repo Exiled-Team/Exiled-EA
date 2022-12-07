@@ -5,7 +5,6 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-/*
 namespace Exiled.Events.Patches.Events.Player
 {
     using System.Collections.Generic;
@@ -23,46 +22,61 @@ namespace Exiled.Events.Patches.Events.Player
     using static HarmonyLib.AccessTools;
 
     /// <summary>
-    /// Patches the <see cref="PlayerEffect.Intensity"/> method.
+    /// Patches the <see cref="StatusEffectBase.Intensity"/> method.
     /// Adds the <see cref="Handlers.Player.ReceivingEffect"/> event.
     /// </summary>
-    // [HarmonyPatch(typeof(PlayerEffect), nameof(PlayerEffect.Intensity), MethodType.Setter)]
+    [HarmonyPatch(typeof(StatusEffectBase), nameof(StatusEffectBase.Intensity), MethodType.Setter)]
     internal static class ReceivingStatusEffect
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Shared.Rent(instructions);
-            const int offset = 1;
-            int index = newInstructions.FindIndex(i => i.opcode == OpCodes.Ret) + offset;
+
             LocalBuilder ev = generator.DeclareLocal(typeof(ReceivingEffectEventArgs));
             LocalBuilder player = generator.DeclareLocal(typeof(Player));
+
             Label returnLabel = generator.DefineLabel();
-            Label continueLabel = generator.DefineLabel();
+            Label isHostLabel = generator.DefineLabel();
+            Label isNotHostLabel = generator.DefineLabel();
+
+            const int offset = 1;
+            int index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Ret) + offset;
 
             newInstructions.InsertRange(
                 index,
                 new[]
                 {
-                    // Player.Get(this.Hub)
+                    // var player = Player.Get(this.Hub)
+                    //
+                    // if (player == null)
+                    //    load host
+                    // else
+                    //    load player
                     new CodeInstruction(OpCodes.Ldarg_0).MoveLabelsFrom(newInstructions[index]),
-                    new(OpCodes.Ldfld, Field(typeof(PlayerEffect), nameof(PlayerEffect.Hub))),
+                    new(OpCodes.Call, PropertyGetter(typeof(StatusEffectBase), nameof(StatusEffectBase.Hub))),
                     new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
                     new(OpCodes.Dup),
                     new(OpCodes.Stloc_S, player.LocalIndex),
-                    new(OpCodes.Brfalse_S, continueLabel),
+                    new(OpCodes.Brfalse_S, isHostLabel),
+
+                    // player
                     new(OpCodes.Ldloc_S, player.LocalIndex),
+                    new(OpCodes.Br_S, isNotHostLabel),
+
+                    // Server.Host
+                    new CodeInstruction(OpCodes.Call, PropertyGetter(typeof(Server), nameof(Server.Host))).WithLabels(isHostLabel),
 
                     // this
-                    new(OpCodes.Ldarg_0),
+                    new CodeInstruction(OpCodes.Ldarg_0).WithLabels(isNotHostLabel),
 
                     // value
                     new(OpCodes.Ldarg_1),
 
                     // this._intensity
                     new(OpCodes.Ldarg_0),
-                    new(OpCodes.Ldfld, Field(typeof(PlayerEffect), nameof(PlayerEffect._intensity))),
+                    new(OpCodes.Ldfld, Field(typeof(StatusEffectBase), nameof(StatusEffectBase._intensity))),
 
-                    // var ev = new ReceivingEventArgs(player, effect, state, currentState)
+                    // var ev = new ReceivingEventArgs(player, this, value, currentState)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(ReceivingEffectEventArgs))[0]),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),
@@ -73,21 +87,20 @@ namespace Exiled.Events.Patches.Events.Player
                     //    return;
                     new(OpCodes.Callvirt, PropertyGetter(typeof(ReceivingEffectEventArgs), nameof(ReceivingEffectEventArgs.IsAllowed))),
                     new(OpCodes.Brfalse_S, returnLabel),
-                    new(OpCodes.Ldloc_S, ev.LocalIndex),
-                    new(OpCodes.Dup),
 
                     // value = ev.State
+                    new(OpCodes.Ldloc_S, ev.LocalIndex),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(ReceivingEffectEventArgs), nameof(ReceivingEffectEventArgs.State))),
                     new(OpCodes.Starg_S, 1),
 
                     // this.Duration = ev.Duration
                     new(OpCodes.Ldarg_0),
+                    new(OpCodes.Ldloc_S, ev.LocalIndex),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(ReceivingEffectEventArgs), nameof(ReceivingEffectEventArgs.Duration))),
-                    new(OpCodes.Stfld, Field(typeof(PlayerEffect), nameof(PlayerEffect.Duration))),
+                    new(OpCodes.Callvirt, PropertySetter(typeof(StatusEffectBase), nameof(StatusEffectBase.Duration))),
                 });
 
-            newInstructions[index + 25].labels.Add(continueLabel);
-            newInstructions[newInstructions.Count - 1].labels.Add(returnLabel);
+            newInstructions[newInstructions.Count - 1].WithLabels(returnLabel);
 
             for (int z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
@@ -96,4 +109,3 @@ namespace Exiled.Events.Patches.Events.Player
         }
     }
 }
-*/
