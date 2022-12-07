@@ -29,6 +29,7 @@ namespace Exiled.API.Features.Roles
             : base(owner)
         {
             Internal = Base as Scp079GameRole;
+            SubroutineModule = Internal.SubroutineModule;
         }
 
         /// <inheritdoc/>
