@@ -68,7 +68,7 @@ namespace Exiled.Events.Patches.Events.Player
                 new CodeInstruction(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnChangingMicroHIDState))),
 
                 // if (!ev.IsAllowed)
-                // goto skipLabel;
+                //    goto skipLabel;
                 new CodeInstruction(OpCodes.Callvirt, PropertyGetter(typeof(ChangingMicroHIDStateEventArgs), nameof(ChangingMicroHIDStateEventArgs.IsAllowed))),
                 new CodeInstruction(OpCodes.Brfalse_S, skipLabel),
 
