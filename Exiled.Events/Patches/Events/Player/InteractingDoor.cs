@@ -41,24 +41,15 @@ namespace Exiled.Events.Patches.Events.Player
                 if (__instance.ActiveLocks > 0 && !ply.serverRoles.BypassMode)
                 {
                     DoorLockMode mode = DoorLockUtils.GetMode((DoorLockReason)__instance.ActiveLocks);
-                    if ((!mode.HasFlagFast(DoorLockMode.CanClose)
-                         || !mode.HasFlagFast(DoorLockMode.CanOpen))
-                        && (!mode.HasFlagFast(DoorLockMode.ScpOverride)
-                            || !ply.IsSCP(true))
-                        && (mode == DoorLockMode.FullLock
-                            || (__instance.TargetState
-                                && !mode.HasFlagFast(DoorLockMode.CanClose))
-                            || (!__instance.TargetState
-                                && !mode.HasFlagFast(DoorLockMode.CanOpen))))
+                    if ((!mode.HasFlagFast(DoorLockMode.CanClose) || !mode.HasFlagFast(DoorLockMode.CanOpen)) &&
+                        (!mode.HasFlagFast(DoorLockMode.ScpOverride) || !ply.IsSCP(true)) &&
+                        (mode == DoorLockMode.FullLock || (__instance.TargetState && !mode.HasFlagFast(DoorLockMode.CanClose)) ||
+                        (!__instance.TargetState && !mode.HasFlagFast(DoorLockMode.CanOpen))))
                     {
-                        __instance.LockBypassDenied(ply, colliderId);
-
                         //>EXILED
                         ev.IsAllowed = false;
                         bypassDenied = true;
                         //<EXILED
-
-                        return false;
                     }
                 }
 
@@ -66,18 +57,12 @@ namespace Exiled.Events.Patches.Events.Player
                 {
                     if (ply.GetRoleId() == RoleTypeId.Scp079 || __instance.RequiredPermissions.CheckPermissions(ply.inventory.CurInstance, ply))
                     {
-                        __instance.NetworkTargetState = !__instance.TargetState;
-                        __instance._triggerPlayer = ply;
-
                         //>EXILED
                         ev.IsAllowed = true;
                         //<EXILED
                     }
                     else
                     {
-                        __instance.PermissionsDenied(ply, colliderId);
-                        DoorEvents.TriggerAction(__instance, DoorAction.AccessDenied, ply);
-
                         //>EXILED
                         ev.IsAllowed = false;
                         //<EXILED
@@ -108,9 +93,9 @@ namespace Exiled.Events.Patches.Events.Player
 
                 return false;
             }
-            catch (Exception ex)
+            catch (Exception exception)
             {
-                Log.Error($"{typeof(InteractingDoor).FullName}.{nameof(Prefix)}:\n{ex}");
+                Log.Error($"{typeof(InteractingDoor).FullName}.{nameof(Prefix)}:\n{exception}");
                 return true;
             }
         }
