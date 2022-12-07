@@ -32,7 +32,7 @@ namespace Exiled.Events.EventArgs.Scp079
         public TriggeringDoorEventArgs(Player player, DoorVariant door, float auxiliaryPowerCost)
             : base(player, door, true /*auxiliaryPowerCost <= player.Role.As<Scp079Role>().Energy*/)
         {
-            Log.Error(player?.ToString() + " " + door?.ToString() + " " + auxiliaryPowerCost);
+            Log.Error(player?.ToString() + " " + door?.ToString() + " " + auxiliaryPowerCost + " " + player.Role.As<Scp079Role>()?.Energy);
             AuxiliaryPowerCost = auxiliaryPowerCost;
         }
 
