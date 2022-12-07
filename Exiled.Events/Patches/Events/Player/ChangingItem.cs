@@ -35,14 +35,15 @@ namespace Exiled.Events.Patches.Events.Player
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Shared.Rent(instructions);
 
-            const int offset = 3;
-            int index = newInstructions.FindLastIndex(
-                i =>
-                    (i.opcode == OpCodes.Call) && ((MethodInfo)i.operand == Method(typeof(EquipDequipModifierExtensions), nameof(EquipDequipModifierExtensions.CanEquip)))) + offset;
-            LocalBuilder ev = generator.DeclareLocal(typeof(ChangingItemEventArgs));
             Label returnLabel = generator.DefineLabel();
             Label continueLabel = generator.DefineLabel();
-            Label nullLable = generator.DefineLabel();
+            Label nullLabel = generator.DefineLabel();
+
+            LocalBuilder ev = generator.DeclareLocal(typeof(ChangingItemEventArgs));
+
+            const int offset = 3;
+            int index = newInstructions.FindLastIndex(
+                instruction => instruction.Calls(Method(typeof(EquipDequipModifierExtensions), nameof(EquipDequipModifierExtensions.CanEquip)))) + offset;
 
             newInstructions.InsertRange(
                 index,
@@ -53,7 +54,7 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Ldfld, Field(typeof(Inventory), nameof(Inventory._hub))),
                     new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
 
-                    // ib2
+                    // itemBase
                     new(OpCodes.Ldloc_1),
 
                     // var ev = new ChangingItemEventArgs(Player, ItemBase)
@@ -70,19 +71,14 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Callvirt, PropertyGetter(typeof(ChangingItemEventArgs), nameof(ChangingItemEventArgs.IsAllowed))),
                     new(OpCodes.Brfalse_S, returnLabel),
 
-                    // if (ev.NewItem is null)
-                    // {
-                    //    ip2 = null;
-                    //    itermSerial = 0;
-                    // }
-                    // else
-                    // {
-                    //    ip2 = ev.NewItem.Base;
-                    //    itemSerial = ev.NewItem.Serial;
-                    // }
+                    // if (ev.NewItem == null)
+                    //    goto nullLabel;
                     new(OpCodes.Ldloc_S, ev.LocalIndex),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(ChangingItemEventArgs), nameof(ChangingItemEventArgs.NewItem))),
-                    new(OpCodes.Brfalse_S, nullLable),
+                    new(OpCodes.Brfalse_S, nullLabel),
+
+                    // itemBase = ev.NewItem.Base;
+                    // itemSerial = ev.NewItem.Serial;
                     new(OpCodes.Ldloc_S, ev.LocalIndex),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(ChangingItemEventArgs), nameof(ChangingItemEventArgs.NewItem))),
                     new(OpCodes.Dup),
@@ -90,13 +86,21 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Stloc_1),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(Item), nameof(Item.Serial))),
                     new(OpCodes.Starg_S, 1),
+
+                    // goto continueLabel
                     new(OpCodes.Br_S, continueLabel),
-                    new CodeInstruction(OpCodes.Ldc_I4_0).WithLabels(nullLable),
+
+                    // nullLabel:
+                    //
+                    // itemSerial = 0
+                    new CodeInstruction(OpCodes.Ldc_I4_0).WithLabels(nullLabel),
                     new(OpCodes.Starg_S, 1),
+
+                    // continueLabel:
                     new CodeInstruction(OpCodes.Nop).WithLabels(continueLabel),
                 });
 
-            newInstructions[newInstructions.Count - 1].labels.Add(returnLabel);
+            newInstructions[newInstructions.Count - 1].WithLabels(returnLabel);
 
             for (int z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
