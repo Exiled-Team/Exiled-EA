@@ -23,19 +23,15 @@ namespace Exiled.Events.EventArgs.Player
         /// <param name="player">
         ///     <inheritdoc cref="Player" />
         /// </param>
-        /// <param name="position">
-        ///     <inheritdoc cref="Position" />
-        /// </param>
         /// <param name="scp106">
         ///     <inheritdoc cref="Scp106" />
         /// </param>
         /// <param name="isAllowed">
         ///     <inheritdoc cref="IsAllowed" />
         /// </param>
-        public EnteringPocketDimensionEventArgs(Player player, Vector3 position, Player scp106, bool isAllowed = true)
+        public EnteringPocketDimensionEventArgs(Player player, Player scp106, bool isAllowed = true)
         {
             Player = player;
-            Position = position;
             Scp106 = scp106;
             IsAllowed = isAllowed;
         }
@@ -44,11 +40,6 @@ namespace Exiled.Events.EventArgs.Player
         ///     Gets the SCP-106 who sent the player to the pocket dimension.
         /// </summary>
         public Player Scp106 { get; }
-
-        /// <summary>
-        ///     Gets or sets the pocket dimension position.
-        /// </summary>
-        public Vector3 Position { get; set; }
 
         /// <summary>
         ///     Gets or sets a value indicating whether or not the player can enter the pocket dimension.
