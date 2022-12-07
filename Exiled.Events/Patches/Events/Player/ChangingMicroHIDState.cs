@@ -32,9 +32,12 @@ namespace Exiled.Events.Patches.Events.Player
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Shared.Rent(instructions);
+
             Label skipLabel = generator.DefineLabel();
             Label continueLabel = generator.DefineLabel();
+
             LocalBuilder ev = generator.DeclareLocal(typeof(ChangingMicroHIDStateEventArgs));
+
             List<CodeInstruction> instructionsToAdd = new()
             {
                 // Player.Get(this.Owner);
@@ -84,9 +87,10 @@ namespace Exiled.Events.Patches.Events.Player
 
                 new CodeInstruction(OpCodes.Nop).WithLabels(continueLabel),
             };
+
             int offset = 1;
 
-            foreach (CodeInstruction instruction in newInstructions.FindAll(i => (i.opcode == OpCodes.Stfld) && ((FieldInfo)i.operand == Field(typeof(MicroHIDItem), nameof(MicroHIDItem.State)))))
+            foreach (CodeInstruction instruction in newInstructions.FindAll(i => i.StoresField(Field(typeof(MicroHIDItem), nameof(MicroHIDItem.State)))))
                 newInstructions.InsertRange(newInstructions.IndexOf(instruction) + offset, instructionsToAdd);
 
             for (int z = 0; z < newInstructions.Count; z++)
