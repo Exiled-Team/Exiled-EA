@@ -36,11 +36,12 @@ namespace Exiled.Events.Patches.Events.Player
             LocalBuilder player = generator.DeclareLocal(typeof(Player));
 
             Label returnLabel = generator.DefineLabel();
-            Label isHostLabel = generator.DefineLabel();
-            Label isNotHostLabel = generator.DefineLabel();
+            Label continueLabel = generator.DefineLabel();
 
             const int offset = 1;
             int index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Ret) + offset;
+
+            newInstructions[index].WithLabels(continueLabel);
 
             newInstructions.InsertRange(
                 index,
@@ -49,25 +50,19 @@ namespace Exiled.Events.Patches.Events.Player
                     // var player = Player.Get(this.Hub)
                     //
                     // if (player == null)
-                    //    load host
-                    // else
-                    //    load player
+                    //    goto continueLabel;
                     new CodeInstruction(OpCodes.Ldarg_0).MoveLabelsFrom(newInstructions[index]),
                     new(OpCodes.Call, PropertyGetter(typeof(StatusEffectBase), nameof(StatusEffectBase.Hub))),
                     new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
                     new(OpCodes.Dup),
                     new(OpCodes.Stloc_S, player.LocalIndex),
-                    new(OpCodes.Brfalse_S, isHostLabel),
+                    new(OpCodes.Brfalse_S, continueLabel),
 
                     // player
                     new(OpCodes.Ldloc_S, player.LocalIndex),
-                    new(OpCodes.Br_S, isNotHostLabel),
-
-                    // Server.Host
-                    new CodeInstruction(OpCodes.Call, PropertyGetter(typeof(Server), nameof(Server.Host))).WithLabels(isHostLabel),
 
                     // this
-                    new CodeInstruction(OpCodes.Ldarg_0).WithLabels(isNotHostLabel),
+                    new(OpCodes.Ldarg_0),
 
                     // value
                     new(OpCodes.Ldarg_1),
