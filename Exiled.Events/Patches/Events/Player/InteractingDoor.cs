@@ -5,7 +5,6 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-/*
 namespace Exiled.Events.Patches.Events.Player
 {
 #pragma warning disable SA1313
@@ -27,7 +26,7 @@ namespace Exiled.Events.Patches.Events.Player
     ///     Patches <see cref="DoorVariant.ServerInteract(ReferenceHub, byte)" />.
     ///     Adds the <see cref="Handlers.Player.InteractingDoor" /> event.
     /// </summary>
-    // [HarmonyPatch(typeof(DoorVariant), nameof(DoorVariant.ServerInteract), typeof(ReferenceHub), typeof(byte))]
+    [HarmonyPatch(typeof(DoorVariant), nameof(DoorVariant.ServerInteract), typeof(ReferenceHub), typeof(byte))]
     internal static class InteractingDoor
     {
         private static bool Prefix(DoorVariant __instance, ReferenceHub ply, byte colliderId)
@@ -35,51 +34,54 @@ namespace Exiled.Events.Patches.Events.Player
             try
             {
                 InteractingDoorEventArgs ev = new(Player.Get(ply), __instance, false);
+
                 bool bypassDenied = false;
                 bool allowInteracting = false;
 
-                if (__instance.ActiveLocks != 0)
+                if (__instance.ActiveLocks > 0 && !ply.serverRoles.BypassMode)
                 {
                     DoorLockMode mode = DoorLockUtils.GetMode((DoorLockReason)__instance.ActiveLocks);
                     if ((!mode.HasFlagFast(DoorLockMode.CanClose)
                          || !mode.HasFlagFast(DoorLockMode.CanOpen))
                         && (!mode.HasFlagFast(DoorLockMode.ScpOverride)
-                            || ply.characterClassManager.CurRole.team != Team.SCP)
+                            || !ply.IsSCP(true))
                         && (mode == DoorLockMode.FullLock
                             || (__instance.TargetState
                                 && !mode.HasFlagFast(DoorLockMode.CanClose))
                             || (!__instance.TargetState
                                 && !mode.HasFlagFast(DoorLockMode.CanOpen))))
                     {
-
                         __instance.LockBypassDenied(ply, colliderId);
-                        return false;
 
                         //>EXILED
                         ev.IsAllowed = false;
                         bypassDenied = true;
                         //<EXILED
+
+                        return false;
                     }
                 }
 
                 if (!bypassDenied && (allowInteracting = __instance.AllowInteracting(ply, colliderId)))
                 {
-                    if (ply.characterClassManager.CurClass == RoleTypeId.Scp079 || __instance.RequiredPermissions.CheckPermissions(ply.inventory.CurInstance, ply))
-
-                            __instance.NetworkTargetState = !__instance.TargetState;
-                            __instance._triggerPlayer = ply;
+                    if (ply.GetRoleId() == RoleTypeId.Scp079 || __instance.RequiredPermissions.CheckPermissions(ply.inventory.CurInstance, ply))
+                    {
+                        __instance.NetworkTargetState = !__instance.TargetState;
+                        __instance._triggerPlayer = ply;
 
                         //>EXILED
                         ev.IsAllowed = true;
-                    //<EXILED
+                        //<EXILED
+                    }
                     else
-
-                            __instance.PermissionsDenied(ply, colliderId);
-                            DoorEvents.TriggerAction(__instance, DoorAction.AccessDenied, ply);
+                    {
+                        __instance.PermissionsDenied(ply, colliderId);
+                        DoorEvents.TriggerAction(__instance, DoorAction.AccessDenied, ply);
 
                         //>EXILED
                         ev.IsAllowed = false;
-                    //<EXILED
+                        //<EXILED
+                    }
                 }
 
                 //>EXILED
@@ -114,4 +116,3 @@ namespace Exiled.Events.Patches.Events.Player
         }
     }
 }
-*/
