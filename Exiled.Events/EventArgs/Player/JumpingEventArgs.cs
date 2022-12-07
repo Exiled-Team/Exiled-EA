@@ -23,32 +23,41 @@ namespace Exiled.Events.EventArgs.Player
         /// <param name="player">
         ///     <inheritdoc cref="Player" />
         /// </param>
-        /// <param name="pos">
-        ///     <inheritdoc cref="Position" />
+        /// <param name="direction">
+        ///     <inheritdoc cref="Direction" />
         /// </param>
         /// <param name="isAllowed">
         ///     <inheritdoc cref="IsAllowed" />
         /// </param>
-        public JumpingEventArgs(Player player, Vector3 pos, bool isAllowed = true)
+        public JumpingEventArgs(Player player, Vector3 direction, bool isAllowed = true)
         {
             Player = player;
-            Position = pos;
+            Direction = direction;
             IsAllowed = isAllowed;
         }
-
-        /// <summary>
-        ///     Gets or sets the jump position.
-        /// </summary>
-        public Vector3 Position { get; set; }
-
-        /// <summary>
-        ///     Gets or sets a value indicating whether the client data can be synchronized with the server.
-        /// </summary>
-        public bool IsAllowed { get; set; }
 
         /// <summary>
         ///     Gets the player who's jumping.
         /// </summary>
         public Player Player { get; }
+
+        /// <summary>
+        ///     Gets or sets the jump direction.
+        /// </summary>
+        public Vector3 Direction { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the jump speed.
+        /// </summary>
+        public float Speed
+        {
+            get => Direction.y;
+            set => Direction += Vector3.up * value;
+        }
+
+        /// <summary>
+        ///     Gets or sets a value indicating whether the client data can be synchronized with the server.
+        /// </summary>
+        public bool IsAllowed { get; set; }
     }
 }

@@ -1,4 +1,4 @@
-﻿// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
 // <copyright file="LandingEventArgs.cs" company="Exiled Team">
 // Copyright (c) Exiled Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
@@ -21,10 +21,7 @@ namespace Exiled.Events.EventArgs.Player
         /// <param name="player">
         ///     <inheritdoc cref="Player" />
         /// </param>
-        public LandingEventArgs(Player player)
-        {
-            Player = player;
-        }
+        public LandingEventArgs(Player player) => Player = player;
 
         /// <summary>
         ///     Gets the <see cref="API.Features.Player" /> who's landing.
