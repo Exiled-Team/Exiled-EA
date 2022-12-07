@@ -40,6 +40,7 @@ namespace Exiled.Events.Patches.Events.Player
 
             const int offset = 1;
             int index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Ret) + offset;
+            List<Label> startingLabels = newInstructions[index].ExtractLabels();
 
             newInstructions[index].WithLabels(continueLabel);
 
@@ -51,7 +52,7 @@ namespace Exiled.Events.Patches.Events.Player
                     //
                     // if (player == null)
                     //    goto continueLabel;
-                    new CodeInstruction(OpCodes.Ldarg_0).MoveLabelsFrom(newInstructions[index]),
+                    new CodeInstruction(OpCodes.Ldarg_0).WithLabels(startingLabels),
                     new(OpCodes.Call, PropertyGetter(typeof(StatusEffectBase), nameof(StatusEffectBase.Hub))),
                     new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
                     new(OpCodes.Dup),
