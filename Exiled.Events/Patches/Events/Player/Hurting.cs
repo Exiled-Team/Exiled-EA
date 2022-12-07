@@ -5,7 +5,6 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-/*
 namespace Exiled.Events.Patches.Events.Player
 {
     using System.Collections.Generic;
@@ -30,21 +29,21 @@ namespace Exiled.Events.Patches.Events.Player
     ///     Patches <see cref="PlayerStats.DealDamage(DamageHandlerBase)" />.
     ///     Adds the <see cref="Handlers.Player.Hurting" /> event.
     /// </summary>
-    // [HarmonyPatch(typeof(PlayerStats), nameof(PlayerStats.DealDamage))]
+    [HarmonyPatch(typeof(PlayerStats), nameof(PlayerStats.DealDamage))]
     internal static class Hurting
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Shared.Rent(instructions);
 
-            const int offset = 1;
-            int index = newInstructions.FindIndex(i => i.opcode == OpCodes.Ret) + offset;
-
             LocalBuilder player = generator.DeclareLocal(typeof(Player));
-            LocalBuilder hurtingEv = generator.DeclareLocal(typeof(HurtingEventArgs));
+            LocalBuilder ev = generator.DeclareLocal(typeof(HurtingEventArgs));
 
             Label notRecontainment = generator.DefineLabel();
             Label ret = generator.DefineLabel();
+
+            const int offset = 1;
+            int index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Ret) + offset;
 
             newInstructions.InsertRange(
                 index,
@@ -67,12 +66,14 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Ldarg_1),
                     new(OpCodes.Isinst, typeof(RecontainmentDamageHandler)),
                     new(OpCodes.Brfalse, notRecontainment),
+
                     new(OpCodes.Ldloc, player.LocalIndex),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(Player), nameof(Player.Role))),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(Role), nameof(Role.Type))),
                     new(OpCodes.Ldc_I4_7),
                     new(OpCodes.Ceq),
                     new(OpCodes.Brfalse, notRecontainment),
+
                     new(OpCodes.Ldloc, player.LocalIndex),
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(RecontainedEventArgs))[0]),
                     new(OpCodes.Call, Method(typeof(Scp079), nameof(Scp079.OnRecontained))),
@@ -83,7 +84,7 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(HurtingEventArgs))[0]),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),
-                    new(OpCodes.Stloc, hurtingEv.LocalIndex),
+                    new(OpCodes.Stloc, ev.LocalIndex),
 
                     // Handlers.Player.OnHurting(ev);
                     new(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnHurting))),
@@ -94,7 +95,7 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Brfalse, ret),
                 });
 
-            newInstructions[newInstructions.Count - 1].labels.Add(ret);
+            newInstructions[newInstructions.Count - 1].WithLabels(ret);
 
             for (int z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
@@ -103,4 +104,3 @@ namespace Exiled.Events.Patches.Events.Player
         }
     }
 }
-*/
