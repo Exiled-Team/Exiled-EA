@@ -5,7 +5,6 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-/*
 namespace Exiled.Events.Patches.Events.Player
 {
     using System.Collections.Generic;
@@ -15,49 +14,62 @@ namespace Exiled.Events.Patches.Events.Player
     using Exiled.Events.EventArgs.Player;
 
     using HarmonyLib;
-
+    using Interactables.Interobjects;
+    using Mirror;
     using NorthwoodLib.Pools;
 
     using static HarmonyLib.AccessTools;
 
-    using Lift = API.Features.Lift;
-
     /// <summary>
-    ///     Patches <see cref="PlayerInteract.UserCode_CmdUseElevator(UnityEngine.GameObject)" />.
+    ///     Patches <see cref="ElevatorManager.ServerReceiveMessage(NetworkConnection, ElevatorManager.ElevatorSyncMsg)" />.
     ///     Adds the <see cref="Handlers.Player.InteractingElevator" /> event.
     /// </summary>
-    // [HarmonyPatch(typeof(PlayerInteract), nameof(PlayerInteract.UserCode_CmdUseElevator))]
+    [HarmonyPatch(typeof(ElevatorManager), nameof(ElevatorManager.ServerReceiveMessage))]
     internal class InteractingElevator
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Shared.Rent(instructions);
 
+            Label ret = generator.DefineLabel();
+
             int offset = -2;
-            int index = newInstructions.FindLastIndex(i => i.Calls(Method(typeof(Lift), nameof(Lift.UseLift)))) + offset;
+            int index = newInstructions.FindLastIndex(i => i.Calls(PropertyGetter(typeof(ElevatorChamber), nameof(ElevatorChamber.IsReady)))) + offset;
 
-            Label continueLabel = newInstructions[index + 6].labels[0];
-
-            // InteractingElevatorEventArgs ev = new(API.Features.Player.Get(hub), elevator, lift);
+            // InteractingElevatorEventArgs ev = new(Player.Get(referenceHub), elevatorChamber, true);
+            //
             // Handlers.Player.OnInteractingElevator(ev);
+            //
             // if (!ev.IsAllowed)
             //     continue;
             newInstructions.InsertRange(
                 index,
                 new[]
                 {
-                    new CodeInstruction(OpCodes.Ldarg_0),
-                    new(OpCodes.Ldfld, Field(typeof(PlayerInteract), nameof(PlayerInteract._hub))),
+                    // Player.Get(referenceHub)
+                    new CodeInstruction(OpCodes.Ldloc_0).MoveLabelsFrom(newInstructions[index]),
                     new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
+
+                    // elevatorChamber
                     new(OpCodes.Ldloc_3),
-                    new(OpCodes.Ldloc_0),
+
+                    // true
                     new(OpCodes.Ldc_I4_1),
+
+                    // var ev = new InteractingElevatorEventArgs(Player, ElevatorChamber, bool)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(InteractingElevatorEventArgs))[0]),
                     new(OpCodes.Dup),
+
+                    // Handlers.Player.OnInteractingElevator(ev)
                     new(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnInteractingElevator))),
+
+                    // if (!ev.IsAllowed)
+                    //     continue;
                     new(OpCodes.Callvirt, PropertyGetter(typeof(InteractingElevatorEventArgs), nameof(InteractingElevatorEventArgs.IsAllowed))),
-                    new(OpCodes.Brfalse_S, continueLabel),
+                    new(OpCodes.Brfalse_S, ret),
                 });
+
+            newInstructions[newInstructions.Count - 1].WithLabels(ret);
 
             for (int z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
@@ -66,4 +78,3 @@ namespace Exiled.Events.Patches.Events.Player
         }
     }
 }
-*/

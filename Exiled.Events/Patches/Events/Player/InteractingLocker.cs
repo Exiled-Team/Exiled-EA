@@ -28,7 +28,7 @@ namespace Exiled.Events.Patches.Events.Player
     ///     Patches <see cref="Locker.ServerInteract(ReferenceHub, byte)" />.
     ///     Adds the <see cref="Handlers.Player.InteractingLocker" /> event.
     /// </summary>
-    // [HarmonyPatch(typeof(Locker), nameof(Locker.ServerInteract))]
+    [HarmonyPatch(typeof(Locker), nameof(Locker.ServerInteract))]
     internal static class InteractingLocker
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
@@ -36,14 +36,12 @@ namespace Exiled.Events.Patches.Events.Player
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Shared.Rent(instructions);
 
             int offset = 2;
-            int index = newInstructions.FindIndex(
-                instruction => instruction.operand is MethodInfo methodInfo
-                               && (methodInfo == Method(typeof(Locker), nameof(Locker.RpcPlayDenied)))) + offset;
+            int index = newInstructions.FindIndex(instruction => instruction.Calls(Method(typeof(Locker), nameof(Locker.RpcPlayDenied)))) + offset;
 
             Label openLockerLabel = newInstructions[index].labels[0];
 
-            offset = 1;
-            index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Ret) + offset;
+            offset = 4;
+            index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Stelem_Ref) + offset;
 
             Label runChecksLabel = newInstructions[index].labels[0];
 
@@ -64,7 +62,7 @@ namespace Exiled.Events.Patches.Events.Player
                     // this
                     new(OpCodes.Ldarg_0),
 
-                    // this.__instance.Chambers[colliderId]
+                    // this.Chambers[colliderId]
                     new(OpCodes.Ldarg_0),
                     new(OpCodes.Ldfld, Field(typeof(Locker), nameof(Locker.Chambers))),
                     new(OpCodes.Ldarg_2),
@@ -73,7 +71,8 @@ namespace Exiled.Events.Patches.Events.Player
                     // colliderId
                     new(OpCodes.Ldarg_2),
 
-                    // __instance.CheckPerms(__instance.Chambers[colliderId].RequiredPermissions, ply) || ply.serverRoles.BypassMode
+                    // if (this.CheckPerms(this.Chambers[colliderId].RequiredPermissions, ply))
+                    //    goto trueLabel;
                     new(OpCodes.Ldarg_0),
                     new(OpCodes.Ldarg_0),
                     new(OpCodes.Ldfld, Field(typeof(Locker), nameof(Locker.Chambers))),
@@ -83,20 +82,26 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Ldarg_1),
                     new(OpCodes.Callvirt, Method(typeof(Locker), nameof(Locker.CheckPerms), new[] { typeof(KeycardPermissions), typeof(ReferenceHub) })),
                     new(OpCodes.Brtrue_S, trueLabel),
+
+                    // if (!ply.serverRoles.BypassMode)
+                    //    goto evLabel;
                     new(OpCodes.Ldarg_1),
                     new(OpCodes.Ldfld, Field(typeof(ReferenceHub), nameof(ReferenceHub.serverRoles))),
                     new(OpCodes.Ldfld, Field(typeof(ServerRoles), nameof(ServerRoles.BypassMode))),
                     new(OpCodes.Br_S, evLabel),
+
+                    // trueLabel:
                     new CodeInstruction(OpCodes.Ldc_I4_1).WithLabels(trueLabel),
 
-                    // var ev = new AddingTargetEventArgs(...)
+                    // var ev = new AddingTargetEventArgs(Player, Locker, LockerChamber, byte, bool)
                     new CodeInstruction(OpCodes.Newobj, GetDeclaredConstructors(typeof(InteractingLockerEventArgs))[0]).WithLabels(evLabel),
+                    new(OpCodes.Dup),
 
                     // Handlers.Player.OnInteractingLocker(ev)
-                    new(OpCodes.Dup),
                     new(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnInteractingLocker))),
 
-                    // if (ev.IsAllowed) goto openLockerLabel
+                    // if (ev.IsAllowed)
+                    //    goto openLockerLabel;
                     new(OpCodes.Callvirt, PropertyGetter(typeof(InteractingLockerEventArgs), nameof(InteractingLockerEventArgs.IsAllowed))),
                     new(OpCodes.Brtrue_S, openLockerLabel),
                 });
