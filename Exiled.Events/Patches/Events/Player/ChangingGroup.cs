@@ -38,7 +38,7 @@ namespace Exiled.Events.Patches.Events.Player
 
             int index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Ret) + offset;
 
-            // var ev = new ChangingGroupEventArgs(Player, UserGroup, true);
+            // var ev = new ChangingGroupEventArgs(Player.Get(this.gameObject), group, true);
             //
             // if (!ev.IsAllowed)
             //     return;
@@ -46,19 +46,31 @@ namespace Exiled.Events.Patches.Events.Player
                 index,
                 new[]
                 {
+                    // Player.Get(this.gameObject)
                     new CodeInstruction(OpCodes.Ldarg_0).MoveLabelsFrom(newInstructions[index]),
                     new(OpCodes.Call, PropertyGetter(typeof(ServerRoles), nameof(ServerRoles.gameObject))),
                     new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(GameObject) })),
+
+                    // group
                     new(OpCodes.Ldarg_1),
+
+                    // true
                     new(OpCodes.Ldc_I4_1),
+
+                    // var ev = new ChangingGroupEventArgs(Player, UserGroup, bool);
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(ChangingGroupEventArgs))[0]),
                     new(OpCodes.Dup),
+
+                    // Handlers.Player.OnChangingGroup(ev)
                     new(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnChangingGroup))),
+
+                    // if (!ev.IsAllowed)
+                    //     return;
                     new(OpCodes.Callvirt, PropertyGetter(typeof(ChangingGroupEventArgs), nameof(ChangingGroupEventArgs.IsAllowed))),
                     new(OpCodes.Brfalse_S, returnLabel),
                 });
 
-            newInstructions[newInstructions.Count - 1].labels.Add(returnLabel);
+            newInstructions[newInstructions.Count - 1].WithLabels(returnLabel);
 
             for (int z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
