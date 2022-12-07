@@ -40,6 +40,7 @@ namespace Exiled.Events.Patches.Events.Player
 
             const int offset = 1;
             int index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Ret) + offset;
+
             List<Label> startingLabels = newInstructions[index].ExtractLabels();
 
             newInstructions[index].WithLabels(continueLabel);

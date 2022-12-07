@@ -91,7 +91,7 @@ namespace Exiled.Events.Patches.Events.Scp106
                     new(OpCodes.Stloc_0),
                 });
 
-            newInstructions[newInstructions.Count - 1].labels.Add(returnLabel);
+            newInstructions[newInstructions.Count - 1].WithLabels(returnLabel);
 
             for (int z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
