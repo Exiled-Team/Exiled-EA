@@ -32,10 +32,9 @@ namespace Exiled.Events.Patches.Events.Player
 
             Label ret = generator.DefineLabel();
 
-            newInstructions.Clear();
+            newInstructions.InsertRange(0, StayingOnEnvironmentalHazard.GetInstructions(ret));
 
-            newInstructions.AddRange(StayingOnEnvironmentalHazard.GetInstructions(ret));
-            newInstructions.Add(new CodeInstruction(OpCodes.Ret).WithLabels(ret));
+            newInstructions[newInstructions.Count - 1].WithLabels(ret);
 
             for (int z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];

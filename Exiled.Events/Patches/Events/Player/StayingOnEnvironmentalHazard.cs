@@ -24,15 +24,22 @@ namespace Exiled.Events.Patches.Events.Player
     /// Patches <see cref="EnvironmentalHazard.OnStay(ReferenceHub)"/>.
     /// Adds the <see cref="Handlers.Player.StayingOnEnvironmentalHazard"/> event.
     /// </summary>
-    // [HarmonyPatch(typeof(EnvironmentalHazard), nameof(EnvironmentalHazard.OnStay))]
+    [HarmonyPatch(typeof(EnvironmentalHazard), nameof(EnvironmentalHazard.OnStay))]
     internal static class StayingOnEnvironmentalHazard
     {
         internal static CodeInstruction[] GetInstructions(Label ret) => new CodeInstruction[]
         {
+            // Player.Get(player)
             new(OpCodes.Ldarg_1),
             new(OpCodes.Call, Method(typeof(API.Features.Player), nameof(API.Features.Player.Get), new[] { typeof(ReferenceHub) })),
+
+            // this
             new(OpCodes.Ldarg_0),
+
+            // var ev = new StayingOnEnvironmentalHazardEventArgs(Player, EnvironmentalHazard)
             new(OpCodes.Newobj, GetDeclaredConstructors(typeof(StayingOnEnvironmentalHazardEventArgs))[0]),
+
+            // Handlers.Player.OnStayingOnEnvironmentalHazard(ev)
             new(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnStayingOnEnvironmentalHazard))),
         };
 
@@ -44,7 +51,7 @@ namespace Exiled.Events.Patches.Events.Player
 
             newInstructions.InsertRange(0, GetInstructions(ret));
 
-            newInstructions[newInstructions.Count - 1].labels.Add(ret);
+            newInstructions[newInstructions.Count - 1].WithLabels(ret);
 
             for (int z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
