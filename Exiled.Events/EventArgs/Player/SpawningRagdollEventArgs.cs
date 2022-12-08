@@ -31,10 +31,7 @@ namespace Exiled.Events.EventArgs.Player
         /// <param name="isAllowed">
         ///     <inheritdoc cref="IsAllowed" />
         /// </param>
-        public SpawningRagdollEventArgs(
-            RagdollInfo ragdollInfo,
-            DamageHandlerBase damageHandlerBase,
-            bool isAllowed = true)
+        public SpawningRagdollEventArgs(RagdollInfo ragdollInfo, DamageHandlerBase damageHandlerBase, bool isAllowed = true)
         {
             Info = ragdollInfo;
             DamageHandlerBase = damageHandlerBase;
