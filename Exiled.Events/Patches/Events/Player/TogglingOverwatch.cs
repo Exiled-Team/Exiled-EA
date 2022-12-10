@@ -56,6 +56,7 @@ namespace Exiled.Events.Patches.Events.Player
                     new CodeInstruction(OpCodes.Callvirt, PropertyGetter(typeof(TogglingOverwatchEventArgs), nameof(TogglingOverwatchEventArgs.IsAllowed))),
                     new CodeInstruction(OpCodes.Brtrue_S, isAllowed),
 
+                    // pop the event still in the stack and return
                     new CodeInstruction(OpCodes.Pop),
                     new CodeInstruction(OpCodes.Br_S, ret),
 

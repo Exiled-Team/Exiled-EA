@@ -27,46 +27,41 @@ namespace Exiled.Events.EventArgs.Player
         /// <param name="player">
         ///     <inheritdoc cref="Player" />
         /// </param>
-        /// <param name="roleType">
-        ///     <inheritdoc cref="RoleType" />
+        /// <param name="role">
+        ///     <inheritdoc cref="Role" />
         /// </param>
-        public SpawningEventArgs(Player player, RoleTypeId roleType)
+        public SpawningEventArgs(Player player, PlayerRoleBase role)
         {
             Player = player;
-            RoleType = roleType;
-
-            (Vector3 position, Vector3 rotation) = roleType.GetRandomSpawnProperties();
-
-            if (position == Vector3.zero && player.Role.Type == RoleTypeId.Spectator)
-            {
-                Position = player.Role.As<SpectatorRole>().DeathPosition.Position;
-                Rotation = Vector3.zero;
-            }
-            else
-            {
-                Position = position;
-                Rotation = rotation;
-            }
+            Role = role;
         }
-
-        /// <summary>
-        ///     Gets the <see cref="Player"/>'s role type.
-        /// </summary>
-        public RoleTypeId RoleType { get; }
-
-        /// <summary>
-        ///     Gets or sets the <see cref="Player"/>'s spawning position.
-        /// </summary>
-        public Vector3 Position { get; set; }
-
-        /// <summary>
-        ///     Gets or sets the <see cref="Player"/>'s rotation.
-        /// </summary>
-        public Vector3 Rotation { get; set; }
 
         /// <summary>
         ///     Gets the spawning <see cref="Player"/>.
         /// </summary>
         public Player Player { get; }
+
+        /// <summary>
+        ///     Gets the <see cref="Player"/>'s role type.
+        /// </summary>
+        public PlayerRoleBase Role { get; }
+
+        /// <summary>
+        ///     Gets or sets the <see cref="Player"/>'s spawning position.
+        /// </summary>
+        public Vector3 Position
+        {
+            get => Role.transform.localPosition;
+            set => Role.transform.localPosition = value;
+        }
+
+        /// <summary>
+        ///     Gets or sets the <see cref="Player"/>'s rotation.
+        /// </summary>
+        public Vector3 Rotation
+        {
+            get => Role.transform.localRotation.eulerAngles;
+            set => Role.transform.localRotation = Quaternion.Euler(value);
+        }
     }
 }

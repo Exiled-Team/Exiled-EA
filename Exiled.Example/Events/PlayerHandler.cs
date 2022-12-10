@@ -194,7 +194,7 @@ namespace Exiled.Example.Events
         /// <inheritdoc cref="Exiled.Events.Handlers.Player.OnSpawning(SpawningEventArgs)"/>
         public void OnSpawning(SpawningEventArgs ev)
         {
-            if (ev.RoleType == RoleTypeId.Scientist)
+            if (ev.Role?.RoleTypeId == RoleTypeId.Scientist)
             {
                 ev.Position = new Vector3(53f, 1020f, -44f);
 
