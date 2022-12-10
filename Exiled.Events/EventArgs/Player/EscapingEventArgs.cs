@@ -22,48 +22,28 @@ namespace Exiled.Events.EventArgs.Player
         /// <param name="player">
         ///     <inheritdoc cref="Player" />
         /// </param>
-        public EscapingEventArgs(Player player)
+        /// <param name="newRole">
+        ///     <inheritdoc cref="NewRole" />
+        /// </param>
+        public EscapingEventArgs(Player player, RoleTypeId newRole)
         {
             Player = player;
-            if (player.IsCuffed)
-            {
-                switch (player.Role.Team)
-                {
-                    case Team.ClassD:
-                        NewRole = RoleTypeId.NtfPrivate;
-                        break;
-                    case Team.Scientists:
-                        NewRole = RoleTypeId.ChaosConscript;
-                        break;
-                }
-            }
-            else
-            {
-                switch (player.Role.Team)
-                {
-                    case Team.ClassD:
-                        NewRole = RoleTypeId.ChaosConscript;
-                        break;
-                    case Team.Scientists:
-                        NewRole = RoleTypeId.NtfSpecialist;
-                        break;
-                }
-            }
+            NewRole = newRole;
         }
-
-        /// <summary>
-        ///     Gets or sets the role that will be assigned when the player escapes.
-        /// </summary>
-        public RoleTypeId NewRole { get; set; } = RoleTypeId.Spectator;
-
-        /// <summary>
-        ///     Gets or sets a value indicating whether or not the player can escape.
-        /// </summary>
-        public bool IsAllowed { get; set; } = true;
 
         /// <summary>
         ///     Gets the player who's escaping.
         /// </summary>
         public Player Player { get; }
+
+        /// <summary>
+        ///     Gets or sets the role that will be assigned when the player escapes.
+        /// </summary>
+        public RoleTypeId NewRole { get; set; }
+
+        /// <summary>
+        ///     Gets or sets a value indicating whether or not the player can escape.
+        /// </summary>
+        public bool IsAllowed { get; set; } = true;
     }
 }
