@@ -1,4 +1,4 @@
-﻿// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
 // <copyright file="TogglingOverwatchEventArgs.cs" company="Exiled Team">
 // Copyright (c) Exiled Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
@@ -23,7 +23,6 @@ namespace Exiled.Events.EventArgs.Player
         {
             Player = player;
             IsEnabled = newValue;
-            IsAllowed = true;
         }
 
         /// <summary>
@@ -39,6 +38,6 @@ namespace Exiled.Events.EventArgs.Player
         /// <summary>
         /// Gets or sets a value indicating whether the event is allowed or not.
         /// </summary>
-        public bool IsAllowed { get; set; }
+        public bool IsAllowed { get; set; } = true;
     }
 }
