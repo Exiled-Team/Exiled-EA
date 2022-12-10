@@ -103,16 +103,15 @@ namespace Exiled.Events.Patches.Events.Player
 
                 LocalBuilder ev = generator.DeclareLocal(typeof(ShotEventArgs));
 
-                const int offset = -9;
-                int index = newInstructions.FindIndex(
-                    instruction => instruction.Calls(Method(typeof(FirearmBaseStats), nameof(FirearmBaseStats.DamageAtDistance)))) + offset;
+                const int offset = 0;
+                int index = newInstructions.FindLastIndex(instruction => instruction.opcode == OpCodes.Ldsfld) + offset;
 
                 newInstructions.InsertRange(
                     index,
                     new[]
                     {
                         // Player player = Player.Get(this.Hub)
-                        new CodeInstruction(OpCodes.Ldarg_0).MoveLabelsFrom(newInstructions[index]),
+                        new CodeInstruction(OpCodes.Ldarg_0),
                         new(OpCodes.Callvirt, PropertyGetter(typeof(BuckshotHitreg), nameof(BuckshotHitreg.Hub))),
                         new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
 
