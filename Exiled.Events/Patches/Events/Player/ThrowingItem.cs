@@ -33,39 +33,52 @@ namespace Exiled.Events.Patches.Events.Player
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Shared.Rent(instructions);
 
-            int offset = 4;
-
-            int index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Dup) + offset;
-
             Label returnLabel = generator.DefineLabel();
 
             LocalBuilder ev = generator.DeclareLocal(typeof(ThrowingItemEventArgs));
 
-            int moveOffset = -2;
-
-            int moveIndex = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Stloc_2) + moveOffset;
+            const int offset = 4;
+            int index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Dup) + offset;
 
             newInstructions.InsertRange(
                 index,
                 new[]
                 {
-                    new CodeInstruction(OpCodes.Ldloc_0).MoveLabelsFrom(newInstructions[moveIndex]),
+                    // Player.Get(referenceHub)
+                    new CodeInstruction(OpCodes.Ldloc_0).MoveLabelsFrom(newInstructions[index]),
                     new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
+
+                    // throwableItem
                     new(OpCodes.Ldloc_1),
+
+                    // msg.Request
                     new(OpCodes.Ldarg_1),
                     new(OpCodes.Ldfld, Field(typeof(ThrowableNetworkHandler.ThrowableItemRequestMessage), nameof(ThrowableNetworkHandler.ThrowableItemRequestMessage.Request))),
+
+                    // true
                     new(OpCodes.Ldc_I4_1),
+
+                    // var ev = new ThrowingItemEventArgs(Player, ThrowableItem, ThrowableNetworkHandler.RequestType, bool)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(ThrowingItemEventArgs))[0]),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),
                     new(OpCodes.Stloc_S, ev.LocalIndex),
+
+                    // Handlers.Player.OnThrowingItem(ev)
                     new(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnThrowingItem))),
+
+                    // if (!ev.IsAllowed)
+                    //    return;
                     new(OpCodes.Callvirt, PropertyGetter(typeof(ThrowingItemEventArgs), nameof(ThrowingItemEventArgs.IsAllowed))),
                     new(OpCodes.Brfalse_S, returnLabel),
+
+                    // throwableItem = ev.Item.Base
                     new(OpCodes.Ldloc_S, ev.LocalIndex),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(ThrowingItemEventArgs), nameof(ThrowingItemEventArgs.Item))),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(Item), nameof(Item.Base))),
                     new(OpCodes.Stloc_1),
+
+                    // msg = new ThrowableNetworkHandler.ThrowableItemRequestMessage(msg.Serial, ev.RequestType, msg.CameraRotation, msg.CameraPosition, msg.PlayerVelocity)
                     new(OpCodes.Ldarg_1),
                     new(OpCodes.Ldfld, Field(typeof(ThrowableNetworkHandler.ThrowableItemRequestMessage), nameof(ThrowableNetworkHandler.ThrowableItemRequestMessage.Serial))),
                     new(OpCodes.Ldloc_S, ev.LocalIndex),
@@ -80,7 +93,7 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Starg_S, 1),
                 });
 
-            newInstructions[newInstructions.Count - 1].labels.Add(returnLabel);
+            newInstructions[newInstructions.Count - 1].WithLabels(returnLabel);
 
             for (int z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];

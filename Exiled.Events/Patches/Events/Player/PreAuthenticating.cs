@@ -34,21 +34,21 @@ namespace Exiled.Events.Patches.Events.Player
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Shared.Rent(instructions);
 
-            // The index offset.
-            int offset = -1;
-
-            // Search for the last "request.Accept()" and then removes the offset, to get "ldarg.1" index.
-            int index = newInstructions.FindLastIndex(i => (i.opcode == OpCodes.Callvirt) && ((MethodInfo)i.operand == PropertyGetter(typeof(NetManager), nameof(NetManager.ConnectedPeersCount)))) +
-                        offset;
+            Label elseLabel = generator.DefineLabel();
+            Label fullRejectLabel = generator.DefineLabel();
 
             // Declare a string local variable.
             LocalBuilder failedMessage = generator.DeclareLocal(typeof(string));
 
-            // Define an else label.
-            Label elseLabel = generator.DefineLabel();
-            Label fullRejectLabel = generator.DefineLabel();
+            const int offset = -1;
+
+            // Search for the last "request.Accept()" and then removes the offset, to get "ldarg.1" index.
+            int index = newInstructions.FindLastIndex(i => i.Calls(PropertyGetter(typeof(NetManager), nameof(NetManager.ConnectedPeersCount)))) + offset;
+
             newInstructions[index + 4].WithLabels(elseLabel);
+
             int rejectIndex = newInstructions.FindLastIndex(i => i.opcode == OpCodes.Br_S) + 1;
+
             newInstructions[rejectIndex].WithLabels(fullRejectLabel);
 
             LocalBuilder ev = generator.DeclareLocal(typeof(PreAuthenticatingEventArgs));
