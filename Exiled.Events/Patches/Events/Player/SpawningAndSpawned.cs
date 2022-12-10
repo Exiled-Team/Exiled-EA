@@ -70,7 +70,7 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(SpawnedEventArgs))[0]),
                     new(OpCodes.Dup),
 
-                    // Handlers.Player.OnSpawned(ev);
+                    // Handlers.Player.OnSpawned(ev)
                     new(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnSpawned))),
 
                     // ev.Player.Role = Role.Create(player, targetId)
