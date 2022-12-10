@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------
-// <copyright file="Spawning.cs" company="Exiled Team">
+// <copyright file="SpawningAndSpawned.cs" company="Exiled Team">
 // Copyright (c) Exiled Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
@@ -14,6 +14,7 @@ namespace Exiled.Events.Patches.Events.Player
     using System.Reflection.Emit;
 
     using Exiled.API.Features;
+    using Exiled.API.Features.Roles;
     using Exiled.Events.EventArgs.Player;
 
     using HarmonyLib;
@@ -25,10 +26,10 @@ namespace Exiled.Events.Patches.Events.Player
 
     /// <summary>
     /// Patches <see cref="PlayerRoleManager.InitializeNewRole(RoleTypeId, RoleChangeReason, NetworkReader)"/>.
-    /// Adds the <see cref="Spawning"/> event.
+    /// Adds the <see cref="SpawningAndSpawned"/> event.
     /// </summary>
     [HarmonyPatch(typeof(PlayerRoleManager), nameof(PlayerRoleManager.InitializeNewRole))]
-    internal static class Spawning
+    internal static class SpawningAndSpawned
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
@@ -54,6 +55,30 @@ namespace Exiled.Events.Patches.Events.Player
 
                     // Handlers.Player.OnSpawning(ev);
                     new(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnSpawning))),
+                });
+
+            newInstructions.InsertRange(
+                newInstructions.Count - 1,
+                new[]
+                {
+                    // Player.Get(this.Hub)
+                    new CodeInstruction(OpCodes.Ldarg_0),
+                    new(OpCodes.Call, PropertyGetter(typeof(PlayerRoleManager), nameof(PlayerRoleManager.Hub))),
+                    new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
+
+                    // var ev = new SpawningEventArgs(Player, PlayerRoleBase)
+                    new(OpCodes.Newobj, GetDeclaredConstructors(typeof(SpawnedEventArgs))[0]),
+                    new(OpCodes.Dup),
+
+                    // Handlers.Player.OnSpawned(ev);
+                    new(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnSpawned))),
+
+                    // ev.Player.Role = Role.Create(player, newRole)
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(SpawnedEventArgs), nameof(SpawnedEventArgs.Player))),
+                    new(OpCodes.Dup),
+                    new(OpCodes.Ldarg_1),
+                    new(OpCodes.Call, Method(typeof(Role), nameof(Role.Create))),
+                    new(OpCodes.Callvirt, PropertySetter(typeof(Player), nameof(Player.Role))),
                 });
 
             for (int z = 0; z < newInstructions.Count; z++)
