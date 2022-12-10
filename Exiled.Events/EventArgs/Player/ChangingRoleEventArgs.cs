@@ -30,16 +30,14 @@ namespace Exiled.Events.EventArgs.Player
         /// <param name="newRole">
         ///     <inheritdoc cref="NewRole" />
         /// </param>
-        /// <param name="shouldPreservePosition">
-        ///     <inheritdoc cref="Lite" />
-        /// </param>
         /// <param name="reason">
         ///     <inheritdoc cref="Reason" />
         /// </param>
-        public ChangingRoleEventArgs(Player player, RoleTypeId newRole, bool shouldPreservePosition, RoleChangeReason reason)
+        public ChangingRoleEventArgs(Player player, RoleTypeId newRole, RoleChangeReason reason)
         {
             Player = player;
             NewRole = newRole;
+
             if (StartingInventories.DefinedInventories.ContainsKey(newRole))
             {
                 foreach (ItemType itemType in StartingInventories.DefinedInventories[newRole].Items)
@@ -48,9 +46,13 @@ namespace Exiled.Events.EventArgs.Player
                     Ammo.Add(ammoPair.Key, ammoPair.Value);
             }
 
-            Lite = shouldPreservePosition;
             Reason = (SpawnReason)reason;
         }
+
+        /// <summary>
+        ///     Gets the player whose <see cref="RoleTypeId" /> is changing.
+        /// </summary>
+        public Player Player { get; }
 
         /// <summary>
         ///     Gets or sets the new player's role.
@@ -58,16 +60,19 @@ namespace Exiled.Events.EventArgs.Player
         public RoleTypeId NewRole { get; set; }
 
         /// <summary>
-        ///     Gets base items that the player will receive. (Changing this will overwrite their current inventory if Lite is
-        ///     true!).
+        ///     Gets base items that the player will receive.
         /// </summary>
         public List<ItemType> Items { get; } = new();
 
         /// <summary>
-        ///     Gets the base ammo values for the new role. (Changing this will overwrite their current inventory if Lite is
-        ///     true!).
+        ///     Gets the base ammo values for the new role.
         /// </summary>
         public Dictionary<ItemType, ushort> Ammo { get; } = new();
+
+        /// <summary>
+        ///     Gets or sets a value indicating whether the inventory will be preserved or not.
+        /// </summary>
+        public bool ShouldPreserveInventory { get; set; } = true;
 
         /// <summary>
         ///     Gets or sets the reason for their class change.
@@ -75,18 +80,8 @@ namespace Exiled.Events.EventArgs.Player
         public SpawnReason Reason { get; set; }
 
         /// <summary>
-        ///     Gets or sets a value indicating whether the position and items has to be preserved after changing the role.
-        /// </summary>
-        public bool Lite { get; set; }
-
-        /// <summary>
         ///     Gets or sets a value indicating whether the event can continue.
         /// </summary>
         public bool IsAllowed { get; set; } = true;
-
-        /// <summary>
-        ///     Gets the player whose <see cref="RoleTypeId" /> is changing.
-        /// </summary>
-        public Player Player { get; }
     }
 }
