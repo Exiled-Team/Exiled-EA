@@ -66,14 +66,14 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Call, PropertyGetter(typeof(PlayerRoleManager), nameof(PlayerRoleManager.Hub))),
                     new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
 
-                    // var ev = new SpawningEventArgs(Player, PlayerRoleBase)
+                    // var ev = new SpawningEventArgs(Player)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(SpawnedEventArgs))[0]),
                     new(OpCodes.Dup),
 
                     // Handlers.Player.OnSpawned(ev);
                     new(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnSpawned))),
 
-                    // ev.Player.Role = Role.Create(player, newRole)
+                    // ev.Player.Role = Role.Create(player, targetId)
                     new(OpCodes.Callvirt, PropertyGetter(typeof(SpawnedEventArgs), nameof(SpawnedEventArgs.Player))),
                     new(OpCodes.Dup),
                     new(OpCodes.Ldarg_1),
