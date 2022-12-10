@@ -215,10 +215,12 @@ namespace Exiled.API.Extensions
                 throw new ArgumentException("The attachments code can't be less than the item's base code.");
 
             Firearm firearm = Firearm.FirearmInstances.FirstOrDefault(item => item.Type == type);
+
             if (firearm is null)
                 throw new ArgumentException($"Couldn't find a Firearm instance matching the ItemType value. {type}");
 
             firearm.Base.ApplyAttachmentsCode(code, true);
+
             return firearm.GetAttachmentIdentifiers();
         }
 

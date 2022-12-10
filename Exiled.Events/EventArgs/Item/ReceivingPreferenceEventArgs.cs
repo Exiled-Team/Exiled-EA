@@ -38,12 +38,7 @@ namespace Exiled.Events.EventArgs.Item
         /// <param name="isAllowed">
         ///     <inheritdoc cref="IsAllowed" />
         /// </param>
-        public ReceivingPreferenceEventArgs(
-            Player player,
-            ItemType itemType,
-            uint currentCode,
-            uint newCode,
-            bool isAllowed = true)
+        public ReceivingPreferenceEventArgs(Player player, ItemType itemType, uint currentCode, uint newCode, bool isAllowed = true)
         {
             Player = player;
             Item = itemType;

@@ -27,7 +27,7 @@ namespace Exiled.Events.Patches.Events.Player
     ///     Patches <see cref="CustomLiteNetLib4MirrorTransport.ProcessConnectionRequest(ConnectionRequest)" />.
     ///     Adds the <see cref="Player.PreAuthenticating" /> event.
     /// </summary>
-    // [HarmonyPatch(typeof(CustomLiteNetLib4MirrorTransport), nameof(CustomLiteNetLib4MirrorTransport.ProcessConnectionRequest), typeof(ConnectionRequest))]
+    [HarmonyPatch(typeof(CustomLiteNetLib4MirrorTransport), nameof(CustomLiteNetLib4MirrorTransport.ProcessConnectionRequest), typeof(ConnectionRequest))]
     internal static class PreAuthenticating
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
@@ -37,21 +37,18 @@ namespace Exiled.Events.Patches.Events.Player
             Label elseLabel = generator.DefineLabel();
             Label fullRejectLabel = generator.DefineLabel();
 
-            // Declare a string local variable.
             LocalBuilder failedMessage = generator.DeclareLocal(typeof(string));
+            LocalBuilder ev = generator.DeclareLocal(typeof(PreAuthenticatingEventArgs));
 
             const int offset = -1;
-
-            // Search for the last "request.Accept()" and then removes the offset, to get "ldarg.1" index.
-            int index = newInstructions.FindLastIndex(i => i.Calls(PropertyGetter(typeof(NetManager), nameof(NetManager.ConnectedPeersCount)))) + offset;
+            int index = newInstructions.FindLastIndex(
+                instruction => instruction.Calls(PropertyGetter(typeof(NetManager), nameof(NetManager.ConnectedPeersCount)))) + offset;
 
             newInstructions[index + 4].WithLabels(elseLabel);
 
-            int rejectIndex = newInstructions.FindLastIndex(i => i.opcode == OpCodes.Br_S) + 1;
+            int rejectIndex = newInstructions.FindLastIndex(instruction => instruction.opcode == OpCodes.Br_S) + 1;
 
             newInstructions[rejectIndex].WithLabels(fullRejectLabel);
-
-            LocalBuilder ev = generator.DeclareLocal(typeof(PreAuthenticatingEventArgs));
 
             // Search for the operand of the last "br.s".
             object returnLabel = newInstructions.FindLast(instruction => instruction.opcode == OpCodes.Br_S).operand;
@@ -76,7 +73,7 @@ namespace Exiled.Events.Patches.Events.Player
                 new[]
                 {
                     // text (userId)
-                    new CodeInstruction(OpCodes.Ldloc_S, 9).MoveLabelsFrom(newInstructions[index]),
+                    new CodeInstruction(OpCodes.Ldloc_S, 10).MoveLabelsFrom(newInstructions[index]),
 
                     // request
                     new(OpCodes.Ldarg_1),
@@ -87,13 +84,13 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Callvirt, PropertyGetter(typeof(NetDataReader), nameof(NetDataReader.Position))),
 
                     // b3 (flags)
-                    new(OpCodes.Ldloc_S, 11),
-
-                    // text2 (country)
                     new(OpCodes.Ldloc_S, 12),
 
+                    // text2 (country)
+                    new(OpCodes.Ldloc_S, 13),
+
                     // true
-                    new(OpCodes.Ldloc_S, 27),
+                    new(OpCodes.Ldloc_S, 28),
 
                     // var ev = new PreAuthenticatingEventArgs(...)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(PreAuthenticatingEventArgs))[0]),
@@ -114,7 +111,7 @@ namespace Exiled.Events.Patches.Events.Player
 
                     // var failedMessage = string.Format($"Player {0} tried to preauthenticated from endpoint {1}, but the request has been rejected by a plugin.", text, request.RemoteEndPoint);
                     new(OpCodes.Ldstr, "Player {0} tried to preauthenticated from endpoint {1}, but the request has been rejected by a plugin."),
-                    new(OpCodes.Ldloc_S, 9),
+                    new(OpCodes.Ldloc_S, 10),
                     new(OpCodes.Ldarg_1),
                     new(OpCodes.Ldfld, Field(typeof(ConnectionRequest), nameof(ConnectionRequest.RemoteEndPoint))),
                     new(OpCodes.Call, Method(typeof(string), nameof(string.Format), new[] { typeof(string), typeof(object), typeof(object) })),
