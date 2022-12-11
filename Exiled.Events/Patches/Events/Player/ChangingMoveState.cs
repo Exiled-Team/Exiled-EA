@@ -5,12 +5,12 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-/*
 namespace Exiled.Events.Patches.Events.Player
 {
     using System.Collections.Generic;
     using System.Reflection;
     using System.Reflection.Emit;
+
     using API.Features.Roles;
     using Exiled.Events.EventArgs.Player;
     using Exiled.Events.Handlers;
@@ -25,7 +25,7 @@ namespace Exiled.Events.Patches.Events.Player
     ///     Patches <see cref="AnimationController.UserCode_CmdChangeSpeedState" />.
     ///     Adds the <see cref="Player.ChangingMoveState" /> event.
     /// </summary>
-    // [HarmonyPatch(typeof(AnimationController), nameof(AnimationController.UserCode_CmdChangeSpeedState))]
+    [HarmonyPatch(typeof(AnimationController), nameof(AnimationController.UserCode_CmdChangeSpeedState))]
     internal static class ChangingMoveState
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
@@ -36,40 +36,46 @@ namespace Exiled.Events.Patches.Events.Player
 
             Label retLabel = generator.DefineLabel();
 
-            int offset = 1;
-            int index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Stloc_0) + offset;
-
             newInstructions.InsertRange(
-                index,
+                0,
                 new CodeInstruction[]
                 {
+                    // Player.Get(this._hub)
                     new(OpCodes.Ldarg_0),
                     new(OpCodes.Ldfld, Field(typeof(AnimationController), nameof(AnimationController._hub))),
                     new(OpCodes.Call, Method(typeof(API.Features.Player), nameof(API.Features.Player.Get), new[] { typeof(ReferenceHub) })),
                     new(OpCodes.Dup),
+
+                    // player.MoveState
                     new(OpCodes.Callvirt, PropertyGetter(typeof(API.Features.Player), nameof(API.Features.Player.MoveState))),
-                    new(OpCodes.Ldloc_0),
+
+                    // newState
+                    new(OpCodes.Ldarg_1),
+
+                    // true
                     new(OpCodes.Ldc_I4_1),
+
+                    // var ev = new ChangingMoveStateEventArgs(Player, PlayerMovementState, PlayerMovementState, bool)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(ChangingMoveStateEventArgs))[0]),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),
                     new(OpCodes.Stloc_S, ev.LocalIndex),
+
+                    // Player.OnChangingMoveState(ev)
                     new(OpCodes.Call, Method(typeof(Player), nameof(Player.OnChangingMoveState))),
+
+                    // if (!ev.IsAllowed)
+                    //    return;
                     new(OpCodes.Callvirt, PropertyGetter(typeof(ChangingMoveStateEventArgs), nameof(ChangingMoveStateEventArgs.IsAllowed))),
                     new(OpCodes.Brfalse_S, retLabel),
+
+                    // newState = ev.NewState
                     new(OpCodes.Ldloc_S, ev.LocalIndex),
                     new(OpCodes.Call, PropertyGetter(typeof(ChangingMoveStateEventArgs), nameof(ChangingMoveStateEventArgs.NewState))),
-                    new(OpCodes.Stloc_0),
+                    new(OpCodes.Starg_S, 1),
                 });
 
-            offset = -3;
-            index = newInstructions.FindIndex(
-                instruction => (instruction.opcode == OpCodes.Ldfld) &&
-                               ((FieldInfo)instruction.operand == Field(typeof(Role), nameof(Role.team)))) + offset;
-
-            newInstructions.RemoveRange(index, 10);
-
-            newInstructions[newInstructions.Count - 1].labels.Add(retLabel);
+            newInstructions[newInstructions.Count - 1].WithLabels(retLabel);
 
             for (int z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
@@ -78,4 +84,3 @@ namespace Exiled.Events.Patches.Events.Player
         }
     }
 }
-*/

@@ -8,7 +8,9 @@
 namespace Exiled.Events.EventArgs.Player
 {
     using API.Features;
+    using Exiled.API.Enums;
     using Interfaces;
+    using static InventorySystem.Items.Radio.RadioMessages;
 
     /// <summary>
     ///     Contains all information before radio preset is changed.
@@ -30,24 +32,24 @@ namespace Exiled.Events.EventArgs.Player
         /// <param name="isAllowed">
         ///     <inheritdoc cref="IsAllowed" />
         /// </param>
-        public ChangingRadioPresetEventArgs(Player player, byte oldValue, byte newValue, bool isAllowed = true)
+        public ChangingRadioPresetEventArgs(Player player, RadioRangeLevel oldValue, RadioRangeLevel newValue, bool isAllowed = true)
         {
             Player = player;
-            OldValue = oldValue;
-            NewValue = newValue;
+            OldValue = (RadioRange)oldValue;
+            NewValue = (RadioRange)newValue;
             IsAllowed = isAllowed;
         }
 
         /// <summary>
         ///     Gets the old radio preset value.
         /// </summary>
-        public byte OldValue { get; }
+        public RadioRange OldValue { get; }
 
         /// <summary>
         ///     Gets or sets the new radio preset value.
         ///     <remarks>Client radio graphics won't sync with this value.</remarks>
         /// </summary>
-        public byte NewValue { get; set; }
+        public RadioRange NewValue { get; set; }
 
         /// <summary>
         ///     Gets or sets a value indicating whether the radio preset can be changed or not.
