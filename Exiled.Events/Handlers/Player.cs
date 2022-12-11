@@ -700,8 +700,8 @@ namespace Exiled.Events.Handlers
         /// <summary>
         /// Called after a <see cref="API.Features.Player"/> has spawned.
         /// </summary>
-        /// <param name="referenceHub">The <see cref="ReferenceHub"/> instance.</param>
-        public static void OnSpawned(ReferenceHub referenceHub) => Spawned.InvokeSafely(new SpawnedEventArgs(referenceHub));
+        /// <param name="ev">The <see cref="SpawnedEventArgs"/> instance.</param>
+        public static void OnSpawned(SpawnedEventArgs ev) => Spawned.InvokeSafely(ev);
 
         /// <summary>
         /// Called before a <see cref="API.Features.Player"/> enters the femur breaker.

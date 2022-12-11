@@ -18,8 +18,8 @@ namespace Exiled.Events.EventArgs.Player
         /// <summary>
         ///     Initializes a new instance of the <see cref="SpawnedEventArgs" /> class.
         /// </summary>
-        /// <param name="referenceHub"><see cref="ReferenceHub" /> of the spawned player.</param>
-        public SpawnedEventArgs(ReferenceHub referenceHub) => Player = Player.Get(referenceHub);
+        /// <param name="player"><see cref="Player" /> of the spawned player.</param>
+        public SpawnedEventArgs(Player player) => Player = player;
 
         /// <summary>
         ///     Gets the <see cref="API.Features.Player" /> who spawned.

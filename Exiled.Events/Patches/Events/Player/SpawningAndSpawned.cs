@@ -54,7 +54,7 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnSpawning))),
                 });
 
-            /*newInstructions.InsertRange(
+            newInstructions.InsertRange(
                 newInstructions.Count - 1,
                 new[]
                 {
@@ -63,7 +63,7 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Call, PropertyGetter(typeof(PlayerRoleManager), nameof(PlayerRoleManager.Hub))),
                     new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
 
-                    // var ev = new SpawningEventArgs(Player)
+                    // var ev = new SpawnedEventArgs(Player)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(SpawnedEventArgs))[0]),
                     new(OpCodes.Dup),
 
@@ -76,7 +76,7 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Ldarg_1),
                     new(OpCodes.Call, Method(typeof(Role), nameof(Role.Create))),
                     new(OpCodes.Callvirt, PropertySetter(typeof(Player), nameof(Player.Role))),
-                });*/
+                });
 
             for (int z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
