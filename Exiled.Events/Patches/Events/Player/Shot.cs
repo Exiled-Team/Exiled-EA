@@ -38,8 +38,9 @@ namespace Exiled.Events.Patches.Events.Player
 
             LocalBuilder ev = generator.DeclareLocal(typeof(ShotEventArgs));
 
-            int offset = 2;
-            int index = newInstructions.FindLastIndex(i => i.Calls(Method(typeof(FirearmBaseStats), nameof(FirearmBaseStats.DamageAtDistance)))) + offset;
+            const int offset = 2;
+            int index = newInstructions.FindLastIndex(
+                instruction => instruction.Calls(Method(typeof(FirearmBaseStats), nameof(FirearmBaseStats.DamageAtDistance)))) + offset;
 
             newInstructions.InsertRange(
                 index,
@@ -59,7 +60,7 @@ namespace Exiled.Events.Patches.Events.Player
                     // damage
                     new(OpCodes.Ldloc_1),
 
-                    // var ev = new ShotEventArgs(player, hit, component, damage)
+                    // var ev = new ShotEventArgs(Player, RaycastHit, IDestructible, float)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(ShotEventArgs))[0]),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),
@@ -117,13 +118,13 @@ namespace Exiled.Events.Patches.Events.Player
                         // hit
                         new(OpCodes.Ldloc_2),
 
-                        // component (IDestructible)
+                        // destructible
                         new(OpCodes.Ldloc_3),
 
                         // damage
                         new(OpCodes.Ldloc, 4),
 
-                        // var ev = new ShotEventArgs(player, hit, component, damage)
+                        // var ev = new ShotEventArgs(Player, RaycastHit, IDestructible, float)
                         new(OpCodes.Newobj, GetDeclaredConstructors(typeof(ShotEventArgs))[0]),
                         new(OpCodes.Dup),
                         new(OpCodes.Dup),
