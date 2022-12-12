@@ -22,6 +22,7 @@ namespace Exiled.Events.Patches.Events.Player
 
     using NorthwoodLib.Pools;
     using PluginAPI.Enums;
+
     using static HarmonyLib.AccessTools;
 
     /// <summary>
