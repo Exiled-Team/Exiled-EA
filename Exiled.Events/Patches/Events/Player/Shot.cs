@@ -45,15 +45,15 @@ namespace Exiled.Events.Patches.Events.Player
                 index,
                 new CodeInstruction[]
                 {
-                    // Player player = Player.Get(this.Hub)
+                    // Player.Get(this.Hub)
                     new(OpCodes.Ldarg_0),
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(SingleBulletHitreg), nameof(SingleBulletHitreg.Hub))),
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(StandardHitregBase), nameof(StandardHitregBase.Hub))),
                     new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
 
                     // hit
                     new(OpCodes.Ldarg_2),
 
-                    // component (IDestructible)
+                    // destructible
                     new(OpCodes.Ldloc_0),
 
                     // damage
