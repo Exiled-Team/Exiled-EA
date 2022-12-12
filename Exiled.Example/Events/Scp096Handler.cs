@@ -18,7 +18,7 @@ namespace Exiled.Example.Events
         /// <inheritdoc cref="Exiled.Events.Handlers.Scp096.OnAddingTarget(AddingTargetEventArgs)"/>
         public void OnAddingTarget(AddingTargetEventArgs ev)
         {
-            Log.Info($"{ev.Target.Nickname} is being added to {ev.Player.Nickname} targets! Enrage time to add: {ev.EnrageTimeToAdd}");
+            Log.Info($"{ev.Target.Nickname} is being added to {ev.Player.Nickname} targets!");
         }
     }
 }

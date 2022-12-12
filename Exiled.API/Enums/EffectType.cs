@@ -15,7 +15,12 @@ namespace Exiled.API.Enums
         /// <summary>
         /// The player isn't able to open their inventory or reload a weapon.
         /// </summary>
-        Amnesia,
+        AmnesiaItems,
+
+        /// <summary>
+        /// The player isn't able to see properly.
+        /// </summary>
+        AmnesiaVision,
 
         /// <summary>
         /// Drains the player's stamina and then health.

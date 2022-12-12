@@ -13,14 +13,15 @@ namespace Exiled.Events.Patches.Fixes
     using HarmonyLib;
 
     using NorthwoodLib.Pools;
+    using PlayerRoles.Ragdolls;
 
     using static HarmonyLib.AccessTools;
 
     /// <summary>
-    /// Patches <see cref="Ragdoll.UpdateCleanup"/>.
+    /// Patches <see cref="BasicRagdoll.UpdateCleanup"/>.
     /// <para>Fixes <see cref="API.Features.Ragdoll"/>s not being removed from <see cref="API.Features.Map.Ragdolls"/> when they have already been cleaned up.</para>
     /// </summary>
-    // [HarmonyPatch(typeof(Ragdoll), nameof(Ragdoll.UpdateCleanup))]
+    [HarmonyPatch(typeof(BasicRagdoll), nameof(BasicRagdoll.UpdateCleanup))]
     internal static class RagdollCleanupFix
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
@@ -31,9 +32,10 @@ namespace Exiled.Events.Patches.Fixes
                 newInstructions.Count - 1,
                 new CodeInstruction[]
                 {
+                    // API.Features.Map.RagdollsValue.Remove(Ragdoll.Get(this))
                     new(OpCodes.Ldsfld, Field(typeof(API.Features.Map), nameof(API.Features.Map.RagdollsValue))),
                     new(OpCodes.Ldarg_0),
-                    new(OpCodes.Call, Method(typeof(API.Features.Ragdoll), nameof(API.Features.Ragdoll.Get), new[] { typeof(Ragdoll) })),
+                    new(OpCodes.Call, Method(typeof(API.Features.Ragdoll), nameof(API.Features.Ragdoll.Get), new[] { typeof(BasicRagdoll) })),
                     new(OpCodes.Callvirt, Method(typeof(List<API.Features.Ragdoll>), nameof(List<API.Features.Ragdoll>.Remove))),
                     new(OpCodes.Pop),
                 });

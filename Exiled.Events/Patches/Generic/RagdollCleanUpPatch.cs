@@ -19,9 +19,9 @@ namespace Exiled.Events.Patches.Generic
     using static HarmonyLib.AccessTools;
 
     /// <summary>
-    /// Patches <see cref="global::Ragdoll.UpdateCleanup"/>.
+    /// Patches <see cref="BasicRagdoll.UpdateCleanup"/>.
     /// </summary>
-    [HarmonyPatch(typeof(global::Ragdoll), nameof(global::Ragdoll.UpdateCleanup))]
+    [HarmonyPatch(typeof(BasicRagdoll), nameof(BasicRagdoll.UpdateCleanup))]
     internal class RagdollCleanUpPatch
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
@@ -38,7 +38,7 @@ namespace Exiled.Events.Patches.Generic
                 {
                     new(OpCodes.Call, PropertyGetter(typeof(Ragdoll), nameof(Ragdoll.IgnoredRagdolls))),
                     new(OpCodes.Ldarg_0),
-                    new(OpCodes.Callvirt, Method(typeof(HashSet<global::Ragdoll>), nameof(HashSet<global::Ragdoll>.Contains))),
+                    new(OpCodes.Callvirt, Method(typeof(HashSet<BasicRagdoll>), nameof(HashSet<BasicRagdoll>.Contains))),
                     new(OpCodes.Brtrue_S, ret),
                 });
 

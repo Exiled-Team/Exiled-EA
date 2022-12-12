@@ -33,19 +33,6 @@ namespace Exiled.API.Features.Roles
         public override SubroutineManagerModule SubroutineModule { get; }
 
         /// <summary>
-        /// Gets or sets the SCP-049-2 attack distance.
-        /// </summary>
-        public float AttackDistance
-        {
-            get => SubroutineModule.TryGetSubroutine(out ZombieAttackAbility ability) ? ability._range : 0;
-            set
-            {
-                if (SubroutineModule.TryGetSubroutine(out ZombieAttackAbility ability))
-                    ability._range = value;
-            }
-        }
-
-        /// <summary>
         /// Gets or sets the SCP-049-2 attack damage.
         /// </summary>
         public float AttackDamage

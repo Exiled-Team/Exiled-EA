@@ -9,8 +9,7 @@ namespace Exiled.Events.EventArgs.Scp096
 {
     using API.Features;
     using Interfaces;
-
-    using Scp096 = PlayableScps.Scp096;
+    using PlayerRoles.PlayableScps.Scp096;
 
     /// <summary>
     ///     Contains all information before SCP-096 charges.
@@ -29,7 +28,7 @@ namespace Exiled.Events.EventArgs.Scp096
         /// <param name="isAllowed">
         ///     <inheritdoc cref="IsAllowed" />
         /// </param>
-        public ChargingEventArgs(Scp096 scp096, Player player, bool isAllowed = true)
+        public ChargingEventArgs(Scp096Role scp096, Player player, bool isAllowed = true)
         {
             Scp096 = scp096;
             Player = player;
@@ -39,16 +38,16 @@ namespace Exiled.Events.EventArgs.Scp096
         /// <summary>
         ///     Gets the SCP-096 instance.
         /// </summary>
-        public Scp096 Scp096 { get; }
-
-        /// <summary>
-        ///     Gets or sets a value indicating whether or not SCP-096 can charge.
-        /// </summary>
-        public bool IsAllowed { get; set; }
+        public Scp096Role Scp096 { get; }
 
         /// <summary>
         ///     Gets the player who is controlling SCP-096.
         /// </summary>
         public Player Player { get; }
+
+        /// <summary>
+        ///     Gets or sets a value indicating whether or not SCP-096 can charge.
+        /// </summary>
+        public bool IsAllowed { get; set; }
     }
 }

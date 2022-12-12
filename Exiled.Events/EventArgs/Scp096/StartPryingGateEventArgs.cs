@@ -10,8 +10,7 @@ namespace Exiled.Events.EventArgs.Scp096
     using API.Features;
     using Interactables.Interobjects;
     using Interfaces;
-
-    using Scp096 = PlayableScps.Scp096;
+    using PlayerRoles.PlayableScps.Scp096;
 
     /// <summary>
     ///     Contains all information before SCP-096 begins prying a gate open.
@@ -33,7 +32,7 @@ namespace Exiled.Events.EventArgs.Scp096
         /// <param name="isAllowed">
         ///     <inheritdoc cref="IsAllowed" />
         /// </param>
-        public StartPryingGateEventArgs(Scp096 scp096, Player player, PryableDoor gate, bool isAllowed = true)
+        public StartPryingGateEventArgs(Scp096Role scp096, Player player, PryableDoor gate, bool isAllowed = true)
         {
             Scp096 = scp096;
             Player = player;
@@ -44,7 +43,7 @@ namespace Exiled.Events.EventArgs.Scp096
         /// <summary>
         ///     Gets the SCP-096 instance.
         /// </summary>
-        public Scp096 Scp096 { get; }
+        public Scp096Role Scp096 { get; }
 
         /// <summary>
         ///     Gets or Sets a value indicating whether or not the gate can be pried open by SCP-096.

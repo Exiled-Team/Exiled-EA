@@ -10,16 +10,18 @@ namespace Exiled.API.Features.Roles
     using System.Collections.Generic;
     using System.Linq;
 
-    using PlayableScps;
     using PlayerRoles;
+    using PlayerRoles.PlayableScps.Scp096;
     using PlayerRoles.PlayableScps.Subroutines;
+
+    using Scp096GameRole = PlayerRoles.PlayableScps.Scp096.Scp096Role;
 
     /// <summary>
     /// Defines a role that represents SCP-096.
     /// </summary>
     public class Scp096Role : ScpRole
     {
-        private Scp096 script;
+        private readonly IReadOnlyCollection<Player> emptyList = new List<Player>().AsReadOnly();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Scp096Role"/> class.
@@ -28,6 +30,8 @@ namespace Exiled.API.Features.Roles
         public Scp096Role(Player owner)
             : base(owner)
         {
+            Internal = Base as Scp096GameRole;
+            SubroutineModule = Internal.SubroutineModule;
         }
 
         /// <summary>
@@ -39,27 +43,27 @@ namespace Exiled.API.Features.Roles
         public override RoleTypeId Type { get; } = RoleTypeId.Scp096;
 
         /// <inheritdoc/>
-        public override SubroutineManagerModule SubroutineModule => throw new System.NotImplementedException();
+        public override SubroutineManagerModule SubroutineModule { get; }
 
         /// <summary>
-        /// Gets the <see cref="Scp096"/> script for the role.
+        /// Gets a value indicating SCP-096's ability state.
         /// </summary>
-        public Scp096 Script => script ??= Owner.ReferenceHub.scpsController.CurrentScp as Scp096;
+        public Scp096AbilityState AbilityState => Internal.StateController.AbilityState;
 
         /// <summary>
-        /// Gets a value indicating SCP-096's state.
+        /// Gets a value indicating SCP-096's rage state.
         /// </summary>
-        public Scp096PlayerState State => Script.PlayerState;
+        public Scp096RageState RageState => Internal.StateController.RageState;
 
         /// <summary>
         /// Gets a value indicating whether or not SCP-096 can receive targets.
         /// </summary>
-        public bool CanReceiveTargets => Script.CanReceiveTargets;
+        public bool CanReceiveTargets => SubroutineModule.TryGetSubroutine(out Scp096RageCycleAbility ability) && ability._targetsTracker.CanReceiveTargets;
 
         /// <summary>
         /// Gets a value indicating whether or not SCP-096 is currently enraged.
         /// </summary>
-        public bool IsEnraged => Script.Enraged;
+        public bool IsEnraged => RageState == Scp096RageState.Enraged;
 
         /// <summary>
         /// Gets a value indicating whether or not SCP-096 is currently docile.
@@ -69,39 +73,71 @@ namespace Exiled.API.Features.Roles
         /// <summary>
         /// Gets a value indicating whether or not SCP-096 is currently trying not to cry behind a door.
         /// </summary>
-        public bool TryingNotToCry => State == Scp096PlayerState.TryNotToCry;
+        public bool TryingNotToCry => AbilityState == Scp096AbilityState.TryingNotToCry;
 
         /// <summary>
         /// Gets a value indicating whether or not SCP-096 is currently prying a gate.
         /// </summary>
-        public bool IsPryingGate => State == Scp096PlayerState.PryGate;
+        public bool IsPryingGate => AbilityState == Scp096AbilityState.PryingGate;
 
         /// <summary>
         /// Gets a value indicating whether or not SCP-096 is currently charging.
         /// </summary>
-        public bool IsCharging => Script.Charging;
+        public bool IsCharging => AbilityState == Scp096AbilityState.Charging;
 
         /// <summary>
         /// Gets or sets the amount of time in between SCP-096 charges.
         /// </summary>
         public float ChargeCooldown
         {
-            get => Script._chargeCooldown;
-            set => Script._chargeCooldown = value;
+            get => SubroutineModule.TryGetSubroutine(out Scp096RageCycleAbility ability) ? ability._timeToChangeState : 0;
+            set
+            {
+                if (SubroutineModule.TryGetSubroutine(out Scp096RageCycleAbility ability))
+                    ability._timeToChangeState = value;
+            }
         }
 
         /// <summary>
-        /// Gets or sets the amount of time before SCP-096 can be enraged again.
+        /// Gets the amount of time before SCP-096 can be enraged again.
         /// </summary>
-        public float EnrageCooldown
+        public AbilityCooldown EnrageCooldown => SubroutineModule.TryGetSubroutine(out Scp096RageCycleAbility ability) ? ability._activationTime : null;
+
+        /// <summary>
+        /// Gets or sets enraged time left.
+        /// </summary>
+        public float EnragedTimeLeft
         {
-            get => Script.RemainingEnrageCooldown;
-            set => Script.RemainingEnrageCooldown = value;
+            get => SubroutineModule.TryGetSubroutine(out Scp096RageManager ability) ? ability.EnragedTimeLeft : 0;
+            set
+            {
+                if (SubroutineModule.TryGetSubroutine(out Scp096RageManager ability))
+                    ability.EnragedTimeLeft = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets enraged time left.
+        /// </summary>
+        public float TotalEnrageTime
+        {
+            get => SubroutineModule.TryGetSubroutine(out Scp096RageManager ability) ? ability.TotalRageTime : 0;
+            set
+            {
+                if (SubroutineModule.TryGetSubroutine(out Scp096RageManager ability))
+                    ability.TotalRageTime = value;
+            }
         }
 
         /// <summary>
         /// Gets a <see cref="IReadOnlyCollection{T}"/> of Players that are currently targeted by SCP-096.
         /// </summary>
-        public IReadOnlyCollection<Player> Targets => Script._targets.Select(Player.Get).ToList().AsReadOnly();
+        public IReadOnlyCollection<Player> Targets
+            => SubroutineModule.TryGetSubroutine(out Scp096RageCycleAbility ability) ? ability._targetsTracker.Targets.Select(Player.Get).ToList().AsReadOnly() : emptyList;
+
+        /// <summary>
+        /// Gets the <see cref="Scp096GameRole"/>.
+        /// </summary>
+        protected Scp096GameRole Internal { get; }
     }
 }

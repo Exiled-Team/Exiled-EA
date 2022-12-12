@@ -18,7 +18,7 @@ namespace Exiled.Events.Patches.Events.Player
     using Mirror;
 
     using NorthwoodLib.Pools;
-    using PlayerRoles;
+    using PlayerRoles.Ragdolls;
     using PlayerStatsSystem;
 
     using UnityEngine;
@@ -28,10 +28,10 @@ namespace Exiled.Events.Patches.Events.Player
     using Map = API.Features.Map;
 
     /// <summary>
-    ///     Patches <see cref="Ragdoll.ServerSpawnRagdoll(ReferenceHub, DamageHandlerBase)" />.
+    ///     Patches <see cref="RagdollManager.ServerSpawnRagdoll(ReferenceHub, DamageHandlerBase)" />.
     ///     Adds the <see cref="Player.SpawningRagdoll" /> event.
     /// </summary>
-    [HarmonyPatch(typeof(Ragdoll), nameof(Ragdoll.ServerSpawnRagdoll))]
+    [HarmonyPatch(typeof(RagdollManager), nameof(RagdollManager.ServerSpawnRagdoll))]
     internal static class SpawningRagdoll
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
@@ -69,7 +69,7 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Callvirt, PropertyGetter(typeof(Transform), nameof(Transform.localRotation))),
 
                     // new RagdollInfo(ReferenceHub, DamageHandlerBase, Vector3, Quaternion)
-                    new(OpCodes.Newobj, GetDeclaredConstructors(typeof(RagdollInfo))[0]),
+                    new(OpCodes.Newobj, GetDeclaredConstructors(typeof(RagdollData))[0]),
 
                     // handler
                     new(OpCodes.Ldarg_1),
@@ -94,7 +94,7 @@ namespace Exiled.Events.Patches.Events.Player
 
             // Search the index in which our logic will be injected
             offset = 0;
-            index = newInstructions.FindIndex(instruction => instruction.Calls(PropertySetter(typeof(Ragdoll), nameof(Ragdoll.NetworkInfo)))) + offset;
+            index = newInstructions.FindIndex(instruction => instruction.Calls(PropertySetter(typeof(BasicRagdoll), nameof(BasicRagdoll.NetworkInfo)))) + offset;
 
             newInstructions.InsertRange(
                 index,
@@ -125,7 +125,7 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Stloc_S, newRagdoll.LocalIndex),
 
                     // NetworkServer.Spawn(newRagdoll.gameObject, null)
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(Ragdoll), nameof(Ragdoll.gameObject))),
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(BasicRagdoll), nameof(BasicRagdoll.gameObject))),
                     new(OpCodes.Ldnull),
                     new(OpCodes.Call, Method(typeof(NetworkServer), nameof(NetworkServer.Spawn), new[] { typeof(GameObject), typeof(NetworkConnection) })),
 

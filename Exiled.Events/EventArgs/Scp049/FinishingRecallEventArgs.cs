@@ -10,8 +10,6 @@ namespace Exiled.Events.EventArgs.Scp049
     using API.Features;
     using Interfaces;
 
-    using Ragdoll = Ragdoll;
-
     /// <summary>
     ///     Contains all information before SCP-049 finishes recalling a player.
     /// </summary>
@@ -32,11 +30,11 @@ namespace Exiled.Events.EventArgs.Scp049
         /// <param name="isAllowed">
         ///     <inheritdoc cref="IsAllowed" />
         /// </param>
-        public FinishingRecallEventArgs(Player target, Player scp049, Ragdoll ragdoll, bool isAllowed = true)
+        public FinishingRecallEventArgs(Player target, Player scp049, BasicRagdoll ragdoll, bool isAllowed = true)
         {
             Target = target;
             Player = scp049;
-            Ragdoll = API.Features.Ragdoll.Get(ragdoll);
+            Ragdoll = Ragdoll.Get(ragdoll);
             IsAllowed = isAllowed;
         }
 
@@ -48,7 +46,7 @@ namespace Exiled.Events.EventArgs.Scp049
         /// <summary>
         ///     Gets the Ragdoll who's getting recalled.
         /// </summary>
-        public API.Features.Ragdoll Ragdoll { get; }
+        public Ragdoll Ragdoll { get; }
 
         /// <summary>
         ///     Gets or sets a value indicating whether or not the player can be recalled.

@@ -24,8 +24,6 @@ namespace Exiled.Events.Patches.Events.Scp049
 
     using static HarmonyLib.AccessTools;
 
-    using Ragdoll = Ragdoll;
-
     /// <summary>
     ///     Patches <see cref="Scp049.BodyCmd_ByteAndGameObject(byte, GameObject)" />.
     ///     Adds the <see cref="Handlers.Scp049.StartingRecall" /> and <see cref="Handlers.Scp049.FinishingRecall" /> event.
@@ -53,8 +51,8 @@ namespace Exiled.Events.Patches.Events.Scp049
                 {
                     // Player.Get(component2.Info.OwnerHub)
                     new(OpCodes.Ldloc_1),
-                    new(OpCodes.Ldflda, Field(typeof(Ragdoll), nameof(Ragdoll.Info))),
-                    new(OpCodes.Ldfld, Field(typeof(RagdollInfo), nameof(RagdollInfo.OwnerHub))),
+                    new(OpCodes.Ldflda, Field(typeof(BasicRagdoll), nameof(BasicRagdoll.Info))),
+                    new(OpCodes.Ldfld, Field(typeof(RagdollData), nameof(RagdollData.OwnerHub))),
                     new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
 
                     // Player.Get(this.Hub)
@@ -68,7 +66,7 @@ namespace Exiled.Events.Patches.Events.Scp049
                     // true
                     new(OpCodes.Ldc_I4_1),
 
-                    // var ev = StartingRecallEventArgs(Player, Player, Ragdoll, bool)
+                    // var ev = StartingRecallEventArgs(Player, Player, BasicRagdoll, bool)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(StartingRecallEventArgs))[0]),
                     new(OpCodes.Dup),
 

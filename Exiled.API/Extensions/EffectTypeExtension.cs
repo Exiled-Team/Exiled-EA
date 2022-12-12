@@ -28,7 +28,8 @@ namespace Exiled.API.Extensions
         /// <returns>The <see cref="System.Type"/>.</returns>
         public static Type Type(this EffectType effect) => effect switch
         {
-            EffectType.Amnesia => typeof(Amnesia),
+            EffectType.AmnesiaItems => typeof(AmnesiaItems),
+            EffectType.AmnesiaVision => typeof(AmnesiaVision),
             EffectType.Asphyxiated => typeof(Asphyxiated),
             EffectType.Bleeding => typeof(Bleeding),
             EffectType.Blinded => typeof(Blinded),
@@ -85,8 +86,8 @@ namespace Exiled.API.Extensions
         /// <param name="effect">The <see cref="EffectType"/>.</param>
         /// <returns>Whether or not the effect is a negative effect.</returns>
         /// <seealso cref="IsHarmful(EffectType)"/>
-        public static bool IsNegative(this EffectType effect) => IsHarmful(effect) || effect is EffectType.Amnesia
-            or EffectType.Blinded or EffectType.Burned or EffectType.Concussed or EffectType.Deafened
+        public static bool IsNegative(this EffectType effect) => IsHarmful(effect) || effect is EffectType.AmnesiaItems
+            or EffectType.AmnesiaVision or EffectType.Blinded or EffectType.Burned or EffectType.Concussed or EffectType.Deafened
             or EffectType.Disabled or EffectType.Ensnared or EffectType.Exhausted or EffectType.Flashed or EffectType.SinkHole
             or EffectType.Stained or EffectType.Visuals173Blink;
 

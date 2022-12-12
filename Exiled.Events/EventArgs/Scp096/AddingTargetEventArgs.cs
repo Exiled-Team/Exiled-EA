@@ -10,10 +10,6 @@ namespace Exiled.Events.EventArgs.Scp096
     using API.Features;
     using Interfaces;
 
-    using UnityEngine;
-
-    using Scp096 = PlayableScps.Scp096;
-
     /// <summary>
     ///     Contains all information before adding a target to SCP-096.
     /// </summary>
@@ -28,23 +24,20 @@ namespace Exiled.Events.EventArgs.Scp096
         /// <param name="target">
         ///     <inheritdoc cref="Target" />
         /// </param>
-        /// <param name="enrageTimeToAdd">
-        ///     <inheritdoc cref="EnrageTimeToAdd" />
-        /// </param>
         /// <param name="isAllowed">
         ///     <inheritdoc cref="IsAllowed" />
         /// </param>
-        public AddingTargetEventArgs(Player scp096, Player target, float enrageTimeToAdd, bool isAllowed = true)
+        public AddingTargetEventArgs(Player scp096, Player target, bool isAllowed = true)
         {
             Player = scp096;
             Target = target;
-            EnrageTimeToAdd = scp096.ReferenceHub.scpsController.CurrentScp is Scp096 scp
-                ? scp.AddedTimeThisRage + enrageTimeToAdd <= Scp096.MaximumAddedEnrageTime
-                    ? enrageTimeToAdd
-                    : Mathf.Abs((scp.AddedTimeThisRage + enrageTimeToAdd) - Scp096.MaximumAddedEnrageTime)
-                : 0f;
             IsAllowed = isAllowed;
         }
+
+        /// <summary>
+        ///     Gets the <see cref="Player" /> that is controlling SCP-096.
+        /// </summary>
+        public Player Player { get; }
 
         /// <summary>
         ///     Gets the <see cref="Player" /> being added as a target.
@@ -52,20 +45,8 @@ namespace Exiled.Events.EventArgs.Scp096
         public Player Target { get; }
 
         /// <summary>
-        ///     Gets or sets how much time is added to SCP-096's enrage timer if <see cref="IsAllowed" /> is
-        ///     <see langword="true" />.
-        /// </summary>
-        /// <remarks>This does not affect anything if he doesn't already have any targets before this event is called.</remarks>
-        public float EnrageTimeToAdd { get; set; }
-
-        /// <summary>
         ///     Gets or sets a value indicating whether or not the target is allowed to be added.
         /// </summary>
         public bool IsAllowed { get; set; }
-
-        /// <summary>
-        ///     Gets the <see cref="Player" /> that is controlling SCP-096.
-        /// </summary>
-        public Player Player { get; }
     }
 }

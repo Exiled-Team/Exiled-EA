@@ -7,11 +7,13 @@
 
 namespace Exiled.Events.EventArgs.Scp096
 {
+    using System.Linq;
+
     using API.Features;
     using Interactables.Interobjects.DoorUtils;
     using Interfaces;
-
-    using Scp096 = PlayableScps.Scp096;
+    using PlayerRoles.PlayableScps.Scp096;
+    using UnityEngine;
 
     /// <summary>
     ///     Contains all information before SCP-096 tries not to cry.
@@ -27,29 +29,26 @@ namespace Exiled.Events.EventArgs.Scp096
         /// <param name="player">
         ///     <inheritdoc cref="Player" />
         /// </param>
-        /// <param name="door">
-        ///     <inheritdoc cref="Door" />
-        /// </param>
         /// <param name="isAllowed">
         ///     <inheritdoc cref="IsAllowed" />
         /// </param>
-        public TryingNotToCryEventArgs(Scp096 scp096, Player player, DoorVariant door, bool isAllowed = true)
+        public TryingNotToCryEventArgs(Scp096Role scp096, Player player, bool isAllowed = true)
         {
             Scp096 = scp096;
             Player = player;
-            Door = Door.Get(door);
+            Door = Door.List.OrderBy(door => Vector3.Distance(door.Position, player.Position)).FirstOrDefault();
             IsAllowed = isAllowed;
         }
 
         /// <summary>
         ///     Gets the SCP-096 instance.
         /// </summary>
-        public Scp096 Scp096 { get; }
+        public Scp096Role Scp096 { get; }
 
         /// <summary>
-        ///     Gets or sets a value indicating whether or not SCP-096 can try not to cry.
+        ///     Gets the player who is controlling SCP-096.
         /// </summary>
-        public bool IsAllowed { get; set; }
+        public Player Player { get; }
 
         /// <summary>
         ///     Gets the <see cref="API.Features.Door" /> to be cried on.
@@ -57,8 +56,8 @@ namespace Exiled.Events.EventArgs.Scp096
         public Door Door { get; }
 
         /// <summary>
-        ///     Gets the player who is controlling SCP-096.
+        ///     Gets or sets a value indicating whether or not SCP-096 can try not to cry.
         /// </summary>
-        public Player Player { get; }
+        public bool IsAllowed { get; set; }
     }
 }
