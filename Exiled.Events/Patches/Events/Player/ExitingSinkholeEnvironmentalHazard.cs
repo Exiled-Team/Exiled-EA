@@ -10,15 +10,12 @@ namespace Exiled.Events.Patches.Events.Player
     using System.Collections.Generic;
     using System.Reflection.Emit;
 
-    using CustomPlayerEffects;
-
     using Exiled.Events.EventArgs.Player;
     using Exiled.Events.Patches.Fixes;
 
     using HarmonyLib;
     using Hazards;
     using NorthwoodLib.Pools;
-    using PlayerRoles;
 
     using static HarmonyLib.AccessTools;
 

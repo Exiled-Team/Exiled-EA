@@ -14,8 +14,6 @@ namespace Exiled.Events.Patches.Events.Player
     using Exiled.Events.EventArgs.Player;
 
     using HarmonyLib;
-
-    using InventorySystem;
     using InventorySystem.Items;
     using InventorySystem.Items.Coin;
 

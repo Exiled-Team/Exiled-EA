@@ -14,8 +14,6 @@ namespace Exiled.Events.Patches.Events.Player
     using Hazards;
     using NorthwoodLib.Pools;
 
-    using static HarmonyLib.AccessTools;
-
     /// <summary>
     /// Patches <see cref="TantrumEnvironmentalHazard"/>.
     /// <br>Adds the <see cref="Handlers.Player.StayingOnEnvironmentalHazard"/> event.</br>

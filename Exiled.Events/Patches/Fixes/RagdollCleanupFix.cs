@@ -13,7 +13,6 @@ namespace Exiled.Events.Patches.Fixes
     using HarmonyLib;
 
     using NorthwoodLib.Pools;
-    using PlayerRoles.Ragdolls;
 
     using static HarmonyLib.AccessTools;
 

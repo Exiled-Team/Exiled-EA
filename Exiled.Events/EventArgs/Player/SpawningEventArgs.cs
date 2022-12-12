@@ -7,11 +7,7 @@
 
 namespace Exiled.Events.EventArgs.Player
 {
-    using System;
-
     using API.Features;
-    using Exiled.API.Extensions;
-    using Exiled.API.Features.Roles;
     using Interfaces;
     using PlayerRoles;
     using UnityEngine;

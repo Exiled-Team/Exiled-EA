@@ -10,8 +10,6 @@ namespace Exiled.Events.EventArgs.Player
     using API.Features;
     using Interfaces;
 
-    using UnityEngine;
-
     /// <summary>
     ///     Contains all information before a player enters the pocket dimension.
     /// </summary>
