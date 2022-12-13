@@ -32,17 +32,34 @@ namespace Exiled.Events.Patches.Events.Player
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Shared.Rent(instructions);
 
+            Label continueLabel = generator.DefineLabel();
+            Label returnLabel = generator.DefineLabel();
+
+            LocalBuilder player = generator.DeclareLocal(typeof(Player));
+
             const int offset = 1;
             int index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Stloc_2) + offset;
+
+            newInstructions[index].WithLabels(continueLabel);
 
             newInstructions.InsertRange(
                 index,
                 new[]
                 {
-                    // Player.Get(this.Hub)
+                    // Player player = Player.Get(this.Hub)
+                    //
+                    // if (player == Server.Host)
+                    //    goto continueLabel;
                     new CodeInstruction(OpCodes.Ldarg_0),
                     new(OpCodes.Call, PropertyGetter(typeof(PlayerRoleManager), nameof(PlayerRoleManager.Hub))),
                     new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
+                    new(OpCodes.Dup),
+                    new(OpCodes.Stloc_S, player.LocalIndex),
+                    new(OpCodes.Call, PropertyGetter(typeof(Server), nameof(Server.Host))),
+                    new(OpCodes.Beq_S, continueLabel),
+
+                    // player
+                    new(OpCodes.Ldloc_S, player.LocalIndex),
 
                     // roleBase
                     new(OpCodes.Ldloc_2),
@@ -58,10 +75,14 @@ namespace Exiled.Events.Patches.Events.Player
                 newInstructions.Count - 1,
                 new[]
                 {
-                    // Player.Get(this.Hub)
-                    new CodeInstruction(OpCodes.Ldarg_0),
-                    new(OpCodes.Call, PropertyGetter(typeof(PlayerRoleManager), nameof(PlayerRoleManager.Hub))),
-                    new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
+                    // if (player == Server.Host)
+                    //    return;
+                    new CodeInstruction(OpCodes.Ldloc_S, player.LocalIndex),
+                    new(OpCodes.Call, PropertyGetter(typeof(Server), nameof(Server.Host))),
+                    new(OpCodes.Beq_S, returnLabel),
+
+                    // player
+                    new(OpCodes.Ldloc_S, player.LocalIndex),
 
                     // var ev = new SpawnedEventArgs(Player)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(SpawnedEventArgs))[0]),
@@ -77,6 +98,8 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Call, Method(typeof(Role), nameof(Role.Create))),
                     new(OpCodes.Callvirt, PropertySetter(typeof(Player), nameof(Player.Role))),
                 });
+
+            newInstructions[newInstructions.Count - 1].WithLabels(returnLabel);
 
             for (int z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
