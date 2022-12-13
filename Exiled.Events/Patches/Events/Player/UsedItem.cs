@@ -35,6 +35,7 @@ namespace Exiled.Events.Patches.Events.Player
         internal static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Shared.Rent(instructions);
+
             const int index = 0;
 
             newInstructions.InsertRange(index, InstructionsToInject());
@@ -46,26 +47,32 @@ namespace Exiled.Events.Patches.Events.Player
         }
 
         internal static List<CodeInstruction> InstructionsToInject() => new List<CodeInstruction>
-            {
-                new(OpCodes.Ldarg_0),
-                new(OpCodes.Callvirt, PropertyGetter(typeof(ItemBase), nameof(ItemBase.Owner))),
-                new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
-                new(OpCodes.Ldarg_0),
-                new(OpCodes.Newobj, GetDeclaredConstructors(typeof(UsedItemEventArgs))[0]),
-                new(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnUsedItem))),
-            };
+        {
+            // Player.Get(this.Owner)
+            new(OpCodes.Ldarg_0),
+            new(OpCodes.Callvirt, PropertyGetter(typeof(ItemBase), nameof(ItemBase.Owner))),
+            new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
+
+            // this
+            new(OpCodes.Ldarg_0),
+
+            // UsedItemEventArgs ev = new(Player, UsableItem)
+            new(OpCodes.Newobj, GetDeclaredConstructors(typeof(UsedItemEventArgs))[0]),
+            new(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnUsedItem))),
+        };
     }
 
     /// <summary>
     ///     Patches <see cref="Scp268.ServerOnUsingCompleted" />
     ///     Adds the <see cref="Handlers.Player.UsedItem" /> event.
     /// </summary>
-    // [HarmonyPatch(typeof(Scp268), nameof(Scp268.ServerOnUsingCompleted))]
+    [HarmonyPatch(typeof(Scp268), nameof(Scp268.ServerOnUsingCompleted))]
     internal static class UsedItem268
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Shared.Rent(instructions);
+
             const int index = 0;
 
             newInstructions.InsertRange(index, UsedItem.InstructionsToInject());
