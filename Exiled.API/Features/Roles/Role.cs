@@ -26,6 +26,10 @@ namespace Exiled.API.Features.Roles
         /// <param name="owner">The <see cref="Owner"/>'s <see cref="Role"/>.</param>
         protected Role(Player owner)
         {
+            Log.Error(Owner == null);
+            Log.Error(Owner.ReferenceHub == null);
+            Log.Error(Owner.RoleManager.CurrentRole == null);
+
             Owner = owner;
             FirstPersonController = Base is FpcStandardRoleBase @base ? @base : null;
         }

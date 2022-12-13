@@ -28,7 +28,6 @@ namespace Exiled.Events.Patches.Events.Player
     using static HarmonyLib.AccessTools;
 
     using Player = Handlers.Player;
-    using Role = API.Features.Roles.Role;
 
     /// <summary>
     ///     Patches <see cref="PlayerRoleManager.ServerSetRole(RoleTypeId, RoleChangeReason)" />
@@ -167,11 +166,14 @@ namespace Exiled.Events.Patches.Events.Player
             try
             {
                 Inventory inventory = player.Inventory;
+
                 if (reason == RoleChangeReason.Escaped && prevRole != newRole)
                 {
                     List<ItemPickupBase> list = new();
+
                     if (inventory.TryGetBodyArmor(out BodyArmor bodyArmor))
                         bodyArmor.DontRemoveExcessOnDrop = true;
+
                     while (inventory.UserInventory.Items.Count > 0)
                     {
                         int startCount = inventory.UserInventory.Items.Count;
