@@ -43,9 +43,9 @@ namespace Exiled.Events.EventArgs.Player
         }
 
         /// <summary>
-        ///     Gets the player's <see cref="API.Features.Items.Radio" /> component.
+        ///     Gets the player who's transmitting.
         /// </summary>
-        public Radio Radio { get; }
+        public Player Player { get; }
 
         /// <summary>
         ///     Gets the <see cref="Player"/>'s <see cref="VoiceModuleBase" />.
@@ -61,10 +61,5 @@ namespace Exiled.Events.EventArgs.Player
         ///     Gets or sets a value indicating whether or not the player can transmit.
         /// </summary>
         public bool IsAllowed { get; set; }
-
-        /// <summary>
-        ///     Gets the player who's transmitting.
-        /// </summary>
-        public Player Player { get; }
     }
 }
