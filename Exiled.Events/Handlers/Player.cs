@@ -291,14 +291,14 @@ namespace Exiled.Events.Handlers
         public static event CustomEventHandler<ReceivingEffectEventArgs> ReceivingEffect;
 
         /// <summary>
-        /// Invoked before an user's mute status is changed.
+        /// Invoked before muting a user.
         /// </summary>
-        public static event CustomEventHandler<ChangingMuteStatusEventArgs> ChangingMuteStatus;
+        public static event CustomEventHandler<IssuingMuteEventArgs> IssuingMute;
 
         /// <summary>
-        /// Invoked before an user's intercom mute status is changed.
+        /// Invoked before unmuting a user.
         /// </summary>
-        public static event CustomEventHandler<ChangingIntercomMuteStatusEventArgs> ChangingIntercomMuteStatus;
+        public static event CustomEventHandler<RevokingMuteEventArgs> RevokingMute;
 
         /// <summary>
         /// Invoked before a user's radio battery charge is changed.
@@ -782,16 +782,16 @@ namespace Exiled.Events.Handlers
         public static void OnReceivingEffect(ReceivingEffectEventArgs ev) => ReceivingEffect.InvokeSafely(ev);
 
         /// <summary>
-        /// Called before an user's mute status is changed.
+        /// Called before muting a user.
         /// </summary>
-        /// <param name="ev">The <see cref="ChangingMuteStatusEventArgs"/> instance.</param>
-        public static void OnChangingMuteStatus(ChangingMuteStatusEventArgs ev) => ChangingMuteStatus.InvokeSafely(ev);
+        /// <param name="ev">The <see cref="IssuingMuteEventArgs"/> instance.</param>
+        public static void OnIssuingMute(IssuingMuteEventArgs ev) => IssuingMute.InvokeSafely(ev);
 
         /// <summary>
-        /// Called before an user's intercom mute status is changed.
+        /// Called before unmuting a user.
         /// </summary>
-        /// <param name="ev">The <see cref="ChangingIntercomMuteStatusEventArgs"/> instance.</param>
-        public static void OnChangingIntercomMuteStatus(ChangingIntercomMuteStatusEventArgs ev) => ChangingIntercomMuteStatus.InvokeSafely(ev);
+        /// <param name="ev">The <see cref="RevokingMuteEventArgs"/> instance.</param>
+        public static void OnRevokingMute(RevokingMuteEventArgs ev) => RevokingMute.InvokeSafely(ev);
 
         /// <summary>
         /// Called before a user's radio battery charge is changed.

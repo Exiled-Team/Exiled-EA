@@ -686,7 +686,7 @@ namespace Exiled.API.Features
                     (VoiceChatMuteFlags.HasFlag(VcMuteFlags.GlobalRegular) || VoiceChatMuteFlags.HasFlag(VcMuteFlags.LocalRegular));
             }
 
-            set => VoiceChatMuteFlags |= VcMuteFlags.GlobalRegular | VcMuteFlags.LocalRegular;
+            set => VoiceChatMuteFlags |= VcMuteFlags.LocalRegular;
         }
 
         /// <summary>
@@ -701,7 +701,7 @@ namespace Exiled.API.Features
                     (VoiceChatMuteFlags.HasFlag(VcMuteFlags.GlobalIntercom) || VoiceChatMuteFlags.HasFlag(VcMuteFlags.LocalIntercom));
             }
 
-            set => VoiceChatMuteFlags |= VcMuteFlags.GlobalIntercom | VcMuteFlags.LocalIntercom;
+            set => VoiceChatMuteFlags |= VcMuteFlags.LocalIntercom;
         }
 
         /// <summary>
@@ -1871,24 +1871,13 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="isIntercom">Whether or not this mute is for the intercom only.</param>
         /// <param name="isGlobal">Whether or not this mute is global.</param>
-        public void Mute(bool isIntercom = false, bool isGlobal = true)
-        {
-            if (isGlobal)
-                VoiceChatMuteFlags = isIntercom ? VcMuteFlags.GlobalIntercom : VcMuteFlags.GlobalRegular;
-
-            VoiceChatMutes.IssueLocalMute(UserId, isIntercom);
-        }
+        public void Mute(bool isIntercom = false, bool isGlobal = true) => VoiceChatMutes.IssueLocalMute(UserId, isIntercom);
 
         /// <summary>
         /// Revokes a persistent mute. For temporary mutes, see <see cref="IsMuted"/> and <see cref="IsIntercomMuted"/>.
         /// </summary>
         /// <param name="isIntercom">Whether or not this un-mute is for the intercom only.</param>
-        public void UnMute(bool isIntercom = false)
-        {
-            VoiceChatMutes.RevokeLocalMute(UserId, isIntercom);
-
-            VoiceChatMuteFlags = VcMuteFlags.None;
-        }
+        public void UnMute(bool isIntercom = false) => VoiceChatMutes.RevokeLocalMute(UserId, isIntercom);
 
         /// <summary>
         /// Blink the player's tag.
