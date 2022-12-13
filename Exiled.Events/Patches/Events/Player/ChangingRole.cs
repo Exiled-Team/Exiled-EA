@@ -42,13 +42,17 @@ namespace Exiled.Events.Patches.Events.Player
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Shared.Rent(instructions);
 
             Label returnLabel = generator.DefineLabel();
-            Label liteLabel = generator.DefineLabel();
+            Label continueLabel = generator.DefineLabel();
 
             LocalBuilder ev = generator.DeclareLocal(typeof(ChangingRoleEventArgs));
             LocalBuilder player = generator.DeclareLocal(typeof(API.Features.Player));
 
             const int offset = 0;
             int index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Ldc_I4_S) + offset;
+
+            List<Label> oldLabels = newInstructions[index].ExtractLabels();
+
+            newInstructions[index].WithLabels(continueLabel);
 
             newInstructions.InsertRange(
                 index,
@@ -58,7 +62,7 @@ namespace Exiled.Events.Patches.Events.Player
                     //
                     // if (player is null)
                     //    return;
-                    new CodeInstruction(OpCodes.Ldarg_0).MoveLabelsFrom(newInstructions[index]),
+                    new CodeInstruction(OpCodes.Ldarg_0).WithLabels(oldLabels),
                     new(OpCodes.Call, PropertyGetter(typeof(PlayerRoleManager), nameof(PlayerRoleManager.Hub))),
                     new(OpCodes.Call, Method(typeof(API.Features.Player), nameof(API.Features.Player.Get), new[] { typeof(ReferenceHub) })),
                     new(OpCodes.Dup),
@@ -115,10 +119,10 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Call, Method(typeof(ChangingRole), nameof(UpdatePlayerRole))),
 
                     // if (ev.ShouldPreserveInventory)
-                    //    return;
+                    //    goto continueLabel;
                     new(OpCodes.Ldloc_S, ev.LocalIndex),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(ChangingRoleEventArgs), nameof(ChangingRoleEventArgs.ShouldPreserveInventory))),
-                    new(OpCodes.Brtrue_S, returnLabel),
+                    new(OpCodes.Brtrue_S, continueLabel),
 
                     // ev.Player
                     new(OpCodes.Ldloc_S, ev.LocalIndex),

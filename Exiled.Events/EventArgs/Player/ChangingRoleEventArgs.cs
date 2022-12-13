@@ -38,8 +38,6 @@ namespace Exiled.Events.EventArgs.Player
             Player = player;
             NewRole = newRole;
 
-            Log.Error(player.Nickname + " " + newRole + "  " + reason);
-
             if (StartingInventories.DefinedInventories.ContainsKey(newRole))
             {
                 foreach (ItemType itemType in StartingInventories.DefinedInventories[newRole].Items)
