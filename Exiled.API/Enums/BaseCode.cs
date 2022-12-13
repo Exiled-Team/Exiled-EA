@@ -15,12 +15,17 @@ namespace Exiled.API.Enums
         /// <summary>
         /// The COM15's base code.
         /// </summary>
-        GunCOM15 = 43,
+        GunCom15 = 43,
 
         /// <summary>
         /// The COM18's base code.
         /// </summary>
-        GunCOM18 = 37,
+        GunCom18 = 37,
+
+        /// <summary>
+        /// The COM45's base code.
+        /// </summary>
+        GunCom45 = 0, // TODO
 
         /// <summary>
         /// The Revolver's base code.

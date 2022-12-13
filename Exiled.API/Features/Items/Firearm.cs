@@ -37,8 +37,9 @@ namespace Exiled.API.Features.Items
         /// </summary>
         internal static readonly IReadOnlyDictionary<ItemType, BaseCode> FirearmPairs = new Dictionary<ItemType, BaseCode>()
         {
-            { ItemType.GunCOM15, BaseCode.GunCOM15 },
-            { ItemType.GunCOM18, BaseCode.GunCOM18 },
+            { ItemType.GunCOM15, BaseCode.GunCom15 },
+            { ItemType.GunCOM18, BaseCode.GunCom18 },
+            { ItemType.GunCom45, BaseCode.GunCom45 },
             { ItemType.GunRevolver, BaseCode.GunRevolver },
             { ItemType.GunE11SR, BaseCode.GunE11SR },
             { ItemType.GunCrossvec, BaseCode.GunCrossvec },
