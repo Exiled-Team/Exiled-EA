@@ -36,11 +36,11 @@ namespace Exiled.Events.Patches.Events.Player
 
             int index = newInstructions.FindLastIndex(instruction => instruction.opcode == OpCodes.Ldarg_0) + offset;
 
-            // Handlers.Player.OnKicked(new KickedEventArgs(Player.Get(player), message))
             newInstructions.InsertRange(
                 index,
                 new CodeInstruction[]
                 {
+                    // Handlers.Player.OnKicked(new KickedEventArgs(Player.Get(player), message))
                     new(OpCodes.Ldarg_0),
                     new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(GameObject) })),
                     new(OpCodes.Ldarg_1),
