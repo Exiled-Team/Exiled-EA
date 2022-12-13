@@ -65,6 +65,9 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Stloc_S, player.LocalIndex),
                     new(OpCodes.Brfalse_S, returnLabel),
 
+                    new(OpCodes.Ldstr, "Player is not null"),
+                    new(OpCodes.Call, Method(typeof(Log), nameof(Log.Error), new[] { typeof(string) })),
+
                     // if (this.CurrentRole.RoleTypeId == newRole)
                     //    return;
                     new(OpCodes.Ldarg_0),
@@ -73,6 +76,9 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Ldarg_1),
                     new(OpCodes.Ceq),
                     new(OpCodes.Brtrue_S, returnLabel),
+
+                    new(OpCodes.Ldstr, "Role is not the same"),
+                    new(OpCodes.Call, Method(typeof(Log), nameof(Log.Error), new[] { typeof(string) })),
 
                     // player
                     new(OpCodes.Ldloc_S, player.LocalIndex),
