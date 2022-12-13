@@ -40,10 +40,10 @@ namespace Exiled.Events.Patches.Events.Player
 
             newInstructions.InsertRange(
                 index,
-                new CodeInstruction[]
+                new[]
                 {
                     // hub
-                    new(OpCodes.Ldarg_0),
+                    new CodeInstruction(OpCodes.Ldarg_0).MoveLabelsFrom(newInstructions[index]),
                     new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
 
                     // voiceModule

@@ -32,13 +32,10 @@ namespace Exiled.Events.Patches.Events.Player
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Shared.Rent(instructions);
 
-            int offset = -6;
-            int index = newInstructions.FindIndex(i => i.opcode == OpCodes.Ret) + offset;
-
             Label returnLabel = generator.DefineLabel();
 
             newInstructions.InsertRange(
-                index,
+                0,
                 new CodeInstruction[]
                 {
                     // Player.Get(ReferenceHub);
@@ -52,20 +49,23 @@ namespace Exiled.Events.Patches.Events.Player
                     // amount
                     new(OpCodes.Ldarg_2),
 
-                    // var ev = DroppingAmmoEventArgs(...)
+                    // true
                     new(OpCodes.Ldc_I4_1),
+
+                    // var ev = DroppingAmmoEventArgs(Player, AmmoType, ushort, bool)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(DroppingAmmoEventArgs))[0]),
                     new(OpCodes.Dup),
 
                     // Player.OnDroppingAmmo(ev);
                     new(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnDroppingAmmo))),
 
-                    // if (!ev.IsAllowed) return;
+                    // if (!ev.IsAllowed)
+                    //    return;
                     new(OpCodes.Callvirt, PropertyGetter(typeof(DroppingAmmoEventArgs), nameof(DroppingAmmoEventArgs.IsAllowed))),
                     new(OpCodes.Brfalse_S, returnLabel),
                 });
 
-            newInstructions[newInstructions.Count - 1].labels.Add(returnLabel);
+            newInstructions[newInstructions.Count - 1].WithLabels(returnLabel);
 
             for (int z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
