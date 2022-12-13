@@ -35,6 +35,11 @@ namespace Exiled.Events.EventArgs.Player
         }
 
         /// <summary>
+        ///     Gets the player who's shooting.
+        /// </summary>
+        public Player Player { get; }
+
+        /// <summary>
         ///     Gets or sets the <see cref="ShotMessage" /> for the event.
         /// </summary>
         public ShotMessage ShotMessage { get; set; }
@@ -85,10 +90,5 @@ namespace Exiled.Events.EventArgs.Player
         ///     Gets or sets a value indicating whether or not the shot can be fired.
         /// </summary>
         public bool IsAllowed { get; set; } = true;
-
-        /// <summary>
-        ///     Gets the player who's shooting.
-        /// </summary>
-        public Player Player { get; }
     }
 }
