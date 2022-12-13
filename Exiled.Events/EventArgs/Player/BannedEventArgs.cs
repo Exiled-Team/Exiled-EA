@@ -27,15 +27,20 @@ namespace Exiled.Events.EventArgs.Player
         public BannedEventArgs(Player target, Player issuer, BanDetails details, BanHandler.BanType type)
         {
             Target = target;
+            Player = issuer;
             Details = details;
             Type = type;
-            Player = issuer;
         }
 
         /// <summary>
         ///     Gets the banned player.
         /// </summary>
         public Player Target { get; }
+
+        /// <summary>
+        ///     Gets the issuer player.
+        /// </summary>
+        public Player Player { get; }
 
         /// <summary>
         ///     Gets the ban details.
@@ -46,10 +51,5 @@ namespace Exiled.Events.EventArgs.Player
         ///     Gets the ban type.
         /// </summary>
         public BanHandler.BanType Type { get; }
-
-        /// <summary>
-        ///     Gets the issuer player.
-        /// </summary>
-        public Player Player { get; }
     }
 }

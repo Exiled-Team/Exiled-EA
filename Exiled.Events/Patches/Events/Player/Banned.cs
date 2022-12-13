@@ -37,6 +37,7 @@ namespace Exiled.Events.Patches.Events.Player
                 0,
                 new CodeInstruction[]
                 {
+                    // issuingPlayer = GetBanningPlayer(ban.Issuer)
                     new(OpCodes.Ldarg_0),
                     new(OpCodes.Ldfld, Field(typeof(BanDetails), nameof(BanDetails.Issuer))),
                     new(OpCodes.Call, Method(typeof(Banned), nameof(GetBanningPlayer))),
@@ -44,22 +45,30 @@ namespace Exiled.Events.Patches.Events.Player
                 });
 
             int offset = -6;
-            int index = newInstructions.FindIndex(
-                i =>
-                    (i.opcode == OpCodes.Call) && ((MethodInfo)i.operand ==
-                                                   Method(typeof(FileManager), nameof(FileManager.AppendFile)))) + offset;
+            int index = newInstructions.FindIndex(instruction => instruction.Calls(Method(typeof(FileManager), nameof(FileManager.AppendFile)))) + offset;
 
             newInstructions.InsertRange(
                 index,
                 new CodeInstruction[]
                 {
+                    // Player.Get(ban.Id)
                     new(OpCodes.Ldarg_0),
                     new(OpCodes.Ldfld, Field(typeof(BanDetails), nameof(BanDetails.Id))),
                     new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(string) })),
+
+                    // issuingPlayer
                     new(OpCodes.Ldloc, issuingPlayer.LocalIndex),
+
+                    // ban
                     new(OpCodes.Ldarg_0),
+
+                    // banType
                     new(OpCodes.Ldarg_1),
+
+                    // BannedEventArgs ev = new(Player, Player, BanDetails, BanType)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(BannedEventArgs))[0]),
+
+                    // Handlers.Player.OnBanned(ev)
                     new(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnBanned))),
                 });
 
