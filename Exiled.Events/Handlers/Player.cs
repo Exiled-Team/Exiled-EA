@@ -12,6 +12,7 @@ namespace Exiled.Events.Handlers
     using Exiled.Events.EventArgs.Player;
     using Exiled.Events.EventArgs.Scp330;
     using Extensions;
+    using PlayerRoles.FirstPersonControl.Thirdperson;
 
     using static Events;
 
@@ -886,8 +887,10 @@ namespace Exiled.Events.Handlers
         /// <summary>
         /// Called before a <see cref="API.Features.Player"/> makes noise.
         /// </summary>
-        /// <param name="ev">The <see cref="MakingNoiseEventArgs"/> instance.</param>
-        public static void OnMakingNoise(MakingNoiseEventArgs ev) => MakingNoise.InvokeSafely(ev);
+        /// <param name="animatedCharacterModel"> The <see cref="AnimatedCharacterModel"/> instance.</param>
+        /// <param name="distance">The footsteps distance.</param>
+        public static void OnMakingNoise(AnimatedCharacterModel animatedCharacterModel, float distance)
+            => MakingNoise.InvokeSafely(new MakingNoiseEventArgs(animatedCharacterModel, distance));
 
         /// <summary>
         /// Called before a <see cref="API.Features.Player"/> jumps.

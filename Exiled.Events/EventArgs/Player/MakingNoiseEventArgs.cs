@@ -9,44 +9,36 @@ namespace Exiled.Events.EventArgs.Player
 {
     using API.Features;
     using Interfaces;
+    using PlayerRoles.FirstPersonControl.Thirdperson;
 
     /// <summary>
     ///     Contains all information before a player makes noise.
     /// </summary>
-    public class MakingNoiseEventArgs : IPlayerEvent, IDeniableEvent
+    public class MakingNoiseEventArgs : IPlayerEvent
     {
         /// <summary>
         ///     Initializes a new instance of the <see cref="MakingNoiseEventArgs" /> class.
         /// </summary>
-        /// <param name="player">
-        ///     <inheritdoc cref="Player" />
+        /// <param name="animatedCharacterModel">
+        ///     The <see cref="AnimatedCharacterModel"/> instance.
         /// </param>
-        /// <param name="volume">
-        ///     <inheritdoc cref="Volume" />
+        /// <param name="distance">
+        ///     <inheritdoc cref="Distance" />
         /// </param>
-        /// <param name="isAllowed">
-        ///     <inheritdoc cref="IsAllowed" />
-        /// </param>
-        public MakingNoiseEventArgs(Player player, float volume, bool isAllowed = true)
+        public MakingNoiseEventArgs(AnimatedCharacterModel animatedCharacterModel, float distance)
         {
-            Player = player;
-            Volume = volume;
-            IsAllowed = isAllowed;
+            Player = Player.Get(animatedCharacterModel.OwnerHub);
+            Distance = distance;
         }
-
-        /// <summary>
-        ///     Gets or sets the volume.
-        /// </summary>
-        public float Volume { get; set; }
-
-        /// <summary>
-        ///     Gets or sets a value indicating whether or not the player can make noise.
-        /// </summary>
-        public bool IsAllowed { get; set; }
 
         /// <summary>
         ///     Gets the player who's making noise.
         /// </summary>
         public Player Player { get; }
+
+        /// <summary>
+        ///     Gets the footsteps distance.
+        /// </summary>
+        public float Distance { get; }
     }
 }
