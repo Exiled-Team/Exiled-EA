@@ -34,28 +34,33 @@ namespace Exiled.Events.Patches.Events.Map
 
             Label returnLabel = generator.DefineLabel();
 
-            int offset = 1;
-
+            const int offset = 1;
             int index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Ret) + offset;
 
-            // var ev = new SpawningItemEventArgs(ipb, true);
-            //
-            // if (!ev.IsAllowed)
-            //     return;
             newInstructions.InsertRange(
                 index,
                 new[]
                 {
+                    // ipb
                     new CodeInstruction(OpCodes.Ldarg_0).MoveLabelsFrom(newInstructions[index]),
+
+                    // true
                     new(OpCodes.Ldc_I4_1),
+
+                    // SpawningItemEventArgs ev = new(ItemPickupBase, bool)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(SpawningItemEventArgs))[0]),
                     new(OpCodes.Dup),
+
+                    // Map.OnSpawningItem(ev)
                     new(OpCodes.Call, Method(typeof(Map), nameof(Map.OnSpawningItem))),
+
+                    // if (!ev.IsAllowed)
+                    //     return;
                     new(OpCodes.Callvirt, PropertyGetter(typeof(SpawningItemEventArgs), nameof(SpawningItemEventArgs.IsAllowed))),
                     new(OpCodes.Brfalse_S, returnLabel),
                 });
 
-            newInstructions[newInstructions.Count - 1].labels.Add(returnLabel);
+            newInstructions[newInstructions.Count - 1].WithLabels(returnLabel);
 
             for (int z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
