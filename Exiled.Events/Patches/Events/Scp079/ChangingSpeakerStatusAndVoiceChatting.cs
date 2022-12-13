@@ -26,7 +26,7 @@ namespace Exiled.Events.Patches.Events.Scp079
 
     /// <summary>
     ///     Patches Scp079VoiceModule.ServerIsSending />.
-    ///     Adds the <see cref="ChangingSpeakerStatusEventArgs" /> event for SCP-079.
+    ///     Adds the <see cref="Scp079.ChangingSpeakerStatus" /> and the <see cref="Handlers.Player.VoiceChatting"/> events.
     /// </summary>
     [HarmonyPatch(typeof(VoiceModuleBase), nameof(VoiceModuleBase.ServerIsSending), MethodType.Setter)]
     internal static class ChangingSpeakerStatusAndVoiceChatting
