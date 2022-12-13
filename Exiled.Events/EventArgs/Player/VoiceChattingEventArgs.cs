@@ -25,19 +25,20 @@ namespace Exiled.Events.EventArgs.Player
         /// <param name="voiceModule">
         ///     <inheritdoc cref="VoiceModule" />
         /// </param>
-        /// <param name="isVoiceChatting">
-        ///     <inheritdoc cref="IsVoiceChatting" />
-        /// </param>
         /// <param name="isAllowed">
         ///     <inheritdoc cref="IsAllowed" />
         /// </param>
-        public VoiceChattingEventArgs(Player player, VoiceModuleBase voiceModule, bool isVoiceChatting, bool isAllowed = true)
+        public VoiceChattingEventArgs(Player player, VoiceModuleBase voiceModule, bool isAllowed = true)
         {
             Player = player;
             VoiceModule = voiceModule;
-            IsVoiceChatting = isVoiceChatting;
             IsAllowed = isAllowed;
         }
+
+        /// <summary>
+        ///     Gets the player who's voicechatting.
+        /// </summary>
+        public Player Player { get; }
 
         /// <summary>
         ///     Gets the <see cref="Player"/>'s <see cref="VoiceModuleBase" />.
@@ -45,18 +46,8 @@ namespace Exiled.Events.EventArgs.Player
         public VoiceModuleBase VoiceModule { get; }
 
         /// <summary>
-        ///     Gets a value indicating whether or not the player is voicechatting.
-        /// </summary>
-        public bool IsVoiceChatting { get; }
-
-        /// <summary>
         ///     Gets or sets a value indicating whether or not the player can voicechat.
         /// </summary>
         public bool IsAllowed { get; set; }
-
-        /// <summary>
-        ///     Gets the player who's voicechatting.
-        /// </summary>
-        public Player Player { get; }
     }
 }
