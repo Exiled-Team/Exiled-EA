@@ -20,12 +20,12 @@ namespace Exiled.API.Enums
         /// <summary>
         /// The COM18's base code.
         /// </summary>
-        GunCom18 = 37,
+        GunCom18 = 293,
 
         /// <summary>
         /// The COM45's base code.
         /// </summary>
-        GunCom45 = 0, // TODO
+        GunCom45 = 1,
 
         /// <summary>
         /// The Revolver's base code.
@@ -40,7 +40,7 @@ namespace Exiled.API.Enums
         /// <summary>
         /// The Crossvec's base code.
         /// </summary>
-        GunCrossvec = 1105,
+        GunCrossvec = 17489,
 
         /// <summary>
         /// The FSP9's base code.
@@ -60,7 +60,7 @@ namespace Exiled.API.Enums
         /// <summary>
         /// The Shotgun's base code.
         /// </summary>
-        GunShotgun = 37,
+        GunShotgun = 549,
 
         /// <summary>
         /// The Disruptor's base code.
