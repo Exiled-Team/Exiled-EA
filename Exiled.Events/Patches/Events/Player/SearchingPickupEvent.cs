@@ -33,87 +33,96 @@ namespace Exiled.Events.Patches.Events.Player
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Shared.Rent(instructions);
 
-            int offset = 1;
-            int index = newInstructions.FindIndex(i => i.opcode == OpCodes.Stind_Ref) + offset;
+            Label allowLabel = generator.DefineLabel();
 
             LocalBuilder ev = generator.DeclareLocal(typeof(SearchingPickupEventArgs));
 
-            Label allowLabel = generator.DefineLabel();
+            int offset = 1;
+            int index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Stind_Ref) + offset;
 
             // remove base-game check and `SearchSession body` setter
             newInstructions.RemoveRange(index, 14);
 
-            // SearchingPickupEventArgs ev = new(Player.Get(Hub), request.Target, request.Body, completor, request.Target.SearchTimeForPlayer(Hub));
-            // Handlers.Player.OnSearchPickupRequest(ev);
-            // if(!ev.IsAllowed) {
-            //     SearchSession = null;
-            //     completor = null;
-            //     return true;
-            // }
-            // completor = ev.SearchCompletor;
-            // body = ev.SearchSession;
             newInstructions.InsertRange(
                 index,
                 new[]
                 {
+                    // Player.Get(Hub)
                     new(OpCodes.Ldarg_0),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(SearchCoordinator), nameof(SearchCoordinator.Hub))),
                     new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
 
+                    // request.Target
                     new(OpCodes.Ldloca_S, 0),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(SearchRequest), nameof(SearchRequest.Target))),
 
+                    // request.Body
                     new(OpCodes.Ldloca_S, 0),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(SearchRequest), nameof(SearchRequest.Body))),
 
+                    // completor
                     new(OpCodes.Ldarg_2),
                     new(OpCodes.Ldind_Ref),
 
+                    // request.Target.SearchTimeForPlayer(Hub)
                     new(OpCodes.Ldloca_S, 0),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(SearchRequest), nameof(SearchRequest.Target))),
                     new(OpCodes.Ldarg_0),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(SearchCoordinator), nameof(SearchCoordinator.Hub))),
                     new(OpCodes.Callvirt, Method(typeof(ItemPickupBase), nameof(ItemPickupBase.SearchTimeForPlayer))),
 
+                    // SearchingPickupEventArgs ev = new(Player, ItemPickupBase, SearchSession, SearchCompletor, float);
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(SearchingPickupEventArgs))[0]),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),
                     new(OpCodes.Stloc_S, ev.LocalIndex),
+
+                    // Handlers.Player.OnSearchPickupRequest(ev)
                     new(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnSearchPickupRequest))),
+
+                    // if (ev.IsAllowed)
+                    //    goto allowLabel;
                     new(OpCodes.Callvirt, PropertyGetter(typeof(SearchingPickupEventArgs), nameof(SearchingPickupEventArgs.IsAllowed))),
                     new(OpCodes.Brtrue_S, allowLabel),
 
+                    // session = default;
                     new(OpCodes.Ldarg_1),
                     new(OpCodes.Initobj, typeof(SearchSession)),
+
+                    // completor = null
                     new(OpCodes.Ldarg_2),
                     new(OpCodes.Ldnull),
                     new(OpCodes.Stind_Ref),
+
+                    // return true
                     new(OpCodes.Ldc_I4_1),
                     new(OpCodes.Ret),
 
+                    // allowLabel:
+                    //
+                    // completor = ev.SearchCompletor
                     new CodeInstruction(OpCodes.Ldarg_2).WithLabels(allowLabel),
                     new(OpCodes.Ldloc_S, ev.LocalIndex),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(SearchingPickupEventArgs), nameof(SearchingPickupEventArgs.SearchCompletor))),
                     new(OpCodes.Stind_Ref),
 
+                    // session = ev.SearchSession
                     new(OpCodes.Ldloc_S, ev.LocalIndex),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(SearchingPickupEventArgs), nameof(SearchingPickupEventArgs.SearchSession))),
                     new(OpCodes.Stloc_1),
                 });
 
             offset = -5;
-            index = newInstructions.FindIndex(
-                i => (i.opcode == OpCodes.Stloc_S) &&
-                     i.operand is LocalBuilder { LocalIndex: 4 }) + offset;
+            index = newInstructions.FindIndex(i => i.opcode == OpCodes.Stloc_S && i.operand is LocalBuilder { LocalIndex: 4 }) + offset;
 
             // remove base-game SearchTime setter
             newInstructions.RemoveRange(index, 5);
 
-            // SearchTime = ev.SearchTime;
             newInstructions.InsertRange(
                 index,
                 new[]
                 {
+                    // num3 = ev.SearchTime
                     new CodeInstruction(OpCodes.Ldloc_S, ev.LocalIndex),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(SearchingPickupEventArgs), nameof(SearchingPickupEventArgs.SearchTime))),
                 });
