@@ -50,57 +50,114 @@ namespace Exiled.Events.Patches.Events.Player
                 0,
                 new[]
                 {
+                    // if (hotkeyButtonPressed != ActionName.HotkeyKeycard)
+                    //    goto switchLabels[0];
                     new(OpCodes.Ldarg_1),
                     new(OpCodes.Ldc_I4_S, 20),
                     new(OpCodes.Ceq),
                     new(OpCodes.Brfalse_S, switchLabels[0]),
+
+                    // hotkeyButton = 0
+                    // break
                     new(OpCodes.Ldc_I4_0),
                     new(OpCodes.Stloc_S, hotkeyButton.LocalIndex),
                     new(OpCodes.Br_S, breakLabel),
+
+                    // switchLabels[0]:
+                    //
+                    // if (hotKeyButtonPressed != ActionName.HotkeyPrimaryFirearm)
+                    //    goto switchLabels[1];
                     new CodeInstruction(OpCodes.Ldarg_1).WithLabels(switchLabels[0]),
                     new(OpCodes.Ldc_I4_S, 24),
                     new(OpCodes.Ceq),
                     new(OpCodes.Brfalse_S, switchLabels[1]),
+
+                    // hotkeyButton = 1
+                    // break
                     new(OpCodes.Ldc_I4_1),
                     new(OpCodes.Stloc_S, hotkeyButton.LocalIndex),
                     new(OpCodes.Br_S, breakLabel),
+
+                    // switchLabels[1]:
+                    //
+                    // if (hotKeyButtonPressed != ActionName.HotkeySecondaryFirearm)
+                    //    goto switchLabels[2];
                     new CodeInstruction(OpCodes.Ldarg_1).WithLabels(switchLabels[1]),
                     new(OpCodes.Ldc_I4_S, 25),
                     new(OpCodes.Ceq),
                     new(OpCodes.Brfalse_S, switchLabels[2]),
+
+                    // hotkeyButton = 2
+                    // break
                     new(OpCodes.Ldc_I4_2),
                     new(OpCodes.Stloc_S, hotkeyButton.LocalIndex),
                     new(OpCodes.Br_S, breakLabel),
+
+                    // switchLabels[2]:
+                    //
+                    // if (hotKeyButtonPressed != ActionName.HotkeyMedical)
+                    //    goto switchLabels[3];
                     new CodeInstruction(OpCodes.Ldarg_1).WithLabels(switchLabels[2]),
                     new(OpCodes.Ldc_I4_S, 26),
                     new(OpCodes.Ceq),
                     new(OpCodes.Brfalse_S, switchLabels[3]),
+
+                    // hotkeyButton = 3
+                    // break
                     new(OpCodes.Ldc_I4_3),
                     new(OpCodes.Stloc_S, hotkeyButton.LocalIndex),
                     new(OpCodes.Br_S, breakLabel),
+
+                    // switchLabels[3]:
+                    //
+                    // if (hotKeyButtonPressed != ActionName.HotkeyGrenade)
+                    //    goto defaultLabel;
                     new CodeInstruction(OpCodes.Ldarg_1).WithLabels(switchLabels[3]),
                     new(OpCodes.Ldc_I4_S, 29),
                     new(OpCodes.Ceq),
                     new(OpCodes.Brfalse_S, defaultLabel),
+
+                    // hotkeyButton = 4
+                    // break
                     new(OpCodes.Ldc_I4_4),
                     new(OpCodes.Stloc_S, hotkeyButton.LocalIndex),
                     new(OpCodes.Br_S, breakLabel),
+
+                    // defaultLabel:
+                    //
+                    // hotkeyButton = 0
+                    // break
                     new CodeInstruction(OpCodes.Ldc_I4_0).WithLabels(defaultLabel),
                     new(OpCodes.Stloc_S, hotkeyButton.LocalIndex),
                     new(OpCodes.Br_S, breakLabel),
+
+                    // breakLabel:
+                    //
+                    // Player.Get(this._hub)
                     new CodeInstruction(OpCodes.Ldarg_0).WithLabels(breakLabel),
                     new(OpCodes.Ldfld, Field(typeof(Inventory), nameof(Inventory._hub))),
                     new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
+
+                    // hotkeyButton
                     new(OpCodes.Ldloc_S, hotkeyButton.LocalIndex),
+
+                    // true
                     new(OpCodes.Ldc_I4_1),
+
+                    // ProcessingHotkeyEventArgs ev = new(Player, HotkeyButton, bool)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(ProcessingHotkeyEventArgs))[0]),
                     new(OpCodes.Dup),
+
+                    // Handlers.Player.OnProcessingHotkey(ev)
                     new(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnProcessingHotkey))),
+
+                    // if (!ev.IsAllowed)
+                    //    return;
                     new(OpCodes.Callvirt, PropertyGetter(typeof(ProcessingHotkeyEventArgs), nameof(ProcessingHotkeyEventArgs.IsAllowed))),
                     new(OpCodes.Brfalse_S, returnLabel),
                 });
 
-            newInstructions[newInstructions.Count - 1].labels.Add(returnLabel);
+            newInstructions[newInstructions.Count - 1].WithLabels(returnLabel);
 
             for (int z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
