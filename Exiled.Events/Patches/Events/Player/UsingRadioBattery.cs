@@ -32,14 +32,14 @@ namespace Exiled.Events.Patches.Events.Player
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Shared.Rent(instructions);
 
-            const int offset = -4;
-            int index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Ldloc_0) + offset;
-
             Label returnLabel = newInstructions[newInstructions.Count - 1].labels[0];
             Label continueLabel = generator.DefineLabel();
 
             LocalBuilder ev = generator.DeclareLocal(typeof(UsingRadioBatteryEventArgs));
             LocalBuilder player = generator.DeclareLocal(typeof(Player));
+
+            const int offset = -4;
+            int index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Ldloc_0) + offset;
 
             newInstructions[index].WithLabels(continueLabel);
 
