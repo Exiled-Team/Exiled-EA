@@ -1,4 +1,4 @@
-﻿// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
 // <copyright file="EnteringKillerCollisionEventArgs.cs" company="Exiled Team">
 // Copyright (c) Exiled Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
@@ -7,6 +7,7 @@
 
 namespace Exiled.Events.EventArgs.Player
 {
+    using API.Features;
     using Interfaces;
 
     /// <summary>
@@ -19,7 +20,7 @@ namespace Exiled.Events.EventArgs.Player
         /// </summary>
         /// <param name="player"><inheritdoc cref="Player"/></param>
         /// <param name="isAllowed"><inheritdoc cref="IsAllowed"/></param>
-        public EnteringKillerCollisionEventArgs(API.Features.Player player, bool isAllowed = true)
+        public EnteringKillerCollisionEventArgs(Player player, bool isAllowed = true)
         {
             Player = player;
             IsAllowed = isAllowed;
@@ -28,7 +29,7 @@ namespace Exiled.Events.EventArgs.Player
         /// <summary>
         /// Gets the player who's currently entering killer collision.
         /// </summary>
-        public API.Features.Player Player { get; }
+        public Player Player { get; }
 
         /// <summary>
         /// Gets or sets a value indicating whether or not the player is killed by killer collision.
