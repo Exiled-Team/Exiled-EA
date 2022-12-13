@@ -57,7 +57,7 @@ namespace Exiled.Events.Patches.Events.Player
                 {
                     // player = Player.Get(this._hub)
                     //
-                    // if (player == null)
+                    // if (player is null)
                     //    return;
                     new CodeInstruction(OpCodes.Ldarg_0).MoveLabelsFrom(newInstructions[index]),
                     new(OpCodes.Call, PropertyGetter(typeof(PlayerRoleManager), nameof(PlayerRoleManager.Hub))),
@@ -66,11 +66,11 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Stloc_S, player.LocalIndex),
                     new(OpCodes.Brfalse_S, returnLabel),
 
-                    // if (player.Role.Type == newRole)
+                    // if (this.CurrentRole.RoleTypeId == newRole)
                     //    return;
-                    new(OpCodes.Ldloc_S, player.LocalIndex),
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(API.Features.Player), nameof(API.Features.Player.Role))),
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(Role), nameof(API.Features.Player.Role.Type))),
+                    new(OpCodes.Ldarg_0),
+                    new(OpCodes.Call, PropertyGetter(typeof(PlayerRoleManager), nameof(PlayerRoleManager.CurrentRole))),
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(PlayerRoleBase), nameof(PlayerRoleBase.RoleTypeId))),
                     new(OpCodes.Ldarg_1),
                     new(OpCodes.Ceq),
                     new(OpCodes.Brtrue_S, returnLabel),
@@ -121,22 +121,22 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Callvirt, PropertyGetter(typeof(ChangingRoleEventArgs), nameof(ChangingRoleEventArgs.ShouldPreserveInventory))),
                     new(OpCodes.Brtrue_S, returnLabel),
 
-                    // player
+                    // ev.Player
                     new(OpCodes.Ldloc_S, ev.LocalIndex),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(ChangingRoleEventArgs), nameof(ChangingRoleEventArgs.Player))),
 
-                    // items
+                    // ev.Items
                     new(OpCodes.Ldloc_S, ev.LocalIndex),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(ChangingRoleEventArgs), nameof(ChangingRoleEventArgs.Items))),
 
-                    // ammo
+                    // ev.Ammo
                     new(OpCodes.Ldloc_S, ev.LocalIndex),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(ChangingRoleEventArgs), nameof(ChangingRoleEventArgs.Ammo))),
 
-                    // currentRole
-                    new(OpCodes.Ldloc_S, player.LocalIndex),
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(API.Features.Player), nameof(API.Features.Player.Role))),
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(Role), nameof(API.Features.Player.Role.Type))),
+                    // this.CurrentRole.RoleTypeId
+                    new(OpCodes.Ldarg_0),
+                    new(OpCodes.Call, PropertyGetter(typeof(PlayerRoleManager), nameof(PlayerRoleManager.CurrentRole))),
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(PlayerRoleBase), nameof(PlayerRoleBase.RoleTypeId))),
 
                     // newRole
                     new(OpCodes.Ldarg_1),
