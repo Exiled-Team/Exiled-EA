@@ -5,7 +5,6 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-/*
 namespace Exiled.Events.Patches.Fixes
 {
     using System.Collections.Generic;
@@ -14,13 +13,14 @@ namespace Exiled.Events.Patches.Fixes
     using HarmonyLib;
 
     using NorthwoodLib.Pools;
+    using VoiceChat;
 
     using static HarmonyLib.AccessTools;
 
     /// <summary>
-    /// Fixes <see cref="MuteHandler.Reload"/> method.
+    /// Fixes <see cref="VoiceChatMutes.LoadMutes"/> method.
     /// </summary>
-    // [HarmonyPatch(typeof(MuteHandler), nameof(MuteHandler.Reload))]
+    [HarmonyPatch(typeof(VoiceChatMutes), nameof(VoiceChatMutes.LoadMutes))]
     internal static class MuteHandlerClear
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
@@ -31,7 +31,8 @@ namespace Exiled.Events.Patches.Fixes
                 0,
                 new[]
                 {
-                    new CodeInstruction(OpCodes.Ldsfld, Field(typeof(MuteHandler), nameof(MuteHandler.Mutes))),
+                    // VoiceChatMutes.Mutes.Clear()
+                    new CodeInstruction(OpCodes.Ldsfld, Field(typeof(VoiceChatMutes), nameof(VoiceChatMutes.Mutes))),
                     new(OpCodes.Callvirt, Method(typeof(HashSet<string>), nameof(HashSet<string>.Clear))),
                 });
 
@@ -42,4 +43,3 @@ namespace Exiled.Events.Patches.Fixes
         }
     }
 }
-*/
