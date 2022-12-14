@@ -135,8 +135,6 @@ namespace Exiled.API.Features.Items
         public float CivilianDownsideMultiplier
         {
             get => Base.CivilianClassDownsidesMultiplier;
-            [Obsolete("The client would be desynchronized", true)]
-            set => Base.CivilianClassDownsidesMultiplier = value;
         }
 
         /// <summary>

@@ -25,12 +25,6 @@ namespace Exiled.API.Features
         public static SpawnableTeamType NextKnownTeam => RespawnManager.Singleton.NextKnownTeam;
 
         /// <summary>
-        /// Gets the amount of seconds before the next respawn will occur.
-        /// </summary>
-        [Obsolete("Use TimeUntilSpawnWave.TotalSeconds.")]
-        public static int TimeUntilRespawn => (int)TimeUntilSpawnWave.TotalSeconds;
-
-        /// <summary>
         /// Gets a <see cref="TimeSpan"/> indicating the amount of time before the next respawn wave will occur.
         /// </summary>
         public static TimeSpan TimeUntilSpawnWave => TimeSpan.FromSeconds(RespawnManager.Singleton._timeForNextSequence - (float)RespawnManager.Singleton._stopwatch.Elapsed.TotalSeconds);
@@ -64,12 +58,6 @@ namespace Exiled.API.Features
             get => RespawnTokensManager.Counters[1].Amount;
             set => RespawnTokensManager.GrantTokens(SpawnableTeamType.ChaosInsurgency, value);
         }
-
-        /// <summary>
-        /// Gets the actual <see cref="RespawnEffectsController"/>.
-        /// </summary>
-        [Obsolete("Using this will lead to indefinable errors", true)]
-        public static RespawnEffectsController Controller => RespawnEffectsController.AllControllers.FirstOrDefault(controller => controller != null);
 
         /// <summary>
         /// Play an effect when a certain class spawns.
