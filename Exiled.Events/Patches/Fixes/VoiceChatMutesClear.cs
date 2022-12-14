@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------
-// <copyright file="MuteHandlerClear.cs" company="Exiled Team">
+// <copyright file="VoiceChatMutesClear.cs" company="Exiled Team">
 // Copyright (c) Exiled Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
@@ -21,7 +21,7 @@ namespace Exiled.Events.Patches.Fixes
     /// Fixes <see cref="VoiceChatMutes.LoadMutes"/> method.
     /// </summary>
     [HarmonyPatch(typeof(VoiceChatMutes), nameof(VoiceChatMutes.LoadMutes))]
-    internal static class MuteHandlerClear
+    internal static class VoiceChatMutesClear
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
