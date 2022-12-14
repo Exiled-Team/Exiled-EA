@@ -212,8 +212,11 @@ namespace Exiled.Events.Patches.Events.Player
 
                 foreach (KeyValuePair<ItemType, ushort> keyValuePair in ammo)
                     inventory.ServerAddAmmo(keyValuePair.Key, keyValuePair.Value);
+
                 foreach (ItemType item in items)
                     InventoryItemProvider.OnItemProvided?.Invoke(player.ReferenceHub, inventory.ServerAddItem(item));
+
+                InventoryItemProvider.SpawnPreviousInventoryPickups(player.ReferenceHub);
             }
             catch (Exception exception)
             {
