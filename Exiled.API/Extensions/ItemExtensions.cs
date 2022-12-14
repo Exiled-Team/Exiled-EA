@@ -39,7 +39,7 @@ namespace Exiled.API.Extensions
         /// <returns>Returns whether the <see cref="ItemType"/> is a weapon or not.</returns>
         public static bool IsWeapon(this ItemType type, bool checkMicro = true) => type switch
         {
-            ItemType.GunCrossvec or ItemType.GunLogicer or ItemType.GunRevolver or ItemType.GunShotgun or ItemType.GunAK
+            ItemType.GunCrossvec or ItemType.GunCom45 or ItemType.GunLogicer or ItemType.GunRevolver or ItemType.GunShotgun or ItemType.GunAK
                 or ItemType.GunCOM15 or ItemType.GunCOM18 or ItemType.GunE11SR or ItemType.GunFSP9
                 or ItemType.ParticleDisruptor => true,
             ItemType.MicroHID when checkMicro => true,
