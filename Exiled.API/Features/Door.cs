@@ -49,7 +49,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets a <see cref="IEnumerable{T}"/> of <see cref="Door"/> which contains all the <see cref="Door"/> instances.
         /// </summary>
-        public static IEnumerable<Door> List => DoorVariantToDoor.Values.ToList().AsReadOnly();
+        public static IEnumerable<Door> List => DoorVariantToDoor.Values;
 
         /// <summary>
         /// Gets the base-game <see cref="DoorVariant"/> for this door.
@@ -495,7 +495,12 @@ namespace Exiled.API.Features
                     "EZ" => DoorType.EntranceDoor,
                     "Prison" => DoorType.PrisonDoor,
                     "914" => DoorType.Scp914Door,
-                    "Unsecured" => DoorType.Scp049Gate,
+                    "Unsecured" => Room?.Type switch
+                    {
+                        RoomType.EzCheckpointHallway => DoorType.CheckpointGate,
+                        RoomType.Hcz049 => DoorType.Scp049Gate,
+                        _ => DoorType.UnknownDoor,
+                    },
                     _ => DoorType.UnknownDoor,
                 };
             }

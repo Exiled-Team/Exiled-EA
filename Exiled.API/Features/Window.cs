@@ -20,11 +20,9 @@ namespace Exiled.API.Features
     public class Window
     {
         /// <summary>
-        /// A <see cref="List{T}"/> of <see cref="Window"/> on the map.
+        /// A <see cref="Dictionary{TKey,TValue}"/> containing all known <see cref="BreakableWindow"/>s and their corresponding <see cref="Window"/>.
         /// </summary>
-        internal static readonly List<Window> WindowValue = new(30);
-
-        private static readonly Dictionary<BreakableWindow, Window> BreakableWindowToWindow = new();
+        internal static readonly Dictionary<BreakableWindow, Window> BreakableWindowToWindow = new();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Window"/> class.
@@ -32,7 +30,6 @@ namespace Exiled.API.Features
         /// <param name="window">The base <see cref="BreakableWindow"/> for this door.</param>
         public Window(BreakableWindow window)
         {
-            BreakableWindowToWindow.Add(window, this);
             Base = window;
             Room = window.GetComponentInParent<Room>();
             Type = GetGlassType();
@@ -41,7 +38,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets a <see cref="IEnumerable{T}"/> of <see cref="Door"/> which contains all the <see cref="Door"/> instances.
         /// </summary>
-        public static IEnumerable<Window> List => WindowValue.AsReadOnly();
+        public static IEnumerable<Window> List => BreakableWindowToWindow.Values;
 
         /// <summary>
         /// Gets the base-game <see cref="BreakableWindow"/> for this window.
@@ -199,6 +196,8 @@ namespace Exiled.API.Features
                 "HCZ_049" => GlassType.Scp049,
                 "HCZ_079" => GlassType.Scp079,
                 "HCZ_Hid" => GlassType.MicroHid,
+                "HCZ_Testroom" => GlassType.TestRoom,
+                "HCZ Part" => GlassType.HczEzCheckpoint,
                 _ => GlassType.Unknown,
             };
         }

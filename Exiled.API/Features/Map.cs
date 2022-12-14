@@ -20,6 +20,7 @@ namespace Exiled.API.Features
     using InventorySystem.Items.Pickups;
     using Items;
     using LightContainmentZoneDecontamination;
+    using MapGeneration;
     using MapGeneration.Distributors;
     using Mirror;
     using PlayerRoles;
@@ -178,6 +179,8 @@ namespace Exiled.API.Features
                 // if (ply.Role.Is(out Scp079Role role))
                     // room = FindParentRoom(role.Camera.GameObject);
             }
+
+            room = Room.Get(objectInRoom.transform.position);
 
             if (room is null)
             {
@@ -354,11 +357,11 @@ namespace Exiled.API.Features
         /// </summary>
         internal static void ClearCache()
         {
-            Room.RoomsValue.Clear();
+            Room.RoomIdentifierToRoom.Clear();
             Door.DoorVariantToDoor.Clear();
-            Camera.CamerasValue.Clear();
-            Window.WindowValue.Clear();
-            TeslaGate.TeslasValue.Clear();
+            Camera.Camera079ToCamera.Clear();
+            Window.BreakableWindowToWindow.Clear();
+            TeslaGate.BaseTeslaGateToTeslaGate.Clear();
             Generator.GeneratorValues.Clear();
             TeleportsValue.Clear();
             LockersValue.Clear();

@@ -13,6 +13,9 @@ namespace Exiled.API.Features
     using System.Linq;
 
     using Enums;
+    using Exiled.API.Extensions;
+    using Interactables;
+    using Interactables.Interobjects.DoorUtils;
     using Items;
     using MapGeneration;
     using MEC;
@@ -27,14 +30,14 @@ namespace Exiled.API.Features
     public class Room : MonoBehaviour
     {
         /// <summary>
-        /// A <see cref="List{T}"/> of <see cref="Room"/>s on the map.
+        /// A <see cref="Dictionary{TKey,TValue}"/> containing all known <see cref="MapGeneration.RoomIdentifier"/>s and their corresponding <see cref="Room"/>.
         /// </summary>
-        internal static readonly List<Room> RoomsValue = new(250);
+        internal static readonly Dictionary<RoomIdentifier, Room> RoomIdentifierToRoom = new(250);
 
         /// <summary>
         /// Gets a <see cref="IEnumerable{T}"/> of <see cref="Room"/> which contains all the <see cref="Room"/> instances.
         /// </summary>
-        public static IEnumerable<Room> List => RoomsValue;
+        public static IEnumerable<Room> List => RoomIdentifierToRoom.Values;
 
         /// <summary>
         /// Gets the <see cref="Room"/> name.
@@ -162,11 +165,6 @@ namespace Exiled.API.Features
         public FlickerableLightController FlickerableLightController { get; private set; }
 
         /// <summary>
-        /// Gets a dictionary that allows you to get a room from a given room identifier.
-        /// </summary>
-        internal static Dictionary<RoomIdentifier, Room> RoomIdentToRoomDict { get; } = new();
-
-        /// <summary>
         /// Gets a <see cref="Room"/> given the specified <see cref="RoomType"/>.
         /// </summary>
         /// <param name="roomType">The <see cref="RoomType"/> to search for.</param>
@@ -178,18 +176,23 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="roomIdentifier">The <see cref="Identifier"/> to search with.</param>
         /// <returns>The <see cref="Room"/> of the given identified, if any. Can be <see langword="null"/>.</returns>
-        public static Room Get(RoomIdentifier roomIdentifier) => RoomIdentToRoomDict.ContainsKey(roomIdentifier)
-            ? RoomIdentToRoomDict[roomIdentifier]
+        public static Room Get(RoomIdentifier roomIdentifier) => RoomIdentifierToRoom.ContainsKey(roomIdentifier)
+            ? RoomIdentifierToRoom[roomIdentifier]
             : null;
+
+        /// <summary>
+        /// Gets a <see cref="Room"/> from a given <see cref="RoomIdentifier"/>.
+        /// </summary>
+        /// <param name="flickerableLightController">The <see cref="FlickerableLightController"/> to search with.</param>
+        /// <returns>The <see cref="Room"/> of the given identified, if any. Can be <see langword="null"/>.</returns>
+        public static Room Get(FlickerableLightController flickerableLightController) => flickerableLightController.GetComponentInParent<Room>();
 
         /// <summary>
         /// Gets a <see cref="Room"/> given the specified <see cref="Vector3"/>.
         /// </summary>
         /// <param name="position">The <see cref="Vector3"/> to search for.</param>
         /// <returns>The <see cref="Room"/> with the given <see cref="Vector3"/> or <see langword="null"/> if not found.</returns>
-        public static Room Get(Vector3 position)
-            => List.FirstOrDefault(x => x.Identifier == RoomIdUtils.RoomAtPosition(position))
-            ?? List.FirstOrDefault(x => x.Identifier == RoomIdUtils.RoomAtPositionRaycasts(position));
+        public static Room Get(Vector3 position) => RoomIdUtils.RoomAtPositionRaycasts(position, false) is RoomIdentifier identifier ? Get(identifier) : null;
 
         /// <summary>
         /// Gets a <see cref="IEnumerable{T}"/> of <see cref="Room"/> given the specified <see cref="ZoneType"/>.
@@ -212,9 +215,9 @@ namespace Exiled.API.Features
         /// <returns><see cref="Room"/> object.</returns>
         public static Room Random(ZoneType zoneType = ZoneType.Unspecified)
         {
-            List<Room> rooms = zoneType is not ZoneType.Unspecified ? Get(r => r.Zone == zoneType).ToList() : RoomsValue;
+            IEnumerable<Room> rooms = zoneType is not ZoneType.Unspecified ? Get(r => r.Zone == zoneType) : List;
 
-            return rooms[UnityEngine.Random.Range(0, rooms.Count)];
+            return rooms.ElementAtOrDefault(UnityEngine.Random.Range(0, rooms.Count()));
         }
 
         /// <summary>
@@ -293,49 +296,93 @@ namespace Exiled.API.Features
         /// <returns>The Room component that was instantiated onto the Game Object.</returns>
         internal static Room CreateComponent(GameObject roomGameObject) => roomGameObject.AddComponent<Room>();
 
-        private void FindObjectsInRoom(out List<Scp079Camera> cameraList, out List<Door> doors, out TeslaGate teslaGate, out FlickerableLightController flickerableLightController)
+        private static RoomType FindType(string rawName)
         {
-            cameraList = new List<Scp079Camera>();
-            doors = Door.Get(door => door.Room == Identifier).ToList();
-            teslaGate = TeslaGate.Get(teslaGate => teslaGate.Room == Identifier).FirstOrDefault();
-            flickerableLightController = GameObject.GetComponent<FlickerableLightController>();
-
-            foreach (Scp079InteractableBase interactable in Scp079InteractableBase.AllInstances)
+            // Try to remove brackets if they exist.
+            rawName = rawName.RemoveBracketsOnEndOfName();
+            return rawName switch
             {
-                try
-                {
-                    if (interactable != null && interactable.Room == Identifier && interactable.TryGetComponent(out Scp079Camera camera))
-                        cameraList.Add(camera);
-                }
-                catch (Exception exception)
-                {
-                    Log.Error($"{nameof(FindObjectsInRoom)}: Exception cause {exception.Message}\n{interactable == null}");
-                }
-            }
+                "LCZ_Armory" => RoomType.LczArmory,
+                "LCZ_Curve" => RoomType.LczCurve,
+                "LCZ_Straight" => RoomType.LczStraight,
+                "LCZ_330" => RoomType.Lcz330,
+                "LCZ_914" => RoomType.Lcz914,
+                "LCZ_Crossing" => RoomType.LczCrossing,
+                "LCZ_TCross" => RoomType.LczTCross,
+                "LCZ_Cafe" => RoomType.LczCafe,
+                "LCZ_Plants" => RoomType.LczPlants,
+                "LCZ_Toilets" => RoomType.LczToilets,
+                "LCZ_Airlock" => RoomType.LczAirlock,
+                "LCZ_173" => RoomType.Lcz173,
+                "LCZ_ClassDSpawn" => RoomType.LczClassDSpawn,
+                "LCZ_ChkpB" => RoomType.LczChkpB,
+                "LCZ_372" => RoomType.LczGlassBox,
+                "LCZ_ChkpA" => RoomType.LczChkpA,
+                "HCZ_079" => RoomType.Hcz079,
+                "HCZ_EZ_Checkpoint" => RoomType.HczEzCheckpoint,
+                "HCZ_Room3ar" => RoomType.HczArmory,
+                "HCZ_Testroom" => RoomType.HczTestRoom,
+                "HCZ_Hid" => RoomType.HczHid,
+                "HCZ_049" => RoomType.Hcz049,
+                "HCZ_ChkpA" => RoomType.HczChkpA,
+                "HCZ_Crossing" => RoomType.HczCrossing,
+                "HCZ_106" => RoomType.Hcz106,
+                "HCZ_Nuke" => RoomType.HczNuke,
+                "HCZ_Tesla" => RoomType.HczTesla,
+                "HCZ_Servers" => RoomType.HczServers,
+                "HCZ_ChkpB" => RoomType.HczChkpB,
+                "HCZ_Room3" => RoomType.HczTCross,
+                "HCZ_457" => RoomType.Hcz096,
+                "HCZ_Curve" => RoomType.HczCurve,
+                "HCZ_Straight" => RoomType.HczStraight,
+                "EZ_Endoof" => RoomType.EzVent,
+                "EZ_Intercom" => RoomType.EzIntercom,
+                "EZ_GateA" => RoomType.EzGateA,
+                "EZ_PCs_small" => RoomType.EzDownstairsPcs,
+                "EZ_Curve" => RoomType.EzCurve,
+                "EZ_PCs" => RoomType.EzPcs,
+                "EZ_Crossing" => RoomType.EzCrossing,
+                "EZ_CollapsedTunnel" => RoomType.EzCollapsedTunnel,
+                "EZ_Smallrooms2" => RoomType.EzConference,
+                "EZ_Straight" => RoomType.EzStraight,
+                "EZ_Cafeteria" => RoomType.EzCafeteria,
+                "EZ_upstairs" => RoomType.EzUpstairsPcs,
+                "EZ_GateB" => RoomType.EzGateB,
+                "EZ_Shelter" => RoomType.EzShelter,
+                "EZ_ThreeWay" => RoomType.EzTCross,
+                "PocketWorld" => RoomType.Pocket,
+                "Outside" => RoomType.Surface,
+                "HCZ_939" => RoomType.Hcz939,
+                "EZ Part" => RoomType.EzCheckpointHallway,
+                "HCZ Part" => RoomType.HczEzCheckpoint,
+                _ => RoomType.Unknown,
+            };
+        }
+
+        private static ZoneType FindZone(GameObject gameObject)
+        {
+            Transform transform = gameObject.transform;
+
+            return transform.parent?.name switch
+            {
+                "HeavyRooms" => ZoneType.HeavyContainment,
+                "LightRooms" => ZoneType.LightContainment,
+                "EntranceRooms" => ZoneType.Entrance,
+                _ => transform.position.y > 900 ? ZoneType.Surface : ZoneType.Unspecified,
+            };
         }
 
         private void Awake()
         {
+            Zone = FindZone(gameObject);
+            Type = FindType(gameObject.name);
+
             Identifier = gameObject.GetComponent<RoomIdentifier>();
-            RoomIdentToRoomDict.Add(Identifier, this);
+            Doors = DoorVariant.DoorsByRoom[Identifier]?.Select(x => Door.Get(x, this)) ?? new List<Door>();
 
-            Zone = (ZoneType)Identifier.Zone;
-            Type = (RoomType)Identifier.Name;
-
-            FindObjectsInRoom(
-                out List<Scp079Camera> cameras,
-                out List<Door> doors,
-                out TeslaGate teslagate,
-                out FlickerableLightController flickerableLightController);
-
-            Doors = doors;
-            Cameras = Camera.Get(cameras);
-            TeslaGate = teslagate;
-
-            if (flickerableLightController == null)
+            if (gameObject.TryGetComponent(out FlickerableLightController flickerableLightController))
             {
-                if (!gameObject.TryGetComponent(out flickerableLightController))
-                    flickerableLightController = gameObject.AddComponent<FlickerableLightController>();
+                flickerableLightController = gameObject.AddComponent<FlickerableLightController>();
             }
 
             FlickerableLightController = flickerableLightController;

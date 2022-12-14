@@ -225,5 +225,10 @@ namespace Exiled.API.Enums
         /// Represents the 330_CHAMBER door.
         /// </summary>
         Scp330Chamber,
+
+        /// <summary>
+        /// Represents the Gate in the Checkpoint between EZ and HCZ.
+        /// </summary>
+        CheckpointGate,
     }
 }

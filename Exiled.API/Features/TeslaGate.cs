@@ -24,9 +24,9 @@ namespace Exiled.API.Features
     public class TeslaGate
     {
         /// <summary>
-        /// A <see cref="List{T}"/> of <see cref="TeslaGate"/> on the map.
+        /// A <see cref="Dictionary{TKey,TValue}"/> containing all known <see cref="BaseTeslaGate"/>s and their corresponding <see cref="TeslaGate"/>.
         /// </summary>
-        internal static readonly List<TeslaGate> TeslasValue = new(10);
+        internal static readonly Dictionary<BaseTeslaGate, TeslaGate> BaseTeslaGateToTeslaGate = new(10);
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TeslaGate"/> class.
@@ -37,7 +37,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets a <see cref="IEnumerable{T}"/> of <see cref="TeslaGate"/> which contains all the <see cref="TeslaGate"/> instances.
         /// </summary>
-        public static IEnumerable<TeslaGate> List => TeslasValue;
+        public static IEnumerable<TeslaGate> List => BaseTeslaGateToTeslaGate.Values;
 
         /// <summary>
         /// Gets or sets a <see cref="HashSet{T}"/> of <see cref="Player"/> which contains all the players ignored by tesla gates.
