@@ -570,11 +570,13 @@ namespace Exiled.API.Features
         /// <returns><see cref="bool"/> indicating status.</returns>
         public bool IsNoClipEnabled
         {
-            get => Role.Base is FpcStandardRoleBase fpcStandardRoleBase && fpcStandardRoleBase.FpcModule.Noclip.IsActive;
+            get => FpcNoclip.IsPermitted(ReferenceHub);
             set
             {
-                if (Role.Base is FpcStandardRoleBase fpcStandardRoleBase)
-                    fpcStandardRoleBase.FpcModule.Noclip.IsActive = value;
+                if (value && !IsNoClipEnabled)
+                    FpcNoclip.PermitPlayer(ReferenceHub);
+                else if (!value && IsNoClipEnabled)
+                    FpcNoclip.UnpermitPlayer(ReferenceHub);
             }
         }
 
