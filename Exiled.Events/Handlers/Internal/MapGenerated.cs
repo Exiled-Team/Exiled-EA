@@ -57,7 +57,6 @@ namespace Exiled.Events.Handlers.Internal
             Warhead.OutsitePanel = Object.FindObjectOfType<AlphaWarheadOutsitePanel>();
             Server.Host = new Player(ReferenceHub.HostHub);
             Server.Broadcast = ReferenceHub.HostHub.GetComponent<Broadcast>();
-            Scp914.Scp914Controller = Object.FindObjectOfType<Scp914Controller>();
 
             GenerateTeslaGates();
             GenerateCameras();
