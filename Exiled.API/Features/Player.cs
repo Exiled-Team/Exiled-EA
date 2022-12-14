@@ -990,7 +990,7 @@ namespace Exiled.API.Features
             set
             {
                 if (value)
-                    EnableEffect<SpawnProtected>(float.MaxValue);
+                    EnableEffect<SpawnProtected>(SpawnProtected.SpawnDuration);
                 else
                     DisableEffect<SpawnProtected>();
             }
