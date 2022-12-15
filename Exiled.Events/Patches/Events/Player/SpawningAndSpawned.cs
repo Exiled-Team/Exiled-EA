@@ -11,21 +11,23 @@ namespace Exiled.Events.Patches.Events.Player
     using System.Reflection.Emit;
 
     using Exiled.API.Features;
-    using Exiled.API.Features.Roles;
     using Exiled.Events.EventArgs.Player;
 
     using HarmonyLib;
     using Mirror;
     using NorthwoodLib.Pools;
     using PlayerRoles;
+    using PlayerRoles.FirstPersonControl;
+    using RelativePositioning;
+    using UnityEngine;
 
     using static HarmonyLib.AccessTools;
 
     /// <summary>
-    /// Patches <see cref="PlayerRoleManager.InitializeNewRole(RoleTypeId, RoleChangeReason, NetworkReader)"/>.
+    /// Patches <see cref="FpcStandardRoleBase.ReadSpawnData(NetworkReader)"/>.
     /// Adds the <see cref="SpawningAndSpawned"/> event.
     /// </summary>
-    [HarmonyPatch(typeof(PlayerRoleManager), nameof(PlayerRoleManager.InitializeNewRole))]
+    [HarmonyPatch(typeof(FpcStandardRoleBase), nameof(FpcStandardRoleBase.ReadSpawnData))]
     internal static class SpawningAndSpawned
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
@@ -38,7 +40,7 @@ namespace Exiled.Events.Patches.Events.Player
             LocalBuilder player = generator.DeclareLocal(typeof(Player));
 
             const int offset = 1;
-            int index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Stloc_2) + offset;
+            int index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Stloc_0) + offset;
 
             newInstructions[index].WithLabels(continueLabel);
 
@@ -55,20 +57,25 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
                     new(OpCodes.Dup),
                     new(OpCodes.Stloc_S, player.LocalIndex),
-                    new(OpCodes.Call, PropertyGetter(typeof(Server), nameof(Server.Host))),
-                    new(OpCodes.Beq_S, continueLabel),
+                    new(OpCodes.Brfalse_S, continueLabel),
 
                     // player
                     new(OpCodes.Ldloc_S, player.LocalIndex),
 
                     // roleBase
-                    new(OpCodes.Ldloc_2),
+                    new(OpCodes.Ldarg_0),
 
                     // var ev = new SpawningEventArgs(Player, PlayerRoleBase)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(SpawningEventArgs))[0]),
+                    new(OpCodes.Dup),
 
                     // Handlers.Player.OnSpawning(ev);
                     new(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnSpawning))),
+
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(SpawningEventArgs), nameof(SpawningEventArgs.Position))),
+
+                    new(OpCodes.Newobj, Constructor(typeof(RelativePosition), new System.Type[] { typeof(Vector3) })),
+                    new(OpCodes.Stloc_0),
                 });
 
             newInstructions.InsertRange(
@@ -78,25 +85,16 @@ namespace Exiled.Events.Patches.Events.Player
                     // if (player == Server.Host)
                     //    return;
                     new CodeInstruction(OpCodes.Ldloc_S, player.LocalIndex),
-                    new(OpCodes.Call, PropertyGetter(typeof(Server), nameof(Server.Host))),
-                    new(OpCodes.Beq_S, returnLabel),
+                    new(OpCodes.Brfalse_S, returnLabel),
 
                     // player
                     new(OpCodes.Ldloc_S, player.LocalIndex),
 
                     // var ev = new SpawnedEventArgs(Player)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(SpawnedEventArgs))[0]),
-                    new(OpCodes.Dup),
 
                     // Handlers.Player.OnSpawned(ev)
                     new(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnSpawned))),
-
-                    // ev.Player.Role = Role.Create(player, targetId)
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(SpawnedEventArgs), nameof(SpawnedEventArgs.Player))),
-                    new(OpCodes.Dup),
-                    new(OpCodes.Ldarg_1),
-                    new(OpCodes.Call, Method(typeof(Role), nameof(Role.Create))),
-                    new(OpCodes.Callvirt, PropertySetter(typeof(Player), nameof(Player.Role))),
                 });
 
             newInstructions[newInstructions.Count - 1].WithLabels(returnLabel);
