@@ -193,7 +193,7 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="baseTeslaGate">The <see cref="BaseTeslaGate"/> instance.</param>
         /// <returns>The corresponding <see cref="TeslaGate"/> instance.</returns>
-        public static TeslaGate Get(BaseTeslaGate baseTeslaGate) => List.FirstOrDefault(teslaGate => teslaGate.Base == baseTeslaGate);
+        public static TeslaGate Get(BaseTeslaGate baseTeslaGate) => BaseTeslaGateToTeslaGate[baseTeslaGate] ?? new(baseTeslaGate);
 
         /// <summary>
         /// Gets a <see cref="IEnumerable{T}"/> of <see cref="TeslaGate"/> filtered based on a predicate.
