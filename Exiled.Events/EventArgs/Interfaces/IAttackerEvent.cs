@@ -18,7 +18,7 @@ namespace Exiled.Events.EventArgs.Interfaces
         /// <summary>
         ///     Gets the <see cref="Player" /> being targeted.
         /// </summary>
-        public Player Target { get; }
+        public Player Attacker { get; }
 
         /// <summary>
         ///     Gets or sets the <see cref="DamageHandlerBase" /> managing the damage to the target.

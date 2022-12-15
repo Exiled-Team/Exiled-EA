@@ -33,8 +33,8 @@ namespace Exiled.Events.EventArgs.Player
         public DiedEventArgs(Player target, RoleTypeId targetOldRole, DamageHandlerBase damageHandler)
         {
             DamageHandler = new CustomDamageHandler(target, damageHandler);
-            Player = DamageHandler.BaseIs(out CustomAttackerHandler attackerDamageHandler) ? attackerDamageHandler.Attacker : null;
-            Target = target;
+            Attacker = DamageHandler.BaseIs(out CustomAttackerHandler attackerDamageHandler) ? attackerDamageHandler.Attacker : null;
+            Player = target;
             TargetOldRole = targetOldRole;
         }
 
@@ -46,7 +46,7 @@ namespace Exiled.Events.EventArgs.Player
         /// <summary>
         ///     Gets the killed player.
         /// </summary>
-        public Player Target { get; }
+        public Player Player { get; }
 
         /// <summary>
         ///     Gets or sets the <see cref="DamageHandler" />.
@@ -56,6 +56,6 @@ namespace Exiled.Events.EventArgs.Player
         /// <summary>
         ///     Gets the killer player.
         /// </summary>
-        public Player Player { get; }
+        public Player Attacker { get; }
     }
 }

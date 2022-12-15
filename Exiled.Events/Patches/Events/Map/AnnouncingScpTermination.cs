@@ -89,7 +89,7 @@ namespace Exiled.Events.Patches.Events.Map
                     // if (!ev.Player.IsSCP)
                     //     goto jmp;
                     new(OpCodes.Ldloc_S, ev.LocalIndex),
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(AnnouncingScpTerminationEventArgs), nameof(AnnouncingScpTerminationEventArgs.Target))),
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(AnnouncingScpTerminationEventArgs), nameof(AnnouncingScpTerminationEventArgs.Player))),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(Player), nameof(Player.IsScp))),
                     new(OpCodes.Brfalse_S, jmp),
 

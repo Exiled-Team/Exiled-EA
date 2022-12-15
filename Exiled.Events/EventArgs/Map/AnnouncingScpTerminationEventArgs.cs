@@ -34,10 +34,10 @@ namespace Exiled.Events.EventArgs.Map
         /// </param>
         public AnnouncingScpTerminationEventArgs(Player scp, DamageHandlerBase damageHandlerBase, bool isAllowed = true)
         {
-            Target = scp;
+            Player = scp;
             Role = scp.Role;
             DamageHandler = new CustomDamageHandler(scp, damageHandlerBase);
-            Player = DamageHandler.BaseIs(out CustomAttackerHandler customAttackerHandler) ? customAttackerHandler.Attacker : null;
+            Attacker = DamageHandler.BaseIs(out CustomAttackerHandler customAttackerHandler) ? customAttackerHandler.Attacker : null;
             TerminationCause = damageHandlerBase.CassieDeathAnnouncement.Announcement;
             IsAllowed = isAllowed;
         }
@@ -55,12 +55,12 @@ namespace Exiled.Events.EventArgs.Map
         /// <summary>
         ///     Gets the player the announcement is being played for.
         /// </summary>
-        public Player Target { get; }
+        public Player Player { get; }
 
         /// <summary>
         ///     Gets the player who killed the SCP.
         /// </summary>
-        public Player Player { get; }
+        public Player Attacker { get; }
 
         /// <summary>
         ///     Gets or sets the <see cref="CustomDamageHandler" />.
