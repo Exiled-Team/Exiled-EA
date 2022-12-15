@@ -383,7 +383,7 @@ namespace Exiled.API.Features
 
             Identifier = gameObject.GetComponent<RoomIdentifier>();
             Doors = DoorVariant.DoorsByRoom[Identifier]?.Select(x => Door.Get(x, this)) ?? new List<Door>();
-            Speaker = Scp079Speaker.SpeakersInRooms[Identifier];
+            Speaker = Scp079Speaker.SpeakersInRooms[Identifier] ?? new();
             if (gameObject.TryGetComponent(out FlickerableLightController flickerableLightController))
             {
                 flickerableLightController = gameObject.AddComponent<FlickerableLightController>();
