@@ -50,7 +50,7 @@ namespace Exiled.Events.Patches.Events.Player
                 {
                     // Player player = Player.Get(this.Hub)
                     //
-                    // if (player == Server.Host)
+                    // if (player == null)
                     //    goto continueLabel;
                     new CodeInstruction(OpCodes.Ldarg_0),
                     new(OpCodes.Call, PropertyGetter(typeof(PlayerRoleManager), nameof(PlayerRoleManager.Hub))),
@@ -72,8 +72,8 @@ namespace Exiled.Events.Patches.Events.Player
                     // Handlers.Player.OnSpawning(ev);
                     new(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnSpawning))),
 
+                    // relativePosition = new RelativePosition(ev.Position)
                     new(OpCodes.Callvirt, PropertyGetter(typeof(SpawningEventArgs), nameof(SpawningEventArgs.Position))),
-
                     new(OpCodes.Newobj, Constructor(typeof(RelativePosition), new System.Type[] { typeof(Vector3) })),
                     new(OpCodes.Stloc_0),
                 });
@@ -82,7 +82,7 @@ namespace Exiled.Events.Patches.Events.Player
                 newInstructions.Count - 1,
                 new[]
                 {
-                    // if (player == Server.Host)
+                    // if (player == null)
                     //    return;
                     new CodeInstruction(OpCodes.Ldloc_S, player.LocalIndex),
                     new(OpCodes.Brfalse_S, returnLabel),

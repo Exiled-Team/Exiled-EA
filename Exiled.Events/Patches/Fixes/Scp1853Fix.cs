@@ -41,6 +41,8 @@ namespace Exiled.Events.Patches.Fixes
                 index,
                 new CodeInstruction[]
                 {
+                    // if (Player.Get(this.Hub).GetEffect(EffectType.Poisoned).IsEnabled)
+                    //    return;
                     new(OpCodes.Ldarg_0),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(Scp1853), nameof(Scp1853.Hub))),
                     new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
