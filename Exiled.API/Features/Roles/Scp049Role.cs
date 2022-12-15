@@ -7,11 +7,9 @@
 
 namespace Exiled.API.Features.Roles
 {
-    using PlayableScps;
     using PlayerRoles;
     using PlayerRoles.PlayableScps.Scp049;
     using PlayerRoles.PlayableScps.Subroutines;
-    using UnityEngine;
 
     using Scp049GameRole = PlayerRoles.PlayableScps.Scp049.Scp049Role;
 
@@ -78,9 +76,7 @@ namespace Exiled.API.Features.Roles
             set
             {
                 if (SubroutineModule.TryGetSubroutine(out Scp049CallAbility ability))
-                {
                     ability.Cooldown.Remaining = value;
-                }
             }
         }
 
@@ -93,9 +89,7 @@ namespace Exiled.API.Features.Roles
             set
             {
                 if (SubroutineModule.TryGetSubroutine(out Scp049SenseAbility ability))
-                {
                     ability.Cooldown.Remaining = value;
-                }
             }
         }
 
@@ -105,7 +99,7 @@ namespace Exiled.API.Features.Roles
         /// <remarks>This method only returns whether or not SCP-049 is close enough to the body to revive it; the body may have expired. Make sure to check <see cref="Ragdoll.AllowRecall"/> to ensure the body can be revived.</remarks>
         /// <param name="ragdoll">The ragdoll to check.</param>
         /// <returns><see langword="true"/> if close enough to revive the body; otherwise, <see langword="false"/>.</returns>
-        public bool IsInRecallRange(BasicRagdoll ragdoll) => SubroutineModule.TryGetSubroutine(out Scp049ResurrectAbility ability) ? ability.IsCloseEnough(Owner.Position, ragdoll.transform.position) : false;
+        public bool IsInRecallRange(BasicRagdoll ragdoll) => SubroutineModule.TryGetSubroutine(out Scp049ResurrectAbility ability) && ability.IsCloseEnough(Owner.Position, ragdoll.transform.position);
 
         /// <summary>
         /// Returns a <see langword="bool"/> indicating whether or not SCP-049 is close enough to a ragdoll to revive it.

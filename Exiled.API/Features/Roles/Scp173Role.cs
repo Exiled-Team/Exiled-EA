@@ -96,6 +96,7 @@ namespace Exiled.API.Features.Roles
             {
                 if (!SubroutineModule.TryGetSubroutine(out Scp173ObserversTracker ability))
                     return;
+
                 ability.SimulatedStare = value;
             }
         }
