@@ -7,6 +7,7 @@
 
 namespace Exiled.API.Features.Roles
 {
+    using System;
     using System.Collections.Generic;
 
     using PlayerRoles;
@@ -39,6 +40,7 @@ namespace Exiled.API.Features.Roles
         /// <summary>
         /// Gets or sets the amount of time before SCP-939 can attack again.
         /// </summary>
+        [Obsolete("Use ClawCooldown.")]
         public float AttackCooldown
         {
             get => 0.6f; // It's hardcoded
@@ -70,14 +72,34 @@ namespace Exiled.API.Features.Roles
         }
 
         /// <summary>
-        /// Gets a value indicating whether or not SCP-939 can use its claw ability.
+        /// Gets or sets the amount of time before SCP-939 can attack again.
         /// </summary>
-        public bool ClawReady => SubroutineModule.TryGetSubroutine(out Scp939ClawAbility ability) ? ability.Cooldown.IsReady : false;
+        public float ClawCooldown
+        {
+            get => SubroutineModule.TryGetSubroutine(out Scp939ClawAbility ability) ? ability.Cooldown.Remaining : 0f;
+            set
+            {
+                if (SubroutineModule.TryGetSubroutine(out Scp939ClawAbility ability))
+                {
+                    ability.Cooldown.Remaining = value;
+                }
+            }
+        }
 
         /// <summary>
-        /// Gets a value indicating whether or not SCP-939 can use its amnestic cloud ability.
+        /// Gets or sets the amount of time before SCP-939 can use its amnestic cloud ability again.
         /// </summary>
-        public bool AmnesticCloudReady => SubroutineModule.TryGetSubroutine(out Scp939AmnesticCloudAbility ability) ? ability.Cooldown.IsReady : false;
+        public float AmnesticCloudCooldown
+        {
+            get => SubroutineModule.TryGetSubroutine(out Scp939AmnesticCloudAbility ability) ? ability.Cooldown.Remaining : 0f;
+            set
+            {
+                if (SubroutineModule.TryGetSubroutine(out Scp939AmnesticCloudAbility ability))
+                {
+                    ability.Cooldown.Remaining = value;
+                }
+            }
+        }
 
         /// <summary>
         /// Gets a list of players this SCP-939 instance can see regardless of their movement.

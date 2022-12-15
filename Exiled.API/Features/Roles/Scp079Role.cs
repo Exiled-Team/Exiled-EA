@@ -178,6 +178,19 @@ namespace Exiled.API.Features.Roles
         public int BlackoutCapacity => SubroutineModule.TryGetSubroutine(out Scp079BlackoutRoomAbility ability) ? ability.CurrentCapacity : 0;
 
         /// <summary>
+        /// Gets or sets the amount of time until SCP-079 can use its blackout zone ability again.
+        /// </summary>
+        public float BlackoutZoneCooldown
+        {
+            get => SubroutineModule.TryGetSubroutine(out Scp079BlackoutZoneAbility ability) ? ability._cooldownTimer.Remaining : 0;
+            set
+            {
+                if (SubroutineModule.TryGetSubroutine(out Scp079BlackoutZoneAbility ability))
+                    ability._cooldownTimer.Remaining = value;
+            }
+        }
+
+        /// <summary>
         /// Gets SCP-079's energy regeneration speed.
         /// </summary>
         public float EnergyRegenerationSpeed => SubroutineModule.TryGetSubroutine(out Scp079AuxManager ability) ? ability.RegenSpeed : 0;
