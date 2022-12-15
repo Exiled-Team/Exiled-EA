@@ -10,6 +10,7 @@ namespace Exiled.API.Features.Roles
     using PlayerRoles;
     using PlayerRoles.PlayableScps.Scp049.Zombies;
     using PlayerRoles.PlayableScps.Subroutines;
+    using System;
 
     /// <summary>
     /// Defines a role that represents SCP-049-2.
@@ -37,7 +38,8 @@ namespace Exiled.API.Features.Roles
         /// </summary>
         public float AttackDamage
         {
-            get => 40; // It's hardcoded.
+            get => SubroutineModule.TryGetSubroutine(out ZombieAttackAbility ability) ? ability.DamageAmount : 0;
+            [Obsolete("Hard-coded value.")]
             set { }
         }
 
@@ -46,7 +48,8 @@ namespace Exiled.API.Features.Roles
         /// </summary>
         public float AttackCooldown
         {
-            get => 1.3f; // It's hardcoded.
+            get => SubroutineModule.TryGetSubroutine(out ZombieAttackAbility ability) ? ability.BaseCooldown : 0;
+            [Obsolete("Hard-coded value.")]
             set { }
         }
     }
