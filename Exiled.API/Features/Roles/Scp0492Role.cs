@@ -10,7 +10,6 @@ namespace Exiled.API.Features.Roles
     using PlayerRoles;
     using PlayerRoles.PlayableScps.Scp049.Zombies;
     using PlayerRoles.PlayableScps.Subroutines;
-    using System;
 
     /// <summary>
     /// Defines a role that represents SCP-049-2.
