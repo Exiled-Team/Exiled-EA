@@ -2834,7 +2834,7 @@ namespace Exiled.API.Features
                 nameof(Pickup) => Map.Pickups[Random.Range(0, Map.Pickups.Count)],
                 nameof(Ragdoll) => Map.RagdollsValue[Random.Range(0, Map.RagdollsValue.Count)],
                 nameof(Locker) => Map.GetRandomLocker(),
-                nameof(Generator) => Generator.GeneratorValues[Random.Range(0, Generator.GeneratorValues.Count)],
+                nameof(Generator) => Generator.List.ElementAt(Random.Range(0, Generator.List.Count())),
                 nameof(Window) => Window.List.ElementAt(Random.Range(0, Window.List.Count())),
                 nameof(Scp914) => Scp914.Scp914Controller,
                 nameof(LockerChamber) => (chambers = Map.GetRandomLocker().Chambers)[Random.Range(0, chambers.Length)],
