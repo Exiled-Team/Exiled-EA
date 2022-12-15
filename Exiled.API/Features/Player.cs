@@ -87,8 +87,6 @@ namespace Exiled.API.Features
         {
             readOnlyItems = ItemsValue.AsReadOnly();
             ReferenceHub = referenceHub;
-
-            //Timing.CallDelayed(0.05f, () => Role = Role.Create(this, RoleManager._anySet ? RoleManager.CurrentRole.RoleTypeId : RoleTypeId.None));
         }
 
         /// <summary>
@@ -99,8 +97,6 @@ namespace Exiled.API.Features
         {
             readOnlyItems = ItemsValue.AsReadOnly();
             ReferenceHub = ReferenceHub.GetHub(gameObject);
-
-            //Timing.CallDelayed(0.05f, () => Role = Role.Create(this, RoleManager._anySet ? RoleManager.CurrentRole.RoleTypeId : RoleTypeId.None));
         }
 
         /// <summary>
