@@ -63,7 +63,7 @@ namespace Exiled.API.Features.Roles
             get => SubroutineModule.TryGetSubroutine(out Scp939LungeAbility ability) ? ability.State : Scp939LungeState.None;
             set
             {
-                if (SubroutineModule.TryGetSubroutine(out Scp939LungeAbility ability))
+                if (!SubroutineModule.TryGetSubroutine(out Scp939LungeAbility ability))
                     return;
                 ability.State = value;
             }
