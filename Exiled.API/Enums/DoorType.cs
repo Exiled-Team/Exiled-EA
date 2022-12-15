@@ -7,7 +7,7 @@
 
 namespace Exiled.API.Enums
 {
-    using System;
+    using static Interactables.Interobjects.ElevatorManager;
 
     /// <summary>
     /// Unique identifier for the different types of doors.
@@ -102,9 +102,9 @@ namespace Exiled.API.Enums
         Scp914Gate,
 
         /// <summary>
-        /// Represents the CHECKPOINT_ENT door.
+        /// Represents the 939_CRYO door.
         /// </summary>
-        CheckpointEntrance,
+        Scp939Cryo,
 
         /// <summary>
         /// Represents the CHECKPOINT_LCZ_A door.
@@ -230,5 +230,60 @@ namespace Exiled.API.Enums
         /// Represents the Gate in the Checkpoint between EZ and HCZ.
         /// </summary>
         CheckpointGate,
+
+        /// <summary>
+        /// Represents the Gate in the Checkpoint between EZ and HCZ.
+        /// </summary>
+        SurfaceDoor,
+
+        /// <summary>
+        /// Represents the CHECKPOINT_EZ_HCZ_A door.
+        /// </summary>
+        CheckpointEzHczA,
+
+        /// <summary>
+        /// Represents the CHECKPOINT_EZ_HCZ_B door.
+        /// </summary>
+        CheckpointEzHczB,
+
+        /// <summary>
+        /// Represents an unknown Gate.
+        /// </summary>
+        UnknownGate,
+
+        /// <summary>
+        /// Represents an unknown Elevator.
+        /// </summary>
+        UnknownElevator,
+
+        /// <summary>
+        /// Represents the Elevator door for <see cref="ElevatorGroup.GateA"/>.
+        /// </summary>
+        ElevatorGateA,
+
+        /// <summary>
+        /// Represents the Elevator door for <see cref="ElevatorGroup.GateB"/>.
+        /// </summary>
+        ElevatorGateB,
+
+        /// <summary>
+        /// Represents the Elevator door for <see cref="ElevatorGroup.Nuke"/>.
+        /// </summary>
+        ElevatorNuke,
+
+        /// <summary>
+        /// Represents the Elevator door for <see cref="ElevatorGroup.Scp049"/>.
+        /// </summary>
+        ElevatorScp049,
+
+        /// <summary>
+        /// Represents the Elevator door for <see cref="ElevatorGroup.LczA01"/> ans <see cref="ElevatorGroup.LczA02"/>.
+        /// </summary>
+        ElevatorLczA,
+
+        /// <summary>
+        /// Represents the Elevator door for <see cref="ElevatorGroup.LczB01"/> ans <see cref="ElevatorGroup.LczB02"/>.
+        /// </summary>
+        ElevatorLczB,
     }
 }

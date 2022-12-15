@@ -64,6 +64,5 @@ namespace Exiled.API.Enums
         /// Represents all the Window in <see cref="RoomType.HczTestRoom"/>.
         /// </summary>
         TestRoom,
-
     }
 }
