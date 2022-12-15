@@ -59,8 +59,8 @@ namespace Exiled.Events.Patches.Events.Player
                 {
                     // player = Player.Get(this._hub)
                     //
-                    // if (player is null)
-                    //    return;
+                    // if (player == null)
+                    //    goto continueLabel;
                     new CodeInstruction(OpCodes.Ldarg_0),
                     new(OpCodes.Call, PropertyGetter(typeof(PlayerRoleManager), nameof(PlayerRoleManager.Hub))),
                     new(OpCodes.Call, Method(typeof(API.Features.Player), nameof(API.Features.Player.Get), new[] { typeof(ReferenceHub) })),
