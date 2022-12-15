@@ -10,7 +10,6 @@ namespace Exiled.Events.Patches.Events.Player
     using System.Collections.Generic;
     using System.Reflection.Emit;
 
-    using API.Features.Items;
     using Exiled.API.Features;
     using Exiled.Events.EventArgs.Player;
 

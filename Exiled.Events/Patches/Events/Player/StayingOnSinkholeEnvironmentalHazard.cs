@@ -10,8 +10,6 @@ namespace Exiled.Events.Patches.Events.Player
     using System.Collections.Generic;
     using System.Reflection.Emit;
 
-    using Fixes;
-
     using HarmonyLib;
     using Hazards;
     using NorthwoodLib.Pools;

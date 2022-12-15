@@ -84,9 +84,7 @@ namespace Exiled.API.Features.Roles
             set
             {
                 if (SubroutineModule.TryGetSubroutine(out Scp939AmnesticCloudAbility ability))
-                {
                     ability.Cooldown.Remaining = value;
-                }
             }
         }
 

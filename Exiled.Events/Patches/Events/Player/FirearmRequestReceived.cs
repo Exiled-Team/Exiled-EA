@@ -8,17 +8,13 @@
 namespace Exiled.Events.Patches.Events.Player
 {
     using System.Collections.Generic;
-    using System.Reflection;
     using System.Reflection.Emit;
 
     using Exiled.Events.EventArgs.Player;
     using Handlers;
 
     using HarmonyLib;
-
-    using InventorySystem.Items.Firearms;
     using InventorySystem.Items.Firearms.BasicMessages;
-    using InventorySystem.Items.Firearms.Modules;
 
     using NorthwoodLib.Pools;
     using PluginAPI.Enums;
