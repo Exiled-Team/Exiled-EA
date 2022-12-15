@@ -45,9 +45,7 @@ namespace Exiled.API.Features.Roles
             set
             {
                 if (SubroutineModule.TryGetSubroutine(out Scp939ClawAbility ability))
-                {
                     ability.Cooldown.Remaining = value;
-                }
             }
         }
 
@@ -71,6 +69,7 @@ namespace Exiled.API.Features.Roles
             {
                 if (!SubroutineModule.TryGetSubroutine(out Scp939LungeAbility ability))
                     return;
+
                 ability.State = value;
             }
         }
