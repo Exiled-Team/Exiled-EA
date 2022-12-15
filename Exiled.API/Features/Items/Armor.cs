@@ -130,7 +130,7 @@ namespace Exiled.API.Features.Items
         }
 
         /// <summary>
-        /// Gets or sets how much worse <see cref="RoleTypeId.ClassD"/> and <see cref="RoleTypeId.Scientist"/>s are affected by wearing this armor.
+        /// Gets how much worse <see cref="RoleTypeId.ClassD"/> and <see cref="RoleTypeId.Scientist"/>s are affected by wearing this armor.
         /// </summary>
         public float CivilianDownsideMultiplier
         {
