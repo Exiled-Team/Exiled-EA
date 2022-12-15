@@ -35,7 +35,7 @@ namespace Exiled.Events.Patches.Generic
                 0,
                 new CodeInstruction[]
                 {
-                    new(OpCodes.Ldarg_1),
+                    new(OpCodes.Ldarg_0),
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(Generator))[0]),
                     new(OpCodes.Pop),
                 });
