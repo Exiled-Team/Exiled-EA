@@ -262,13 +262,11 @@ namespace Exiled.API.Features.Items
         /// <returns>The <see cref="Pickup"/> created by spawning this item.</returns>
         public virtual Pickup Spawn(Vector3 position, Quaternion rotation = default, IEnumerable<AttachmentIdentifier> identifiers = null)
         {
-            Base.PickupDropModel.Info.ItemId = Type;
-            Base.PickupDropModel.Info._serverPosition = position;
-            Base.PickupDropModel.Info.Weight = Weight;
-            Base.PickupDropModel.Info._serverRotation = rotation;
-            Base.PickupDropModel.NetworkInfo = Base.PickupDropModel.Info;
-
             ItemPickupBase ipb = Object.Instantiate(Base.PickupDropModel, position, rotation);
+
+            ipb.Info = new PickupSyncInfo(Type, position, rotation, Weight, Serial);
+            ipb.NetworkInfo = ipb.Info;
+
             if (ipb is FirearmPickup firearmPickup)
             {
                 if (this is Firearm firearm)
@@ -295,9 +293,12 @@ namespace Exiled.API.Features.Items
             }
 
             NetworkServer.Spawn(ipb.gameObject);
+
             ipb.InfoReceived(default, Base.PickupDropModel.NetworkInfo);
+
             Pickup pickup = Pickup.Get(ipb);
             pickup.Scale = Scale;
+
             return pickup;
         }
 
@@ -309,13 +310,11 @@ namespace Exiled.API.Features.Items
         /// <returns>The <see cref="Pickup"/> created by spawning this item.</returns>
         public virtual Pickup Spawn(Vector3 position, Quaternion rotation = default)
         {
-            Base.PickupDropModel.Info.ItemId = Type;
-            Base.PickupDropModel.Info._serverPosition = position;
-            Base.PickupDropModel.Info.Weight = Weight;
-            Base.PickupDropModel.Info._serverRotation = rotation;
-            Base.PickupDropModel.NetworkInfo = Base.PickupDropModel.Info;
-
             ItemPickupBase ipb = Object.Instantiate(Base.PickupDropModel, position, rotation);
+
+            ipb.Info = new PickupSyncInfo(Type, position, rotation, Weight, Serial);
+            ipb.NetworkInfo = ipb.Info;
+
             if (ipb is FirearmPickup firearmPickup)
             {
                 if (this is Firearm firearm)
@@ -338,9 +337,12 @@ namespace Exiled.API.Features.Items
             }
 
             NetworkServer.Spawn(ipb.gameObject);
+
             ipb.InfoReceived(default, Base.PickupDropModel.NetworkInfo);
+
             Pickup pickup = Pickup.Get(ipb);
             pickup.Scale = Scale;
+
             return pickup;
         }
 
