@@ -475,7 +475,7 @@ namespace Exiled.API.Features
         public LeadingTeam LeadingTeam => Role.Team.GetLeadingTeam();
 
         /// <summary>
-        /// Gets or sets a <see cref="Roles.Role"/> that is unique to this player and this class. This allows modification of various aspects related to the role solely.
+        /// Gets a <see cref="Roles.Role"/> that is unique to this player and this class. This allows modification of various aspects related to the role solely.
         /// <para>
         /// The type of the Role is different based on the <see cref="RoleTypeId"/> of the player, and casting should be used to modify the role.
         /// <br /><see cref="RoleTypeId.Spectator"/> = <see cref="SpectatorRole"/>.
@@ -501,7 +501,7 @@ namespace Exiled.API.Features
         public Role Role
         {
             get => role ??= Role.Create(this, RoleTypeId.None);
-            set => role = value;
+            internal set => role = value;
         }
 
         /// <summary>

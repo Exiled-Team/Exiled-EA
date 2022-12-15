@@ -32,7 +32,7 @@ namespace Exiled.Events.Patches.Events.Player
     /// <summary>
     ///     Patches <see cref="PlayerRoleManager.InitializeNewRole(RoleTypeId, RoleChangeReason, Mirror.NetworkReader)" />
     ///     .
-    ///     Adds the <see cref="PlayerRoleManager" /> and <see cref="PlayerRoleManager.ServerSetRole" /> events.
+    ///     Adds the <see cref="PlayerRoleManager" /> and <see cref="PlayerRoleManager.InitializeNewRole" /> events.
     /// </summary>
     [HarmonyPatch(typeof(PlayerRoleManager), nameof(PlayerRoleManager.InitializeNewRole))]
     internal static class ChangingRole
@@ -43,11 +43,12 @@ namespace Exiled.Events.Patches.Events.Player
 
             Label returnLabel = generator.DefineLabel();
             Label continueLabel = generator.DefineLabel();
+            Label continueLabel1 = generator.DefineLabel();
 
             LocalBuilder ev = generator.DeclareLocal(typeof(ChangingRoleEventArgs));
             LocalBuilder player = generator.DeclareLocal(typeof(API.Features.Player));
 
-            const int offset = 2;
+            int offset = 2;
             int index = newInstructions.FindIndex(instruction => instruction.Calls(Method(typeof(PlayerRoleManager), nameof(PlayerRoleManager.GetRoleBase)))) + offset;
 
             newInstructions[index].WithLabels(continueLabel);
@@ -74,7 +75,7 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Callvirt, PropertyGetter(typeof(PlayerRoleBase), nameof(PlayerRoleBase.RoleTypeId))),
                     new(OpCodes.Ldarg_1),
                     new(OpCodes.Ceq),
-                    new(OpCodes.Brtrue_S, continueLabel),
+                    new(OpCodes.Brtrue_S, returnLabel),
 
                     // player
                     new(OpCodes.Ldloc_S, player.LocalIndex),
@@ -149,6 +150,28 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Call, Method(typeof(ChangingRole), nameof(ChangeInventory))),
                 });
 
+            offset = -1;
+            index = newInstructions.FindIndex(instruction => instruction.Calls(Method(typeof(GameObjectPools.PoolObject), nameof(GameObjectPools.PoolObject.SpawnPoolObject)))) + offset;
+
+            newInstructions[index].WithLabels(continueLabel1);
+
+            newInstructions.InsertRange(
+                index,
+                new[]
+                {
+                    // if (player == null)
+                    //     continue
+                    new CodeInstruction(OpCodes.Ldloc_S, player.LocalIndex),
+                    new(OpCodes.Brfalse_S, continueLabel1),
+
+                    // player.Role = Role.Create(roleType, player);
+                    new CodeInstruction(OpCodes.Ldloc_S, player.LocalIndex),
+                    new(OpCodes.Dup),
+                    new(OpCodes.Ldarg_1),
+                    new(OpCodes.Call, Method(typeof(Role), nameof(Role.Create))),
+                    new(OpCodes.Callvirt, PropertySetter(typeof(API.Features.Player), nameof(API.Features.Player.Role))),
+                });
+
             newInstructions[newInstructions.Count - 1].WithLabels(returnLabel);
 
             for (int z = 0; z < newInstructions.Count; z++)
@@ -161,7 +184,6 @@ namespace Exiled.Events.Patches.Events.Player
         {
             if (newRole is RoleTypeId.Scp173)
                 Scp173Role.TurnedPlayers.Remove(player);
-            player.Role = Role.Create(player, newRole);
         }
 
         private static void ChangeInventory(API.Features.Player player, List<ItemType> items, Dictionary<ItemType, ushort> ammo, RoleTypeId prevRole, RoleTypeId newRole, RoleChangeReason reason)
