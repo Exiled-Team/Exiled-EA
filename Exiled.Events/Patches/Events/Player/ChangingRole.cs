@@ -64,8 +64,10 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Call, PropertyGetter(typeof(PlayerRoleManager), nameof(PlayerRoleManager.Hub))),
                     new(OpCodes.Call, Method(typeof(API.Features.Player), nameof(API.Features.Player.Get), new[] { typeof(ReferenceHub) })),
                     new(OpCodes.Dup),
+                    new(OpCodes.Dup),
+                    new(OpCodes.Call, Method(typeof(Log), nameof(Log.Error), new Type[] { typeof(object) })),
                     new(OpCodes.Stloc_S, player.LocalIndex),
-                    new(OpCodes.Brfalse_S, returnLabel),
+                    new(OpCodes.Brfalse_S, continueLabel),
 
                     // if (this.CurrentRole.RoleTypeId == newRole)
                     //    return;
@@ -74,7 +76,7 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Callvirt, PropertyGetter(typeof(PlayerRoleBase), nameof(PlayerRoleBase.RoleTypeId))),
                     new(OpCodes.Ldarg_1),
                     new(OpCodes.Ceq),
-                    new(OpCodes.Brtrue_S, returnLabel),
+                    new(OpCodes.Brtrue_S, continueLabel),
 
                     // player
                     new(OpCodes.Ldloc_S, player.LocalIndex),
