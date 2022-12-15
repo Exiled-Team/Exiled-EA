@@ -34,7 +34,7 @@ namespace Exiled.API.Features.Roles
         public override SubroutineManagerModule SubroutineModule { get; }
 
         /// <summary>
-        /// Gets or sets the SCP-049-2 attack damage.
+        /// Gets the SCP-049-2 attack damage.
         /// </summary>
         public float AttackDamage
         {
@@ -42,7 +42,7 @@ namespace Exiled.API.Features.Roles
         }
 
         /// <summary>
-        /// Gets or sets the amount of time in between SCP-049-2 attacks.
+        /// Gets the amount of time in between SCP-049-2 attacks.
         /// </summary>
         public float AttackCooldown
         {
