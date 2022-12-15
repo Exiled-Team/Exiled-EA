@@ -150,7 +150,7 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Call, Method(typeof(ChangingRole), nameof(ChangeInventory))),
                 });
 
-            offset = -1;
+            offset = 1;
             index = newInstructions.FindIndex(instruction => instruction.Calls(Method(typeof(GameObjectPools.PoolObject), nameof(GameObjectPools.PoolObject.SpawnPoolObject)))) + offset;
 
             newInstructions[index].WithLabels(continueLabel1);
