@@ -40,11 +40,16 @@ namespace Exiled.API.Features.Roles
         /// <summary>
         /// Gets or sets the amount of time before SCP-939 can attack again.
         /// </summary>
-        [Obsolete("Use ClawCooldown.")]
         public float AttackCooldown
         {
-            get => 0.6f; // It's hardcoded
-            set { }
+            get => SubroutineModule.TryGetSubroutine(out Scp939ClawAbility ability) ? ability.Cooldown.Remaining : 0f;
+            set
+            {
+                if (SubroutineModule.TryGetSubroutine(out Scp939ClawAbility ability))
+                {
+                    ability.Cooldown.Remaining = value;
+                }
+            }
         }
 
         /// <summary>
@@ -68,21 +73,6 @@ namespace Exiled.API.Features.Roles
                 if (!SubroutineModule.TryGetSubroutine(out Scp939LungeAbility ability))
                     return;
                 ability.State = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the amount of time before SCP-939 can attack again.
-        /// </summary>
-        public float ClawCooldown
-        {
-            get => SubroutineModule.TryGetSubroutine(out Scp939ClawAbility ability) ? ability.Cooldown.Remaining : 0f;
-            set
-            {
-                if (SubroutineModule.TryGetSubroutine(out Scp939ClawAbility ability))
-                {
-                    ability.Cooldown.Remaining = value;
-                }
             }
         }
 
