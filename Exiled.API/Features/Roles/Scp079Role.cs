@@ -12,7 +12,6 @@ namespace Exiled.API.Features.Roles
     using Interactables.Interobjects.DoorUtils;
     using PlayerRoles;
     using PlayerRoles.PlayableScps.Scp079;
-    using PlayerRoles.PlayableScps.Scp079.Pinging;
     using PlayerRoles.PlayableScps.Subroutines;
 
     using Scp079GameRole = PlayerRoles.PlayableScps.Scp079.Scp079Role;
