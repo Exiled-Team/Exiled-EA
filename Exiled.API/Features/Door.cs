@@ -22,6 +22,7 @@ namespace Exiled.API.Features
     using Mirror;
 
     using UnityEngine;
+
     using static Interactables.Interobjects.ElevatorManager;
 
     /// <summary>
@@ -497,6 +498,7 @@ namespace Exiled.API.Features
                     "EZ" => DoorType.EntranceDoor,
                     "Prison" => DoorType.PrisonDoor,
                     "914" => DoorType.Scp914Door,
+                    "Intercom" => DoorType.CheckpointArmory,
                     "Unsecured" => Room?.Type switch
                     {
                         RoomType.EzCheckpointHallway => DoorType.CheckpointGate,

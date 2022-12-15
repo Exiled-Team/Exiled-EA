@@ -285,5 +285,10 @@ namespace Exiled.API.Enums
         /// Represents the Elevator door for <see cref="ElevatorGroup.LczB01"/> ans <see cref="ElevatorGroup.LczB02"/>.
         /// </summary>
         ElevatorLczB,
+
+        /// <summary>
+        /// Represents the Armory door in <see cref="RoomType.HczEzCheckpoint"/>.
+        /// </summary>
+        CheckpointArmory,
     }
 }

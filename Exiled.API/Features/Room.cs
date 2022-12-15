@@ -286,7 +286,7 @@ namespace Exiled.API.Features
         /// Returns the Room in a human-readable format.
         /// </summary>
         /// <returns>A string containing Room-related data.</returns>
-        public override string ToString() => $"{Type} ({Zone}) [{Doors?.Count()}] *{Cameras}* |{TeslaGate}|";
+        public override string ToString() => $"{Type} ({Zone}) [{Doors?.Count()}] *{Cameras?.Count()}* |{TeslaGate}|";
 
         /// <summary>
         /// Factory method to create and add a <see cref="Room"/> component to a Transform.
@@ -319,7 +319,6 @@ namespace Exiled.API.Features
                 "LCZ_372" => RoomType.LczGlassBox,
                 "LCZ_ChkpA" => RoomType.LczChkpA,
                 "HCZ_079" => RoomType.Hcz079,
-                "HCZ_EZ_Checkpoint" => RoomType.HczEzCheckpoint,
                 "HCZ_Room3ar" => RoomType.HczArmory,
                 "HCZ_Testroom" => RoomType.HczTestRoom,
                 "HCZ_Hid" => RoomType.HczHid,
