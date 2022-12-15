@@ -30,7 +30,7 @@ namespace Exiled.Events.Patches.Generic
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Shared.Rent(codeInstructions);
 
-            // Generator.GeneratorValues.Add(new Generator(this))
+            // new Generator(this)
             newInstructions.InsertRange(
                 0,
                 new CodeInstruction[]
