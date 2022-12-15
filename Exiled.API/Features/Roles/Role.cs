@@ -73,7 +73,7 @@ namespace Exiled.API.Features.Roles
         /// <summary>
         /// Gets the <see cref="Role"/> full name.
         /// </summary>
-        public string Name => Type.GetFullName();
+        public string Name => Base.RoleName;
 
         /// <summary>
         /// Gets the last time the <see cref="Role"/> was active.
