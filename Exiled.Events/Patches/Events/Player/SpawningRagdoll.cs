@@ -125,7 +125,7 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Stloc_S, newRagdoll.LocalIndex),
 
                     // NetworkServer.Spawn(newRagdoll.gameObject, null)
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(BasicRagdoll), nameof(BasicRagdoll.gameObject))),
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(API.Features.Ragdoll), nameof(API.Features.Ragdoll.GameObject))),
                     new(OpCodes.Ldnull),
                     new(OpCodes.Call, Method(typeof(NetworkServer), nameof(NetworkServer.Spawn), new[] { typeof(GameObject), typeof(NetworkConnection) })),
 
