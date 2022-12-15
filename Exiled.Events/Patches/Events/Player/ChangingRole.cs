@@ -30,11 +30,11 @@ namespace Exiled.Events.Patches.Events.Player
     using Player = Handlers.Player;
 
     /// <summary>
-    ///     Patches <see cref="PlayerRoleManager.ServerSetRole(RoleTypeId, RoleChangeReason)" />
+    ///     Patches <see cref="PlayerRoleManager.InitializeNewRole(RoleTypeId, RoleChangeReason, Mirror.NetworkReader)" />
     ///     .
-    ///     Adds the <see cref="PlayerRoleManager" /> and <see cref="PlayerRoleManager.ServerSetRole" /> events.
+    ///     Adds the <see cref="PlayerRoleManager" /> and <see cref="PlayerRoleManager.InitializeNewRole" /> events.
     /// </summary>
-    [HarmonyPatch(typeof(PlayerRoleManager), nameof(PlayerRoleManager.ServerSetRole))]
+    [HarmonyPatch(typeof(PlayerRoleManager), nameof(PlayerRoleManager.InitializeNewRole))]
     internal static class ChangingRole
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
@@ -43,14 +43,13 @@ namespace Exiled.Events.Patches.Events.Player
 
             Label returnLabel = generator.DefineLabel();
             Label continueLabel = generator.DefineLabel();
+            Label continueLabel1 = generator.DefineLabel();
 
             LocalBuilder ev = generator.DeclareLocal(typeof(ChangingRoleEventArgs));
             LocalBuilder player = generator.DeclareLocal(typeof(API.Features.Player));
 
-            const int offset = 0;
-            int index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Ldc_I4_S) + offset;
-
-            List<Label> oldLabels = newInstructions[index].ExtractLabels();
+            int offset = 2;
+            int index = newInstructions.FindIndex(instruction => instruction.Calls(Method(typeof(PlayerRoleManager), nameof(PlayerRoleManager.GetRoleBase)))) + offset;
 
             newInstructions[index].WithLabels(continueLabel);
 
@@ -62,12 +61,12 @@ namespace Exiled.Events.Patches.Events.Player
                     //
                     // if (player is null)
                     //    return;
-                    new CodeInstruction(OpCodes.Ldarg_0).WithLabels(oldLabels),
+                    new CodeInstruction(OpCodes.Ldarg_0),
                     new(OpCodes.Call, PropertyGetter(typeof(PlayerRoleManager), nameof(PlayerRoleManager.Hub))),
                     new(OpCodes.Call, Method(typeof(API.Features.Player), nameof(API.Features.Player.Get), new[] { typeof(ReferenceHub) })),
                     new(OpCodes.Dup),
                     new(OpCodes.Stloc_S, player.LocalIndex),
-                    new(OpCodes.Brfalse_S, returnLabel),
+                    new(OpCodes.Brfalse_S, continueLabel),
 
                     // if (this.CurrentRole.RoleTypeId == newRole)
                     //    return;
@@ -149,6 +148,28 @@ namespace Exiled.Events.Patches.Events.Player
 
                     // ChangingRole.ChangeInventory(ev.Player, ev.Items, ev.Ammo, currentRole, newRole, reason);
                     new(OpCodes.Call, Method(typeof(ChangingRole), nameof(ChangeInventory))),
+                });
+
+            offset = 1;
+            index = newInstructions.FindIndex(instruction => instruction.Calls(Method(typeof(GameObjectPools.PoolObject), nameof(GameObjectPools.PoolObject.SpawnPoolObject)))) + offset;
+
+            newInstructions[index].WithLabels(continueLabel1);
+
+            newInstructions.InsertRange(
+                index,
+                new[]
+                {
+                    // if (player == null)
+                    //     continue
+                    new CodeInstruction(OpCodes.Ldloc_S, player.LocalIndex),
+                    new(OpCodes.Brfalse_S, continueLabel1),
+
+                    // player.Role = Role.Create(roleType, player);
+                    new CodeInstruction(OpCodes.Ldloc_S, player.LocalIndex),
+                    new(OpCodes.Dup),
+                    new(OpCodes.Ldarg_1),
+                    new(OpCodes.Call, Method(typeof(Role), nameof(Role.Create))),
+                    new(OpCodes.Callvirt, PropertySetter(typeof(API.Features.Player), nameof(API.Features.Player.Role))),
                 });
 
             newInstructions[newInstructions.Count - 1].WithLabels(returnLabel);
