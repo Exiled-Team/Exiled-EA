@@ -362,7 +362,7 @@ namespace Exiled.API.Features
             Camera.Camera079ToCamera.Clear();
             Window.BreakableWindowToWindow.Clear();
             TeslaGate.BaseTeslaGateToTeslaGate.Clear();
-            Generator.GeneratorValues.Clear();
+            Generator.Scp079GeneratorToGenerator.Clear();
             TeleportsValue.Clear();
             LockersValue.Clear();
             RagdollsValue.Clear();

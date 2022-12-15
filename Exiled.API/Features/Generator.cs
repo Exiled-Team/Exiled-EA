@@ -24,18 +24,22 @@ namespace Exiled.API.Features
         /// <summary>
         /// A <see cref="List{T}"/> of <see cref="Generator"/> on the map.
         /// </summary>
-        internal static readonly List<Generator> GeneratorValues = new();
+        internal static readonly Dictionary<Scp079Generator, Generator> Scp079GeneratorToGenerator = new();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Generator"/> class.
         /// </summary>
         /// <param name="scp079Generator">The <see cref="Scp079Generator"/>.</param>
-        internal Generator(Scp079Generator scp079Generator) => Base = scp079Generator;
+        internal Generator(Scp079Generator scp079Generator)
+        {
+            Base = scp079Generator;
+            Scp079GeneratorToGenerator.Add(scp079Generator, this);
+        }
 
         /// <summary>
         /// Gets a <see cref="IEnumerable{T}"/> of <see cref="Generator"/> which contains all the <see cref="Generator"/> instances.
         /// </summary>
-        public static IEnumerable<Generator> List => GeneratorValues;
+        public static IEnumerable<Generator> List => Scp079GeneratorToGenerator.Values;
 
         /// <summary>
         /// Gets the base <see cref="Scp079Generator"/>.
