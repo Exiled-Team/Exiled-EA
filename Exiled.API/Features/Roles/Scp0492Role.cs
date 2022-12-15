@@ -39,8 +39,6 @@ namespace Exiled.API.Features.Roles
         public float AttackDamage
         {
             get => SubroutineModule.TryGetSubroutine(out ZombieAttackAbility ability) ? ability.DamageAmount : 0;
-            [Obsolete("Hard-coded value.")]
-            set { }
         }
 
         /// <summary>
@@ -49,8 +47,6 @@ namespace Exiled.API.Features.Roles
         public float AttackCooldown
         {
             get => SubroutineModule.TryGetSubroutine(out ZombieAttackAbility ability) ? ability.BaseCooldown : 0;
-            [Obsolete("Hard-coded value.")]
-            set { }
         }
     }
 }
