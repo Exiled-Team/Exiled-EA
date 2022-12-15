@@ -99,9 +99,17 @@ namespace Exiled.API.Features.Roles
         }
 
         /// <summary>
-        /// Gets the amount of time before SCP-096 can be enraged again.
+        /// Gets or sets the amount of time before SCP-096 can be enraged again.
         /// </summary>
-        public AbilityCooldown EnrageCooldown => SubroutineModule.TryGetSubroutine(out Scp096RageCycleAbility ability) ? ability._activationTime : null;
+        public float EnrageCooldown
+        {
+            get => SubroutineModule.TryGetSubroutine(out Scp096RageCycleAbility ability) ? ability._activationTime.Remaining : 0;
+            set
+            {
+                if (SubroutineModule.TryGetSubroutine(out Scp096RageCycleAbility ability))
+                    ability._activationTime.Remaining = value;
+            }
+        }
 
         /// <summary>
         /// Gets or sets enraged time left.

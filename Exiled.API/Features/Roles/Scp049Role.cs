@@ -10,6 +10,7 @@ namespace Exiled.API.Features.Roles
     using PlayableScps;
     using PlayerRoles;
     using PlayerRoles.PlayableScps.Scp049;
+    using PlayerRoles.PlayableScps.Scp939;
     using PlayerRoles.PlayableScps.Subroutines;
     using UnityEngine;
 
@@ -56,6 +57,36 @@ namespace Exiled.API.Features.Roles
         }
 
         /// <summary>
+        /// Gets or sets the amount of time before SCP-049 can use its Doctor's Call ability again.
+        /// </summary>
+        public float CallCooldown
+        {
+            get => SubroutineModule.TryGetSubroutine(out Scp049CallAbility ability) ? ability.Cooldown.Remaining : 0f;
+            set
+            {
+                if (SubroutineModule.TryGetSubroutine(out Scp049CallAbility ability))
+                {
+                    ability.Cooldown.Remaining = value;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the amount of time before SCP-049 can use its Good Sense ability again.
+        /// </summary>
+        public float AmnesticCloudCooldown
+        {
+            get => SubroutineModule.TryGetSubroutine(out Scp049SenseAbility ability) ? ability.Cooldown.Remaining : 0f;
+            set
+            {
+                if (SubroutineModule.TryGetSubroutine(out Scp049SenseAbility ability))
+                {
+                    ability.Cooldown.Remaining = value;
+                }
+            }
+        }
+
+        /// <summary>
         /// Gets a boolean indicating whether or not SCP-049 is close enough to a ragdoll to revive it.
         /// <para>
         /// This method only returns whether or not SCP-049 is close enough to the body to revive it; the body may have expired. Make sure to check <see cref="Ragdoll.AllowRecall"/> to ensure the body can be revived.
@@ -63,6 +94,6 @@ namespace Exiled.API.Features.Roles
         /// </summary>
         /// <param name="ragdoll">The ragdoll to check.</param>
         /// <returns><see langword="true"/> if close enough to revive the body; otherwise, <see langword="false"/>.</returns>
-        public bool IsInRecallRange(Ragdoll ragdoll) => Vector3.Distance(Owner.ReferenceHub.transform.position, ragdoll.Position) <= Scp049.ReviveDistance * 1.3f;
+        public bool IsInRecallRange(Ragdoll ragdoll) => SubroutineModule.TryGetSubroutine(out Scp049ResurrectAbility ability) ? ability.IsCloseEnough(Owner.Position, ragdoll.Position) : false;
     }
 }
