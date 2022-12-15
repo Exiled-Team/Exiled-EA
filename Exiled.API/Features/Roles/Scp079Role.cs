@@ -71,7 +71,7 @@ namespace Exiled.API.Features.Roles
             get => SubroutineModule.TryGetSubroutine(out Scp079AuxManager ability) ? ability._abilities : null;
             set
             {
-                if (SubroutineModule.TryGetSubroutine(out Scp079AuxManager ability))
+                if (!SubroutineModule.TryGetSubroutine(out Scp079AuxManager ability))
                     return;
 
                 ability._abilities = value;
@@ -86,7 +86,7 @@ namespace Exiled.API.Features.Roles
             get => SubroutineModule.TryGetSubroutine(out Scp079TierManager ability) ? ability.TotalExp : 0;
             set
             {
-                if (SubroutineModule.TryGetSubroutine(out Scp079TierManager ability))
+                if (!SubroutineModule.TryGetSubroutine(out Scp079TierManager ability))
                     return;
 
                 ability.TotalExp = value;
@@ -101,7 +101,7 @@ namespace Exiled.API.Features.Roles
             get => SubroutineModule.TryGetSubroutine(out Scp079TierManager ability) ? ability.AccessTierLevel : 0;
             set
             {
-                if (SubroutineModule.TryGetSubroutine(out Scp079TierManager ability))
+                if (!SubroutineModule.TryGetSubroutine(out Scp079TierManager ability))
                     return;
 
                 ability.AccessTierIndex = value - 1;
@@ -130,7 +130,7 @@ namespace Exiled.API.Features.Roles
             get => SubroutineModule.TryGetSubroutine(out Scp079AuxManager ability) ? ability.CurrentAux : 0;
             set
             {
-                if (SubroutineModule.TryGetSubroutine(out Scp079AuxManager ability))
+                if (!SubroutineModule.TryGetSubroutine(out Scp079AuxManager ability))
                     return;
 
                 ability.CurrentAux = value;
@@ -145,7 +145,7 @@ namespace Exiled.API.Features.Roles
             get => SubroutineModule.TryGetSubroutine(out Scp079AuxManager ability) ? ability.MaxAux : 0;
             set
             {
-                if (SubroutineModule.TryGetSubroutine(out Scp079AuxManager ability))
+                if (!SubroutineModule.TryGetSubroutine(out Scp079AuxManager ability))
                     return;
 
                 ability._maxPerTier[LevelIndex] = value;
