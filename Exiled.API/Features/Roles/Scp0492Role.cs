@@ -23,7 +23,7 @@ namespace Exiled.API.Features.Roles
         public Scp0492Role(Player owner)
             : base(owner)
         {
-            SubroutineModule = (Owner.RoleManager.CurrentRole as ZombieRole).SubroutineModule;
+            SubroutineModule = (Base as ZombieRole).SubroutineModule;
         }
 
         /// <inheritdoc/>

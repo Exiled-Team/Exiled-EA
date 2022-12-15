@@ -12,6 +12,7 @@ namespace Exiled.API.Features.Roles
     using Interactables.Interobjects.DoorUtils;
     using PlayerRoles;
     using PlayerRoles.PlayableScps.Scp079;
+    using PlayerRoles.PlayableScps.Scp079.Pinging;
     using PlayerRoles.PlayableScps.Subroutines;
 
     using Scp079GameRole = PlayerRoles.PlayableScps.Scp079.Scp079Role;
@@ -152,6 +153,31 @@ namespace Exiled.API.Features.Roles
         }
 
         /// <summary>
+        /// Gets or sets SCP-079's room lockdown cooldown.
+        /// </summary>
+        public float RoomLockdownCooldown
+        {
+            get => SubroutineModule.TryGetSubroutine(out Scp079LockdownRoomAbility ability) ? ability.RemainingCooldown : 0;
+            set
+            {
+                if (!SubroutineModule.TryGetSubroutine(out Scp079LockdownRoomAbility ability))
+                    return;
+
+                ability.RemainingCooldown = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets the amount of rooms that SCP-079 has blacked out.
+        /// </summary>
+        public int BlackoutCount => SubroutineModule.TryGetSubroutine(out Scp079BlackoutRoomAbility ability) ? ability.RoomsOnCooldown : 0;
+
+        /// <summary>
+        /// Gets the maximum amount of rooms that SCP-079 can black out at its current <see cref="Level"/>.
+        /// </summary>
+        public int BlackoutCapacity => SubroutineModule.TryGetSubroutine(out Scp079BlackoutRoomAbility ability) ? ability.CurrentCapacity : 0;
+
+        /// <summary>
         /// Gets SCP-079's energy regeneration speed.
         /// </summary>
         public float EnergyRegenerationSpeed => SubroutineModule.TryGetSubroutine(out Scp079AuxManager ability) ? ability.RegenSpeed : 0;
@@ -168,6 +194,30 @@ namespace Exiled.API.Features.Roles
         {
             if (SubroutineModule.TryGetSubroutine(out Scp079DoorLockChanger ability))
                 ability.ServerUnlockAll();
+        }
+
+        /// <summary>
+        /// Locks the provided <paramref name="door"/>.
+        /// </summary>
+        /// <param name="door">The door to lock.</param>
+        public void LockDoor(Door door)
+        {
+            if (door is null || !SubroutineModule.TryGetSubroutine(out Scp079DoorLockChanger ability))
+                return;
+
+            ability.SetDoorLock(door.Base, true);
+        }
+
+        /// <summary>
+        /// Unlocks the provided <paramref name="door"/>.
+        /// </summary>
+        /// <param name="door">The door to unlock.</param>
+        public void UnlockDoor(Door door)
+        {
+            if (door is null || !SubroutineModule.TryGetSubroutine(out Scp079DoorLockChanger ability))
+                return;
+
+            ability.SetDoorLock(door.Base, false);
         }
     }
 }
