@@ -25,6 +25,7 @@ namespace Exiled.API.Features
         /// A <see cref="List{T}"/> of <see cref="Generator"/> on the map.
         /// </summary>
         internal static readonly Dictionary<Scp079Generator, Generator> Scp079GeneratorToGenerator = new();
+        private Room room;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Generator"/> class.
@@ -59,7 +60,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets the generator's <see cref="Room"/>.
         /// </summary>
-        public Room Room => Map.FindParentRoom(GameObject);
+        public Room Room => room ??= Map.FindParentRoom(GameObject);
 
         /// <summary>
         /// Gets or sets the generator' state.

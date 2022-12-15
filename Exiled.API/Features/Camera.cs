@@ -113,15 +113,13 @@ namespace Exiled.API.Features
             ["gate b"] = CameraType.GateB,
         };
 
+        private Room room;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="Camera"/> class.
         /// </summary>
         /// <param name="camera079">The base camera.</param>
-        internal Camera(Scp079Camera camera079)
-        {
-            Base = camera079;
-            Room = Map.FindParentRoom(camera079.gameObject);
-        }
+        internal Camera(Scp079Camera camera079) => Base = camera079;
 
         /// <summary>
         /// Gets a <see cref="IEnumerable{T}"/> of <see cref="Camera"/> which contains all the <see cref="Camera"/> instances.
@@ -160,9 +158,9 @@ namespace Exiled.API.Features
         public ushort Id => Base.SyncId;
 
         /// <summary>
-        /// Gets the camera's <see cref="Features.Room"/>.
+        /// Gets the generator's <see cref="Room"/>.
         /// </summary>
-        public Room Room { get; }
+        public Room Room => room ??= Room.Get(Base.Room);
 
         /// <summary>
         /// Gets the camera's <see cref="ZoneType"/>.
