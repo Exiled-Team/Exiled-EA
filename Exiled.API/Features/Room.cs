@@ -90,6 +90,11 @@ namespace Exiled.API.Features
         public IEnumerable<Door> Doors { get; private set; }
 
         /// <summary>
+        /// Gets a <see cref="IEnumerable{T}"/> of <see cref="Scp079Speaker"/> in the <see cref="Room"/>.
+        /// </summary>
+        public IEnumerable<Scp079Speaker> Speaker { get; private set; }
+
+        /// <summary>
         /// Gets a <see cref="IEnumerable{T}"/> of <see cref="Pickup"/> in the <see cref="Room"/>.
         /// </summary>
         public IEnumerable<Pickup> Pickups
@@ -378,7 +383,7 @@ namespace Exiled.API.Features
 
             Identifier = gameObject.GetComponent<RoomIdentifier>();
             Doors = DoorVariant.DoorsByRoom[Identifier]?.Select(x => Door.Get(x, this)) ?? new List<Door>();
-
+            Speaker = Scp079Speaker.SpeakersInRooms[Identifier];
             if (gameObject.TryGetComponent(out FlickerableLightController flickerableLightController))
             {
                 flickerableLightController = gameObject.AddComponent<FlickerableLightController>();
