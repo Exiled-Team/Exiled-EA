@@ -55,7 +55,7 @@ namespace Exiled.Events.Patches.Events.Player
                     // true
                     new(OpCodes.Ldc_I4_1),
 
-                    // var ev = new TransmittingEventArgs(Player, VoiceModuleBase, bool, bool)
+                    // TransmittingEventArgs ev = new(Player, VoiceModuleBase, bool, bool)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(TransmittingEventArgs))[0]),
                     new(OpCodes.Dup),
 

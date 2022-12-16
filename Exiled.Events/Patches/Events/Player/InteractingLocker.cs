@@ -92,7 +92,7 @@ namespace Exiled.Events.Patches.Events.Player
                     // trueLabel:
                     new CodeInstruction(OpCodes.Ldc_I4_1).WithLabels(trueLabel),
 
-                    // var ev = new AddingTargetEventArgs(Player, Locker, LockerChamber, byte, bool)
+                    // InteractingLockerEventArgs ev = new(Player, Locker, LockerChamber, byte, bool)
                     new CodeInstruction(OpCodes.Newobj, GetDeclaredConstructors(typeof(InteractingLockerEventArgs))[0]).WithLabels(evLabel),
                     new(OpCodes.Dup),
 

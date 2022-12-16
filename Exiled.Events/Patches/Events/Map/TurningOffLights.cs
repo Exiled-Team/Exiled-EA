@@ -46,7 +46,7 @@ namespace Exiled.Events.Patches.Events.Map
                     // true
                     new(OpCodes.Ldc_I4_1),
 
-                    // var ev = new TurningOffLightsEventArgs(FlickerableLightController, float, bool)
+                    // TurningOffLightsEventArgs ev = new(FlickerableLightController, float, bool)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(TurningOffLightsEventArgs))[0]),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),

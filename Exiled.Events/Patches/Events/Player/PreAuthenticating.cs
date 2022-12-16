@@ -52,13 +52,13 @@ namespace Exiled.Events.Patches.Events.Player
             // Search for the operand of the last "br.s".
             object returnLabel = newInstructions.FindLast(instruction => instruction.opcode == OpCodes.Br_S).operand;
 
-            // var ev = new PreAuthenticatingEventArgs(text, request, request.Data.Position, b3, text2, true);
+            // PreAuthenticatingEventArgs ev = new(text, request, request.Data.Position, b3, text2, true);
             //
             // Player.OnPreAuthenticating(ev);
             //
             // if (!ev.IsAllowed)
             // {
-            //   var failedMessage = string.Format($"Player {0} tried to preauthenticated from endpoint {1}, but the request has been rejected by a plugin.", text, request.RemoteEndPoint);
+            //   string failedMessage = string.Format($"Player {0} tried to preauthenticated from endpoint {1}, but the request has been rejected by a plugin.", text, request.RemoteEndPoint);
             //
             //   ServerConsole.AddLog(failedMessage, ConsoleColor.Gray);
             //   ServerLogs.AddLog(ServerLogs.Modules.Networking, failedMessage, ServerLogs.ServerLogType.ConnectionUpdate, false);
@@ -91,7 +91,7 @@ namespace Exiled.Events.Patches.Events.Player
                     // true
                     new(OpCodes.Ldloc_S, 28),
 
-                    // var ev = new PreAuthenticatingEventArgs(...)
+                    // PreAuthenticatingEventArgs ev = new(string, ConnectionRequest, int, byte, string, int)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(PreAuthenticatingEventArgs))[0]),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),
@@ -108,7 +108,7 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Callvirt, PropertyGetter(typeof(PreAuthenticatingEventArgs), nameof(PreAuthenticatingEventArgs.ServerFull))),
                     new(OpCodes.Brtrue, fullRejectLabel),
 
-                    // var failedMessage = string.Format($"Player {0} tried to preauthenticated from endpoint {1}, but the request has been rejected by a plugin.", text, request.RemoteEndPoint);
+                    // string failedMessage = string.Format($"Player {0} tried to preauthenticated from endpoint {1}, but the request has been rejected by a plugin.", text, request.RemoteEndPoint);
                     new(OpCodes.Ldstr, "Player {0} tried to preauthenticated from endpoint {1}, but the request has been rejected by a plugin."),
                     new(OpCodes.Ldloc_S, 10),
                     new(OpCodes.Ldarg_1),

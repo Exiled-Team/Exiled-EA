@@ -39,7 +39,7 @@ namespace Exiled.Events.Patches.Events.Warhead
             // if (!Warhead.CanBeStarted)
             //   return;
             //
-            // var ev = new StartingEventArgs(Player.Get(component), true);
+            // StartingEventArgs ev = new(Player.Get(component), true);
             //
             // Handlers.Warhead.OnStarting(ev);
             //
@@ -61,7 +61,7 @@ namespace Exiled.Events.Patches.Events.Warhead
                     // true
                     new(OpCodes.Ldc_I4_1),
 
-                    // var ev = new StartingEventArgs(Player, bool);
+                    // StartingEventArgs ev = new(Player, bool);
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(StartingEventArgs))[0]),
                     new(OpCodes.Dup),
 

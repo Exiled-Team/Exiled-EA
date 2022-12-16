@@ -64,7 +64,7 @@ namespace Exiled.Events.Patches.Events.Player
                     // position
                     new(OpCodes.Ldloc_1),
 
-                    // var ev = new SpawningEventArgs(Player, PlayerRoleBase)
+                    // SpawningEventArgs ev = new(Player, PlayerRoleBase)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(SpawningEventArgs))[0]),
                     new(OpCodes.Dup),
 
@@ -90,7 +90,7 @@ namespace Exiled.Events.Patches.Events.Player
                     // player
                     new(OpCodes.Ldloc_S, player.LocalIndex),
 
-                    // var ev = new SpawnedEventArgs(Player)
+                    // SpawnedEventArgs ev = new(Player)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(SpawnedEventArgs))[0]),
 
                     // Handlers.Player.OnSpawned(ev)

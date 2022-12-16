@@ -44,10 +44,13 @@ namespace Exiled.Events.Patches.Events.Map
             // int scpsLeft = ReferenceHub.GetAllHubs().Values.Count(x => x.characterClassManager.CurRole.team == Team.SCP && x.characterClassManager.CurClass != RoleTypeId.Scp0492);
             // string unitNameClear = Regex.Replace(unitName, "<[^>]*?>", string.Empty);
             // string[] unitInformation = unitNameClear.Split('-');
-            // var ev = new AnnouncingNtfEntranceEventArgs(scpsLeft, unitInformation[0], int.Parse(unitInformation[1]));
+            //
+            // AnnouncingNtfEntranceEventArgs ev = new(scpsLeft, unitInformation[0], int.Parse(unitInformation[1]));
             // Map.OnAnnouncingNtfEntrance(ev);
+            //
             // if (!ev.IsAllowed)
             //     return;
+            //
             // unitName = $"{ev.UnitName}-{ev.UnitNumber};
             // cassieUnitName = this.GetCassieUnitName(unitName);
             // scpsLeft = ev.ScpsLeft;
@@ -71,7 +74,8 @@ namespace Exiled.Events.Patches.Events.Map
                     new(OpCodes.Stelem_I2),
                     new(OpCodes.Call, Method(typeof(string), nameof(string.Split), new[] { typeof(char[]) })),
 
-                    // var ev = new AnnouncingNtfEntranceEventArgs(scpsLeft, unitInformation[0], int.Parse(unitInformation[1]));
+                    // AnnouncingNtfEntranceEventArgs ev = new(scpsLeft, unitInformation[0], int.Parse(unitInformation[1]));
+                    //
                     // Map.OnAnnouncingNtfEntrance(ev);
                     new(OpCodes.Dup),
                     new(OpCodes.Stloc_S, unitInformation.LocalIndex),

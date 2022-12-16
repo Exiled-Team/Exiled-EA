@@ -38,7 +38,7 @@ namespace Exiled.Events.Patches.Events.Map
             // if (!ExiledEvents.Instance.Config.CanSpawnBlood)
             //     return;
             //
-            // var ev = new PlacingBloodEventArgs(Player.Get(this.Hub), Player.Get(target.NetworkId), hit, true);
+            // PlacingBloodEventArgs ev = new(Player.Get(this.Hub), Player.Get(target.NetworkId), hit, true);
             //
             // Handlers.Map.OnPlacingBlood(ev);
             //
@@ -73,7 +73,7 @@ namespace Exiled.Events.Patches.Events.Map
                     // true
                     new(OpCodes.Ldc_I4_1),
 
-                    // var ev = new PlacingBloodEventArgs(Player, Player, RaycastHit, bool)
+                    // PlacingBloodEventArgs ev = new(Player, Player, RaycastHit, bool)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(PlacingBloodEventArgs))[0]),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),

@@ -55,7 +55,7 @@ namespace Exiled.Events.Patches.Events.Scp330
                     // true
                     new(OpCodes.Ldc_I4_1),
 
-                    // var ev = new EatingScp330EventArgs(player, candy, true)
+                    // EatingScp330EventArgs ev = new(player, candy, true)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(EatingScp330EventArgs))[0]),
                     new(OpCodes.Dup),
 
@@ -85,7 +85,7 @@ namespace Exiled.Events.Patches.Events.Scp330
                     // ICandy
                     new(OpCodes.Ldloc_0),
 
-                    // var ev = new EatenScp330EventArgs(player, candy)
+                    // EatenScp330EventArgs ev = new(player, candy)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(EatenScp330EventArgs))[0]),
 
                     // Handlers.Scp330.OnEatenScp330(ev)

@@ -43,7 +43,7 @@ namespace Exiled.Events.Patches.Events.Scp079
 
             LocalBuilder ev = generator.DeclareLocal(typeof(ChangingCameraEventArgs));
 
-            // var ev = new ChangingCameraEventArgs(Player.Get(this.gameObject), camera, num)
+            // ChangingCameraEventArgs ev = new(Player.Get(this.gameObject), camera, num)
             //
             // Handlers.Scp079.OnChangingCamera(ev)
             //
@@ -67,7 +67,7 @@ namespace Exiled.Events.Patches.Events.Scp079
                     // num (auxiliary power cost)
                     new(OpCodes.Ldloc_0),
 
-                    // var ev = new ChangingCameraEventArgs(Player, Scp079Camera, float)
+                    // ChangingCameraEventArgs ev = new(Player, Scp079Camera, float)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(ChangingCameraEventArgs))[0]),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),

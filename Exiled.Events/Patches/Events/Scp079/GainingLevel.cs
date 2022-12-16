@@ -66,7 +66,7 @@ namespace Exiled.Events.Patches.Events.Scp079
                     // true
                     new(OpCodes.Ldc_I4_1),
 
-                    // var ev = new GainingLevelEventArgs(Player, int, bool)
+                    // GainingLevelEventArgs ev = new(Player, int, bool)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(GainingLevelEventArgs))[0]),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),

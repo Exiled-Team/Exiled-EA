@@ -52,7 +52,7 @@ namespace Exiled.Events.Patches.Events.Scp914
                     // true
                     new(OpCodes.Ldc_I4_1),
 
-                    // var ev = new UpgradingItemEventArgs(pickup, outputPos, knobSetting)
+                    // UpgradingItemEventArgs ev = new(pickup, outputPos, knobSetting)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(UpgradingItemEventArgs))[0]),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),

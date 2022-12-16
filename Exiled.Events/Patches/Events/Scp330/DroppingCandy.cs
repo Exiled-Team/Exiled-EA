@@ -59,7 +59,7 @@ namespace Exiled.Events.Patches.Events.Scp330
                     new(OpCodes.Ldfld, Field(typeof(SelectScp330Message), nameof(SelectScp330Message.CandyID))),
                     new(OpCodes.Callvirt, Method(typeof(Scp330Bag), nameof(Scp330Bag.TryRemove))),
 
-                    // var ev = new DroppingScp330EventArgs(Player, Scp330Bag, CandyKindID)
+                    // DroppingScp330EventArgs ev = new(Player, Scp330Bag, CandyKindID)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(DroppingScp330EventArgs))[0]),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),

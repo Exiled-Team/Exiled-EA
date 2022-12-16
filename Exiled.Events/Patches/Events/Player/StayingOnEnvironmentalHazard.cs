@@ -36,7 +36,7 @@ namespace Exiled.Events.Patches.Events.Player
             // this
             new(OpCodes.Ldarg_0),
 
-            // var ev = new StayingOnEnvironmentalHazardEventArgs(Player, EnvironmentalHazard)
+            // StayingOnEnvironmentalHazardEventArgs ev = new(Player, EnvironmentalHazard)
             new(OpCodes.Newobj, GetDeclaredConstructors(typeof(StayingOnEnvironmentalHazardEventArgs))[0]),
 
             // Handlers.Player.OnStayingOnEnvironmentalHazard(ev)
