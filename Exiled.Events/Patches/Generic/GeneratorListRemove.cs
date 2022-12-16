@@ -37,7 +37,7 @@ namespace Exiled.Events.Patches.Generic
                 {
                     new(OpCodes.Ldsfld, Field(typeof(Generator), nameof(Generator.Scp079GeneratorToGenerator))),
                     new(OpCodes.Ldarg_0),
-                    new(OpCodes.Callvirt, Method(typeof(Dictionary<Scp079Generator, Generator>), nameof(Dictionary<Scp079Generator, Generator>.Remove))),
+                    new(OpCodes.Callvirt, Method(typeof(Dictionary<Scp079Generator, Generator>), nameof(Dictionary<Scp079Generator, Generator>.Remove), new[] { typeof(Scp079Generator) })),
                     new(OpCodes.Pop),
                 });
 
