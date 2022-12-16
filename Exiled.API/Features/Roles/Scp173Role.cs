@@ -59,7 +59,7 @@ namespace Exiled.API.Features.Roles
 
                 if (SubroutineModule.TryGetSubroutine(out Scp173ObserversTracker ability))
                 {
-                    foreach (var player in ability.Observers)
+                    foreach (ReferenceHub player in ability.Observers)
                         players.Add(Player.Get(player));
                 }
 
