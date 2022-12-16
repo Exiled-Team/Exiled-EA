@@ -8,8 +8,6 @@
 namespace Exiled.Events.EventArgs.Player
 {
 #pragma warning disable 1584
-    using API.Features.Items;
-
     using Exiled.API.Features;
     using Exiled.Events.EventArgs.Interfaces;
     using PlayerRoles.Voice;

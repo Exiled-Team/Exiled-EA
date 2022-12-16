@@ -42,7 +42,7 @@ namespace Exiled.Events.Patches.Events.Scp079
             int index = newInstructions.FindIndex(
                 instruction => instruction.LoadsField(Field(typeof(DoorVariant), nameof(DoorVariant.TargetState)))) + offset;
 
-            // var ev = new TriggeringDoorEventArgs(Player.Get(base.Owner), this.LastDoor, (float)this.GetCostForDoor(this.TargetAction, this.LastDoor));
+            // TriggeringDoorEventArgs ev = new(Player.Get(base.Owner), this.LastDoor, (float)this.GetCostForDoor(this.TargetAction, this.LastDoor));
             //
             // Handlers.Scp079.OnTriggeringDoor(ev);
             //
@@ -70,7 +70,7 @@ namespace Exiled.Events.Patches.Events.Scp079
                     new(OpCodes.Callvirt, Method(typeof(Scp079DoorAbility), nameof(Scp079DoorAbility.GetCostForDoor))),
                     new(OpCodes.Conv_R4),
 
-                    // var ev = new TriggeringDoorEventArgs(Player, DoorVariant, float)
+                    // TriggeringDoorEventArgs ev = new(Player, DoorVariant, float)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(TriggeringDoorEventArgs))[0]),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),
@@ -84,10 +84,11 @@ namespace Exiled.Events.Patches.Events.Scp079
                     new(OpCodes.Callvirt, PropertyGetter(typeof(TriggeringDoorEventArgs), nameof(TriggeringDoorEventArgs.IsAllowed))),
                     new(OpCodes.Brfalse, returnLabel),
 
-                    // this.LastDoor = ev.Door
+                    // this.LastDoor = ev.Door.Base
                     new(OpCodes.Ldarg_0),
-                    new(OpCodes.Ldloc, ev.LocalIndex),
+                    new(OpCodes.Ldloc_S, ev.LocalIndex),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(TriggeringDoorEventArgs), nameof(TriggeringDoorEventArgs.Door))),
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(API.Features.Door), nameof(API.Features.Door.Base))),
                     new(OpCodes.Stfld, Field(typeof(Scp079DoorStateChanger), nameof(Scp079DoorStateChanger.LastDoor))),
                 });
 

@@ -8,17 +8,13 @@
 namespace Exiled.Events.Patches.Events.Player
 {
     using System.Collections.Generic;
-    using System.Reflection;
     using System.Reflection.Emit;
 
     using Exiled.Events.EventArgs.Player;
     using Handlers;
 
     using HarmonyLib;
-
-    using InventorySystem.Items.Firearms;
     using InventorySystem.Items.Firearms.BasicMessages;
-    using InventorySystem.Items.Firearms.Modules;
 
     using NorthwoodLib.Pools;
     using PluginAPI.Enums;
@@ -59,7 +55,7 @@ namespace Exiled.Events.Patches.Events.Player
                     // true
                     new(OpCodes.Ldc_I4_1),
 
-                    // var ev = new ReloadingWeaponEventArgs(Player, bool)
+                    // ReloadingWeaponEventArgs ev = new(Player, bool)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(ReloadingWeaponEventArgs))[0]),
                     new(OpCodes.Dup),
 
@@ -87,7 +83,7 @@ namespace Exiled.Events.Patches.Events.Player
                     // true
                     new(OpCodes.Ldc_I4_1),
 
-                    // var ev = new ReloadingWeaponEventArgs(Player, bool)
+                    // ReloadingWeaponEventArgs ev = new(Player, bool)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(UnloadingWeaponEventArgs))[0]),
                     new(OpCodes.Dup),
 
@@ -115,7 +111,7 @@ namespace Exiled.Events.Patches.Events.Player
                     // true
                     new(OpCodes.Ldc_I4_1),
 
-                    // var ev = new DryfiringWeaponEventArgs(Player, bool)
+                    // DryfiringWeaponEventArgs ev = new(Player, bool)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(DryfiringWeaponEventArgs))[0]),
                     new(OpCodes.Dup),
 
@@ -136,7 +132,7 @@ namespace Exiled.Events.Patches.Events.Player
                 index,
                 new[]
                 {
-                    // var player = Player.Get(referenceHub)
+                    // Player player = Player.Get(referenceHub)
                     //
                     // if (player == null)
                     //    goto skipAdsLabel;
@@ -155,7 +151,7 @@ namespace Exiled.Events.Patches.Events.Player
                     // false (adsOut)
                     new(OpCodes.Ldc_I4_0),
 
-                    // var ev = new AimingDownSightEventArgs(Player, bool, bool)
+                    // AimingDownSightEventArgs ev = new(Player, bool, bool)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(AimingDownSightEventArgs))[0]),
 
                     // Player.OnAimingDownSight(ev)
@@ -173,7 +169,7 @@ namespace Exiled.Events.Patches.Events.Player
                 index,
                 new[]
                 {
-                    // var player = Player.Get(referenceHub)
+                    // Player player = Player.Get(referenceHub)
                     new CodeInstruction(OpCodes.Ldloc_0).MoveLabelsFrom(newInstructions[index]),
                     new(OpCodes.Call, Method(typeof(API.Features.Player), nameof(API.Features.Player.Get), new[] { typeof(ReferenceHub) })),
 
@@ -183,7 +179,7 @@ namespace Exiled.Events.Patches.Events.Player
                     // true (adsOut)
                     new(OpCodes.Ldc_I4_1),
 
-                    // var ev = new AimingDownSightEventArgs(Player, bool, bool)
+                    // AimingDownSightEventArgs ev = new(Player, bool, bool)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(AimingDownSightEventArgs))[0]),
 
                     // Player.OnAimingDownSight(ev)
@@ -197,7 +193,7 @@ namespace Exiled.Events.Patches.Events.Player
                 index,
                 new[]
                 {
-                    // var player = Player.Get(referenceHub)
+                    // Player player = Player.Get(referenceHub)
                     new CodeInstruction(OpCodes.Ldloc_0),
                     new(OpCodes.Call, Method(typeof(API.Features.Player), nameof(API.Features.Player.Get), new[] { typeof(ReferenceHub) })),
 
@@ -209,7 +205,7 @@ namespace Exiled.Events.Patches.Events.Player
                     // true
                     new(OpCodes.Ldc_I4_1),
 
-                    // var ev = new AimingDownSightEventArgs(Player, bool, bool)
+                    // TogglingWeaponFlashlightEventArgs ev = new(Player, bool, bool)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(TogglingWeaponFlashlightEventArgs))[0]),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),

@@ -7,9 +7,9 @@
 
 namespace Exiled.Events.EventArgs.Player
 {
-    using API.Features;
-    using Interfaces;
-    using PlayerRoles;
+    using Exiled.API.Features;
+    using Exiled.Events.EventArgs.Interfaces;
+
     using UnityEngine;
 
     /// <summary>
@@ -23,13 +23,13 @@ namespace Exiled.Events.EventArgs.Player
         /// <param name="player">
         ///     <inheritdoc cref="Player" />
         /// </param>
-        /// <param name="role">
-        ///     <inheritdoc cref="Role" />
+        /// <param name="position">
+        ///     <inheritdoc cref="Position" />
         /// </param>
-        public SpawningEventArgs(Player player, PlayerRoleBase role)
+        public SpawningEventArgs(Player player, Vector3 position)
         {
             Player = player;
-            Role = role;
+            Position = position;
         }
 
         /// <summary>
@@ -38,26 +38,8 @@ namespace Exiled.Events.EventArgs.Player
         public Player Player { get; }
 
         /// <summary>
-        ///     Gets the <see cref="Player"/>'s role type.
-        /// </summary>
-        public PlayerRoleBase Role { get; }
-
-        /// <summary>
         ///     Gets or sets the <see cref="Player"/>'s spawning position.
         /// </summary>
-        public Vector3 Position
-        {
-            get => Role.transform.localPosition;
-            set => Role.transform.localPosition = value;
-        }
-
-        /// <summary>
-        ///     Gets or sets the <see cref="Player"/>'s rotation.
-        /// </summary>
-        public Vector3 Rotation
-        {
-            get => Role.transform.localRotation.eulerAngles;
-            set => Role.transform.localRotation = Quaternion.Euler(value);
-        }
+        public Vector3 Position { get; set; }
     }
 }

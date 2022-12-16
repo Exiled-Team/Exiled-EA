@@ -39,7 +39,7 @@ namespace Exiled.Events.Patches.Events.Warhead
             // if(!AlphaWarheadController.inProgress)
             //   return;
             //
-            // var ev = new StoppingEventArgs(Player.Get(disabler), true);
+            // StoppingEventArgs ev = new(Player.Get(disabler), true);
             //
             // Handlers.Warhead.OnStopping(ev);
             //
@@ -61,7 +61,7 @@ namespace Exiled.Events.Patches.Events.Warhead
                     // true
                     new(OpCodes.Ldc_I4_1),
 
-                    // var ev = new StoppingEventArgs(Player, bool);
+                    // StoppingEventArgs ev = new(Player, bool);
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(StoppingEventArgs))[0]),
                     new(OpCodes.Dup),
 

@@ -32,17 +32,21 @@ namespace Exiled.Events.Patches.Events.Map
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Shared.Rent(instructions);
 
-            // var ev = new AnnouncingDecontaminationEventArgs(int, bool);
-            //
-            // Map.OnAnnouncingDecontamination(ev);
             newInstructions.InsertRange(
                 0,
                 new CodeInstruction[]
                 {
+                    // this._nextPhase
                     new(OpCodes.Ldarg_0),
                     new(OpCodes.Ldfld, Field(typeof(DecontaminationController), nameof(DecontaminationController._nextPhase))),
+
+                    // hard
                     new(OpCodes.Ldarg_1),
+
+                    // AnnouncingDecontaminationEventArgs ev = new(int, bool)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(AnnouncingDecontaminationEventArgs))[0]),
+
+                    // Map.OnAnnouncingDecontamination(ev)
                     new(OpCodes.Call, Method(typeof(Map), nameof(Map.OnAnnouncingDecontamination))),
                 });
 

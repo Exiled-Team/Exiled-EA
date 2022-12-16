@@ -15,7 +15,6 @@ namespace Exiled.Events.Handlers.Internal
     using API.Features.Items;
     using API.Structs;
     using Exiled.API.Extensions;
-    using global::Scp914;
     using InventorySystem.Items.Firearms.Attachments.Components;
     using MapGeneration;
     using MapGeneration.Distributors;

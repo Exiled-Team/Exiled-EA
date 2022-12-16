@@ -59,7 +59,7 @@ namespace Exiled.Events.Patches.Events.Player
                     // true
                     new(OpCodes.Ldc_I4_1),
 
-                    // var ev = ChangingRadioPresetEventArgs(Player, byte, byte, true)
+                    // ChangingRadioPresetEventArgs ev = new(Player, byte, byte, true)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(ChangingRadioPresetEventArgs))[0]),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),

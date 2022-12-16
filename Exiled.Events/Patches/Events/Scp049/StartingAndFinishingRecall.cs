@@ -66,7 +66,7 @@ namespace Exiled.Events.Patches.Events.Scp049
                     // true
                     new(OpCodes.Ldc_I4_1),
 
-                    // var ev = StartingRecallEventArgs(Player, Player, BasicRagdoll, bool)
+                    // StartingRecallEventArgs ev = new(Player, Player, BasicRagdoll, bool)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(StartingRecallEventArgs))[0]),
                     new(OpCodes.Dup),
 
@@ -104,7 +104,7 @@ namespace Exiled.Events.Patches.Events.Scp049
                     // is the player a spectator?
                     new(OpCodes.Ldloc_S, finishRecallAllowed.LocalIndex),
 
-                    // var ev = new FinishingRecallEventArgs(Player, Player, Ragdoll, bool)
+                    // FinishingRecallEventArgs ev = new(Player, Player, Ragdoll, bool)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(FinishingRecallEventArgs))[0]),
                     new(OpCodes.Dup),
 

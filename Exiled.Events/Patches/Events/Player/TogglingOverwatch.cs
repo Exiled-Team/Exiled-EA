@@ -43,7 +43,7 @@ namespace Exiled.Events.Patches.Events.Player
                     // status
                     new CodeInstruction(OpCodes.Ldarg_1),
 
-                    // var ev = new TogglingOverwatchEventArgs(Player, bool)
+                    // TogglingOverwatchEventArgs ev = new(Player, bool)
                     new CodeInstruction(OpCodes.Newobj, GetDeclaredConstructors(typeof(TogglingOverwatchEventArgs))[0]),
                     new CodeInstruction(OpCodes.Dup),
                     new CodeInstruction(OpCodes.Dup),

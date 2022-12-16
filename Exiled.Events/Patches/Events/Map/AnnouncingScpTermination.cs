@@ -58,7 +58,7 @@ namespace Exiled.Events.Patches.Events.Map
                     // true
                     new(OpCodes.Ldc_I4_1),
 
-                    // var ev = new AnnouncingScpTerminationEventArgs(Player, DamageHandlerBase, bool)
+                    // AnnouncingScpTerminationEventArgs ev = new(Player, DamageHandlerBase, bool)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(AnnouncingScpTerminationEventArgs))[0]),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),
@@ -89,7 +89,7 @@ namespace Exiled.Events.Patches.Events.Map
                     // if (!ev.Player.IsSCP)
                     //     goto jmp;
                     new(OpCodes.Ldloc_S, ev.LocalIndex),
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(AnnouncingScpTerminationEventArgs), nameof(AnnouncingScpTerminationEventArgs.Target))),
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(AnnouncingScpTerminationEventArgs), nameof(AnnouncingScpTerminationEventArgs.Player))),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(Player), nameof(Player.IsScp))),
                     new(OpCodes.Brfalse_S, jmp),
 

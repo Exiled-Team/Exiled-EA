@@ -41,7 +41,7 @@ namespace Exiled.Events.Patches.Events.Scp079
 
             LocalBuilder ev = generator.DeclareLocal(typeof(GainingLevelEventArgs));
 
-            // GainingLevelEventArgs ev = new GainingLevelEventArgs(Player, newLvl, true);
+            // GainingLevelEventArgs ev = new GainingLevelEventArgs(Player.Get(base.Owner), value + 1, true);
             //
             // Handlers.Scp079.OnGainingLevel(ev);
             //
@@ -66,7 +66,7 @@ namespace Exiled.Events.Patches.Events.Scp079
                     // true
                     new(OpCodes.Ldc_I4_1),
 
-                    // var ev = new GainingLevelEventArgs(Player, int, bool)
+                    // GainingLevelEventArgs ev = new(Player, int, bool)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(GainingLevelEventArgs))[0]),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),

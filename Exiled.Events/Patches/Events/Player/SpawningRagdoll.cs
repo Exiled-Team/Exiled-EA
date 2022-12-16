@@ -77,7 +77,7 @@ namespace Exiled.Events.Patches.Events.Player
                     // true
                     new(OpCodes.Ldc_I4_1),
 
-                    // var ev = new SpawningRagdollEventArgs(RagdollInfo, DamageHandlerBase, bool)
+                    // SpawningRagdollEventArgs ev = new(RagdollInfo, DamageHandlerBase, bool)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(SpawningRagdollEventArgs))[0]),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),
@@ -118,14 +118,14 @@ namespace Exiled.Events.Patches.Events.Player
                     // pop the gameObject in the stack
                     new CodeInstruction(OpCodes.Pop).WithLabels(labels),
 
-                    // var newRagdoll = new Ragdoll(ragdoll)
+                    // Ragdoll newRagdoll = new Ragdoll(ragdoll)
                     new CodeInstruction(OpCodes.Ldloc_1),
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(API.Features.Ragdoll))[2]),
                     new(OpCodes.Dup),
                     new(OpCodes.Stloc_S, newRagdoll.LocalIndex),
 
-                    // NetworkServer.Spawn(newRagdoll.gameObject, null)
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(BasicRagdoll), nameof(BasicRagdoll.gameObject))),
+                    // NetworkServer.Spawn(newRagdoll.GameObject, null)
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(API.Features.Ragdoll), nameof(API.Features.Ragdoll.GameObject))),
                     new(OpCodes.Ldnull),
                     new(OpCodes.Call, Method(typeof(NetworkServer), nameof(NetworkServer.Spawn), new[] { typeof(GameObject), typeof(NetworkConnection) })),
 

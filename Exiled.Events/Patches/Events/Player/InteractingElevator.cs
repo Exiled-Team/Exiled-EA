@@ -56,7 +56,7 @@ namespace Exiled.Events.Patches.Events.Player
                     // true
                     new(OpCodes.Ldc_I4_1),
 
-                    // var ev = new InteractingElevatorEventArgs(Player, ElevatorChamber, bool)
+                    // InteractingElevatorEventArgs ev = new(Player, ElevatorChamber, bool)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(InteractingElevatorEventArgs))[0]),
                     new(OpCodes.Dup),
 

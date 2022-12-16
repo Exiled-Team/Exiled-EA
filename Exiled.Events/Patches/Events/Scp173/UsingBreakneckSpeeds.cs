@@ -37,7 +37,7 @@ namespace Exiled.Events.Patches.Events.Scp173
             const int offset = 1;
             int index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Ret) + offset;
 
-            // var ev = new UsingBreakneckSpeedsEventArgs(Player.Get(base.Owner), this.Cooldown.Remaining == 0);
+            // UsingBreakneckSpeedsEventArgs ev = new(Player.Get(base.Owner), this.Cooldown.Remaining == 0);
             //
             // Handlers.Scp173.OnUsingBreakneckSpeeds(ev);
             //
@@ -59,7 +59,7 @@ namespace Exiled.Events.Patches.Events.Scp173
                     new(OpCodes.Ldc_R4, 0f),
                     new(OpCodes.Ceq),
 
-                    // new UsingBreakneckSpeedsEventArgs(Player, bool)
+                    // UsingBreakneckSpeedsEventArgs ev = new(Player, bool)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(UsingBreakneckSpeedsEventArgs))[0]),
                     new(OpCodes.Dup),
 

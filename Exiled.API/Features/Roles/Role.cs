@@ -27,7 +27,7 @@ namespace Exiled.API.Features.Roles
         protected Role(Player owner)
         {
             Owner = owner;
-            FirstPersonController = Base is FpcStandardRoleBase @base ? @base : null;
+            FirstPersonController = Base as FpcStandardRoleBase;
         }
 
         /// <summary>
