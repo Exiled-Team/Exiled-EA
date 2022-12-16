@@ -89,7 +89,7 @@ namespace Exiled.Events.Handlers.Internal
             // If no rooms were found, it means a plugin is trying to access this before the map is created.
             if (roomIdentifiers.Count == 0)
                 throw new InvalidOperationException("Plugin is trying to access Rooms before they are created.");
-            Log.Warn(roomIdentifiers.Count);
+
             foreach (RoomIdentifier roomIdentifier in roomIdentifiers)
                 Room.RoomIdentifierToRoom.Add(roomIdentifier, Room.CreateComponent(roomIdentifier.gameObject));
 
@@ -99,7 +99,7 @@ namespace Exiled.Events.Handlers.Internal
         private static void GenerateWindow()
         {
             foreach (BreakableWindow breakableWindow in Object.FindObjectsOfType<BreakableWindow>())
-                Window.BreakableWindowToWindow.Add(breakableWindow, new(breakableWindow));
+                Window.Get(breakableWindow);
         }
 
         private static void GenerateCamera()
