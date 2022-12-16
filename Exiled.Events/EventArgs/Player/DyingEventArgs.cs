@@ -36,8 +36,8 @@ namespace Exiled.Events.EventArgs.Player
         {
             DamageHandler = new CustomDamageHandler(target, damageHandler);
             ItemsToDrop = new List<Item>(target.Items.ToList());
-            Player = DamageHandler.BaseIs(out CustomAttackerHandler attackerDamageHandler) ? attackerDamageHandler.Attacker : null;
-            Target = target;
+            Attacker = DamageHandler.BaseIs(out CustomAttackerHandler attackerDamageHandler) ? attackerDamageHandler.Attacker : null;
+            Player = target;
         }
 
         /// <summary>
@@ -48,7 +48,7 @@ namespace Exiled.Events.EventArgs.Player
         /// <summary>
         ///     Gets the dying player.
         /// </summary>
-        public Player Target { get; }
+        public Player Player { get; }
 
         /// <summary>
         ///     Gets or sets the <see cref="CustomDamageHandler" />.
@@ -63,6 +63,6 @@ namespace Exiled.Events.EventArgs.Player
         /// <summary>
         ///     Gets the killing player.
         /// </summary>
-        public Player Player { get; }
+        public Player Attacker { get; }
     }
 }

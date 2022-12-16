@@ -30,12 +30,6 @@ namespace Exiled.CustomItems.API.EventArgs
         public UpgradingItemEventArgs(Player player, ItemBase item, Scp914KnobSetting knobSetting, bool isAllowed = true)
             : base(player, item, knobSetting, isAllowed)
         {
-            Item = item;
         }
-
-        /// <summary>
-        /// Gets the upgrading <see cref="Item"/> as a<see cref="CustomItem"/>.
-        /// </summary>
-        public new ItemBase Item { get; }
     }
 }
