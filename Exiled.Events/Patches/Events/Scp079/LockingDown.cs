@@ -42,7 +42,7 @@ namespace Exiled.Events.Patches.Events.Scp079
             int offset = 1;
             int index = newInstructions.FindLastIndex(instruction => instruction.opcode == OpCodes.Brtrue_S) + offset;
 
-            // var ev = new LockingDownEventArgs(Player.Get(base.Owner), base.CurrentCamSync.CurrentCamera.Room,  (float)this._cost);
+            // var ev = new LockingDownEventArgs(Player.Get(base.Owner), base.CurrentCamSync.CurrentCamera.Room, (float)this._cost);
             //
             // Handlers.Scp079.OnLockingDown(ev);
             //

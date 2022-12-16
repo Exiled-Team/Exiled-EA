@@ -41,7 +41,7 @@ namespace Exiled.Events.Patches.Events.Scp079
             int offset = 2;
             int index = newInstructions.FindLastIndex(instruction => instruction.opcode == OpCodes.Brtrue_S) + offset;
 
-            // var ev = new InteractingTeslaEventArgs(Player.Get(base.Owner), teslaGate, this._cost);
+            // var ev = new InteractingTeslaEventArgs(Player.Get(base.Owner), teslaGate, (float)this._cost);
             //
             // Handlers.Map.OnInteractingTesla(ev);
             //

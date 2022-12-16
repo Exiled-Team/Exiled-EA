@@ -38,7 +38,7 @@ namespace Exiled.Events.Patches.Events.Scp079
 
             Label returnLabel = generator.DefineLabel();
 
-            // var ev = new GainingExperienceEventArgs(Player.Get(this.gameObject), type, (float)details, true)
+            // var ev = new GainingExperienceEventArgs(Player.Get(this.gameObject), reason, amount, true)
             newInstructions.InsertRange(
                 0,
                 new CodeInstruction[]

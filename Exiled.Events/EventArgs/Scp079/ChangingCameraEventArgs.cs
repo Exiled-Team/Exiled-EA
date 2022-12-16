@@ -8,6 +8,7 @@
 namespace Exiled.Events.EventArgs.Scp079
 {
     using Exiled.API.Features;
+    using Exiled.API.Features.Roles;
     using Exiled.Events.EventArgs.Interfaces;
     using PlayerRoles.PlayableScps.Scp079.Cameras;
 
@@ -28,16 +29,18 @@ namespace Exiled.Events.EventArgs.Scp079
         /// <param name="auxiliaryPowerCost">
         ///     <inheritdoc cref="AuxiliaryPowerCost" />
         /// </param>
-        /// <param name="isAllowed">
-        ///     <inheritdoc cref="IsAllowed" />
-        /// </param>
-        public ChangingCameraEventArgs(Player player, Scp079Camera camera, float auxiliaryPowerCost, bool isAllowed = true)
+        public ChangingCameraEventArgs(Player player, Scp079Camera camera, float auxiliaryPowerCost)
         {
             Player = player;
             Camera = Camera.Get(camera);
             AuxiliaryPowerCost = auxiliaryPowerCost;
-            IsAllowed = isAllowed;
+            IsAllowed = auxiliaryPowerCost <= player.Role.As<Scp079Role>().Energy;
         }
+
+        /// <summary>
+        ///     Gets the player who is SCP-079.
+        /// </summary>
+        public Player Player { get; }
 
         /// <summary>
         ///     Gets or sets the amount of auxiliary power that will be required to switch cameras.
@@ -55,10 +58,5 @@ namespace Exiled.Events.EventArgs.Scp079
         ///     <br>Can be set to <see langword="true" /> to allow a switch regardless of SCP-079's auxiliary power amount.</br>
         /// </summary>
         public bool IsAllowed { get; set; }
-
-        /// <summary>
-        ///     Gets the player who is SCP-079.
-        /// </summary>
-        public Player Player { get; }
     }
 }
