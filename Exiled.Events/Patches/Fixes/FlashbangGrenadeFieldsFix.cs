@@ -29,41 +29,44 @@ namespace Exiled.Events.Patches.Fixes
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Shared.Rent(instructions);
-            const int index = 0;
+
             Label skipLabel = generator.DefineLabel();
-            LocalBuilder flash = generator.DeclareLocal(typeof(FlashGrenade));
+
+            LocalBuilder flashGrenade = generator.DeclareLocal(typeof(FlashGrenade));
+
+            const int index = 0;
 
             newInstructions.InsertRange(
                 index,
                 new[]
                 {
-                    // if (!FlashGrenade.GrenadeToItem.TryGetValue(this, out FlashGrenade flash)
-                    //     goto SKIP_LABEL
+                    // if (!FlashGrenade.GrenadeToItem.TryGetValue(this, out FlashGrenade flashGrenade)
+                    //     goto skipLabel;
                     new(OpCodes.Call, PropertyGetter(typeof(FlashGrenade), nameof(FlashGrenade.GrenadeToItem))),
                     new(OpCodes.Ldarg_0),
-                    new(OpCodes.Ldloca_S, flash.LocalIndex),
+                    new(OpCodes.Ldloca_S, flashGrenade.LocalIndex),
                     new(OpCodes.Callvirt, Method(typeof(Dictionary<FlashbangGrenade, FlashGrenade>), nameof(Dictionary<FlashbangGrenade, FlashGrenade>.TryGetValue))),
                     new(OpCodes.Brfalse, skipLabel),
 
-                    // this._blindingOverDistance = flash.BlindCurve;
+                    // this._blindingOverDistance = flashGrenade.BlindCurve;
                     new(OpCodes.Ldarg_0),
-                    new(OpCodes.Ldloc, flash.LocalIndex),
+                    new(OpCodes.Ldloc_S, flashGrenade.LocalIndex),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(FlashGrenade), nameof(FlashGrenade.BlindCurve))),
                     new(OpCodes.Stfld, Field(typeof(FlashbangGrenade), nameof(FlashbangGrenade._blindingOverDistance))),
 
-                    // this._deafenDurationOverDistance = flash.DeafenCurve;
+                    // this._deafenDurationOverDistance = flashGrenade.DeafenCurve;
                     new(OpCodes.Ldarg_0),
-                    new(OpCodes.Ldloc, flash.LocalIndex),
+                    new(OpCodes.Ldloc_S, flashGrenade.LocalIndex),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(FlashGrenade), nameof(FlashGrenade.DeafenCurve))),
                     new(OpCodes.Stfld, Field(typeof(FlashbangGrenade), nameof(FlashbangGrenade._deafenDurationOverDistance))),
 
-                    // this._surfaceZoneDistanceIntensifier = flash.SurfaceDistanceIntensifier;
+                    // this._surfaceZoneDistanceIntensifier = flashGrenade.SurfaceDistanceIntensifier;
                     new(OpCodes.Ldarg_0),
-                    new(OpCodes.Ldloc, flash.LocalIndex),
+                    new(OpCodes.Ldloc_S, flashGrenade.LocalIndex),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(FlashGrenade), nameof(FlashGrenade.SurfaceDistanceIntensifier))),
                     new(OpCodes.Stfld, Field(typeof(FlashbangGrenade), nameof(FlashbangGrenade._surfaceZoneDistanceIntensifier))),
 
-                    // SKIP_LABEL
+                    // skipLabel:
                     new CodeInstruction(OpCodes.Nop).WithLabels(skipLabel),
                 });
 
