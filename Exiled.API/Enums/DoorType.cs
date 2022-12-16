@@ -7,8 +7,6 @@
 
 namespace Exiled.API.Enums
 {
-    using System;
-
     /// <summary>
     /// Unique identifier for the different types of doors.
     /// </summary>
