@@ -46,7 +46,7 @@ namespace Exiled.Events.Patches.Events.Scp096
             // if (!ev.IsAllowed)
             //     return;
             newInstructions.InsertRange(
-                0,
+                index,
                 new[]
                 {
                     // base.ScpRole
