@@ -304,7 +304,7 @@ namespace Exiled.API.Features
         private static RoomType FindType(GameObject gameObject)
         {
             // Try to remove brackets if they exist.
-            return gameObject.name switch
+            return gameObject.name.RemoveBracketsOnEndOfName() switch
             {
                 "LCZ_Armory" => RoomType.LczArmory,
                 "LCZ_Curve" => RoomType.LczCurve,
@@ -357,7 +357,7 @@ namespace Exiled.API.Features
                 "Outside" => RoomType.Surface,
                 "HCZ_939" => RoomType.Hcz939,
                 "EZ Part" => RoomType.EzCheckpointHallway,
-                "HCZ Part" => gameObject.transform.name switch
+                "HCZ Part" => gameObject.transform.parent.name switch
                 {
                     "HCZ_EZ_Checkpoint (A)" => RoomType.HczEzCheckpointA,
                     "HCZ_EZ_Checkpoint (B)" => RoomType.HczEzCheckpointB,
