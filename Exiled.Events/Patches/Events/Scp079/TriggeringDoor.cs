@@ -84,10 +84,11 @@ namespace Exiled.Events.Patches.Events.Scp079
                     new(OpCodes.Callvirt, PropertyGetter(typeof(TriggeringDoorEventArgs), nameof(TriggeringDoorEventArgs.IsAllowed))),
                     new(OpCodes.Brfalse, returnLabel),
 
-                    // this.LastDoor = ev.Door
+                    // this.LastDoor = ev.Door.Base
                     new(OpCodes.Ldarg_0),
-                    new(OpCodes.Ldloc, ev.LocalIndex),
+                    new(OpCodes.Ldloc_S, ev.LocalIndex),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(TriggeringDoorEventArgs), nameof(TriggeringDoorEventArgs.Door))),
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(API.Features.Door), nameof(API.Features.Door.Base))),
                     new(OpCodes.Stfld, Field(typeof(Scp079DoorStateChanger), nameof(Scp079DoorStateChanger.LastDoor))),
                 });
 
