@@ -27,7 +27,7 @@ namespace Exiled.API.Extensions
         /// <param name="room">The room to be checked.</param>
         /// <returns>Returns whether the <see cref="RoomType"/> is a checkpoint or not.</returns>
         public static bool IsCheckpoint(this RoomType room) => room is RoomType.LczChkpA
-            or RoomType.LczChkpB or RoomType.HczEzCheckpoint
+            or RoomType.LczChkpB or RoomType.HczEzCheckpointA or RoomType.HczEzCheckpointB
             or RoomType.HczChkpA or RoomType.HczChkpB;
 
         /// <summary>
