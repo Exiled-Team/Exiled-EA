@@ -301,11 +301,10 @@ namespace Exiled.API.Features
         /// <returns>The Room component that was instantiated onto the Game Object.</returns>
         internal static Room CreateComponent(GameObject roomGameObject) => roomGameObject.AddComponent<Room>();
 
-        private static RoomType FindType(string rawName)
+        private static RoomType FindType(GameObject gameObject)
         {
             // Try to remove brackets if they exist.
-            rawName = rawName.RemoveBracketsOnEndOfName();
-            return rawName switch
+            return gameObject.name.RemoveBracketsOnEndOfName() switch
             {
                 "LCZ_Armory" => RoomType.LczArmory,
                 "LCZ_Curve" => RoomType.LczCurve,
@@ -358,7 +357,12 @@ namespace Exiled.API.Features
                 "Outside" => RoomType.Surface,
                 "HCZ_939" => RoomType.Hcz939,
                 "EZ Part" => RoomType.EzCheckpointHallway,
-                "HCZ Part" => RoomType.HczEzCheckpoint,
+                "HCZ Part" => gameObject.transform.name switch
+                {
+                    "HCZ_EZ_Checkpoint (A)" => RoomType.HczEzCheckpointA,
+                    "HCZ_EZ_Checkpoint (B)" => RoomType.HczEzCheckpointB,
+                    _ => RoomType.Unknown
+                },
                 _ => RoomType.Unknown,
             };
         }
@@ -367,11 +371,12 @@ namespace Exiled.API.Features
         {
             Transform transform = gameObject.transform;
 
-            return transform.parent?.name switch
+            return transform.parent?.name.RemoveBracketsOnEndOfName() switch
             {
                 "HeavyRooms" => ZoneType.HeavyContainment,
                 "LightRooms" => ZoneType.LightContainment,
                 "EntranceRooms" => ZoneType.Entrance,
+                "HCZ_EZ_Checkpoint" => ZoneType.HeavyContainment | ZoneType.Entrance,
                 _ => transform.position.y > 900 ? ZoneType.Surface : ZoneType.Unspecified,
             };
         }
@@ -379,7 +384,7 @@ namespace Exiled.API.Features
         private void Awake()
         {
             Zone = FindZone(gameObject);
-            Type = FindType(gameObject.name);
+            Type = FindType(gameObject);
 
             Identifier = gameObject.GetComponent<RoomIdentifier>();
             Doors = DoorVariant.DoorsByRoom[Identifier]?.Select(x => Door.Get(x, this)).ToList() ?? new List<Door>();
