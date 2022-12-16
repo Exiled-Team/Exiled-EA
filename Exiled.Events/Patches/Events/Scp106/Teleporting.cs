@@ -71,7 +71,7 @@ namespace Exiled.Events.Patches.Events.Scp106
                     // true
                     new(OpCodes.Ldc_I4_1),
 
-                    // var ev = new TeleportingEventArgs(Player, Vector3, bool)
+                    // TeleportingEventArgs ev = new(Player, Vector3, bool)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(TeleportingEventArgs))[0]),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),

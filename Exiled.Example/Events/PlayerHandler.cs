@@ -34,7 +34,7 @@ namespace Exiled.Example.Events
             if (ev.Player is null)
                 return;
 
-            Log.Info($"{ev.Target.Nickname} ({ev.Target.Role}) died from {ev.Player.CurrentItem}! {ev.Player.Nickname} ({ev.Player.Role}) killed him!");
+            Log.Info($"{ev.Player.Nickname} ({ev.Player.Role}) died from {ev.DamageHandler.Type}! {ev.Attacker.Nickname} ({ev.Attacker.Role}) killed him!");
         }
 
         /// <inheritdoc cref="Exiled.Events.Handlers.Player.OnChangingRole(ChangingRoleEventArgs)"/>
@@ -124,7 +124,7 @@ namespace Exiled.Example.Events
         /// <inheritdoc cref="Exiled.Events.Handlers.Player.OnDying(DyingEventArgs)"/>
         public void OnDying(DyingEventArgs ev)
         {
-            Log.Info($"{ev.Target.Nickname} ({ev.Target.Role}) is getting killed by {ev.Player.Nickname} ({ev.Player.Role})!");
+            Log.Info($"{ev.Player.Nickname} ({ev.Player.Role}) is getting killed by {ev.Attacker.Nickname} ({ev.Attacker.Role})!");
         }
 
         /// <inheritdoc cref="Exiled.Events.Handlers.Player.OnPreAuthenticating(PreAuthenticatingEventArgs)"/>
@@ -194,7 +194,7 @@ namespace Exiled.Example.Events
         /// <inheritdoc cref="Exiled.Events.Handlers.Player.OnSpawning(SpawningEventArgs)"/>
         public void OnSpawning(SpawningEventArgs ev)
         {
-            if (ev.Role?.RoleTypeId == RoleTypeId.Scientist)
+            if (ev.Player.Role.Type == RoleTypeId.Scientist)
             {
                 ev.Position = new Vector3(53f, 1020f, -44f);
 
@@ -215,9 +215,9 @@ namespace Exiled.Example.Events
         /// <inheritdoc cref="Exiled.Events.Handlers.Player.OnHurting(HurtingEventArgs)"/>
         public void OnHurting(HurtingEventArgs ev)
         {
-            Log.Info($"{ev.Target} is being hurt by {ev.DamageHandler.Type}");
+            Log.Info($"{ev.Player} is being hurt by {ev.DamageHandler.Type}");
 
-            if (ev.Target.Role == RoleTypeId.Scientist)
+            if (ev.Player.Role == RoleTypeId.Scientist)
             {
                 Log.Info("Target is a nerd, setting damage to 1 because it's mean to bully nerds.");
                 ev.Amount = 1f;

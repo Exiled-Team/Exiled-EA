@@ -8,7 +8,6 @@
 namespace Exiled.Events.Patches.Events.Player
 {
     using System.Collections.Generic;
-    using System.Reflection;
     using System.Reflection.Emit;
 
     using API.Features;
@@ -64,7 +63,7 @@ namespace Exiled.Events.Patches.Events.Player
                     // true
                     new(OpCodes.Ldc_I4_1),
 
-                    // var ev = new UsingMicroHIDEnergyEventArgs(Player, MicroHIDItem, HidState, float, bool)
+                    // UsingMicroHIDEnergyEventArgs ev = new(Player, MicroHIDItem, HidState, float, bool)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(UsingMicroHIDEnergyEventArgs))[0]),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),

@@ -40,7 +40,7 @@ namespace Exiled.Events.Patches.Events.Map
 
             LocalBuilder ev = generator.DeclareLocal(typeof(GeneratorActivatedEventArgs));
 
-            // var ev = new GeneratorActivatedEventArgs(this, true);
+            // GeneratorActivatedEventArgs ev = new(this, true);
             //
             // Map.OnGeneratorActivated(ev);
             //
@@ -56,7 +56,7 @@ namespace Exiled.Events.Patches.Events.Map
                     // true
                     new(OpCodes.Ldc_I4_1),
 
-                    // var ev = new GeneratorActivatedEventArgs(Scp079Generator, bool)
+                    // GeneratorActivatedEventArgs ev = new(Scp079Generator, bool)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(GeneratorActivatedEventArgs))[0]),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),

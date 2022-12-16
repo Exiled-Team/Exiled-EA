@@ -59,7 +59,7 @@ namespace Exiled.API.Features.Roles
 
                 if (SubroutineModule.TryGetSubroutine(out Scp173ObserversTracker ability))
                 {
-                    foreach (var player in ability.Observers)
+                    foreach (ReferenceHub player in ability.Observers)
                         players.Add(Player.Get(player));
                 }
 
@@ -84,6 +84,21 @@ namespace Exiled.API.Features.Roles
         {
             get => MovementModule.ServerSpeed;
             set => MovementModule.MovementSpeed = value;
+        }
+
+        /// <summary>
+        /// Gets or sets SCP-173's simulated stare. SCP-173 will be treated as though it is being looked at while this value is greater than <c>0</c>.
+        /// </summary>
+        public float SimulatedStare
+        {
+            get => SubroutineModule.TryGetSubroutine(out Scp173ObserversTracker ability) ? ability.SimulatedStare : 0;
+            set
+            {
+                if (!SubroutineModule.TryGetSubroutine(out Scp173ObserversTracker ability))
+                    return;
+
+                ability.SimulatedStare = value;
+            }
         }
 
         /// <summary>
@@ -159,11 +174,15 @@ namespace Exiled.API.Features.Roles
         /// Places a Tantrum (SCP-173's ability) under the player.
         /// </summary>
         /// <param name="failIfObserved">Whether or not to place the tantrum if SCP-173 is currently being viewed.</param>
+        /// <param name="cooldown">The cooldown until SCP-173 can place a tantrum again. Set to <c>0</c> to not affect the cooldown.</param>
         /// <returns>The tantrum's <see cref="UnityEngine.GameObject"/>, or <see langword="null"/> if it cannot be placed.</returns>
-        public UnityEngine.GameObject Tantrum(bool failIfObserved = false)
+        public UnityEngine.GameObject Tantrum(bool failIfObserved = false, float cooldown = 0)
         {
             if (failIfObserved && IsObserved)
                 return null;
+
+            if (cooldown > 0 && SubroutineModule.TryGetSubroutine(out Scp173TantrumAbility ability))
+                ability.Cooldown.Trigger(cooldown);
 
             return Owner.PlaceTantrum();
         }

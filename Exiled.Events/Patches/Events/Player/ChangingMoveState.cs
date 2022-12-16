@@ -53,7 +53,7 @@ namespace Exiled.Events.Patches.Events.Player
                     // true
                     new(OpCodes.Ldc_I4_1),
 
-                    // var ev = new ChangingMoveStateEventArgs(Player, PlayerMovementState, PlayerMovementState, bool)
+                    // ChangingMoveStateEventArgs ev = new(Player, PlayerMovementState, PlayerMovementState, bool)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(ChangingMoveStateEventArgs))[0]),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),

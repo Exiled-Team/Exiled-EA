@@ -17,7 +17,6 @@ namespace Exiled.Events.Patches.Events.Player
 
     using NorthwoodLib.Pools;
     using PlayerRoles.Voice;
-    using UnityEngine;
 
     using static HarmonyLib.AccessTools;
 
@@ -51,7 +50,7 @@ namespace Exiled.Events.Patches.Events.Player
                     // true
                     new(OpCodes.Ldc_I4_1),
 
-                    // var ev = new IntercomSpeakingEventArgs(Player, bool)
+                    // IntercomSpeakingEventArgs ev = new(Player, bool)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(IntercomSpeakingEventArgs))[0]),
                     new(OpCodes.Dup),
 

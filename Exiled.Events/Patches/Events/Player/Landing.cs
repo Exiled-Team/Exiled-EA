@@ -44,7 +44,7 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Call, PropertyGetter(typeof(CharacterModel), nameof(CharacterModel.OwnerHub))),
                     new(OpCodes.Call, Method(typeof(API.Features.Player), nameof(API.Features.Player.Get), new[] { typeof(ReferenceHub) })),
 
-                    // var ev = new LandingEventArgs(Player)
+                    // LandingEventArgs ev = new(Player)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(LandingEventArgs))[0]),
                     new(OpCodes.Dup),
 

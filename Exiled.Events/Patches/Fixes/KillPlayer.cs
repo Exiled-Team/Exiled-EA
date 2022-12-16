@@ -12,7 +12,7 @@ namespace Exiled.Events.Patches.Fixes
     using API.Features;
     using API.Features.DamageHandlers;
     using EventArgs.Player;
-
+    using HarmonyLib;
     using Mirror;
 
     using PlayerStatsSystem;
@@ -22,7 +22,7 @@ namespace Exiled.Events.Patches.Fixes
     /// <summary>
     /// Prefix of KillPlayer action.
     /// </summary>
-    // [HarmonyPatch(typeof(PlayerStats), nameof(PlayerStats.KillPlayer))]
+    [HarmonyPatch(typeof(PlayerStats), nameof(PlayerStats.KillPlayer))]
     internal class KillPlayer
     {
         private static void Prefix(PlayerStats __instance, ref DamageHandlerBase handler)
@@ -35,8 +35,10 @@ namespace Exiled.Events.Patches.Fixes
                 }
                 else
                 {
-                    KillingPlayerEventArgs ev = new (Player.Get(__instance._hub), ref handler);
+                    KillingPlayerEventArgs ev = new(Player.Get(__instance._hub), ref handler);
+
                     Handlers.Player.OnKillPlayer(ev);
+
                     handler = ev.Handler;
                 }
             }

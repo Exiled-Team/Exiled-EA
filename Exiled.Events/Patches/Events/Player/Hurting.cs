@@ -49,7 +49,7 @@ namespace Exiled.Events.Patches.Events.Player
                 index,
                 new[]
                 {
-                    // Player = Player.Get(this._hub)
+                    // Player player = Player.Get(this._hub)
                     new CodeInstruction(OpCodes.Ldarg_0).MoveLabelsFrom(newInstructions[index]),
                     new(OpCodes.Ldfld, Field(typeof(PlayerStats), nameof(PlayerStats._hub))),
                     new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
@@ -78,7 +78,7 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(RecontainedEventArgs))[0]),
                     new(OpCodes.Call, Method(typeof(Scp079), nameof(Scp079.OnRecontained))),
 
-                    // var ev = new HurtingEventArgs(player, handler)
+                    // HurtingEventArgs ev = new(player, handler)
                     new CodeInstruction(OpCodes.Ldloc, player.LocalIndex).WithLabels(notRecontainment),
                     new(OpCodes.Ldarg_1),
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(HurtingEventArgs))[0]),

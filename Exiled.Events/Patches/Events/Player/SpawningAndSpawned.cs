@@ -8,26 +8,30 @@
 namespace Exiled.Events.Patches.Events.Player
 {
     using System.Collections.Generic;
+    using System.Reflection;
     using System.Reflection.Emit;
 
     using Exiled.API.Features;
-    using Exiled.API.Features.Roles;
     using Exiled.Events.EventArgs.Player;
 
     using HarmonyLib;
-    using Mirror;
     using NorthwoodLib.Pools;
-    using PlayerRoles;
+    using PlayerRoles.FirstPersonControl.Spawnpoints;
 
     using static HarmonyLib.AccessTools;
 
     /// <summary>
-    /// Patches <see cref="PlayerRoleManager.InitializeNewRole(RoleTypeId, RoleChangeReason, NetworkReader)"/>.
+    /// Patches <see cref="RoleSpawnpointManager.Init"/> delegate.
     /// Adds the <see cref="SpawningAndSpawned"/> event.
     /// </summary>
-    [HarmonyPatch(typeof(PlayerRoleManager), nameof(PlayerRoleManager.InitializeNewRole))]
+    [HarmonyPatch]
     internal static class SpawningAndSpawned
     {
+        private static MethodInfo TargetMethod()
+        {
+            return Method(TypeByName("PlayerRoles.FirstPersonControl.Spawnpoints.RoleSpawnpointManager").GetNestedTypes(all)[1], "<Init>b__2_0");
+        }
+
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Shared.Rent(instructions);
@@ -37,10 +41,8 @@ namespace Exiled.Events.Patches.Events.Player
 
             LocalBuilder player = generator.DeclareLocal(typeof(Player));
 
-            const int offset = 1;
-            int index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Stloc_2) + offset;
-
-            newInstructions[index].WithLabels(continueLabel);
+            const int offset = 0;
+            int index = newInstructions.FindLastIndex(instruction => instruction.IsLdarg(1)) + offset;
 
             newInstructions.InsertRange(
                 index,
@@ -48,55 +50,51 @@ namespace Exiled.Events.Patches.Events.Player
                 {
                     // Player player = Player.Get(this.Hub)
                     //
-                    // if (player == Server.Host)
+                    // if (player == null)
                     //    goto continueLabel;
-                    new CodeInstruction(OpCodes.Ldarg_0),
-                    new(OpCodes.Call, PropertyGetter(typeof(PlayerRoleManager), nameof(PlayerRoleManager.Hub))),
+                    new CodeInstruction(OpCodes.Ldarg_1).MoveLabelsFrom(newInstructions[index]),
                     new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
                     new(OpCodes.Dup),
                     new(OpCodes.Stloc_S, player.LocalIndex),
-                    new(OpCodes.Call, PropertyGetter(typeof(Server), nameof(Server.Host))),
-                    new(OpCodes.Beq_S, continueLabel),
+                    new(OpCodes.Brfalse_S, continueLabel),
 
                     // player
                     new(OpCodes.Ldloc_S, player.LocalIndex),
 
-                    // roleBase
-                    new(OpCodes.Ldloc_2),
+                    // position
+                    new(OpCodes.Ldloc_1),
 
-                    // var ev = new SpawningEventArgs(Player, PlayerRoleBase)
+                    // SpawningEventArgs ev = new(Player, PlayerRoleBase)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(SpawningEventArgs))[0]),
+                    new(OpCodes.Dup),
 
                     // Handlers.Player.OnSpawning(ev);
                     new(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnSpawning))),
+
+                    // position = ev.Position
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(SpawningEventArgs), nameof(SpawningEventArgs.Position))),
+                    new(OpCodes.Stloc_1),
+
+                    new CodeInstruction(OpCodes.Nop).WithLabels(continueLabel),
                 });
 
             newInstructions.InsertRange(
                 newInstructions.Count - 1,
                 new[]
                 {
-                    // if (player == Server.Host)
+                    // if (player == null)
                     //    return;
                     new CodeInstruction(OpCodes.Ldloc_S, player.LocalIndex),
-                    new(OpCodes.Call, PropertyGetter(typeof(Server), nameof(Server.Host))),
-                    new(OpCodes.Beq_S, returnLabel),
+                    new(OpCodes.Brfalse_S, returnLabel),
 
                     // player
                     new(OpCodes.Ldloc_S, player.LocalIndex),
 
-                    // var ev = new SpawnedEventArgs(Player)
+                    // SpawnedEventArgs ev = new(Player)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(SpawnedEventArgs))[0]),
-                    new(OpCodes.Dup),
 
                     // Handlers.Player.OnSpawned(ev)
                     new(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnSpawned))),
-
-                    // ev.Player.Role = Role.Create(player, targetId)
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(SpawnedEventArgs), nameof(SpawnedEventArgs.Player))),
-                    new(OpCodes.Dup),
-                    new(OpCodes.Ldarg_1),
-                    new(OpCodes.Call, Method(typeof(Role), nameof(Role.Create))),
-                    new(OpCodes.Callvirt, PropertySetter(typeof(Player), nameof(Player.Role))),
                 });
 
             newInstructions[newInstructions.Count - 1].WithLabels(returnLabel);

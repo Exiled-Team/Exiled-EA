@@ -95,7 +95,7 @@ namespace Exiled.Events.Patches.Events.Player
                     // player
                     new(OpCodes.Ldloc_S, player.LocalIndex),
 
-                    // var ev = new LeftEventArgs(Player)
+                    // LeftEventArgs ev = new(Player)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(LeftEventArgs))[0]),
 
                     // Handlers.Player.OnLeft(ev)

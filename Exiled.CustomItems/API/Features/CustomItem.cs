@@ -935,7 +935,7 @@ namespace Exiled.CustomItems.API.Features
 
         private void OnInternalOwnerDying(DyingEventArgs ev)
         {
-            foreach (Item item in ev.Target.Items.ToList())
+            foreach (Item item in ev.Player.Items.ToList())
             {
                 if (!Check(item))
                     continue;
@@ -945,13 +945,13 @@ namespace Exiled.CustomItems.API.Features
                 if (!ev.IsAllowed)
                     continue;
 
-                ev.Target.RemoveItem(item);
+                ev.Player.RemoveItem(item);
 
                 TrackedSerials.Remove(item.Serial);
 
-                Spawn(ev.Target, item, ev.Target);
+                Spawn(ev.Player, item, ev.Player);
 
-                MirrorExtensions.ResyncSyncVar(ev.Target.ReferenceHub.networkIdentity, typeof(NicknameSync), nameof(NicknameSync.Network_myNickSync));
+                MirrorExtensions.ResyncSyncVar(ev.Player.ReferenceHub.networkIdentity, typeof(NicknameSync), nameof(NicknameSync.Network_myNickSync));
             }
         }
 

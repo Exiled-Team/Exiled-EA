@@ -57,7 +57,7 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Ldloc_2),
                     new(OpCodes.Call, Method(typeof(Scp106PocketExitFinder), nameof(Scp106PocketExitFinder.GetBestExitPosition))),
 
-                    // var ev = new EscapingPocketDimensionEventArgs(Player, Vector3)
+                    // EscapingPocketDimensionEventArgs ev = new(Player, Vector3)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(EscapingPocketDimensionEventArgs))[0]),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),

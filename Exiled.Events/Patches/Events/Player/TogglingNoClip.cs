@@ -50,7 +50,7 @@ namespace Exiled.Events.Patches.Events.Player
                     // true
                     new(OpCodes.Ldc_I4_1),
 
-                    // var ev = new TogglingNoClipEventArgs(Player, bool)
+                    // TogglingNoClipEventArgs ev = new(Player, bool)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(TogglingNoClipEventArgs))[0]),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),

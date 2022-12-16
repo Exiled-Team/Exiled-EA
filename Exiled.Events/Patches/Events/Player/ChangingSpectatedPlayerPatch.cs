@@ -53,11 +53,11 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Call, Method(typeof(PlayerRoleBase), nameof(PlayerRoleBase.TryGetOwner), new[] { typeof(ReferenceHub).MakeByRefType() })),
                     new(OpCodes.Brfalse_S, returnLabel),
 
-                    // var player = Player.Get(owner)
+                    // Player player = Player.Get(owner)
                     new(OpCodes.Ldloc_S, owner.LocalIndex),
                     new(OpCodes.Call, Method(typeof(API.Features.Player), nameof(API.Features.Player.Get), new[] { typeof(ReferenceHub) })),
 
-                    // var previousSpectatedPlayer = Player.Get(this.SyncedSpectatedNetId)
+                    // Player previousSpectatedPlayer = Player.Get(this.SyncedSpectatedNetId)
                     //
                     // if (previousSpectatedPlayer is null)
                     //    goto nullLabel;
@@ -88,7 +88,7 @@ namespace Exiled.Events.Patches.Events.Player
                     // true
                     new CodeInstruction(OpCodes.Ldc_I4_1),
 
-                    // var ev = new ChangingSpectatedPlayerEventArgs(Player, Player, Player, bool)
+                    // ChangingSpectatedPlayerEventArgs ev = new(Player, Player, Player, bool)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(ChangingSpectatedPlayerEventArgs))[0]),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),
