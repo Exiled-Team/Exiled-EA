@@ -76,7 +76,7 @@ namespace Exiled.API.Features.Roles
         public string Name => Base.RoleName;
 
         /// <summary>
-        /// Gets the last time the <see cref="Role"/> was active.
+        /// Gets the amount of time since the <see cref="Role"/> was assigned.
         /// </summary>
         public TimeSpan ActiveTime => TimeSpan.FromSeconds((double)Base.ActiveTime);
 
