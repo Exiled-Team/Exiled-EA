@@ -61,6 +61,7 @@ namespace Exiled.Events.Handlers.Internal
                 Server.Host = new Player(ReferenceHub.HostHub);
                 Server.Broadcast = ReferenceHub.HostHub.GetComponent<Broadcast>();
 
+                GenerateCamera();
                 GenerateTeslaGates();
                 GenerateRooms();
                 GenerateWindow();
@@ -99,6 +100,12 @@ namespace Exiled.Events.Handlers.Internal
         {
             foreach (BreakableWindow breakableWindow in Object.FindObjectsOfType<BreakableWindow>())
                 Window.BreakableWindowToWindow.Add(breakableWindow, new(breakableWindow));
+        }
+
+        private static void GenerateCamera()
+        {
+            foreach (Scp079Camera camera079 in Object.FindObjectsOfType<Scp079Camera>())
+                Camera.Camera079ToCamera.Add(camera079, new(camera079));
         }
 
         private static void GenerateTeslaGates()
