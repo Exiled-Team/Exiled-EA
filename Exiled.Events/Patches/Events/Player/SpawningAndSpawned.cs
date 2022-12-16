@@ -7,7 +7,9 @@
 
 namespace Exiled.Events.Patches.Events.Player
 {
+    using System;
     using System.Collections.Generic;
+    using System.Reflection;
     using System.Reflection.Emit;
 
     using Exiled.API.Features;
@@ -18,18 +20,24 @@ namespace Exiled.Events.Patches.Events.Player
     using NorthwoodLib.Pools;
     using PlayerRoles;
     using PlayerRoles.FirstPersonControl;
+    using PlayerRoles.FirstPersonControl.Spawnpoints;
     using RelativePositioning;
     using UnityEngine;
 
     using static HarmonyLib.AccessTools;
 
     /// <summary>
-    /// Patches <see cref="FpcStandardRoleBase.ReadSpawnData(NetworkReader)"/>.
+    /// Patches <see cref="RoleSpawnpointManager.Init"/> delegate.
     /// Adds the <see cref="SpawningAndSpawned"/> event.
     /// </summary>
-    [HarmonyPatch(typeof(FpcStandardRoleBase), nameof(FpcStandardRoleBase.ReadSpawnData))]
+    [HarmonyPatch]
     internal static class SpawningAndSpawned
     {
+        private static MethodInfo TargetMethod()
+        {
+            return Method(TypeByName("PlayerRoles.FirstPersonControl.Spawnpoints.RoleSpawnpointManager").GetNestedTypes(all)[1], "<Init>b__2_0");
+        }
+
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Shared.Rent(instructions);
@@ -40,7 +48,7 @@ namespace Exiled.Events.Patches.Events.Player
             LocalBuilder player = generator.DeclareLocal(typeof(Player));
 
             const int offset = 1;
-            int index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Stloc_0) + offset;
+            int index = newInstructions.FindLastIndex(instruction => instruction.IsLdarg(1)) + offset;
 
             newInstructions[index].WithLabels(continueLabel);
 
@@ -52,8 +60,7 @@ namespace Exiled.Events.Patches.Events.Player
                     //
                     // if (player == null)
                     //    goto continueLabel;
-                    new CodeInstruction(OpCodes.Ldarg_0),
-                    new(OpCodes.Call, PropertyGetter(typeof(PlayerRoleManager), nameof(PlayerRoleManager.Hub))),
+                    new CodeInstruction(OpCodes.Ldarg_1),
                     new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
                     new(OpCodes.Dup),
                     new(OpCodes.Stloc_S, player.LocalIndex),
@@ -63,7 +70,10 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Ldloc_S, player.LocalIndex),
 
                     // roleBase
-                    new(OpCodes.Ldarg_0),
+                    new(OpCodes.Ldarg_3),
+
+                    // position
+                    new(OpCodes.Ldloc_1),
 
                     // var ev = new SpawningEventArgs(Player, PlayerRoleBase)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(SpawningEventArgs))[0]),
@@ -74,8 +84,7 @@ namespace Exiled.Events.Patches.Events.Player
 
                     // relativePosition = new RelativePosition(ev.Position)
                     new(OpCodes.Callvirt, PropertyGetter(typeof(SpawningEventArgs), nameof(SpawningEventArgs.Position))),
-                    new(OpCodes.Newobj, Constructor(typeof(RelativePosition), new System.Type[] { typeof(Vector3) })),
-                    new(OpCodes.Stloc_0),
+                    new(OpCodes.Stloc_1),
                 });
 
             newInstructions.InsertRange(

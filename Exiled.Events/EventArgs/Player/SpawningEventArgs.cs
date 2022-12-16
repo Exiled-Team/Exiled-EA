@@ -26,10 +26,14 @@ namespace Exiled.Events.EventArgs.Player
         /// <param name="role">
         ///     <inheritdoc cref="Role" />
         /// </param>
-        public SpawningEventArgs(Player player, PlayerRoleBase role)
+        /// <param name="position">
+        ///     <inheritdoc cref="Position" />
+        /// </param>
+        public SpawningEventArgs(Player player, PlayerRoleBase role, Vector3 position)
         {
             Player = player;
             Role = role;
+            Position = position;
         }
 
         /// <summary>
