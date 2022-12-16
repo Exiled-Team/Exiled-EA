@@ -954,9 +954,9 @@ namespace Exiled.API.Features
         public bool CanSendInputs => Role.FirstPersonController.FpcModule.LockMovement;
 
         /// <summary>
-        /// Gets a <see cref="Player"/> <see cref="IList{T}"/> of spectators that are currently spectating this <see cref="Player"/>.
+        /// Gets a <see cref="Player"/> <see cref="List{T}"/> of spectators that are currently spectating this <see cref="Player"/>.
         /// </summary>
-        public IList<Player> CurrentSpectatingPlayers
+        public List<Player> CurrentSpectatingPlayers
         {
             get
             {
