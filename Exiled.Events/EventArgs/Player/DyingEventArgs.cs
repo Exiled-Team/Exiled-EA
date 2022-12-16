@@ -27,7 +27,7 @@ namespace Exiled.Events.EventArgs.Player
         ///     Initializes a new instance of the <see cref="DyingEventArgs" /> class.
         /// </summary>
         /// <param name="target">
-        ///     <inheritdoc cref="Target" />
+        ///     <inheritdoc cref="Player" />
         /// </param>
         /// <param name="damageHandler">
         ///     <inheritdoc cref="DamageHandler" />

@@ -24,7 +24,7 @@ namespace Exiled.Events.EventArgs.Player
         ///     Initializes a new instance of the <see cref="DiedEventArgs" /> class.
         /// </summary>
         /// <param name="target">
-        ///     <inheritdoc cref="Target" />
+        ///     <inheritdoc cref="Player" />
         /// </param>
         /// <param name="targetOldRole">Target's old <see cref="RoleTypeId" />.</param>
         /// <param name="damageHandler">

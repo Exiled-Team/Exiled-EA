@@ -7,7 +7,7 @@ on:
 
 env:
   EXILED_REFERENCES_URL: https://www.exiled.host/build_deps/EA_REFS.zip
-  EXILED_REFERENCES_PATH: ${{ github.workspace }}/References
+  BETA_EXILED_REFERENCES: ${{ github.workspace }}/References
 
 jobs:
 
@@ -29,11 +29,9 @@ jobs:
       shell: pwsh
       run: |
         Invoke-WebRequest -Uri https://www.exiled.host/build_deps/EA_REFS.zip -OutFile ${{ github.workspace }}/References.zip
-        Expand-Archive -Path References.zip -DestinationPath ${{ env.EXILED_REFERENCES_PATH }}
+        Expand-Archive -Path References.zip -DestinationPath ${{ env.BETA_EXILED_REFERENCES }}
 
     - name: Build NuGet
-      env:
-        BETA_EXILED_REFERENCES: ${{ env.EXILED_REFERENCES_PATH }}
       shell: pwsh
       run: |
         ./build.ps1 -BuildNuGet
