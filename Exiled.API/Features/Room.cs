@@ -388,7 +388,7 @@ namespace Exiled.API.Features
 
             Identifier = gameObject.GetComponent<RoomIdentifier>();
             Doors = DoorVariant.DoorsByRoom[Identifier]?.Select(x => Door.Get(x, this)).ToList() ?? new List<Door>();
-            Cameras = Camera.List.Where(x => x.Base.Room == Identifier);
+            Cameras = Camera.List.Where(x => x.Base.Room == Identifier).ToList();
             Speaker = Scp079Speaker.SpeakersInRooms[Identifier] ?? new();
             if (Type is RoomType.HczTesla)
                 TeslaGate = TeslaGate.List.FirstOrDefault(x => x.Room == this);
