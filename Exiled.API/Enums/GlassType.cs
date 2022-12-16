@@ -56,9 +56,14 @@ namespace Exiled.API.Enums
         Plants,
 
         /// <summary>
-        /// Represents all the Window in <see cref="RoomType.HczEzCheckpoint"/>.
+        /// Represents all the Window in <see cref="RoomType.HczEzCheckpointA"/>.
         /// </summary>
-        HczEzCheckpoint,
+        HczEzCheckpointA,
+
+        /// <summary>
+        /// Represents all the Window in <see cref="RoomType.HczEzCheckpointB"/>.
+        /// </summary>
+        HczEzCheckpointB,
 
         /// <summary>
         /// Represents all the Window in <see cref="RoomType.HczTestRoom"/>.

@@ -197,7 +197,12 @@ namespace Exiled.API.Features
                 "HCZ_079" => GlassType.Scp079,
                 "HCZ_Hid" => GlassType.MicroHid,
                 "HCZ_Testroom" => GlassType.TestRoom,
-                "HCZ Part" => GlassType.HczEzCheckpoint,
+                "HCZ Part" => Room.gameObject.transform.name switch
+                {
+                    "HCZ_EZ_Checkpoint (A)" => GlassType.HczEzCheckpointA,
+                    "HCZ_EZ_Checkpoint (B)" => GlassType.HczEzCheckpointB,
+                    _ => GlassType.Unknown
+                },
                 _ => GlassType.Unknown,
             };
         }

@@ -498,7 +498,12 @@ namespace Exiled.API.Features
                     "EZ" => DoorType.EntranceDoor,
                     "Prison" => DoorType.PrisonDoor,
                     "914" => DoorType.Scp914Door,
-                    "Intercom" => DoorType.CheckpointArmory,
+                    "Intercom" => Room?.Type switch
+                    {
+                        RoomType.HczEzCheckpointA => DoorType.CheckpointArmoryA,
+                        RoomType.HczEzCheckpointB => DoorType.CheckpointArmoryB,
+                        _ => DoorType.UnknownGate,
+                    },
                     "Unsecured" => Room?.Type switch
                     {
                         RoomType.EzCheckpointHallway => DoorType.CheckpointGate,
