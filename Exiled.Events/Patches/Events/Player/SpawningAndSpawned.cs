@@ -47,10 +47,8 @@ namespace Exiled.Events.Patches.Events.Player
 
             LocalBuilder player = generator.DeclareLocal(typeof(Player));
 
-            const int offset = 1;
+            const int offset = 0;
             int index = newInstructions.FindLastIndex(instruction => instruction.IsLdarg(1)) + offset;
-
-            newInstructions[index].WithLabels(continueLabel);
 
             newInstructions.InsertRange(
                 index,
@@ -60,7 +58,7 @@ namespace Exiled.Events.Patches.Events.Player
                     //
                     // if (player == null)
                     //    goto continueLabel;
-                    new CodeInstruction(OpCodes.Ldarg_1),
+                    new CodeInstruction(OpCodes.Ldarg_1).MoveLabelsFrom(newInstructions[index]),
                     new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
                     new(OpCodes.Dup),
                     new(OpCodes.Stloc_S, player.LocalIndex),
@@ -85,6 +83,8 @@ namespace Exiled.Events.Patches.Events.Player
                     // position = ev.Position
                     new(OpCodes.Callvirt, PropertyGetter(typeof(SpawningEventArgs), nameof(SpawningEventArgs.Position))),
                     new(OpCodes.Stloc_1),
+
+                    new CodeInstruction(OpCodes.Nop).WithLabels(continueLabel),
                 });
 
             newInstructions.InsertRange(
