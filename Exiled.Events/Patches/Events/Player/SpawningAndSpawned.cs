@@ -82,7 +82,7 @@ namespace Exiled.Events.Patches.Events.Player
                     // Handlers.Player.OnSpawning(ev);
                     new(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnSpawning))),
 
-                    // relativePosition = new RelativePosition(ev.Position)
+                    // position = ev.Position
                     new(OpCodes.Callvirt, PropertyGetter(typeof(SpawningEventArgs), nameof(SpawningEventArgs.Position))),
                     new(OpCodes.Stloc_1),
                 });
