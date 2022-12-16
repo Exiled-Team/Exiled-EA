@@ -33,7 +33,7 @@ jobs:
 
     - name: Build NuGet
       env:
-        EXILED_REFERENCES: ${{ env.EXILED_REFERENCES_PATH }}
+        BETA_EXILED_REFERENCES: ${{ env.EXILED_REFERENCES_PATH }}
       shell: pwsh
       run: |
         ./build.ps1 -BuildNuGet
