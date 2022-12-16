@@ -87,8 +87,6 @@ namespace Exiled.API.Features
         {
             readOnlyItems = ItemsValue.AsReadOnly();
             ReferenceHub = referenceHub;
-
-            Timing.CallDelayed(0.05f, () => Role = Role.Create(this, RoleManager._anySet ? RoleManager.CurrentRole.RoleTypeId : RoleTypeId.None));
         }
 
         /// <summary>
@@ -99,8 +97,6 @@ namespace Exiled.API.Features
         {
             readOnlyItems = ItemsValue.AsReadOnly();
             ReferenceHub = ReferenceHub.GetHub(gameObject);
-
-            Timing.CallDelayed(0.05f, () => Role = Role.Create(this, RoleManager._anySet ? RoleManager.CurrentRole.RoleTypeId : RoleTypeId.None));
         }
 
         /// <summary>
@@ -475,7 +471,7 @@ namespace Exiled.API.Features
         public LeadingTeam LeadingTeam => Role.Team.GetLeadingTeam();
 
         /// <summary>
-        /// Gets or sets a <see cref="Roles.Role"/> that is unique to this player and this class. This allows modification of various aspects related to the role solely.
+        /// Gets a <see cref="Roles.Role"/> that is unique to this player and this class. This allows modification of various aspects related to the role solely.
         /// <para>
         /// The type of the Role is different based on the <see cref="RoleTypeId"/> of the player, and casting should be used to modify the role.
         /// <br /><see cref="RoleTypeId.Spectator"/> = <see cref="SpectatorRole"/>.
@@ -501,7 +497,7 @@ namespace Exiled.API.Features
         public Role Role
         {
             get => role ??= Role.Create(this, RoleTypeId.None);
-            set => role = value;
+            internal set => role = value;
         }
 
         /// <summary>
@@ -570,11 +566,13 @@ namespace Exiled.API.Features
         /// <returns><see cref="bool"/> indicating status.</returns>
         public bool IsNoClipEnabled
         {
-            get => Role.Base is FpcStandardRoleBase fpcStandardRoleBase && fpcStandardRoleBase.FpcModule.Noclip.IsActive;
+            get => FpcNoclip.IsPermitted(ReferenceHub);
             set
             {
-                if (Role.Base is FpcStandardRoleBase fpcStandardRoleBase)
-                    fpcStandardRoleBase.FpcModule.Noclip.IsActive = value;
+                if (value && !IsNoClipEnabled)
+                    FpcNoclip.PermitPlayer(ReferenceHub);
+                else if (!value && IsNoClipEnabled)
+                    FpcNoclip.UnpermitPlayer(ReferenceHub);
             }
         }
 

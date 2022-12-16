@@ -6,8 +6,8 @@ on:
   workflow_dispatch:
 
 env:
-  EXILED_REFERENCES_URL: https://www.exiled.host/build_deps/References.zip
-  EXILED_REFERENCES_PATH: ${{ github.workspace }}/References
+  EXILED_REFERENCES_URL: https://www.exiled.host/build_deps/EA_REFS.zip
+  BETA_EXILED_REFERENCES: ${{ github.workspace }}/References
 
 jobs:
 
@@ -28,12 +28,10 @@ jobs:
     - name: Get references
       shell: pwsh
       run: |
-        Invoke-WebRequest -Uri https://www.exiled.host/build_deps/References.zip -OutFile ${{ github.workspace }}/References.zip
-        Expand-Archive -Path References.zip -DestinationPath ${{ env.EXILED_REFERENCES_PATH }}
+        Invoke-WebRequest -Uri https://www.exiled.host/build_deps/EA_REFS.zip -OutFile ${{ github.workspace }}/References.zip
+        Expand-Archive -Path References.zip -DestinationPath ${{ env.BETA_EXILED_REFERENCES }}
 
     - name: Build NuGet
-      env:
-        EXILED_REFERENCES: ${{ env.EXILED_REFERENCES_PATH }}
       shell: pwsh
       run: |
         ./build.ps1 -BuildNuGet

@@ -7,8 +7,6 @@
 
 namespace Exiled.Events.EventArgs.Player
 {
-    using System;
-
     using Hazards;
     using Interfaces;
 
@@ -37,11 +35,5 @@ namespace Exiled.Events.EventArgs.Player
         /// Gets the environmental hazard that the player is staying on.
         /// </summary>
         public EnvironmentalHazard EnvironmentalHazard { get; }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether or not the player should be affected by the environmental hazard.
-        /// </summary>
-        [Obsolete("IsAllowed has been deprecated, use EnteringEnvironmentalHazardEventArgs::IsAllowed instead.", true)]
-        public bool IsAllowed { get; set; }
     }
 }

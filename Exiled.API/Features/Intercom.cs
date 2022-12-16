@@ -18,12 +18,10 @@ namespace Exiled.API.Features
     /// </summary>
     public static class Intercom
     {
-        private static IntercomDisplay intercomDisplay;
-
         /// <summary>
-        /// Gets the <see cref="intercomDisplay"/>.
+        /// Gets the instance of <see cref="PlayerRoles.Voice.IntercomDisplay"/>.
         /// </summary>
-        public static IntercomDisplay IntercomDisplay => intercomDisplay ??= IntercomDisplay._singleton;
+        public static IntercomDisplay IntercomDisplay => IntercomDisplay._singleton;
 
         /// <summary>
         /// Gets or sets the text displayed on the intercom screen.

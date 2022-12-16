@@ -15,7 +15,6 @@ namespace Exiled.Events.Handlers.Internal
     using API.Features.Items;
     using API.Structs;
     using Exiled.API.Extensions;
-    using global::Scp914;
     using InventorySystem.Items.Firearms.Attachments.Components;
     using MapGeneration;
     using MapGeneration.Distributors;
@@ -57,7 +56,6 @@ namespace Exiled.Events.Handlers.Internal
             Warhead.OutsitePanel = Object.FindObjectOfType<AlphaWarheadOutsitePanel>();
             Server.Host = new Player(ReferenceHub.HostHub);
             Server.Broadcast = ReferenceHub.HostHub.GetComponent<Broadcast>();
-            Scp914.Scp914Controller = Object.FindObjectOfType<Scp914Controller>();
 
             GenerateTeslaGates();
             GenerateCameras();

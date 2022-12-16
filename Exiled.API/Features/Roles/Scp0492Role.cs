@@ -23,7 +23,7 @@ namespace Exiled.API.Features.Roles
         public Scp0492Role(Player owner)
             : base(owner)
         {
-            SubroutineModule = (Owner.RoleManager.CurrentRole as ZombieRole).SubroutineModule;
+            SubroutineModule = (Base as ZombieRole).SubroutineModule;
         }
 
         /// <inheritdoc/>
@@ -33,21 +33,19 @@ namespace Exiled.API.Features.Roles
         public override SubroutineManagerModule SubroutineModule { get; }
 
         /// <summary>
-        /// Gets or sets the SCP-049-2 attack damage.
+        /// Gets the SCP-049-2 attack damage.
         /// </summary>
         public float AttackDamage
         {
-            get => 40; // It's hardcoded.
-            set { }
+            get => SubroutineModule.TryGetSubroutine(out ZombieAttackAbility ability) ? ability.DamageAmount : 0;
         }
 
         /// <summary>
-        /// Gets or sets the amount of time in between SCP-049-2 attacks.
+        /// Gets the amount of time in between SCP-049-2 attacks.
         /// </summary>
         public float AttackCooldown
         {
-            get => 1.3f; // It's hardcoded.
-            set { }
+            get => SubroutineModule.TryGetSubroutine(out ZombieAttackAbility ability) ? ability.BaseCooldown : 0;
         }
     }
 }

@@ -748,10 +748,10 @@ namespace Exiled.CustomRoles.API.Features
 
         private void OnInternalDying(DyingEventArgs ev)
         {
-            if (Check(ev.Target))
+            if (Check(ev.Player))
             {
-                CustomRoles.Instance.StopRagdollPlayers.Add(ev.Target);
-                _ = new Ragdoll(new RagdollData(ev.Target.ReferenceHub, ev.DamageHandler, Role, ev.Target.Position, Quaternion.Euler(ev.Target.Rotation), ev.Target.DisplayNickname, NetworkTime.time), true);
+                CustomRoles.Instance.StopRagdollPlayers.Add(ev.Player);
+                _ = new Ragdoll(new RagdollData(ev.Player.ReferenceHub, ev.DamageHandler, Role, ev.Player.Position, Quaternion.Euler(ev.Player.Rotation), ev.Player.DisplayNickname, NetworkTime.time), true);
             }
         }
     }

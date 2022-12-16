@@ -23,7 +23,7 @@ namespace Exiled.Events.Patches.Fixes
     /// <summary>
     /// Patches <see cref="ExplosionGrenade.PlayExplosionEffects"/> to sync <see cref="ExplosiveGrenade"/> property values.
     /// </summary>
-    // [HarmonyPatch(typeof(ExplosionGrenade), nameof(ExplosionGrenade.PlayExplosionEffects))]
+    [HarmonyPatch(typeof(ExplosionGrenade), nameof(ExplosionGrenade.PlayExplosionEffects))]
     internal static class ExplosiveGrenadeFieldsFix
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)

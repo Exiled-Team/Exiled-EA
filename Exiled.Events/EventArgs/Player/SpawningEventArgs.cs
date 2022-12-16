@@ -45,19 +45,6 @@ namespace Exiled.Events.EventArgs.Player
         /// <summary>
         ///     Gets or sets the <see cref="Player"/>'s spawning position.
         /// </summary>
-        public Vector3 Position
-        {
-            get => Role.transform.localPosition;
-            set => Role.transform.localPosition = value;
-        }
-
-        /// <summary>
-        ///     Gets or sets the <see cref="Player"/>'s rotation.
-        /// </summary>
-        public Vector3 Rotation
-        {
-            get => Role.transform.localRotation.eulerAngles;
-            set => Role.transform.localRotation = Quaternion.Euler(value);
-        }
+        public Vector3 Position { get; set; }
     }
 }

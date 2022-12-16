@@ -27,7 +27,7 @@ namespace Exiled.API.Features.Roles
         protected Role(Player owner)
         {
             Owner = owner;
-            FirstPersonController = Base is FpcStandardRoleBase @base ? @base : null;
+            FirstPersonController = Base as FpcStandardRoleBase;
         }
 
         /// <summary>
@@ -73,7 +73,7 @@ namespace Exiled.API.Features.Roles
         /// <summary>
         /// Gets the <see cref="Role"/> full name.
         /// </summary>
-        public string Name => Type.GetFullName();
+        public string Name => Base.RoleName;
 
         /// <summary>
         /// Gets the last time the <see cref="Role"/> was active.

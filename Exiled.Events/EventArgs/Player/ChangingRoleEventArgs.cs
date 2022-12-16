@@ -72,7 +72,7 @@ namespace Exiled.Events.EventArgs.Player
         /// <summary>
         ///     Gets or sets a value indicating whether the inventory will be preserved or not.
         /// </summary>
-        public bool ShouldPreserveInventory { get; set; } = true;
+        public bool ShouldPreserveInventory { get; set; } = false;
 
         /// <summary>
         ///     Gets or sets the reason for their class change.

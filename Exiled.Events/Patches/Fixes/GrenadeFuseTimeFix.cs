@@ -17,26 +17,30 @@ namespace Exiled.Events.Patches.Fixes
     using InventorySystem.Items.ThrowableProjectiles;
 
     using NorthwoodLib.Pools;
+    using UnityEngine;
 
     using static HarmonyLib.AccessTools;
 
     /// <summary>
     /// Patches <see cref="ThrowableItem"/> to fix fuse times being unchangeable.
     /// </summary>
-    // [HarmonyPatch(typeof(ThrowableItem), nameof(ThrowableItem.ServerThrow), typeof(float), typeof(float), typeof(Vector3), typeof(Vector3))]
+    [HarmonyPatch(typeof(ThrowableItem), nameof(ThrowableItem.ServerThrow), typeof(float), typeof(float), typeof(Vector3), typeof(Vector3))]
     internal static class GrenadeFuseTimeFix
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Shared.Rent(instructions);
-            const int offset = -1;
-            int index = newInstructions.FindLastIndex(i => i.opcode == OpCodes.Callvirt) + offset;
+
             LocalBuilder timeGrenade = generator.DeclareLocal(typeof(TimeGrenade));
             LocalBuilder explosive = generator.DeclareLocal(typeof(ExplosiveGrenade));
             LocalBuilder flash = generator.DeclareLocal(typeof(FlashGrenade));
             LocalBuilder item = generator.DeclareLocal(typeof(Item));
+
             Label notExplosiveLabel = generator.DefineLabel();
             Label skipLabel = generator.DefineLabel();
+
+            const int offset = -1;
+            int index = newInstructions.FindLastIndex(i => i.opcode == OpCodes.Callvirt) + offset;
 
             newInstructions.InsertRange(
                 index,

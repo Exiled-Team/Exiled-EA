@@ -36,6 +36,19 @@ namespace Exiled.API.Features.Roles
         public override SubroutineManagerModule SubroutineModule { get; }
 
         /// <summary>
+        /// Gets or sets SCP-106's Vigor.
+        /// </summary>
+        public float Vigor
+        {
+            get => SubroutineModule.TryGetSubroutine(out Scp106Vigor ability) ? ability.VigorAmount : 0;
+            set
+            {
+                if (SubroutineModule.TryGetSubroutine(out Scp106Vigor ability))
+                    ability.VigorAmount = value;
+            }
+        }
+
+        /// <summary>
         /// Gets a value indicating whether or not SCP-106 is currently inside of an object.
         /// </summary>
         public bool IsInsideObject => false; // TODO
@@ -80,6 +93,15 @@ namespace Exiled.API.Features.Roles
         {
             if (SubroutineModule.TryGetSubroutine(out Scp106HuntersAtlasAbility ability))
                 ability.SetSubmerged(true);
+        }
+
+        /// <summary>
+        /// Causes SCP-106 to enter his stalking mode.
+        /// </summary>
+        public void Stalk()
+        {
+            if (SubroutineModule.TryGetSubroutine(out Scp106StalkAbility ability))
+                ability.IsActive = true;
         }
     }
 }

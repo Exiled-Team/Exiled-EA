@@ -7,8 +7,6 @@
 
 namespace Exiled.API.Enums
 {
-    using System;
-
     /// <summary>
     /// Unique identifier for the different types of doors.
     /// </summary>
@@ -96,18 +94,10 @@ namespace Exiled.API.Enums
         /// </summary>
         GR18Gate,
 
-        /// <inheritdoc cref="GR18Gate"/>
-        [Obsolete("Use DoorType.GR18Gate instead.", true)]
-        GR18 = GR18Gate,
-
         /// <summary>
         /// Represents the 914 gate.
         /// </summary>
         Scp914Gate,
-
-        /// <inheritdoc cref="Scp914Gate"/>
-        [Obsolete("Use DoorType.Scp914Gate instead.", true)]
-        Scp914 = Scp914Gate,
 
         /// <summary>
         /// Represents the CHECKPOINT_ENT door.
@@ -233,17 +223,5 @@ namespace Exiled.API.Enums
         /// Represents the 330_CHAMBER door.
         /// </summary>
         Scp330Chamber,
-
-        /// <summary>
-        /// Represents the 012 door.
-        /// </summary>
-        [Obsolete("Removed from the game.", true)]
-        Scp012,
-
-        /// <summary>
-        /// Represents the 012_BOTTOM door.
-        /// </summary>
-        [Obsolete("Removed from the game.", true)]
-        Scp012Bottom,
     }
 }
