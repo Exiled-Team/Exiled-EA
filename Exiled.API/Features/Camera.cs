@@ -29,8 +29,7 @@ namespace Exiled.API.Features
 
         private static readonly Dictionary<string, CameraType> NameToCameraType = new()
         {
-            // Light Containment
-            ["EXIT PASSAGE"] = CameraType.ExitPassage,
+            // Entrance Zone
             ["CHKPT (EZ HALL)"] = CameraType.EzChkptHall,
             ["EZ CROSSING"] = CameraType.EzCrossing,
             ["EZ CURVE"] = CameraType.EzCurve,
@@ -46,8 +45,8 @@ namespace Exiled.API.Features
             ["LOADING DOCK"] = CameraType.EzLoadingDock,
             ["MINOR OFFICE"] = CameraType.EzMinorOffice,
             ["TWO-STORY OFFICE"] = CameraType.EzTwoStoryOffice,
-            ["GATE A SURFACE"] = CameraType.GateASurface,
-            ["GATE B SURFACE"] = CameraType.GateBSurface,
+
+            // Heavy Containment Zone
             ["049 ARMORY"] = CameraType.Hcz049Armory,
             ["049 CONT CHAMBER"] = CameraType.Hcz049ContChamber,
             ["049 ELEV TOP"] = CameraType.Hcz049ElevTop,
@@ -85,6 +84,8 @@ namespace Exiled.API.Features
             ["WARHEAD CONTROL"] = CameraType.HczWarheadControl,
             ["WARHEAD HALLWAY"] = CameraType.HczWarheadHallway,
             ["WARHEAD TOP"] = CameraType.HczWarheadTop,
+
+            // Light Containment Zone
             ["173 BOTTOM"] = CameraType.Lcz173Bottom,
             ["173 CONT CHAMBER"] = CameraType.Lcz173ContChamber,
             ["173 HALL"] = CameraType.Lcz173Hall,
@@ -112,6 +113,11 @@ namespace Exiled.API.Features
             ["RESTROOMS"] = CameraType.LczRestrooms,
             ["TC HALLWAY"] = CameraType.LczTcHallway,
             ["TEST CHAMBER"] = CameraType.LczTestChamber,
+
+            // Surface
+            ["EXIT PASSAGE"] = CameraType.ExitPassage,
+            ["GATE A SURFACE"] = CameraType.GateASurface,
+            ["GATE B SURFACE"] = CameraType.GateBSurface,
             ["MAIN STREET"] = CameraType.MainStreet,
             ["SURFACE AIRLOCK"] = CameraType.SurfaceAirlock,
             ["SURFACE BRIDGE"] = CameraType.SurfaceBridge,

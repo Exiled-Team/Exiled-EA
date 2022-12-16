@@ -6,6 +6,9 @@
 // -----------------------------------------------------------------------
 
 #pragma warning disable SA1124 // Do not use regions
+#pragma warning disable CS1591 // XML Comment Missing
+#pragma warning disable SA1602 // Enumeration items should be documented
+
 namespace Exiled.API.Enums
 {
     using Features;
@@ -22,7 +25,7 @@ namespace Exiled.API.Enums
         /// </summary>
         Unknown,
 
-        ExitPassage,
+        #region Ez
         EzChkptHall,
         EzCrossing,
         EzCurve,
@@ -38,8 +41,9 @@ namespace Exiled.API.Enums
         EzLoadingDock,
         EzMinorOffice,
         EzTwoStoryOffice,
-        GateASurface,
-        GateBSurface,
+        #endregion
+
+        #region Hcz
         Hcz049Armory,
         Hcz049ContChamber,
         Hcz049ElevTop,
@@ -77,6 +81,9 @@ namespace Exiled.API.Enums
         HczWarheadControl,
         HczWarheadHallway,
         HczWarheadTop,
+        #endregion
+
+        #region Lcz
         Lcz173Bottom,
         Lcz173ContChamber,
         Lcz173Hall,
@@ -104,9 +111,16 @@ namespace Exiled.API.Enums
         LczRestrooms,
         LczTcHallway,
         LczTestChamber,
+        #endregion
+
+        #region Surface
+        ExitPassage,
+        GateASurface,
+        GateBSurface,
         MainStreet,
         SurfaceAirlock,
         SurfaceBridge,
         TunnelEntrance,
+        #endregion
     }
 }
