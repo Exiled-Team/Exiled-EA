@@ -10,7 +10,7 @@ on:
 
 env:
   EXILED_REFERENCES_URL: https://www.exiled.host/build_deps/EA_REFS.zip
-  BETA_EXILED_REFERENCESH: ${{ github.workspace }}/References
+  BETA_EXILED_REFERENCES: ${{ github.workspace }}/References
 
 jobs:
 
