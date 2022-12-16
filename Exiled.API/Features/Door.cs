@@ -502,7 +502,7 @@ namespace Exiled.API.Features
                     {
                         RoomType.HczEzCheckpointA => DoorType.CheckpointArmoryA,
                         RoomType.HczEzCheckpointB => DoorType.CheckpointArmoryB,
-                        _ => DoorType.UnknownGate,
+                        _ => DoorType.UnknownDoor,
                     },
                     "Unsecured" => Room?.Type switch
                     {

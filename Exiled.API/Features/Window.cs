@@ -186,23 +186,19 @@ namespace Exiled.API.Features
 
         private GlassType GetGlassType()
         {
-            // if (Recontainer.ActivatorWindow.Base == Base)
-                // return GlassType.Scp079Trigger;
-            return Room.gameObject.name.RemoveBracketsOnEndOfName() switch
+            if (Recontainer.ActivatorWindow.Base == Base)
+                return GlassType.Scp079Trigger;
+            return Room?.Type switch
             {
-                "LCZ_330" => GlassType.Scp330,
-                "LCZ_372" => GlassType.GR18,
-                "LCZ_Plants" => GlassType.Plants,
-                "HCZ_049" => GlassType.Scp049,
-                "HCZ_079" => GlassType.Scp079,
-                "HCZ_Hid" => GlassType.MicroHid,
-                "HCZ_Testroom" => GlassType.TestRoom,
-                "HCZ Part" => Room.gameObject.transform.name switch
-                {
-                    "HCZ_EZ_Checkpoint (A)" => GlassType.HczEzCheckpointA,
-                    "HCZ_EZ_Checkpoint (B)" => GlassType.HczEzCheckpointB,
-                    _ => GlassType.Unknown
-                },
+                RoomType.Lcz330 => GlassType.Scp330,
+                RoomType.LczGlassBox => GlassType.GR18,
+                RoomType.LczPlants => GlassType.Plants,
+                RoomType.Hcz049 => GlassType.Scp049,
+                RoomType.Hcz079 => GlassType.Scp079,
+                RoomType.HczHid => GlassType.MicroHid,
+                RoomType.HczTestRoom => GlassType.TestRoom,
+                RoomType.HczEzCheckpointA => GlassType.HczEzCheckpointA,
+                RoomType.HczEzCheckpointB => GlassType.HczEzCheckpointB,
                 _ => GlassType.Unknown,
             };
         }
