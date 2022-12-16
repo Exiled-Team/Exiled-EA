@@ -29,88 +29,99 @@ namespace Exiled.API.Features
 
         private static readonly Dictionary<string, CameraType> NameToCameraType = new()
         {
-            // Light Containment
-            ["173 chamber"] = CameraType.Lcz173Chamber,
-            ["173 hallway"] = CameraType.Lcz173Hallway,
-            ["173 gunroom"] = CameraType.Lcz173Armory,
-            ["914 hallway"] = CameraType.Lcz914Hallway,
-            ["airlock"] = CameraType.LczAirlock,
-            ["armory"] = CameraType.LczArmory,
-            ["d cells"] = CameraType.LczClassDSpawn,
-            ["etrcp @ a"] = CameraType.LczBEntrance,
-            ["etrcp @ b"] = CameraType.LczAEntrance,
-            ["ex @ a"] = CameraType.HczBEntrance,
-            ["ex @ b"] = CameraType.HczAEntrance,
-            ["glassroom"] = CameraType.LczGlassRoom,
-            ["greenhouse"] = CameraType.LczGreenhouse,
-            ["lcz @ a"] = CameraType.LczALifts,
-            ["lcz @ b"] = CameraType.LczBLifts,
-            ["scp-173 stairs"] = CameraType.Lcz173Bottom,
-            ["scp-914"] = CameraType.Lcz914,
-            ["tc-01 chamber"] = CameraType.Lcz330Chamber,
-            ["tc-01 hall"] = CameraType.Lcz330Hall,
-            ["wc"] = CameraType.LczWC,
-
-            // Heavy Containment
-            ["049 hall 1"] = CameraType.Hcz049Hall,
-            ["049 hall 2"] = CameraType.Hcz049Hall,
-            ["049 hall 3"] = CameraType.Hcz049Hall,
-            ["049 hall 4"] = CameraType.Hcz049Hall,
-            ["049 hall 5"] = CameraType.Hcz049Armory,
-            ["106 ent a"] = CameraType.Hcz106Primary,
-            ["106 ent b"] = CameraType.Hcz106Secondary,
-            ["106 stairway"] = CameraType.Hcz106Stairs,
-            ["downservs"] = CameraType.HczServerBottom,
-            ["ez entrance"] = CameraType.EzEntrance,
-            ["hcz @ a"] = CameraType.HczALifts,
-            ["hcz @ b"] = CameraType.HczBLifts,
-            ["hcz armory"] = CameraType.HczArmory,
-            ["hcz entrance"] = CameraType.HczEntrance,
-            ["hallway cam"] = CameraType.Hcz079Hallway,
-            ["head armory"] = CameraType.HczWarheadArmory,
-            ["head panel"] = CameraType.HczWarheadSwitch,
-            ["head top"] = CameraType.HczWarheadRoom,
-            ["hid hall"] = CameraType.HczHidHall,
-            ["hid interior"] = CameraType.HczHidInterior,
-            ["pre-hallway cam"] = CameraType.Hcz079PreHallway,
-            ["sacrificer"] = CameraType.Hcz106Recontainer,
-            ["servers"] = CameraType.HczServerTop,
-            ["servhall"] = CameraType.HczServerHall,
-            ["scp-049 hall"] = CameraType.Hcz049Elevator,
-            ["scp-079 control"] = CameraType.Hcz079Control,
-            ["scp-079 main cam"] = CameraType.Hcz079Main,
-            ["scp-096 cr"] = CameraType.Hcz096,
-            ["scp-106 main cam"] = CameraType.Hcz106First,
-            ["scp-106 second"] = CameraType.Hcz106Second,
-            ["scp-939 cr"] = CameraType.Hcz939,
-            ["tesla gate"] = CameraType.HczTeslaGate,
-            ["warhead hall"] = CameraType.HczWarheadHall,
-
             // Entrance Zone
-            ["hallway"] = CameraType.EzHall,
-            ["icom hall"] = CameraType.EzIntercomHall,
-            ["icom room"] = CameraType.EzIntercomInterior,
-            ["intercom"] = CameraType.EzIntercomHall,
-            ["t intersection"] = CameraType.EzTIntersection,
-            ["x intersection"] = CameraType.EzXIntersection,
+            ["CHKPT (EZ HALL)"] = CameraType.EzChkptHall,
+            ["EZ CROSSING"] = CameraType.EzCrossing,
+            ["EZ CURVE"] = CameraType.EzCurve,
+            ["EZ HALLWAY"] = CameraType.EzHallway,
+            ["EZ THREE-WAY"] = CameraType.EzThreeWay,
+            ["GATE A"] = CameraType.EzGateA,
+            ["GATE B"] = CameraType.EzGateB,
+            ["INTERCOM BOTTOM"] = CameraType.EzIntercomBottom,
+            ["INTERCOM HALL"] = CameraType.EzIntercomHall,
+            ["INTERCOM PANEL"] = CameraType.EzIntercomPanel,
+            ["INTERCOM STAIRS"] = CameraType.EzIntercomStairs,
+            ["LARGE OFFICE"] = CameraType.EzLargeOffice,
+            ["LOADING DOCK"] = CameraType.EzLoadingDock,
+            ["MINOR OFFICE"] = CameraType.EzMinorOffice,
+            ["TWO-STORY OFFICE"] = CameraType.EzTwoStoryOffice,
+
+            // Heavy Containment Zone
+            ["049 ARMORY"] = CameraType.Hcz049Armory,
+            ["049 CONT CHAMBER"] = CameraType.Hcz049ContChamber,
+            ["049 ELEV TOP"] = CameraType.Hcz049ElevTop,
+            ["049 HALLWAY"] = CameraType.Hcz049Hallway,
+            ["049 TOP FLOOR"] = CameraType.Hcz049TopFloor,
+            ["049 TUNNEL"] = CameraType.Hcz049Tunnel,
+            ["079 AIRLOCK"] = CameraType.Hcz079Airlock,
+            ["079 CONT CHAMBER"] = CameraType.Hcz079ContChamber,
+            ["079 HALLWAY"] = CameraType.Hcz079Hallway,
+            ["079 KILL SWITCH"] = CameraType.Hcz079KillSwitch,
+            ["096 CONT CHAMBER"] = CameraType.Hcz096ContChamber,
+            ["106 BRIDGE"] = CameraType.Hcz106Bridge,
+            ["106 CATWALK"] = CameraType.Hcz106Catwalk,
+            ["106 RECONTAINMENT"] = CameraType.Hcz106Recontainment,
+            ["CHKPT (EZ)"] = CameraType.HczChkptEz,
+            ["CHKPT (HCZ)"] = CameraType.HczChkptHcz,
+            ["H.I.D. CHAMBER"] = CameraType.HczHIDChamber,
+            ["H.I.D. HALLWAY"] = CameraType.HczHIDHallway,
+            ["HCZ 939"] = CameraType.Hcz939,
+            ["HCZ ARMORY"] = CameraType.HczArmory,
+            ["HCZ ARMORY INTERIOR"] = CameraType.HczArmoryInterior,
+            ["HCZ CROSSING"] = CameraType.HczCrossing,
+            ["HCZ ELEV SYS A"] = CameraType.HczElevSysA,
+            ["HCZ ELEV SYS B"] = CameraType.HczElevSysB,
+            ["HCZ HALLWAY"] = CameraType.HczHallway,
+            ["HCZ THREE-WAY"] = CameraType.HczThreeWay,
+            ["SERVERS BOTTOM"] = CameraType.HczServersBottom,
+            ["SERVERS STAIRS"] = CameraType.HczServersStairs,
+            ["SERVERS TOP"] = CameraType.HczServersTop,
+            ["TESLA GATE"] = CameraType.HczTeslaGate,
+            ["TESTROOM BRIDGE"] = CameraType.HczTestroomBridge,
+            ["TESTROOM MAIN"] = CameraType.HczTestroomMain,
+            ["TESTROOM OFFICE"] = CameraType.HczTestroomOffice,
+            ["WARHEAD ARMORY"] = CameraType.HczWarheadArmory,
+            ["WARHEAD CONTROL"] = CameraType.HczWarheadControl,
+            ["WARHEAD HALLWAY"] = CameraType.HczWarheadHallway,
+            ["WARHEAD TOP"] = CameraType.HczWarheadTop,
+
+            // Light Containment Zone
+            ["173 BOTTOM"] = CameraType.Lcz173Bottom,
+            ["173 CONT CHAMBER"] = CameraType.Lcz173ContChamber,
+            ["173 HALL"] = CameraType.Lcz173Hall,
+            ["173 STAIRS"] = CameraType.Lcz173Stairs,
+            ["914 AIRLOCK"] = CameraType.Lcz914Airlock,
+            ["914 CONT CHAMBER"] = CameraType.Lcz914ContChamber,
+            ["AIRLOCK"] = CameraType.LczAirlock,
+            ["ARMORY"] = CameraType.LczArmory,
+            ["CELLBLOCK BACK"] = CameraType.LczCellblockBack,
+            ["CELLBLOCK ENTRY"] = CameraType.LczCellblockEntry,
+            ["CHKPT A ENTRY"] = CameraType.LczChkptAEntry,
+            ["CHKPT A INNER"] = CameraType.LczChkptAInner,
+            ["CHKPT B ENTRY"] = CameraType.LczChkptBEntry,
+            ["CHKPT B INNER"] = CameraType.LczChkptBInner,
+            ["GLASSROOM"] = CameraType.LczGlassroom,
+            ["GLASSROOM ENTRY"] = CameraType.LczGlassroomEntry,
+            ["GREENHOUSE"] = CameraType.LczGreenhouse,
+            ["LCZ CROSSING"] = CameraType.LczCrossing,
+            ["LCZ CURVE"] = CameraType.LczCurve,
+            ["LCZ ELEV SYS A"] = CameraType.LczElevSysA,
+            ["LCZ ELEV SYS B"] = CameraType.LczElevSysB,
+            ["LCZ HALLWAY"] = CameraType.LczHallway,
+            ["LCZ THREE-WAY"] = CameraType.LczThreeWay,
+            ["PC OFFICE"] = CameraType.LczPcOffice,
+            ["RESTROOMS"] = CameraType.LczRestrooms,
+            ["TC HALLWAY"] = CameraType.LczTcHallway,
+            ["TEST CHAMBER"] = CameraType.LczTestChamber,
 
             // Surface
-            ["bridge"] = CameraType.Bridge,
-            ["backstreet"] = CameraType.Backstreet,
-            ["exit"] = CameraType.Exit,
-            ["escape zone"] = CameraType.EscapeZone,
-            ["helipad"] = CameraType.Helipad,
-            ["streetcam"] = CameraType.Streetcam,
-            ["tower"] = CameraType.Tower,
-
-            // Unspecified
-            ["corner"] = CameraType.Corner,
-            ["x-type inters"] = CameraType.XIntersection,
-            ["t-type inters"] = CameraType.TIntersection,
-            ["straight"] = CameraType.Hallway,
-            ["offices"] = CameraType.Office,
-            ["gate a"] = CameraType.GateA,
-            ["gate b"] = CameraType.GateB,
+            ["EXIT PASSAGE"] = CameraType.ExitPassage,
+            ["GATE A SURFACE"] = CameraType.GateASurface,
+            ["GATE B SURFACE"] = CameraType.GateBSurface,
+            ["MAIN STREET"] = CameraType.MainStreet,
+            ["SURFACE AIRLOCK"] = CameraType.SurfaceAirlock,
+            ["SURFACE BRIDGE"] = CameraType.SurfaceBridge,
+            ["TUNNEL ENTRANCE"] = CameraType.TunnelEntrance,
         };
 
         /// <summary>
@@ -170,64 +181,7 @@ namespace Exiled.API.Features
         /// </summary>
         public CameraType Type
         {
-            get
-            {
-                string cameraName = Name.ToLower();
-
-                if (NameToCameraType.ContainsKey(cameraName))
-                    return NameToCameraType[cameraName];
-
-                if (Room is null)
-                    return CameraType.Unknown;
-
-                return cameraName switch
-                {
-                    "corner" => Zone switch
-                    {
-                        ZoneType.LightContainment => CameraType.LczCorner,
-                        ZoneType.HeavyContainment => CameraType.HczCorner,
-                        ZoneType.Entrance => CameraType.EzCorner,
-                        _ => CameraType.Unknown,
-                    },
-                    "x-type inters" => Zone switch
-                    {
-                        ZoneType.LightContainment => CameraType.LczXIntersection,
-                        ZoneType.HeavyContainment => CameraType.HczXIntersection,
-                        _ => CameraType.Unknown,
-                    },
-                    "t-type inters" => Zone switch
-                    {
-                        ZoneType.LightContainment => CameraType.LczTIntersection,
-                        ZoneType.HeavyContainment => CameraType.HczTIntersection,
-                        _ => CameraType.Unknown,
-                    },
-                    "straight" => Zone switch
-                    {
-                        ZoneType.LightContainment => CameraType.LczHall,
-                        ZoneType.HeavyContainment => CameraType.HczHall,
-                        _ => CameraType.Unknown,
-                    },
-                    "offices" => Zone switch
-                    {
-                        ZoneType.LightContainment => CameraType.LczCafe,
-                        ZoneType.HeavyContainment => CameraType.EzOffice,
-                        _ => CameraType.Unknown,
-                    },
-                    "gate a" => Zone switch
-                    {
-                        ZoneType.LightContainment => CameraType.EzGateA,
-                        ZoneType.HeavyContainment => CameraType.SurfaceGateA,
-                        _ => CameraType.Unknown,
-                    },
-                    "gate b" => Zone switch
-                    {
-                        ZoneType.LightContainment => CameraType.EzGateB,
-                        ZoneType.HeavyContainment => CameraType.SurfaceGate,
-                        _ => CameraType.Unknown,
-                    },
-                    _ => CameraType.Unknown,
-                };
-            }
+            get => NameToCameraType.ContainsKey(Name) ? NameToCameraType[Name] : CameraType.Unknown;
         }
 
         /// <summary>
