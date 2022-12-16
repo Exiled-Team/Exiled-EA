@@ -32,7 +32,11 @@ namespace Exiled.API.Features
         /// Initializes a new instance of the <see cref="TeslaGate"/> class.
         /// </summary>
         /// <param name="baseTeslaGate">The <see cref="BaseTeslaGate"/> instance.</param>
-        internal TeslaGate(BaseTeslaGate baseTeslaGate) => Base = baseTeslaGate;
+        internal TeslaGate(BaseTeslaGate baseTeslaGate)
+        {
+            Base = baseTeslaGate;
+            Room = baseTeslaGate.GetComponentInParent<Room>();
+        }
 
         /// <summary>
         /// Gets a <see cref="IEnumerable{T}"/> of <see cref="TeslaGate"/> which contains all the <see cref="TeslaGate"/> instances.
@@ -82,7 +86,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets the tesla gate's <see cref="Features.Room"/> which is located in.
         /// </summary>
-        public Room Room => Map.FindParentRoom(GameObject);
+        public Room Room { get; }
 
         /// <summary>
         /// Gets a value indicating whether or not the tesla gate's shock burst is in progess.

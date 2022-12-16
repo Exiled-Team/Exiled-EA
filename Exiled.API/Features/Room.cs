@@ -382,8 +382,11 @@ namespace Exiled.API.Features
             Type = FindType(gameObject.name);
 
             Identifier = gameObject.GetComponent<RoomIdentifier>();
-            Doors = DoorVariant.DoorsByRoom[Identifier]?.Select(x => Door.Get(x, this)) ?? new List<Door>();
+            Doors = DoorVariant.DoorsByRoom[Identifier]?.Select(x => Door.Get(x, this)).ToList() ?? new List<Door>();
+            Cameras = Camera.List.Where(x => x.Base.Room == Identifier);
             Speaker = Scp079Speaker.SpeakersInRooms[Identifier] ?? new();
+            if (Type is RoomType.HczTesla)
+                TeslaGate = TeslaGate.List.FirstOrDefault(x => x.Room == this);
             if (gameObject.TryGetComponent(out FlickerableLightController flickerableLightController))
             {
                 flickerableLightController = gameObject.AddComponent<FlickerableLightController>();
