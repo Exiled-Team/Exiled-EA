@@ -27,6 +27,7 @@ namespace Exiled.API.Features
         /// A <see cref="Dictionary{TKey,TValue}"/> containing all known <see cref="BaseTeslaGate"/>s and their corresponding <see cref="TeslaGate"/>.
         /// </summary>
         internal static readonly Dictionary<BaseTeslaGate, TeslaGate> BaseTeslaGateToTeslaGate = new(10);
+        private Room room;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TeslaGate"/> class.
@@ -35,7 +36,6 @@ namespace Exiled.API.Features
         internal TeslaGate(BaseTeslaGate baseTeslaGate)
         {
             Base = baseTeslaGate;
-            Room = baseTeslaGate.GetComponentInParent<Room>();
         }
 
         /// <summary>
@@ -86,7 +86,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets the tesla gate's <see cref="Features.Room"/> which is located in.
         /// </summary>
-        public Room Room { get; }
+        public Room Room => room ??= Map.FindParentRoom(GameObject);
 
         /// <summary>
         /// Gets a value indicating whether or not the tesla gate's shock burst is in progess.
