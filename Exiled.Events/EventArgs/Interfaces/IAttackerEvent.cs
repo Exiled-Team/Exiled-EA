@@ -16,9 +16,9 @@ namespace Exiled.Events.EventArgs.Interfaces
     public interface IAttackerEvent : IPlayerEvent
     {
         /// <summary>
-        ///     Gets the <see cref="Player" /> being targeted.
+        ///     Gets the attacker <see cref="Player" />.
         /// </summary>
-        public Player Target { get; }
+        public Player Attacker { get; }
 
         /// <summary>
         ///     Gets or sets the <see cref="DamageHandlerBase" /> managing the damage to the target.

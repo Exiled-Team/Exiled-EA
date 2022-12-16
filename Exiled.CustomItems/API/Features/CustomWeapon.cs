@@ -218,7 +218,7 @@ namespace Exiled.CustomItems.API.Features
         protected virtual void OnHurting(HurtingEventArgs ev)
         {
             if (ev.IsAllowed)
-                ev.Amount = ev.Target.Role == RoleTypeId.Scp106 ? Damage * 0.1f : Damage;
+                ev.Amount = ev.Player.Role == RoleTypeId.Scp106 ? Damage * 0.1f : Damage;
         }
 
         private void OnInternalReloading(ReloadingWeaponEventArgs ev)
@@ -287,24 +287,24 @@ namespace Exiled.CustomItems.API.Features
 
         private void OnInternalHurting(HurtingEventArgs ev)
         {
-            if (ev.Player is null)
+            if (ev.Attacker is null)
             {
                 return;
             }
 
-            if (ev.Target is null)
+            if (ev.Player is null)
             {
                 Log.Debug($"{Name}: {nameof(OnInternalHurting)}: target null", Instance.Config.Debug);
                 return;
             }
 
-            if (!Check(ev.Player.CurrentItem))
+            if (!Check(ev.Attacker.CurrentItem))
             {
                 Log.Debug($"{Name}: {nameof(OnInternalHurting)}: !Check()", Instance.Config.Debug);
                 return;
             }
 
-            if (ev.Player == ev.Target)
+            if (ev.Attacker == ev.Player)
             {
                 Log.Debug($"{Name}: {nameof(OnInternalHurting)}: attacker == target", Instance.Config.Debug);
                 return;
@@ -328,7 +328,7 @@ namespace Exiled.CustomItems.API.Features
                 return;
             }
 
-            if (!FriendlyFire && (ev.Player.Role.Team == ev.Target.Role.Team))
+            if (!FriendlyFire && (ev.Attacker.Role.Team == ev.Player.Role.Team))
             {
                 Log.Debug($"{Name}: {nameof(OnInternalHurting)}: FF is disabled for this weapon!", Instance.Config.Debug);
                 return;

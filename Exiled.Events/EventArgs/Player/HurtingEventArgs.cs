@@ -17,13 +17,13 @@ namespace Exiled.Events.EventArgs.Player
     /// <summary>
     ///     Contains all information before a player gets damaged.
     /// </summary>
-    public class HurtingEventArgs : IPlayerEvent, IAttackerEvent, IDeniableEvent
+    public class HurtingEventArgs : IAttackerEvent, IDeniableEvent
     {
         /// <summary>
         ///     Initializes a new instance of the <see cref="HurtingEventArgs" /> class.
         /// </summary>
         /// <param name="target">
-        ///     <inheritdoc cref="Target" />
+        ///     <inheritdoc cref="Player" />
         /// </param>
         /// <param name="damageHandler">
         ///     <inheritdoc cref="DamageHandler" />
@@ -31,10 +31,10 @@ namespace Exiled.Events.EventArgs.Player
         public HurtingEventArgs(Player target, DamageHandlerBase damageHandler)
         {
             DamageHandler = new CustomDamageHandler(target, damageHandler);
-            Player = DamageHandler.BaseIs(out CustomAttackerHandler attackerDamageHandler)
+            Attacker = DamageHandler.BaseIs(out CustomAttackerHandler attackerDamageHandler)
                 ? attackerDamageHandler.Attacker
                 : null;
-            Target = target;
+            Player = target;
         }
 
         /// <summary>
@@ -49,7 +49,7 @@ namespace Exiled.Events.EventArgs.Player
         /// <summary>
         ///     Gets the target player, who is going to be hurt.
         /// </summary>
-        public Player Target { get; }
+        public Player Player { get; }
 
         /// <summary>
         ///     Gets or sets the <see cref="CustomDamageHandler" /> for the event.
@@ -64,6 +64,6 @@ namespace Exiled.Events.EventArgs.Player
         /// <summary>
         ///     Gets the attacker player.
         /// </summary>
-        public Player Player { get; }
+        public Player Attacker { get; }
     }
 }
