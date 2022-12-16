@@ -7,7 +7,6 @@
 
 namespace Exiled.Events.Patches.Events.Player
 {
-    using System;
     using System.Collections.Generic;
     using System.Reflection;
     using System.Reflection.Emit;
@@ -16,13 +15,8 @@ namespace Exiled.Events.Patches.Events.Player
     using Exiled.Events.EventArgs.Player;
 
     using HarmonyLib;
-    using Mirror;
     using NorthwoodLib.Pools;
-    using PlayerRoles;
-    using PlayerRoles.FirstPersonControl;
     using PlayerRoles.FirstPersonControl.Spawnpoints;
-    using RelativePositioning;
-    using UnityEngine;
 
     using static HarmonyLib.AccessTools;
 
@@ -66,9 +60,6 @@ namespace Exiled.Events.Patches.Events.Player
 
                     // player
                     new(OpCodes.Ldloc_S, player.LocalIndex),
-
-                    // roleBase
-                    new(OpCodes.Ldarg_3),
 
                     // position
                     new(OpCodes.Ldloc_1),
