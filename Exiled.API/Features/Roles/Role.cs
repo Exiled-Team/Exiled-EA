@@ -36,9 +36,13 @@ namespace Exiled.API.Features.Roles
         public virtual Player Owner { get; }
 
         /// <summary>
-        /// Gets the <see cref="RoleTypeId"/> of this <see cref="Player"/>.
+        /// Gets or sets the <see cref="RoleTypeId"/> of this <see cref="Player"/>.
         /// </summary>
-        public abstract RoleTypeId Type { get; }
+        public RoleTypeId Type
+        {
+            get => Owner.Role;
+            set => Owner?.SetRole(value);
+        }
 
         /// <summary>
         /// Gets the <see cref="FirstPersonController"/>.
