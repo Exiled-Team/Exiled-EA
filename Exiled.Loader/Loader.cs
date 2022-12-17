@@ -49,6 +49,7 @@ namespace Exiled.Loader
             if (MultiAdminFeatures.MultiAdminUsed)
             {
                 Log.SendRaw($"Detected MultiAdmin! Version: {MultiAdminFeatures.MultiAdminVersion} | Features: {MultiAdminFeatures.MultiAdminModFeatures}", ConsoleColor.Cyan);
+
                 MultiAdminFeatures.CallEvent(MultiAdminFeatures.EventType.SERVER_START);
                 MultiAdminFeatures.CallAction(MultiAdminFeatures.ActionType.SET_SUPPORTED_FEATURES, MultiAdminFeatures.ModFeatures.All);
             }
@@ -57,6 +58,7 @@ namespace Exiled.Loader
 
             if ((LoaderPlugin.Config.Environment != EnvironmentType.Production) && (LoaderPlugin.Config.Environment != EnvironmentType.ProductionDebug))
                 Paths.Reload($"EXILED-{LoaderPlugin.Config.Environment.ToString().ToUpper()}");
+
             if (Environment.CurrentDirectory.Contains("testing", StringComparison.OrdinalIgnoreCase))
                 Paths.Reload($"EXILED-Testing");
 
