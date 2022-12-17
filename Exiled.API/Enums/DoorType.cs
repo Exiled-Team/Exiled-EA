@@ -277,12 +277,12 @@ namespace Exiled.API.Enums
         ElevatorScp049,
 
         /// <summary>
-        /// Represents the Elevator door for <see cref="ElevatorGroup.LczA01"/> ans <see cref="ElevatorGroup.LczA02"/>.
+        /// Represents the Elevator door for <see cref="ElevatorGroup.LczA01"/> and <see cref="ElevatorGroup.LczA02"/>.
         /// </summary>
         ElevatorLczA,
 
         /// <summary>
-        /// Represents the Elevator door for <see cref="ElevatorGroup.LczB01"/> ans <see cref="ElevatorGroup.LczB02"/>.
+        /// Represents the Elevator door for <see cref="ElevatorGroup.LczB01"/> and <see cref="ElevatorGroup.LczB02"/>.
         /// </summary>
         ElevatorLczB,
 
