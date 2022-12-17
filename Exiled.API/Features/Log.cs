@@ -110,7 +110,7 @@ namespace Exiled.API.Features
         /// <param name="message">The message to be sent.</param>
         /// <param name="level">The message level of importance.</param>
         /// <param name="color">The message color.</param>
-        public static void Send(object message, Discord.LogLevel level, System.ConsoleColor color = ConsoleColor.Gray)
+        public static void Send(object message, Discord.LogLevel level, ConsoleColor color = ConsoleColor.Gray)
         {
             SendRaw($"[{level.ToString().ToUpper()}] {message}", color);
         }
@@ -121,7 +121,7 @@ namespace Exiled.API.Features
         /// <param name="message">The message to be sent.</param>
         /// <param name="level">The message level of importance.</param>
         /// <param name="color">The message color.</param>
-        public static void Send(string message, Discord.LogLevel level, System.ConsoleColor color = ConsoleColor.Gray)
+        public static void Send(string message, Discord.LogLevel level, ConsoleColor color = ConsoleColor.Gray)
         {
             SendRaw($"[{level.ToString().ToUpper()}] {message}", color);
         }
@@ -130,15 +130,15 @@ namespace Exiled.API.Features
         /// Sends a raw log message to the game console.
         /// </summary>
         /// <param name="message">The message to be sent.</param>
-        /// <param name="color">The <see cref="System.ConsoleColor"/> of the message.</param>
-        public static void SendRaw(object message, System.ConsoleColor color) => ServerConsole.AddLog(message.ToString(), color);
+        /// <param name="color">The <see cref="ConsoleColor"/> of the message.</param>
+        public static void SendRaw(object message, ConsoleColor color) => ServerConsole.AddLog(message.ToString(), color);
 
         /// <summary>
         /// Sends a raw log message to the game console.
         /// </summary>
         /// <param name="message">The message to be sent.</param>
-        /// <param name="color">The <see cref="System.ConsoleColor"/> of the message.</param>
-        public static void SendRaw(string message, System.ConsoleColor color) => ServerConsole.AddLog(message, color);
+        /// <param name="color">The <see cref="ConsoleColor"/> of the message.</param>
+        public static void SendRaw(string message, ConsoleColor color) => ServerConsole.AddLog(message, color);
 
         /// <summary>
         /// Sends an <see cref="Error(object)"/> with the provided message if the condition is false and stops the execution.
@@ -152,7 +152,7 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="condition">The conditional expression to evaluate. If the condition is true it will continue.</param>
         /// <param name="message">The information message. The error and exception will show this message.</param>
-        /// <exception cref="System.Exception">If the condition is false. It throws an exception stopping the execution.</exception>
+        /// <exception cref="Exception">If the condition is false. It throws an exception stopping the execution.</exception>
         public static void Assert(bool condition, object message)
         {
             if (condition)

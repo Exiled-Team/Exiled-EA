@@ -180,7 +180,7 @@ namespace Exiled.API.Features.Roles
         /// </summary>
         /// <param name="failIfObserved">Whether or not to place the tantrum if SCP-173 is currently being viewed.</param>
         /// <param name="cooldown">The cooldown until SCP-173 can place a tantrum again. Set to <c>0</c> to not affect the cooldown.</param>
-        /// <returns>The tantrum's <see cref="UnityEngine.GameObject"/>, or <see langword="null"/> if it cannot be placed.</returns>
+        /// <returns>The tantrum's <see cref="GameObject"/>, or <see langword="null"/> if it cannot be placed.</returns>
         public GameObject Tantrum(bool failIfObserved = false, float cooldown = 0)
         {
             if (failIfObserved && IsObserved)

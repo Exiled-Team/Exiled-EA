@@ -30,7 +30,7 @@ namespace Exiled.API.Features
     public class Room : MonoBehaviour
     {
         /// <summary>
-        /// A <see cref="Dictionary{TKey,TValue}"/> containing all known <see cref="MapGeneration.RoomIdentifier"/>s and their corresponding <see cref="Room"/>.
+        /// A <see cref="Dictionary{TKey,TValue}"/> containing all known <see cref="RoomIdentifier"/>s and their corresponding <see cref="Room"/>.
         /// </summary>
         internal static readonly Dictionary<RoomIdentifier, Room> RoomIdentifierToRoom = new(250);
 
