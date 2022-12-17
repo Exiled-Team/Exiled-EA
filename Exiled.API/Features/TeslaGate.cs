@@ -33,10 +33,7 @@ namespace Exiled.API.Features
         /// Initializes a new instance of the <see cref="TeslaGate"/> class.
         /// </summary>
         /// <param name="baseTeslaGate">The <see cref="BaseTeslaGate"/> instance.</param>
-        internal TeslaGate(BaseTeslaGate baseTeslaGate)
-        {
-            Base = baseTeslaGate;
-        }
+        internal TeslaGate(BaseTeslaGate baseTeslaGate) => Base = baseTeslaGate;
 
         /// <summary>
         /// Gets a <see cref="IEnumerable{T}"/> of <see cref="TeslaGate"/> which contains all the <see cref="TeslaGate"/> instances.
