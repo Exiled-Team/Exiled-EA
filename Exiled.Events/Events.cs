@@ -131,7 +131,7 @@ namespace Exiled.Events
                 Harmony.DEBUG = true;
 #endif
                 if (PatchByAttributes())
-                    Log.Debug("Events patched successfully!", Loader.ShouldDebugBeShown);
+                    Log.Debug("Events patched successfully!");
                 else
                     Log.Error($"Patching failed!");
 #if DEBUG
@@ -162,10 +162,10 @@ namespace Exiled.Events
         /// </summary>
         public void Unpatch()
         {
-            Log.Debug("Unpatching events...", Loader.ShouldDebugBeShown);
+            Log.Debug("Unpatching events...");
             Harmony.UnpatchAll();
 
-            Log.Debug("All events have been unpatched complete. Goodbye!", Loader.ShouldDebugBeShown);
+            Log.Debug("All events have been unpatched complete. Goodbye!");
         }
 
         private bool PatchByAttributes()
@@ -174,7 +174,7 @@ namespace Exiled.Events
             {
                 Harmony.PatchAll();
 
-                Log.Debug("Events patched by attributes successfully!", Loader.ShouldDebugBeShown);
+                Log.Debug("Events patched by attributes successfully!");
                 return true;
             }
             catch (Exception exception)

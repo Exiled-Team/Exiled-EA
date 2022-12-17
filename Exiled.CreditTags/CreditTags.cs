@@ -110,13 +110,13 @@ namespace Exiled.CreditTags
                 }
                 else
                 {
-                    Log.Debug($"{nameof(SuccessHandler)}: Invalid RankKind - response: {result}", Loader.Loader.ShouldDebugBeShown);
+                    Log.Debug($"{nameof(SuccessHandler)}: Invalid RankKind - response: {result}");
                 }
             }
 
             void ErrorHandler(ThreadSafeRequest request)
             {
-                Log.Debug($"{nameof(ErrorHandler)}: Response: {request.Result} Code: {request.Code}", Loader.Loader.ShouldDebugBeShown);
+                Log.Debug($"{nameof(ErrorHandler)}: Response: {request.Result} Code: {request.Code}");
 
                 errorHandler?.Invoke();
             }

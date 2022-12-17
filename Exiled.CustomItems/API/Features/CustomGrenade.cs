@@ -196,7 +196,7 @@ namespace Exiled.CustomItems.API.Features
             if (!Check(ev.Player.CurrentItem))
                 return;
 
-            Log.Debug($"{ev.Player.Nickname} has thrown a {Name}!", CustomItems.Instance.Config.Debug);
+            Log.Debug($"{ev.Player.Nickname} has thrown a {Name}!");
 
             OnThrowing(ev);
 
@@ -218,7 +218,7 @@ namespace Exiled.CustomItems.API.Features
         {
             if (Check(ev.Grenade))
             {
-                Log.Debug($"A {Name} is exploding!!", CustomItems.Instance.Config.Debug);
+                Log.Debug($"A {Name} is exploding!!");
                 OnExploding(ev);
             }
         }

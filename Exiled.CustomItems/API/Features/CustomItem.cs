@@ -309,9 +309,9 @@ namespace Exiled.CustomItems.API.Features
                     CustomItem customItem = null;
                     bool flag = false;
 
-                    if (!skipReflection && Loader.PluginAssemblies.ContainsKey(assembly))
+                    if (!skipReflection && Server.PluginAssemblies.ContainsKey(assembly))
                     {
-                        IPlugin<IConfig> plugin = Loader.PluginAssemblies[assembly];
+                        IPlugin<IConfig> plugin = Server.PluginAssemblies[assembly];
                         foreach (PropertyInfo property in overrideClass?.GetType().GetProperties() ?? plugin.Config.GetType().GetProperties())
                         {
                             if (property.PropertyType != type)
@@ -388,9 +388,9 @@ namespace Exiled.CustomItems.API.Features
                 {
                     CustomItem customItem = null;
 
-                    if (!skipReflection && Loader.PluginAssemblies.ContainsKey(assembly))
+                    if (!skipReflection && Server.PluginAssemblies.ContainsKey(assembly))
                     {
-                        IPlugin<IConfig> plugin = Loader.PluginAssemblies[assembly];
+                        IPlugin<IConfig> plugin = Server.PluginAssemblies[assembly];
 
                         foreach (PropertyInfo property in overrideClass?.GetType().GetProperties() ?? plugin.Config.GetType().GetProperties())
                         {
@@ -539,7 +539,7 @@ namespace Exiled.CustomItems.API.Features
 
             foreach (SpawnPoint spawnPoint in spawnPoints)
             {
-                Log.Debug($"Attempting to spawn {Name} at {spawnPoint.Position}.", Instance.Config.Debug);
+                Log.Debug($"Attempting to spawn {Name} at {spawnPoint.Position}.");
 
                 if (UnityEngine.Random.Range(1, 101) >= spawnPoint.Chance || ((limit > 0) && (spawned >= limit)))
                     continue;
@@ -552,7 +552,7 @@ namespace Exiled.CustomItems.API.Features
                     {
                         if (Map.Lockers is null)
                         {
-                            Log.Debug($"{nameof(Spawn)}: Locker list is null.", Instance.Config.Debug);
+                            Log.Debug($"{nameof(Spawn)}: Locker list is null.");
                             continue;
                         }
 
@@ -562,19 +562,19 @@ namespace Exiled.CustomItems.API.Features
 
                         if (locker is null)
                         {
-                            Log.Debug($"{nameof(Spawn)}: Selected locker is null.", Instance.Config.Debug);
+                            Log.Debug($"{nameof(Spawn)}: Selected locker is null.");
                             continue;
                         }
 
                         if (locker.Loot is null)
                         {
-                            Log.Debug($"{nameof(Spawn)}: Invalid locker location. Attempting to find a new one..", Instance.Config.Debug);
+                            Log.Debug($"{nameof(Spawn)}: Invalid locker location. Attempting to find a new one..");
                             continue;
                         }
 
                         if (locker.Chambers is null)
                         {
-                            Log.Debug($"{nameof(Spawn)}: Locker chambers is null", Instance.Config.Debug);
+                            Log.Debug($"{nameof(Spawn)}: Locker chambers is null");
                             continue;
                         }
 
@@ -582,13 +582,13 @@ namespace Exiled.CustomItems.API.Features
 
                         if (chamber is null)
                         {
-                            Log.Debug($"{nameof(Spawn)}: chamber is null", Instance.Config.Debug);
+                            Log.Debug($"{nameof(Spawn)}: chamber is null");
                             continue;
                         }
 
                         Vector3 position = chamber._spawnpoint.transform.position;
                         Spawn(position, (Player)null);
-                        Log.Debug($"Spawned {Name} at {position} ({spawnPoint.Name})", Instance.Config.Debug);
+                        Log.Debug($"Spawned {Name} at {position} ({spawnPoint.Name})");
 
                         break;
                     }
@@ -607,7 +607,7 @@ namespace Exiled.CustomItems.API.Features
                         firearmPickup.NetworkStatus = firearmPickup.Status;
                     }
 
-                    Log.Debug($"Spawned {Name} at {spawnPoint.Position} ({spawnPoint.Name})", Instance.Config.Debug);
+                    Log.Debug($"Spawned {Name} at {spawnPoint.Position} ({spawnPoint.Name})");
                 }
             }
 
@@ -645,11 +645,11 @@ namespace Exiled.CustomItems.API.Features
         {
             try
             {
-                Log.Debug($"{Name}.{nameof(Give)}: Item Serial: {item.Serial} Ammo: {(item is Firearm firearm ? firearm.Ammo : -1)}", Instance.Config.Debug);
+                Log.Debug($"{Name}.{nameof(Give)}: Item Serial: {item.Serial} Ammo: {(item is Firearm firearm ? firearm.Ammo : -1)}");
 
                 player.AddItem(item);
 
-                Log.Debug($"{nameof(Give)}: Adding {item.Serial} to tracker.", Instance.Config.Debug);
+                Log.Debug($"{nameof(Give)}: Adding {item.Serial} to tracker.");
                 if (!TrackedSerials.Contains(item.Serial))
                     TrackedSerials.Add(item.Serial);
 
@@ -722,10 +722,10 @@ namespace Exiled.CustomItems.API.Features
             if (!Instance.Config.IsEnabled)
                 return false;
 
-            Log.Debug($"Trying to register {Name} ({Id}).", Instance.Config.Debug);
+            Log.Debug($"Trying to register {Name} ({Id}).");
             if (!Registered.Contains(this))
             {
-                Log.Debug("Registered items doesn't contain this item yet..", Instance.Config.Debug);
+                Log.Debug("Registered items doesn't contain this item yet..");
                 if (Registered.Any(customItem => customItem.Id == Id))
                 {
                     Log.Warn($"{Name} has tried to register with the same custom item ID as another item: {Id}. It will not be registered.");
@@ -733,12 +733,12 @@ namespace Exiled.CustomItems.API.Features
                     return false;
                 }
 
-                Log.Debug("Adding item to registered list..", Instance.Config.Debug);
+                Log.Debug("Adding item to registered list..");
                 Registered.Add(this);
 
                 Init();
 
-                Log.Debug($"{Name} ({Id}) [{Type}] has been successfully registered.", Instance.Config.Debug);
+                Log.Debug($"{Name} ({Id}) [{Type}] has been successfully registered.");
 
                 return true;
             }
