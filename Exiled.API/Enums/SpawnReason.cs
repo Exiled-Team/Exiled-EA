@@ -53,7 +53,7 @@ namespace Exiled.API.Enums
         ForceClass,
 
         /// <summary>
-        /// The user will be destroy.
+        /// The user will be destroyed.
         /// </summary>
         Destroyed,
     }
