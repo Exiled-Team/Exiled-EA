@@ -196,15 +196,13 @@ namespace Exiled.API.Features.Core
         /// <returns>The <see cref="Type"/> with the name that matches the given name.</returns>
         public static Type FindUObjectDefinedTypeByName(string name, bool ignoreAbstractTypes = true)
         {
-            Type[] assemblyTypes = ignoreAbstractTypes
-                ? Assembly.GetExecutingAssembly().GetTypes()
+            Type[] assemblyTypes = ignoreAbstractTypes ? Assembly.GetExecutingAssembly().GetTypes()
                     .Where(t => !t.IsAbstract).ToArray()
                 : Assembly.GetExecutingAssembly().GetTypes();
+
             List<int> matches = new();
-            matches.AddRange(
-                assemblyTypes.Select(
-                    type =>
-                        LevenshteinDistance(type.Name, name)));
+            matches.AddRange(assemblyTypes.Select(type => LevenshteinDistance(type.Name, name)));
+
             return assemblyTypes[matches.IndexOf(matches.Min())];
         }
 
@@ -636,7 +634,7 @@ namespace Exiled.API.Features.Core
         {
             List<T> objects = new();
 
-            foreach (EObject @object in InternalObjects.Where(predicate))
+            foreach (EObject @object in InternalObjects.Where(predicate).Cast<EObject>())
             {
                 if (@object.Cast(out T obj))
                     objects.Add(obj);
