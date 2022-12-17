@@ -283,6 +283,9 @@ namespace Exiled.API.Features
         /// </summary>
         public void ResetColor()
         {
+            if (!FlickerableLightController)
+                return;
+
             FlickerableLightController.WarheadLightColor = FlickerableLightController.DefaultWarheadColor;
             FlickerableLightController.WarheadLightOverride = false;
         }

@@ -141,7 +141,14 @@ namespace Exiled.API.Features
         /// Gets a random <see cref="Camera"/>.
         /// </summary>
         /// <returns><see cref="Camera"/> object.</returns>
-        public static Camera Random => List.ElementAt(UnityEngine.Random.Range(0, List.Count()));
+        public static Camera Random
+        {
+            get
+            {
+                Camera[] cameras = List.ToArray();
+                return cameras[UnityEngine.Random.Range(0, cameras.Length)];
+            }
+        }
 
         /// <summary>
         /// Gets the base <see cref="Scp079Camera"/>.
