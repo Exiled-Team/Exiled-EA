@@ -185,7 +185,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets a value indicating whether or not the ragdoll is respawnable by SCP-049.
         /// </summary>
-        public bool AllowRecall => NetworkInfo.ExistenceTime > Scp049ResurrectAbility.HumanCorpseDuration;
+        public bool AllowRecall => NetworkInfo.ExistenceTime > PlayerRoles.PlayableScps.Scp049.Scp049ResurrectAbility.HumanCorpseDuration;
 
         /// <summary>
         /// Gets the <see cref="Features.Room"/> the ragdoll is located in.
