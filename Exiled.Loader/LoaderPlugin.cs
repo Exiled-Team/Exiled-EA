@@ -59,20 +59,20 @@ namespace Exiled.Loader
                 rootPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "EXILED-Testing");
             }
 
-            string dependenciesPath = Path.Combine(rootPath, "Plugins", "dependencies");
+            string dependenciesPath = PluginAPI.Helpers.Paths.GlobalPlugins.Dependencies;
 
             if (!Directory.Exists(rootPath))
                 Directory.CreateDirectory(rootPath);
 
             if (!File.Exists(Path.Combine(dependenciesPath, "Exiled.API.dll")))
             {
-                Log.Error($"[Exiled.Loader] Exiled.API.dll was not found, Exiled won't be loaded!", "Exiled.Loader");
+                Log.Error($"[Exiled.Loader] Exiled.API.dll was not found at {dependenciesPath}, Exiled won't be loaded!", "Exiled.Loader");
                 return;
             }
 
             if (!File.Exists(Path.Combine(dependenciesPath, "YamlDotNet.dll")))
             {
-                ServerConsole.AddLog($"[Exiled.Loader] YamlDotNet.dll was not found, Exiled won't be loaded!", ConsoleColor.DarkRed);
+                ServerConsole.AddLog($"[Exiled.Loader] YamlDotNet.dll was not found at {dependenciesPath}, Exiled won't be loaded!", ConsoleColor.DarkRed);
                 return;
             }
 
