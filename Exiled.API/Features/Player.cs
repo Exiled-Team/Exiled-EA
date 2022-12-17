@@ -945,7 +945,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets a value indicating whether or not the player's inventory is full.
         /// </summary>
-        public bool IsInventoryFull => Items.Count >= 8;
+        public bool IsInventoryFull => Items.Count >= Inventory.MaxSlots;
 
         /// <summary>
         /// Gets a value indicating whether or not the player can send inputs.
