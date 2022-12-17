@@ -15,6 +15,7 @@ namespace Exiled.API.Features
 
     using Enums;
     using Exiled.API.Extensions;
+    using Exiled.API.Features.Roles;
     using Hazards;
     using InventorySystem.Items.Firearms.BasicMessages;
     using InventorySystem.Items.Pickups;
@@ -176,8 +177,8 @@ namespace Exiled.API.Features
                 // Raycasting doesn't make sense,
                 // SCP-079 position is constant,
                 // let it be 'Outside' instead
-                // if (ply.Role.Is(out Scp079Role role))
-                    // room = FindParentRoom(role.Camera.GameObject);
+                if (ply.Role.Is(out Scp079Role role))
+                    room = FindParentRoom(role.Camera.GameObject);
             }
 
             if (room is null)
