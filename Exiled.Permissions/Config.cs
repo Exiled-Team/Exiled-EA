@@ -44,7 +44,9 @@ namespace Exiled.Permissions
         public string FullPath { get; private set; }
 
         /// <inheritdoc/>
-        [Description("Indicates whether the plugin is enabled or not")]
         public bool IsEnabled { get; set; } = true;
+
+        /// <inheritdoc/>
+        public bool Debug { get; set; }
     }
 }

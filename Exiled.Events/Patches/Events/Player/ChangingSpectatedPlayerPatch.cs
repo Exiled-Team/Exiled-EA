@@ -106,7 +106,7 @@ namespace Exiled.Events.Patches.Events.Player
                     new CodeInstruction(OpCodes.Ldloc_S, ev),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(ChangingSpectatedPlayerEventArgs), nameof(ChangingSpectatedPlayerEventArgs.NewTarget))),
 
-                    // if (ev.NewTarget is null)
+                    // if (ev.NewTarget != null)
                     //    goto elseLabel;
                     new(OpCodes.Dup),
                     new(OpCodes.Brtrue_S, elseLabel),

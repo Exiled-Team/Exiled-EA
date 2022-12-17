@@ -234,7 +234,7 @@ namespace Exiled.API.Features
         /// <param name="level">The destination level.</param>
         /// <param name="isForced">Indicates whether the start will be forced or not.</param>
         /// <returns><see langword="true"/> if the lift was started successfully; otherwise, <see langword="false"/>.</returns>
-        public bool TryStart(int level, bool isForced = false) => ElevatorManager.TrySetDestination(Base.AssignedGroup, level, isForced);
+        public bool TryStart(int level, bool isForced = false) => TrySetDestination(Base.AssignedGroup, level, isForced);
 
         /// <inheritdoc/>
         public override bool Equals(object obj) => Base.Equals(obj);

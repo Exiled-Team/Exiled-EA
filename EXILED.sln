@@ -17,15 +17,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Exiled.API", "Exiled.API\Ex
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Exiled.Example", "Exiled.Example\Exiled.Example.csproj", "{4F183633-0A36-408C-A42E-6FBA48751054}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Exiled.Bootstrap", "Exiled.Bootstrap\Exiled.Bootstrap.csproj", "{8AB572FB-FBF2-4DC5-82CA-B04BB808AD03}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Exiled.CustomItems", "Exiled.CustomItems\Exiled.CustomItems.csproj", "{B7FBA3C1-6182-4E96-A33B-053EDDCC4F65}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Exiled.Patcher", "Exiled.Patcher\Exiled.Patcher.csproj", "{B92E9671-71E6-4DDE-B085-062065110D0A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Exiled.CreditTags", "Exiled.CreditTags\Exiled.CreditTags.csproj", "{9FEBCAEA-EB51-46D0-BC04-F74789A40079}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Exiled.CustomItems", "Exiled.CustomItems\Exiled.CustomItems.csproj", "{B7FBA3C1-6182-4E96-A33B-053EDDCC4F65}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Exiled.CreditTags", "Exiled.CreditTags\Exiled.CreditTags.csproj", "{9FEBCAEA-EB51-46D0-BC04-F74789A40079}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Exiled.CustomRoles", "Exiled.CustomRoles\Exiled.CustomRoles.csproj", "{417C3309-8B93-4218-A1D1-D4BB7B09BE0F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Exiled.CustomRoles", "Exiled.CustomRoles\Exiled.CustomRoles.csproj", "{417C3309-8B93-4218-A1D1-D4BB7B09BE0F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -69,16 +65,6 @@ Global
 		{4F183633-0A36-408C-A42E-6FBA48751054}.Release|Any CPU.Build.0 = Release|Any CPU
 		{4F183633-0A36-408C-A42E-6FBA48751054}.Programs|Any CPU.ActiveCfg = Programs|Any CPU
 		{4F183633-0A36-408C-A42E-6FBA48751054}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8AB572FB-FBF2-4DC5-82CA-B04BB808AD03}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8AB572FB-FBF2-4DC5-82CA-B04BB808AD03}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8AB572FB-FBF2-4DC5-82CA-B04BB808AD03}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8AB572FB-FBF2-4DC5-82CA-B04BB808AD03}.Programs|Any CPU.ActiveCfg = Programs|Any CPU
-		{8AB572FB-FBF2-4DC5-82CA-B04BB808AD03}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B92E9671-71E6-4DDE-B085-062065110D0A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B92E9671-71E6-4DDE-B085-062065110D0A}.Release|Any CPU.ActiveCfg = Programs|Any CPU
-		{B92E9671-71E6-4DDE-B085-062065110D0A}.Programs|Any CPU.ActiveCfg = Programs|Any CPU
-		{B92E9671-71E6-4DDE-B085-062065110D0A}.Programs|Any CPU.Build.0 = Programs|Any CPU
-		{B92E9671-71E6-4DDE-B085-062065110D0A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B7FBA3C1-6182-4E96-A33B-053EDDCC4F65}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B7FBA3C1-6182-4E96-A33B-053EDDCC4F65}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B7FBA3C1-6182-4E96-A33B-053EDDCC4F65}.Release|Any CPU.Build.0 = Release|Any CPU

@@ -13,12 +13,11 @@ namespace Exiled.API.Features
 
     using CustomPlayerEffects;
     using GameCore;
+    using Interfaces;
     using MEC;
-
     using Mirror;
     using PlayerRoles.RoleAssign;
     using RoundRestarting;
-
     using UnityEngine;
 
     /// <summary>
@@ -27,6 +26,11 @@ namespace Exiled.API.Features
     public static class Server
     {
         private static MethodInfo sendSpawnMessage;
+
+        /// <summary>
+        /// Gets a dictionary that pairs assemblies with their associated plugins.
+        /// </summary>
+        public static Dictionary<Assembly, IPlugin<IConfig>> PluginAssemblies { get; } = new();
 
         /// <summary>
         /// Gets the player's host of the server.

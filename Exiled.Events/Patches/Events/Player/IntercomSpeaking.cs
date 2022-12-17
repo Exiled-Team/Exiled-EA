@@ -20,7 +20,7 @@ namespace Exiled.Events.Patches.Events.Player
 
     using static HarmonyLib.AccessTools;
 
-    using Player = Exiled.API.Features.Player;
+    using Player = API.Features.Player;
 
     /// <summary>
     ///     Patches <see cref="Intercom.Update" />.
