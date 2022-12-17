@@ -13,7 +13,7 @@ namespace Exiled.API.Features.Roles
     using PlayerRoles;
     using PlayerRoles.PlayableScps.Scp173;
     using PlayerRoles.PlayableScps.Subroutines;
-
+    using UnityEngine;
     using Scp173GameRole = PlayerRoles.PlayableScps.Scp173.Scp173Role;
 
     /// <summary>
@@ -153,7 +153,7 @@ namespace Exiled.API.Features.Roles
         }
 
         /// <summary>
-        /// Gets or sets the amount of time before SCP-173 can use breackneck speed again.
+        /// Gets or sets the amount of time before SCP-173 can use breakneck speed again.
         /// </summary>
         public float BreakneckCooldown
         {
@@ -176,7 +176,7 @@ namespace Exiled.API.Features.Roles
         /// <param name="failIfObserved">Whether or not to place the tantrum if SCP-173 is currently being viewed.</param>
         /// <param name="cooldown">The cooldown until SCP-173 can place a tantrum again. Set to <c>0</c> to not affect the cooldown.</param>
         /// <returns>The tantrum's <see cref="UnityEngine.GameObject"/>, or <see langword="null"/> if it cannot be placed.</returns>
-        public UnityEngine.GameObject Tantrum(bool failIfObserved = false, float cooldown = 0)
+        public GameObject Tantrum(bool failIfObserved = false, float cooldown = 0)
         {
             if (failIfObserved && IsObserved)
                 return null;
