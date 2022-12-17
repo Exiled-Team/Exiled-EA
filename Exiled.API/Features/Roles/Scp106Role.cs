@@ -57,7 +57,7 @@ namespace Exiled.API.Features.Roles
         /// <summary>
         /// Gets a value indicating whether or not SCP-106 is currently inside of an object.
         /// </summary>
-        public bool IsInsideObject => false;
+        public bool IsInsideObject => false; // TODO
 
         /// <summary>
         /// Gets a value indicating whether or not SCP-106 is currently submerged.
