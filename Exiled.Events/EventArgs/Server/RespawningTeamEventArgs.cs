@@ -7,6 +7,7 @@
 
 namespace Exiled.Events.EventArgs.Server
 {
+    using System;
     using System.Collections.Generic;
 
     using Exiled.API.Features;
@@ -65,8 +66,11 @@ namespace Exiled.Events.EventArgs.Server
             get => nextKnownTeam;
             set
             {
+                if (!RespawnManager.SpawnableTeams.TryGetValue(value, out SpawnableTeamHandlerBase spawnableTeam))
+                    return;
+
                 nextKnownTeam = value;
-                ReissueNextKnownTeam();
+                MaximumRespawnAmount = spawnableTeam.MaxWaveSize;
             }
         }
 
@@ -80,31 +84,5 @@ namespace Exiled.Events.EventArgs.Server
         ///     Gets or sets a value indicating whether or not the spawn can occur.
         /// </summary>
         public bool IsAllowed { get; set; }
-
-        private void ReissueNextKnownTeam()
-        {
-            SpawnableTeamHandlerBase @base = SpawnableTeam;
-
-            if (@base is null)
-                return;
-
-            // Refer to the game code
-            int availableTickets = 0;
-
-            for (int i = 0; i < RespawnTokensManager._teamsCount; i++)
-            {
-                if (NextKnownTeam == RespawnTokensManager.Counters[i].Team)
-                    availableTickets = (int)RespawnTokensManager.Counters[i].Amount;
-            }
-
-            if (availableTickets == 0)
-            {
-                availableTickets = 5;
-
-                RespawnTokensManager.GrantTokens(SpawnableTeamType.ChaosInsurgency, availableTickets);
-            }
-
-            MaximumRespawnAmount = RespawnManager.SpawnableTeams.TryGetValue(NextKnownTeam, out SpawnableTeamHandlerBase value) ? value.MaxWaveSize : 0;
-        }
     }
 }
