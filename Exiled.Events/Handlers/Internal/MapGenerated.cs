@@ -53,29 +53,22 @@ namespace Exiled.Events.Handlers.Internal
 
         private static void GenerateCache()
         {
-            try
-            {
-                Warhead.SitePanel = Object.FindObjectOfType<AlphaWarheadNukesitePanel>();
-                Warhead.OutsitePanel = Object.FindObjectOfType<AlphaWarheadOutsitePanel>();
-                Server.Host = new Player(ReferenceHub.HostHub);
-                Server.Broadcast = ReferenceHub.HostHub.GetComponent<Broadcast>();
+            Warhead.SitePanel = Object.FindObjectOfType<AlphaWarheadNukesitePanel>();
+            Warhead.OutsitePanel = Object.FindObjectOfType<AlphaWarheadOutsitePanel>();
+            Server.Host = new Player(ReferenceHub.HostHub);
+            Server.Broadcast = ReferenceHub.HostHub.GetComponent<Broadcast>();
 
-                GenerateCamera();
-                GenerateTeslaGates();
-                GenerateRooms();
-                GenerateWindow();
-                GeneratePocketTeleports();
-                GenerateAttachments();
-                GenerateLockers();
+            GenerateCamera();
+            GenerateTeslaGates();
+            GenerateRooms();
+            GenerateWindow();
+            GeneratePocketTeleports();
+            GenerateAttachments();
+            GenerateLockers();
 
-                Map.AmbientSoundPlayer = ReferenceHub.HostHub.GetComponent<AmbientSoundPlayer>();
+            Map.AmbientSoundPlayer = ReferenceHub.HostHub.GetComponent<AmbientSoundPlayer>();
 
-                Handlers.Map.OnGenerated();
-            }
-            catch (Exception ex)
-            {
-                Log.Error(ex);
-            }
+            Handlers.Map.OnGenerated();
 
             Timing.CallDelayed(0.1f, Handlers.Server.OnWaitingForPlayers);
         }
