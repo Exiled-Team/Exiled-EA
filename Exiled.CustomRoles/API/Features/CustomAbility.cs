@@ -101,9 +101,9 @@ namespace Exiled.CustomRoles.API.Features
 
                 CustomAbility customAbility = null;
 
-                if (!skipReflection && Loader.PluginAssemblies.ContainsKey(assembly))
+                if (!skipReflection && Server.PluginAssemblies.ContainsKey(assembly))
                 {
-                    IPlugin<IConfig> plugin = Loader.PluginAssemblies[assembly];
+                    IPlugin<IConfig> plugin = Server.PluginAssemblies[assembly];
 
                     foreach (PropertyInfo property in overrideClass?.GetType().GetProperties() ??
                                                       plugin.Config.GetType().GetProperties())
@@ -146,9 +146,9 @@ namespace Exiled.CustomRoles.API.Features
 
                 CustomAbility customAbility = null;
 
-                if (!skipReflection && Loader.PluginAssemblies.ContainsKey(assembly))
+                if (!skipReflection && Server.PluginAssemblies.ContainsKey(assembly))
                 {
-                    IPlugin<IConfig> plugin = Loader.PluginAssemblies[assembly];
+                    IPlugin<IConfig> plugin = Server.PluginAssemblies[assembly];
 
                     foreach (PropertyInfo property in overrideClass?.GetType().GetProperties() ?? plugin.Config.GetType().GetProperties())
                     {
@@ -267,7 +267,7 @@ namespace Exiled.CustomRoles.API.Features
                 Registered.Add(this);
                 Init();
 
-                Log.Debug($"{Name} has been successfully registered.", CustomRoles.Instance.Config.Debug);
+                Log.Debug($"{Name} has been successfully registered.");
 
                 return true;
             }
