@@ -180,20 +180,10 @@ namespace Exiled.API.Features
                     // room = FindParentRoom(role.Camera.GameObject);
             }
 
-            room = Room.Get(objectInRoom.transform.position);
-
             if (room is null)
             {
                 // Then try for objects that aren't children, like players and pickups.
-                Ray downRay = new(objectInRoom.transform.position, Vector3.down);
-
-                if (Physics.RaycastNonAlloc(downRay, CachedFindParentRoomRaycast, 10, 1 << 0, QueryTriggerInteraction.Ignore) == 1)
-                    return CachedFindParentRoomRaycast[0].collider.gameObject.GetComponentInParent<Room>();
-
-                Ray upRay = new(objectInRoom.transform.position, Vector3.up);
-
-                if (Physics.RaycastNonAlloc(upRay, CachedFindParentRoomRaycast, 10, 1 << 0, QueryTriggerInteraction.Ignore) == 1)
-                    return CachedFindParentRoomRaycast[0].collider.gameObject.GetComponentInParent<Room>();
+                room = Room.Get(objectInRoom.transform.position);
 
                 // Always default to surface transform, since it's static.
                 // The current index of the 'Outside' room is the last one
