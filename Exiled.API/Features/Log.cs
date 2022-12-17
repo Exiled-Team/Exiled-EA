@@ -38,21 +38,20 @@ namespace Exiled.API.Features
         /// Server must have exiled_debug config enabled.
         /// </summary>
         /// <param name="message">The message to be sent.</param>
-        public static void Debug(object message)
-        {
-#if !DEBUG
-            Assembly callingAssembly = Assembly.GetCallingAssembly();
-            if (!knownDebugValues.ContainsKey(callingAssembly))
-            {
-                if (!Server.PluginAssemblies.ContainsKey(callingAssembly))
-                    SetDebugThroughReflection(callingAssembly);
-                else
-                    knownDebugValues.Add(callingAssembly, Server.PluginAssemblies[callingAssembly].Config.Debug);
-            }
+        public static void Debug(object message) => Debug(message.ToString());
 
-            if (knownDebugValues[callingAssembly])
-#endif
-                Send($"[{Assembly.GetCallingAssembly().GetName().Name}] {message}", Discord.LogLevel.Debug, ConsoleColor.Green);
+        /// <summary>
+        /// Sends a <see cref="Discord.LogLevel.Debug"/> level messages to the game console.
+        /// Server must have exiled_debug config enabled.
+        /// </summary>
+        /// <typeparam name="T">The inputted object's type.</typeparam>
+        /// <param name="object">The object to be logged and returned.</param>
+        /// <returns>Returns the <typeparamref name="T"/> object inputted in <paramref name="object"/>.</returns>
+        public static T DebugObject<T>(T @object)
+        {
+            Debug(@object);
+
+            return @object;
         }
 
         /// <summary>
@@ -75,33 +74,6 @@ namespace Exiled.API.Features
             if (knownDebugValues[callingAssembly])
 #endif
             Send($"[{Assembly.GetCallingAssembly().GetName().Name}] {message}", Discord.LogLevel.Debug, ConsoleColor.Green);
-        }
-
-        /// <summary>
-        /// Sends a <see cref="Discord.LogLevel.Debug"/> level messages to the game console.
-        /// Server must have exiled_debug config enabled.
-        /// </summary>
-        /// <typeparam name="T">The inputted object's type.</typeparam>
-        /// <param name="object">The object to be logged and returned.</param>
-        /// <returns>Returns the <typeparamref name="T"/> object inputted in <paramref name="object"/>.</returns>
-        public static T DebugObject<T>(T @object)
-        {
-#if !DEBUG
-            Assembly callingAssembly = Assembly.GetCallingAssembly();
-            if (!knownDebugValues.ContainsKey(callingAssembly))
-            {
-                if (!Server.PluginAssemblies.ContainsKey(callingAssembly))
-                    SetDebugThroughReflection(callingAssembly);
-                else
-                    knownDebugValues.Add(callingAssembly, Server.PluginAssemblies[callingAssembly].Config.Debug);
-            }
-
-            if (knownDebugValues[callingAssembly])
-#endif
-                Send($"[{Assembly.GetCallingAssembly().GetName().Name}] {@object}", Discord.LogLevel.Debug, ConsoleColor.Green);
-#pragma warning disable SA1137
-            return @object;
-#pragma warning restore SA1137
         }
 
         /// <summary>
