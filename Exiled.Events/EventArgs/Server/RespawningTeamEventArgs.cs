@@ -66,10 +66,14 @@ namespace Exiled.Events.EventArgs.Server
             get => nextKnownTeam;
             set
             {
-                if (!RespawnManager.SpawnableTeams.TryGetValue(value, out SpawnableTeamHandlerBase spawnableTeam))
-                    return;
-
                 nextKnownTeam = value;
+
+                if (!RespawnManager.SpawnableTeams.TryGetValue(value, out SpawnableTeamHandlerBase spawnableTeam))
+                {
+                    MaximumRespawnAmount = 0;
+                    return;
+                }
+
                 MaximumRespawnAmount = spawnableTeam.MaxWaveSize;
             }
         }
