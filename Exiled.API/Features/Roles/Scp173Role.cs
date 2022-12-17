@@ -10,10 +10,13 @@ namespace Exiled.API.Features.Roles
     using System.Collections.Generic;
 
     using Mirror;
+
     using PlayerRoles;
     using PlayerRoles.PlayableScps.Scp173;
     using PlayerRoles.PlayableScps.Subroutines;
+
     using UnityEngine;
+
     using Scp173GameRole = PlayerRoles.PlayableScps.Scp173.Scp173Role;
 
     /// <summary>
