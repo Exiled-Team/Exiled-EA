@@ -41,9 +41,7 @@ namespace Exiled.Events.EventArgs.Server
         public RespawningTeamEventArgs(List<Player> players, int maxRespawn, SpawnableTeamType nextKnownTeam, bool isAllowed = true)
         {
             Players = players;
-            MaximumRespawnAmount = Mathf.Min(
-                maxRespawn,
-                NextKnownTeam != SpawnableTeamType.None ? RespawnManager.SpawnableTeams[NextKnownTeam].MaxWaveSize : 0);
+            MaximumRespawnAmount = maxRespawn;
 
             this.nextKnownTeam = nextKnownTeam;
             IsAllowed = isAllowed;
@@ -102,12 +100,11 @@ namespace Exiled.Events.EventArgs.Server
             if (availableTickets == 0)
             {
                 availableTickets = 5;
+
                 RespawnTokensManager.GrantTokens(SpawnableTeamType.ChaosInsurgency, availableTickets);
             }
 
-            MaximumRespawnAmount = Mathf.Min(
-                availableTickets,
-                NextKnownTeam != SpawnableTeamType.None ? RespawnManager.SpawnableTeams[NextKnownTeam].MaxWaveSize : 0);
+            MaximumRespawnAmount = RespawnManager.SpawnableTeams.TryGetValue(NextKnownTeam, out SpawnableTeamHandlerBase value) ? value.MaxWaveSize : 0;
         }
     }
 }
