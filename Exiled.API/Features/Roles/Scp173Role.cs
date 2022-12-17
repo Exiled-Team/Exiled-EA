@@ -147,8 +147,10 @@ namespace Exiled.API.Features.Roles
             get => SubroutineModule.TryGetSubroutine(out Scp173BlinkTimer ability) && ability._breakneckSpeedsAbility.IsActive;
             set
             {
-                if (SubroutineModule.TryGetSubroutine(out Scp173BlinkTimer ability))
-                    ability._breakneckSpeedsAbility.IsActive = true;
+                if (!SubroutineModule.TryGetSubroutine(out Scp173BlinkTimer ability))
+                    return;
+
+                ability._breakneckSpeedsAbility.IsActive = value;
             }
         }
 
