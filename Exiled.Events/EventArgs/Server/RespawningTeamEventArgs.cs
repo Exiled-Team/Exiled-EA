@@ -7,14 +7,11 @@
 
 namespace Exiled.Events.EventArgs.Server
 {
-    using System;
     using System.Collections.Generic;
 
     using Exiled.API.Features;
     using Exiled.Events.EventArgs.Interfaces;
     using Respawning;
-
-    using UnityEngine;
 
     /// <summary>
     ///     Contains all information before spawning a wave of <see cref="SpawnableTeamType.NineTailedFox" /> or
