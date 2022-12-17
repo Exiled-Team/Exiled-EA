@@ -15,11 +15,13 @@ namespace Exiled.API.Features
 
     using Enums;
     using Exiled.API.Extensions;
+    using Exiled.API.Features.Roles;
     using Hazards;
     using InventorySystem.Items.Firearms.BasicMessages;
     using InventorySystem.Items.Pickups;
     using Items;
     using LightContainmentZoneDecontamination;
+    using MapGeneration;
     using MapGeneration.Distributors;
     using Mirror;
     using PlayerRoles;
@@ -175,22 +177,14 @@ namespace Exiled.API.Features
                 // Raycasting doesn't make sense,
                 // SCP-079 position is constant,
                 // let it be 'Outside' instead
-                // if (ply.Role.Is(out Scp079Role role))
-                    // room = FindParentRoom(role.Camera.GameObject);
+                if (ply.Role.Is(out Scp079Role role))
+                    room = FindParentRoom(role.Camera.GameObject);
             }
 
             if (room is null)
             {
                 // Then try for objects that aren't children, like players and pickups.
-                Ray downRay = new(objectInRoom.transform.position, Vector3.down);
-
-                if (Physics.RaycastNonAlloc(downRay, CachedFindParentRoomRaycast, 10, 1 << 0, QueryTriggerInteraction.Ignore) == 1)
-                    return CachedFindParentRoomRaycast[0].collider.gameObject.GetComponentInParent<Room>();
-
-                Ray upRay = new(objectInRoom.transform.position, Vector3.up);
-
-                if (Physics.RaycastNonAlloc(upRay, CachedFindParentRoomRaycast, 10, 1 << 0, QueryTriggerInteraction.Ignore) == 1)
-                    return CachedFindParentRoomRaycast[0].collider.gameObject.GetComponentInParent<Room>();
+                room = Room.Get(objectInRoom.transform.position);
 
                 // Always default to surface transform, since it's static.
                 // The current index of the 'Outside' room is the last one
@@ -354,12 +348,11 @@ namespace Exiled.API.Features
         /// </summary>
         internal static void ClearCache()
         {
-            Room.RoomsValue.Clear();
+            Room.RoomIdentifierToRoom.Clear();
             Door.DoorVariantToDoor.Clear();
-            Camera.CamerasValue.Clear();
-            Window.WindowValue.Clear();
-            TeslaGate.TeslasValue.Clear();
-            Generator.GeneratorValues.Clear();
+            Camera.Camera079ToCamera.Clear();
+            Window.BreakableWindowToWindow.Clear();
+            TeslaGate.BaseTeslaGateToTeslaGate.Clear();
             TeleportsValue.Clear();
             LockersValue.Clear();
             RagdollsValue.Clear();
