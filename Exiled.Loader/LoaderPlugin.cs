@@ -1,4 +1,4 @@
-﻿// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
 // <copyright file="LoaderPlugin.cs" company="Exiled Team">
 // Copyright (c) Exiled Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
@@ -66,18 +66,20 @@ namespace Exiled.Loader
 
             if (!File.Exists(Path.Combine(dependenciesPath, "Exiled.API.dll")))
             {
-                Log.Error($"[Exiled.Bootstrap] Exiled.API.dll was not found, Exiled won't be loaded!", "Exiled.Loader");
+                Log.Error($"[Exiled.Loader] Exiled.API.dll was not found, Exiled won't be loaded!", "Exiled.Loader");
                 return;
             }
 
             if (!File.Exists(Path.Combine(dependenciesPath, "YamlDotNet.dll")))
             {
-                ServerConsole.AddLog($"[Exiled.Bootstrap] YamlDotNet.dll was not found, Exiled won't be loaded!", ConsoleColor.DarkRed);
+                ServerConsole.AddLog($"[Exiled.Loader] YamlDotNet.dll was not found, Exiled won't be loaded!", ConsoleColor.DarkRed);
                 return;
             }
 
             loader = new Loader();
+
             Log.Info("Calling run");
+
             loader.Run();
         }
     }
