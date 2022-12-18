@@ -12,6 +12,7 @@ namespace Exiled.API.Features
     using System.Linq;
 
     using Exiled.API.Enums;
+
     using Interactables.Interobjects;
     using Interactables.Interobjects.DoorUtils;
     using UnityEngine;
@@ -24,47 +25,37 @@ namespace Exiled.API.Features
     /// </summary>
     public class Lift
     {
-        /// <inheritdoc cref="Elevators"/>
-        internal static readonly Dictionary<ElevatorGroup, ElevatorChamber> ElevatorsValue = SpawnedChambers;
+        /// <summary>
+        /// Gets the map elevators.
+        /// </summary>
+        public static readonly Dictionary<ElevatorGroup, ElevatorChamber> Elevators = SpawnedChambers;
 
-        /// <inheritdoc cref="List"/>
-        internal static readonly List<Lift> LiftsValue = new();
+        /// <summary>
+        /// Internal list that contains elevators.
+        /// </summary>
+        internal static readonly List<Lift> LiftsList = new();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Lift"/> class.
         /// </summary>
-        /// <param name="group">The <see cref="ElevatorGroup"/> to wrap.</param>
         /// <param name="elevator">The <see cref="ElevatorChamber"/> to wrap.</param>
-        internal Lift(ElevatorGroup group, ElevatorChamber elevator)
+        internal Lift(ElevatorChamber elevator)
         {
             Base = elevator;
 
-            if (!ElevatorsValue.ContainsKey(group))
-            {
-                ElevatorsValue.Add(group, elevator);
-                LiftsValue.Add(this);
-            }
-            else
-            {
-                throw new ArgumentException($"Lift with group {group} already exists!");
-            }
+            LiftsList.Add(this);
         }
 
         /// <summary>
-        /// Gets a <see cref="IEnumerable{T}"/> of <see cref="Lift"/> containing all the <see cref="Lift"/> instances.
+        /// Gets a <see cref="IEnumerable{T}"/> of <see cref="Lift"/> which contains all the <see cref="Lift"/> instances.
         /// </summary>
-        public static IEnumerable<Lift> List => LiftsValue;
-
-        /// <summary>
-        /// Gets a <see cref="Dictionary{TKey, TValue}"/> of <see cref="ElevatorGroup"/> and <see cref="ElevatorChamber"/> containing all the elevators.
-        /// </summary>
-        public static IReadOnlyDictionary<ElevatorGroup, ElevatorChamber> Elevators => SpawnedChambers;
+        public static IEnumerable<Lift> List => LiftsList.IsEmpty() ? Elevators.Select(elevator => new Lift(elevator.Value)) : LiftsList;
 
         /// <summary>
         /// Gets a random <see cref="Lift"/>.
         /// </summary>
         /// <returns><see cref="Lift"/> object.</returns>
-        public static Lift Random => List.ToList()[UnityEngine.Random.Range(0, Elevators.Count)];
+        public static Lift Random => LiftsList.RandomItem();
 
         /// <summary>
         /// Gets the base <see cref="ElevatorChamber"/>.
@@ -138,13 +129,9 @@ namespace Exiled.API.Features
         public bool IsMoving => Status == ElevatorSequence.MovingAway || Status == ElevatorSequence.Arriving;
 
         /// <summary>
-        /// Gets or sets a value indicating whether the lift is locked.
+        /// Gets a value indicating whether the lift is locked.
         /// </summary>
-        public bool IsLocked
-        {
-            get => Base.ActiveLocks != DoorLockReason.None;
-            set => Base.ActiveLocks = DoorLockReason.AdminCommand;
-        }
+        public bool IsLocked => Base.ActiveLocks > 0;
 
         /// <summary>
         /// Gets or sets the <see cref="AnimationTime"/>.
@@ -246,6 +233,39 @@ namespace Exiled.API.Features
         /// <param name="isForced">Indicates whether the start will be forced or not.</param>
         /// <returns><see langword="true"/> if the lift was started successfully; otherwise, <see langword="false"/>.</returns>
         public bool TryStart(int level, bool isForced = false) => TrySetDestination(Base.AssignedGroup, level, isForced);
+
+        /// <summary>
+        /// Changes lock of the lift.
+        /// </summary>
+        /// <param name="lockReason">Type of lift lockdown.</param>
+        public void ChangeLock(DoorLockReason lockReason)
+        {
+            DoorLockReason lockFlags = Base.ActiveLocks;
+
+            if (lockReason == DoorLockReason.None)
+                lockFlags = 0;
+            else
+                lockFlags |= lockReason;
+
+            List<ElevatorDoor> targetDoors = ElevatorDoor.AllElevatorDoors.First(x => x.Key == Base.AssignedGroup).Value;
+
+            foreach (ElevatorDoor door in targetDoors)
+            {
+                if (lockFlags == 0)
+                {
+                    door.NetworkActiveLocks = 0;
+                }
+                else
+                {
+                    door.NetworkActiveLocks = (ushort)lockFlags;
+
+                    if (Base.CurrentLevel != 1)
+                        TrySetDestination(Base.AssignedGroup, 1, true);
+                }
+
+                Base.RefreshLocks(Base.AssignedGroup, door);
+            }
+        }
 
         /// <inheritdoc/>
         public override bool Equals(object obj) => Base.Equals(obj);
