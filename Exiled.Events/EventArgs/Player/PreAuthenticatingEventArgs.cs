@@ -51,7 +51,7 @@ namespace Exiled.Events.EventArgs.Player
             ReaderStartPosition = readerStartPosition;
             Flags = flags;
             Country = country;
-            IsAllowed = true;
+            isAllowed = true;
             serverFull = LiteNetLib4MirrorCore.Host.ConnectedPeersCount >= num;
         }
 
@@ -83,7 +83,12 @@ namespace Exiled.Events.EventArgs.Player
         /// <summary>
         ///     Gets a value indicating whether the player can be authenticated or not.
         /// </summary>
-        public bool IsAllowed { get; set; }
+        public bool isAllowed { get; set; }
+
+        /// <summary>
+        ///
+        /// </summary>
+        public bool ForceAllowConnection { get; set; }
 
         /// <summary>
         ///     Gets or sets a value indicating whether all available slots on the server are occupied.
@@ -93,7 +98,7 @@ namespace Exiled.Events.EventArgs.Player
             get => serverFull;
             set
             {
-                if (!IsAllowed)
+                if (!isAllowed)
                     throw new InvalidOperationException("You cannot set this value if the event is not allowed.");
 
                 serverFull = value;
@@ -103,7 +108,9 @@ namespace Exiled.Events.EventArgs.Player
         /// <summary>
         /// Gets a value indicating whether the connection should be accepted (player can be authenticated and has a free slot).
         /// </summary>
-        internal bool AcceptConnection => IsAllowed && !ServerFull;
+        public bool AcceptConnection => isAllowed && !ServerFull;
+
+        public bool AllowFurtherChecks { get; set; } = true;
 
         /// <summary>
         ///     Delays the connection.
@@ -148,7 +155,7 @@ namespace Exiled.Events.EventArgs.Player
         /// <param name="isForced">Indicates whether the player has to be rejected forcefully or not.</param>
         public void Reject(NetDataWriter writer, bool isForced)
         {
-            if (!IsAllowed)
+            if (!isAllowed)
                 return;
 
             Disallow();
@@ -180,7 +187,7 @@ namespace Exiled.Events.EventArgs.Player
             if (customReason is not null && (customReason.Length > 400))
                 throw new ArgumentOutOfRangeException(nameof(rejectionReason), "Reason can't be longer than 400 characters.");
 
-            if (!IsAllowed)
+            if (!isAllowed)
                 return;
 
             Disallow();
@@ -221,7 +228,7 @@ namespace Exiled.Events.EventArgs.Player
         /// </summary>
         public void Disallow()
         {
-            IsAllowed = false;
+            isAllowed = false;
             serverFull = false;
         }
     }
