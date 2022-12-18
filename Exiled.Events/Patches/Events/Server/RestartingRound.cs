@@ -13,7 +13,6 @@ namespace Exiled.Events.Patches.Events.Server
 
     using GameCore;
     using HarmonyLib;
-    using Loader;
     using NorthwoodLib.Pools;
     using RoundRestarting;
 
@@ -39,8 +38,7 @@ namespace Exiled.Events.Patches.Events.Server
 
                     // API.Features.Log.Debug("Round restarting", Loader.ShouldDebugBeShown)
                     new(OpCodes.Ldstr, "Round restarting"),
-                    new(OpCodes.Call, PropertyGetter(typeof(Loader), nameof(Loader.ShouldDebugBeShown))),
-                    new(OpCodes.Call, Method(typeof(API.Features.Log), nameof(API.Features.Log.Debug), new[] { typeof(string), typeof(bool) })),
+                    new(OpCodes.Call, Method(typeof(API.Features.Log), nameof(API.Features.Log.Debug), new[] { typeof(string) })),
                 });
 
             const int offset = 1;

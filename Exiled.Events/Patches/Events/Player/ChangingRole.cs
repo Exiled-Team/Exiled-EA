@@ -86,7 +86,7 @@ namespace Exiled.Events.Patches.Events.Player
                     // reason
                     new(OpCodes.Ldarg_2),
 
-                    // var ev = new ChangingRoleEventArgs(Player, RoleTypeId, RoleChangeReason)
+                    // ChangingRoleEventArgs ev = new(Player, RoleTypeId, RoleChangeReason)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(ChangingRoleEventArgs))[0]),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),

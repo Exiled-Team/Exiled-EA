@@ -24,30 +24,6 @@ namespace Exiled.Loader
     public static class ConfigManager
     {
         /// <summary>
-        /// Loads the loader configs.
-        /// </summary>
-        public static void LoadLoaderConfigs()
-        {
-            if (!File.Exists(Paths.LoaderConfig))
-            {
-                Log.Warn("The Loader doesn't have default configs, generating...");
-                Directory.CreateDirectory(Paths.Configs);
-                File.WriteAllText(Paths.LoaderConfig, Loader.Serializer.Serialize(Loader.Config));
-                return;
-            }
-
-            try
-            {
-                Loader.Config.CopyProperties(Loader.Deserializer.Deserialize<Config>(File.ReadAllText(Paths.LoaderConfig)));
-            }
-            catch (Exception e)
-            {
-                Log.Error("Exiled.Loader configs could not be loaded, some of them are in a wrong format, default configs will be loaded instead!");
-                Log.Error(e);
-            }
-        }
-
-        /// <summary>
         /// Loads all plugin configs.
         /// </summary>
         /// <param name="rawConfigs">The raw configs to be loaded.</param>
@@ -56,7 +32,7 @@ namespace Exiled.Loader
         {
             try
             {
-                Log.Info($"Loading plugin configs... ({Loader.Config.ConfigType})");
+                Log.Info($"Loading plugin configs... ({LoaderPlugin.Config.ConfigType})");
 
                 Dictionary<string, object> rawDeserializedConfigs = Loader.Deserializer.Deserialize<Dictionary<string, object>>(rawConfigs) ?? new Dictionary<string, object>();
                 SortedDictionary<string, IConfig> deserializedConfigs = new(StringComparer.Ordinal);
@@ -91,7 +67,7 @@ namespace Exiled.Loader
         /// <param name="plugin">The plugin which config will be loaded.</param>
         /// <param name="rawConfigs">The raw configs to detect if the plugin already has generated configs.</param>
         /// <returns>The <see cref="IConfig"/> of the plugin.</returns>
-        public static IConfig LoadConfig(this IPlugin<IConfig> plugin, Dictionary<string, object> rawConfigs = null) => Loader.Config.ConfigType switch
+        public static IConfig LoadConfig(this IPlugin<IConfig> plugin, Dictionary<string, object> rawConfigs = null) => LoaderPlugin.Config.ConfigType switch
         {
             ConfigType.Separated => LoadSeparatedConfig(plugin),
             _ => LoadDefaultConfig(plugin, rawConfigs),
@@ -226,7 +202,7 @@ namespace Exiled.Loader
                 if (configs is null || configs.Count == 0)
                     return false;
 
-                if (Loader.Config.ConfigType == ConfigType.Default)
+                if (LoaderPlugin.Config.ConfigType == ConfigType.Default)
                 {
                     return SaveDefaultConfig(Loader.Serializer.Serialize(configs));
                 }
@@ -247,7 +223,7 @@ namespace Exiled.Loader
         /// <returns>Returns the read configs.</returns>
         public static string Read()
         {
-            if (Loader.Config.ConfigType != ConfigType.Default)
+            if (LoaderPlugin.Config.ConfigType != ConfigType.Default)
                 return string.Empty;
 
             try
@@ -271,7 +247,7 @@ namespace Exiled.Loader
         {
             try
             {
-                if (Loader.Config.ConfigType == ConfigType.Default)
+                if (LoaderPlugin.Config.ConfigType == ConfigType.Default)
                 {
                     SaveDefaultConfig(string.Empty);
                     return true;

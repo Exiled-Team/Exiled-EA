@@ -44,7 +44,7 @@ namespace Exiled.Events.Patches.Events.Scp079
 
             newInstructions[index].WithLabels(continueLabel);
 
-            // var voiceChattingEv = new VoiceChattingEventArgs(Player.Get(this.Owner), this, true)
+            // VoiceChattingEventArgs voiceChattingEv = new(Player.Get(this.Owner), this, true)
             //
             // Handlers.Player.OnVoiceChatting(voiceChattingEv)
             //
@@ -54,7 +54,7 @@ namespace Exiled.Events.Patches.Events.Scp079
             // if (base.CurrentChannel != VoiceChatChannel.Proximity)
             //    goto continueLabel;
             //
-            // var ev = new ChangingSpeakerStatusEventArgs(Player.Get(base.Owner), value);
+            // ChangingSpeakerStatusEventArgs ev = new(Player.Get(base.Owner), value);
             //
             // Scp079.OnStartingSpeaker(ev);
             //
@@ -76,7 +76,7 @@ namespace Exiled.Events.Patches.Events.Scp079
                     // true
                     new(OpCodes.Ldc_I4_1),
 
-                    // var voiceChattingEv = new VoiceChattingEventArgs(Player, VoiceModuleBase, bool)
+                    // VoiceChattingEventArgs voiceChattingEv = new(Player, VoiceModuleBase, bool)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(VoiceChattingEventArgs))[0]),
                     new(OpCodes.Dup),
 
@@ -111,7 +111,7 @@ namespace Exiled.Events.Patches.Events.Scp079
                     // value
                     new(OpCodes.Ldarg_1),
 
-                    // var ev = new ChangingSpeakerStatusEventArgs(Player, bool)
+                    // ChangingSpeakerStatusEventArgs ev = new(Player, bool)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(ChangingSpeakerStatusEventArgs))[0]),
                     new(OpCodes.Dup),
 

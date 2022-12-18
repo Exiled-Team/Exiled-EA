@@ -66,7 +66,7 @@ namespace Exiled.Events.Patches.Generic
 
             if (attackerHub is null || victimHub is null)
             {
-                Log.Debug($"CheckFriendlyFirePlayerRules, Attacker hub null: {attackerHub is null}, Victim hub null: {victimHub is null}", Loader.Loader.ShouldDebugBeShown);
+                Log.Debug($"CheckFriendlyFirePlayerRules, Attacker hub null: {attackerHub is null}, Victim hub null: {victimHub is null}");
                 return true;
             }
 
@@ -76,17 +76,17 @@ namespace Exiled.Events.Patches.Generic
                 Player victim = Player.Get(victimHub);
                 if (attacker is null || victim is null)
                 {
-                    Log.Debug($"CheckFriendlyFirePlayerRules, Attacker null: {attacker is null}, Victim null: {victim is null}", Loader.Loader.ShouldDebugBeShown);
+                    Log.Debug($"CheckFriendlyFirePlayerRules, Attacker null: {attacker is null}, Victim null: {victim is null}");
                     return true;
                 }
 
                 if (attacker == victim)
                 {
-                    Log.Debug("CheckFriendlyFirePlayerRules, Attacker player was equal to Victim, likely suicide", Loader.Loader.ShouldDebugBeShown);
+                    Log.Debug("CheckFriendlyFirePlayerRules, Attacker player was equal to Victim, likely suicide");
                     return true;
                 }
 
-                Log.Debug($"CheckFriendlyFirePlayerRules, Attacker role {attacker.Role} and Victim {victim.Role}", Loader.Loader.ShouldDebugBeShown);
+                Log.Debug($"CheckFriendlyFirePlayerRules, Attacker role {attacker.Role} and Victim {victim.Role}");
 
                 if (!string.IsNullOrEmpty(victim.UniqueRole))
                 {
@@ -131,7 +131,7 @@ namespace Exiled.Events.Patches.Generic
             }
             catch (Exception ex)
             {
-                Log.Debug($"CheckFriendlyFirePlayerRules failed to handle friendly fire because: {ex}", Loader.Loader.ShouldDebugBeShown);
+                Log.Debug($"CheckFriendlyFirePlayerRules failed to handle friendly fire because: {ex}");
             }
 
             return false;

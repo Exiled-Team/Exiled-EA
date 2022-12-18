@@ -49,7 +49,7 @@ namespace Exiled.Events.Patches.Events.Player
                 index,
                 new[]
                 {
-                    // var player = Player.Get(this.Hub)
+                    // Player player = Player.Get(this.Hub)
                     //
                     // if (player == null)
                     //    goto continueLabel;
@@ -73,7 +73,7 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Ldarg_0),
                     new(OpCodes.Ldfld, Field(typeof(StatusEffectBase), nameof(StatusEffectBase._intensity))),
 
-                    // var ev = new ReceivingEventArgs(player, this, value, currentState)
+                    // ReceivingEventArgs ev = new(player, this, value, currentState)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(ReceivingEffectEventArgs))[0]),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),

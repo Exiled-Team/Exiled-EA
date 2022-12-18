@@ -93,7 +93,7 @@ namespace Exiled.Events.Patches.Events.Map
                     new(OpCodes.Ldloc, list.LocalIndex),
                     new(OpCodes.Call, Method(typeof(ExplodingFlashGrenade), nameof(ConvertHubs))),
 
-                    // var ev = new ExplodingGrenadeEventArgs(player, this, players);
+                    // ExplodingGrenadeEventArgs ev = new(player, this, players);
                     new(OpCodes.Newobj, DeclaredConstructor(typeof(ExplodingGrenadeEventArgs), new[] { typeof(Player), typeof(EffectGrenade), typeof(List<Player>) })),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),

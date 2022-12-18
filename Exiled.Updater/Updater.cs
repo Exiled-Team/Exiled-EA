@@ -84,28 +84,6 @@ namespace Exiled.Updater
             return false;
         }
 
-        /* "I don't think that will be necessary." -Zabszk
-        private void FixInvalidProxyHandling()
-        {
-            // https://github.com/mono/mono/pull/12595
-            if (PlatformId == PlatformID.Win32NT)
-            {
-                const string keyName = "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings";
-
-                var proxyEnabled = (int)Microsoft.Win32.Registry.GetValue(keyName, "ProxyEnable", 0);
-                var strProxy = (string)Microsoft.Win32.Registry.GetValue(keyName, "ProxyServer", null);
-                if (proxyEnabled > 0 && strProxy is null)
-                {
-                    Log.Info("HttpProxy detected, bypassing...");
-                    Microsoft.Win32.Registry.SetValue(keyName, "ProxyEnable", 0);
-                    Log.Info("Bypassed!");
-
-                    GameCore.Console.HttpMode = HttpQueryMode.HttpClient;
-                    GameCore.Console.LockHttpMode = false;
-                }
-            }
-        }*/
-
         private HttpClient CreateHttpClient()
         {
             HttpClient client = new()

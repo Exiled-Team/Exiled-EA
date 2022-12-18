@@ -36,16 +36,25 @@ namespace Exiled.Events.Patches.Events.Player
             Label nullLabel = generator.DefineLabel();
             Label skipNull = generator.DefineLabel();
             Label returnLabel = generator.DefineLabel();
+            Label continueLabel = generator.DefineLabel();
 
             LocalBuilder owner = generator.DeclareLocal(typeof(ReferenceHub));
-            LocalBuilder player = generator.DeclareLocal(typeof(API.Features.Player));
             LocalBuilder previousSpectatedPlayer = generator.DeclareLocal(typeof(API.Features.Player));
             LocalBuilder ev = generator.DeclareLocal(typeof(ChangingSpectatedPlayerEventArgs));
 
+            const int index = 0;
+
+            newInstructions[index].WithLabels(continueLabel);
+
             newInstructions.InsertRange(
-                0,
+                index,
                 new[]
                 {
+                    // if (value == 0)
+                    //    goto continueLabel;
+                    new(OpCodes.Ldarg_1),
+                    new(OpCodes.Brfalse_S, continueLabel),
+
                     // if (!this.TryGetOwner(out ReferenceHub owner))
                     //    return;
                     new(OpCodes.Ldarg_0),
@@ -53,13 +62,13 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Call, Method(typeof(PlayerRoleBase), nameof(PlayerRoleBase.TryGetOwner), new[] { typeof(ReferenceHub).MakeByRefType() })),
                     new(OpCodes.Brfalse_S, returnLabel),
 
-                    // var player = Player.Get(owner)
+                    // Player.Get(owner)
                     new(OpCodes.Ldloc_S, owner.LocalIndex),
                     new(OpCodes.Call, Method(typeof(API.Features.Player), nameof(API.Features.Player.Get), new[] { typeof(ReferenceHub) })),
 
-                    // var previousSpectatedPlayer = Player.Get(this.SyncedSpectatedNetId)
+                    // Player previousSpectatedPlayer = Player.Get(this.SyncedSpectatedNetId)
                     //
-                    // if (previousSpectatedPlayer is null)
+                    // if (previousSpectatedPlayer == null)
                     //    goto nullLabel;
                     new(OpCodes.Ldarg_0),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(SpectatorRole), nameof(SpectatorRole.SyncedSpectatedNetId))),
@@ -88,7 +97,7 @@ namespace Exiled.Events.Patches.Events.Player
                     // true
                     new CodeInstruction(OpCodes.Ldc_I4_1),
 
-                    // var ev = new ChangingSpectatedPlayerEventArgs(Player, Player, Player, bool)
+                    // ChangingSpectatedPlayerEventArgs ev = new(Player, Player, Player, bool)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(ChangingSpectatedPlayerEventArgs))[0]),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),
@@ -106,7 +115,7 @@ namespace Exiled.Events.Patches.Events.Player
                     new CodeInstruction(OpCodes.Ldloc_S, ev),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(ChangingSpectatedPlayerEventArgs), nameof(ChangingSpectatedPlayerEventArgs.NewTarget))),
 
-                    // if (ev.NewTarget is null)
+                    // if (ev.NewTarget != null)
                     //    goto elseLabel;
                     new(OpCodes.Dup),
                     new(OpCodes.Brtrue_S, elseLabel),

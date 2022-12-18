@@ -42,7 +42,7 @@ namespace Exiled.Events.Patches.Events.Scp079
             int offset = 0;
             int index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Ldloc_3) + offset;
 
-            // var ev = new ElevatorTeleportingEventArgs(Player.Get(base.Owner), base.CurrentCamSync.CurrentCamera.Room, elevatorDoor, (float)this._cost);
+            // ElevatorTeleportingEventArgs ev = new(Player.Get(base.Owner), base.CurrentCamSync.CurrentCamera.Room, elevatorDoor, (float)this._cost);
             //
             // Handlers.Scp079.OnElevatorTeleporting(ev);
             //
@@ -71,7 +71,7 @@ namespace Exiled.Events.Patches.Events.Scp079
                     new(OpCodes.Ldfld, Field(typeof(Scp079ElevatorStateChanger), nameof(Scp079ElevatorStateChanger._cost))),
                     new(OpCodes.Conv_R4),
 
-                    // var ev = new ElevatorTeleportingEventArgs(Player, RoomIdentifier, ElevatorDoor, float)
+                    // ElevatorTeleportingEventArgs ev = new(Player, RoomIdentifier, ElevatorDoor, float)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(ElevatorTeleportingEventArgs))[0]),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),

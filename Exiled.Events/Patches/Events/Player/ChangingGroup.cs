@@ -38,7 +38,7 @@ namespace Exiled.Events.Patches.Events.Player
 
             int index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Ret) + offset;
 
-            // var ev = new ChangingGroupEventArgs(Player.Get(this.gameObject), group, true);
+            // ChangingGroupEventArgs ev = new(Player.Get(this.gameObject), group, true);
             //
             // if (!ev.IsAllowed)
             //     return;
@@ -57,7 +57,7 @@ namespace Exiled.Events.Patches.Events.Player
                     // true
                     new(OpCodes.Ldc_I4_1),
 
-                    // var ev = new ChangingGroupEventArgs(Player, UserGroup, bool);
+                    // ChangingGroupEventArgs ev = new(Player, UserGroup, bool);
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(ChangingGroupEventArgs))[0]),
                     new(OpCodes.Dup),
 

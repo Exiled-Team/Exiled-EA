@@ -15,13 +15,15 @@ namespace Exiled.Events.Handlers.Internal
     using API.Features.Items;
     using API.Structs;
     using Exiled.API.Extensions;
+    using Interactables.Interobjects;
+    using InventorySystem.Items.Firearms.Attachments;
     using InventorySystem.Items.Firearms.Attachments.Components;
     using MapGeneration;
     using MapGeneration.Distributors;
     using MEC;
     using NorthwoodLib.Pools;
     using PlayerRoles.PlayableScps.Scp079.Cameras;
-    using UnityEngine;
+    using Utils.NonAllocLINQ;
 
     using Broadcast = Broadcast;
     using Camera = API.Features.Camera;
@@ -57,10 +59,11 @@ namespace Exiled.Events.Handlers.Internal
             Server.Host = new Player(ReferenceHub.HostHub);
             Server.Broadcast = ReferenceHub.HostHub.GetComponent<Broadcast>();
 
+            GenerateCamera();
             GenerateTeslaGates();
-            GenerateCameras();
             GenerateRooms();
-            GenerateWindow();
+            GenerateWindows();
+            GenerateLifts();
             GeneratePocketTeleports();
             GenerateAttachments();
             GenerateLockers();
@@ -75,34 +78,40 @@ namespace Exiled.Events.Handlers.Internal
         private static void GenerateRooms()
         {
             // Get bulk of rooms with sorted.
-            List<GameObject> roomObjects = ListPool<GameObject>.Shared.Rent(Object.FindObjectsOfType<RoomIdentifier>().Select(x => x.gameObject));
+            List<RoomIdentifier> roomIdentifiers = ListPool<RoomIdentifier>.Shared.Rent(RoomIdentifier.AllRoomIdentifiers);
 
             // If no rooms were found, it means a plugin is trying to access this before the map is created.
-            if (roomObjects.Count == 0)
+            if (roomIdentifiers.Count == 0)
                 throw new InvalidOperationException("Plugin is trying to access Rooms before they are created.");
 
-            foreach (GameObject roomObject in roomObjects)
-                Room.RoomsValue.Add(Room.CreateComponent(roomObject));
+            foreach (RoomIdentifier roomIdentifier in roomIdentifiers)
+                Room.RoomIdentifierToRoom.Add(roomIdentifier, Room.CreateComponent(roomIdentifier.gameObject));
 
-            ListPool<GameObject>.Shared.Return(roomObjects);
+            ListPool<RoomIdentifier>.Shared.Return(roomIdentifiers);
         }
 
-        private static void GenerateWindow()
+        private static void GenerateWindows()
         {
             foreach (BreakableWindow breakableWindow in Object.FindObjectsOfType<BreakableWindow>())
-                Window.WindowValue.Add(Window.Get(breakableWindow));
+                new Window(breakableWindow);
         }
 
-        private static void GenerateCameras()
+        private static void GenerateLifts()
+        {
+            foreach (ElevatorChamber elevatorChamber in Object.FindObjectsOfType<ElevatorChamber>())
+                new Lift(elevatorChamber);
+        }
+
+        private static void GenerateCamera()
         {
             foreach (Scp079Camera camera079 in Object.FindObjectsOfType<Scp079Camera>())
-                Camera.CamerasValue.Add(new Camera(camera079));
+                new Camera(camera079);
         }
 
         private static void GenerateTeslaGates()
         {
-            foreach (global::TeslaGate teslaGate in Object.FindObjectsOfType<global::TeslaGate>())
-                TeslaGate.TeslasValue.Add(new TeslaGate(teslaGate));
+            foreach (global::TeslaGate teslaGate in TeslaGateController.Singleton.TeslaGates)
+                new TeslaGate(teslaGate);
         }
 
         private static void GeneratePocketTeleports() => Map.TeleportsValue.AddRange(Object.FindObjectsOfType<PocketDimensionTeleport>());
@@ -122,15 +131,25 @@ namespace Exiled.Events.Handlers.Internal
                     continue;
 
                 Firearm.FirearmInstances.Add(firearm);
-                uint code = 1;
-                List<AttachmentIdentifier> attachmentIdentifiers = new();
 
+                List<AttachmentIdentifier> attachmentIdentifiers = new();
+                HashSet<AttachmentSlot> attachmentsSlots = new();
+
+                uint code = 1;
                 foreach (Attachment att in firearm.Attachments)
                 {
-                    attachmentIdentifiers.Add(new AttachmentIdentifier(code, att.Name, att.Slot));
+                    attachmentsSlots.Add(att.Slot);
+                    attachmentIdentifiers.Add(new(code, att.Name, att.Slot));
                     code *= 2U;
                 }
 
+                uint baseCode = 0;
+                attachmentsSlots.ForEach(slot =>
+                baseCode += attachmentIdentifiers.Where(att =>
+                att.Slot == slot).Aggregate((curMin, nextEntry) =>
+                nextEntry.Code < curMin.Code ? nextEntry : curMin));
+
+                Firearm.BaseCodesValue.Add(type, baseCode);
                 Firearm.AvailableAttachmentsValue.Add(type, attachmentIdentifiers.ToArray());
             }
         }

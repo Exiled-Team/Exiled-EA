@@ -23,7 +23,6 @@ namespace Exiled.Loader
     using Features;
     using Features.Configs;
     using Features.Configs.CustomConverters;
-    using NorthwoodLib;
     using YamlDotNet.Serialization;
     using YamlDotNet.Serialization.NamingConventions;
     using YamlDotNet.Serialization.NodeDeserializers;
@@ -31,9 +30,12 @@ namespace Exiled.Loader
     /// <summary>
     /// Used to handle plugins.
     /// </summary>
-    public static class Loader
+    public class Loader
     {
-        static Loader()
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Loader"/> class.
+        /// </summary>
+        public Loader()
         {
             Log.Info($"Initializing at {Environment.CurrentDirectory}");
 
@@ -46,24 +48,14 @@ namespace Exiled.Loader
             if (MultiAdminFeatures.MultiAdminUsed)
             {
                 Log.SendRaw($"Detected MultiAdmin! Version: {MultiAdminFeatures.MultiAdminVersion} | Features: {MultiAdminFeatures.MultiAdminModFeatures}", ConsoleColor.Cyan);
+
                 MultiAdminFeatures.CallEvent(MultiAdminFeatures.EventType.SERVER_START);
                 MultiAdminFeatures.CallAction(MultiAdminFeatures.ActionType.SET_SUPPORTED_FEATURES, MultiAdminFeatures.ModFeatures.All);
             }
 
             CustomNetworkManager.Modded = true;
 
-            ConfigManager.LoadLoaderConfigs();
-
-            if ((Config.Environment != EnvironmentType.Production) && (Config.Environment != EnvironmentType.ProductionDebug))
-                Paths.Reload($"EXILED-{Config.Environment.ToString().ToUpper()}");
-            if (Environment.CurrentDirectory.Contains("testing", StringComparison.OrdinalIgnoreCase))
-                Paths.Reload($"EXILED-Testing");
-
-            Directory.CreateDirectory(Paths.Configs);
-            Directory.CreateDirectory(Paths.Plugins);
-            Directory.CreateDirectory(Paths.Dependencies);
-
-            if (Config.ConfigType == ConfigType.Separated)
+            if (LoaderPlugin.Config.ConfigType == ConfigType.Separated)
                 Directory.CreateDirectory(Paths.IndividualConfigs);
         }
 
@@ -71,11 +63,6 @@ namespace Exiled.Loader
         /// Gets the plugins list.
         /// </summary>
         public static SortedSet<IPlugin<IConfig>> Plugins { get; } = new(PluginPriorityComparer.Instance);
-
-        /// <summary>
-        /// Gets a dictionary that pairs assemblies with their associated plugins.
-        /// </summary>
-        public static Dictionary<Assembly, IPlugin<IConfig>> PluginAssemblies { get; } = new();
 
         /// <summary>
         /// Gets a dictionary containing the file paths of assemblies.
@@ -91,16 +78,6 @@ namespace Exiled.Loader
         /// Gets the version of the assembly.
         /// </summary>
         public static Version Version { get; } = Assembly.GetExecutingAssembly().GetName().Version;
-
-        /// <summary>
-        /// Gets the configs of the plugin manager.
-        /// </summary>
-        public static Config Config { get; } = new();
-
-        /// <summary>
-        /// Gets a value indicating whether the debug should be shown or not.
-        /// </summary>
-        public static bool ShouldDebugBeShown => Config.Environment == EnvironmentType.Testing || Config.Environment == EnvironmentType.Development || Config.Environment == EnvironmentType.ProductionDebug;
 
         /// <summary>
         /// Gets plugin dependencies.
@@ -134,44 +111,6 @@ namespace Exiled.Loader
             .Build();
 
         /// <summary>
-        /// Runs the plugin manager, by loading all dependencies, plugins, configs and then enables all plugins.
-        /// </summary>
-        /// <param name="dependencies">The dependencies that could have been loaded by Exiled.Bootstrap.</param>
-        public static void Run(Assembly[] dependencies = null)
-        {
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? CheckUAC() : geteuid() == 0)
-            {
-                ServerConsole.AddLog("YOU ARE RUNNING THE SERVER AS ROOT / ADMINISTRATOR. THIS IS HIGHLY UNRECOMMENDED. PLEASE INSTALL YOUR SERVER AS A NON-ROOT/ADMIN USER.", ConsoleColor.Red);
-                Thread.Sleep(5000);
-            }
-
-            if (dependencies?.Length > 0)
-                Dependencies.AddRange(dependencies);
-
-            if (!Config.IsEnabled)
-            {
-                Log.Warn("Exiled Loader is disabled. No plugins will be loaded.");
-                return;
-            }
-
-            LoadDependencies();
-            LoadPlugins();
-
-            ConfigManager.Reload();
-            TranslationManager.Reload();
-
-            EnablePlugins();
-
-            BuildInfoCommand.ModDescription = string.Join(
-                "\n",
-                AppDomain.CurrentDomain.GetAssemblies()
-                    .Where(a => a.FullName.StartsWith("Exiled.", StringComparison.OrdinalIgnoreCase))
-                    .Select(a => $"{a.GetName().Name} - Version {a.GetName().Version.ToString(3)}"));
-
-            ServerConsole.AddLog($"Welcome to {LoaderMessages.GetMessage()}", ConsoleColor.Green);
-        }
-
-        /// <summary>
         /// Loads all plugins.
         /// </summary>
         public static void LoadPlugins()
@@ -200,7 +139,7 @@ namespace Exiled.Loader
 
                 Log.Info($"Loaded plugin {plugin.Name}@{(plugin.Version is not null ? $"{plugin.Version.Major}.{plugin.Version.Minor}.{plugin.Version.Build}" : attribute is not null ? attribute.InformationalVersion : string.Empty)}");
 
-                PluginAssemblies.Add(assembly, plugin);
+                Server.PluginAssemblies.Add(assembly, plugin);
                 Plugins.Add(plugin);
             }
         }
@@ -237,30 +176,30 @@ namespace Exiled.Loader
                 {
                     if (type.IsAbstract || type.IsInterface)
                     {
-                        Log.Debug($"\"{type.FullName}\" is an interface or abstract class, skipping.", ShouldDebugBeShown);
+                        Log.Debug($"\"{type.FullName}\" is an interface or abstract class, skipping.");
                         continue;
                     }
 
                     if (!IsDerivedFromPlugin(type))
                     {
-                        Log.Debug($"\"{type.FullName}\" does not inherit from Plugin<TConfig>, skipping.", ShouldDebugBeShown);
+                        Log.Debug($"\"{type.FullName}\" does not inherit from Plugin<TConfig>, skipping.");
                         continue;
                     }
 
-                    Log.Debug($"Loading type {type.FullName}", ShouldDebugBeShown);
+                    Log.Debug($"Loading type {type.FullName}");
 
                     IPlugin<IConfig> plugin = null;
 
                     ConstructorInfo constructor = type.GetConstructor(Type.EmptyTypes);
                     if (constructor is not null)
                     {
-                        Log.Debug("Public default constructor found, creating instance...", ShouldDebugBeShown);
+                        Log.Debug("Public default constructor found, creating instance...");
 
                         plugin = constructor.Invoke(null) as IPlugin<IConfig>;
                     }
                     else
                     {
-                        Log.Debug($"Constructor wasn't found, searching for a property with the {type.FullName} type...", ShouldDebugBeShown);
+                        Log.Debug($"Constructor wasn't found, searching for a property with the {type.FullName} type...");
 
                         object value = Array.Find(type.GetProperties(BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public), property => property.PropertyType == type)?.GetValue(null);
 
@@ -275,7 +214,7 @@ namespace Exiled.Loader
                         continue;
                     }
 
-                    Log.Debug($"Instantiated type {type.FullName}", ShouldDebugBeShown);
+                    Log.Debug($"Instantiated type {type.FullName}");
 
                     if (CheckPluginRequiredExiledVersion(plugin))
                         continue;
@@ -365,7 +304,7 @@ namespace Exiled.Loader
             }
 
             Plugins.Clear();
-            PluginAssemblies.Clear();
+            Server.PluginAssemblies.Clear();
 
             LoadPlugins();
 
@@ -400,6 +339,38 @@ namespace Exiled.Loader
         /// <param name="args">The name or prefix of the plugin (Using the prefix is recommended).</param>
         /// <returns>The desired plugin, null if not found.</returns>
         public static IPlugin<IConfig> GetPlugin(string args) => Plugins.FirstOrDefault(x => x.Name == args || x.Prefix == args);
+
+        /// <summary>
+        /// Runs the plugin manager, by loading all dependencies, plugins, configs and then enables all plugins.
+        /// </summary>
+        /// <param name="dependencies">The dependencies that could have been loaded by Exiled.Bootstrap.</param>
+        public void Run(Assembly[] dependencies = null)
+        {
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? CheckUAC() : geteuid() == 0)
+            {
+                ServerConsole.AddLog("YOU ARE RUNNING THE SERVER AS ROOT / ADMINISTRATOR. THIS IS HIGHLY UNRECOMMENDED. PLEASE INSTALL YOUR SERVER AS A NON-ROOT/ADMIN USER.", ConsoleColor.DarkRed);
+                Thread.Sleep(5000);
+            }
+
+            if (dependencies?.Length > 0)
+                Dependencies.AddRange(dependencies);
+
+            LoadDependencies();
+            LoadPlugins();
+
+            ConfigManager.Reload();
+            TranslationManager.Reload();
+
+            EnablePlugins();
+
+            BuildInfoCommand.ModDescription = string.Join(
+                "\n",
+                AppDomain.CurrentDomain.GetAssemblies()
+                    .Where(a => a.FullName.StartsWith("Exiled.", StringComparison.OrdinalIgnoreCase))
+                    .Select(a => $"{a.GetName().Name} - Version {a.GetName().Version.ToString(3)}"));
+
+            ServerConsole.AddLog($"Welcome to {LoaderMessages.GetMessage()}", ConsoleColor.Green);
+        }
 
         /// <summary>
         /// Indicates that the passed type is derived from the plugin type.
@@ -448,7 +419,7 @@ namespace Exiled.Loader
 
                     return true;
                 }
-                else if ((requiredVersion.Major < actualVersion.Major) && !Config.ShouldLoadOutdatedPlugins)
+                else if ((requiredVersion.Major < actualVersion.Major) && !LoaderPlugin.Config.ShouldLoadOutdatedPlugins)
                 {
                     Log.Error(
                         $"You're running an older version of {plugin.Name} ({plugin.Version.ToString(3)})! " +

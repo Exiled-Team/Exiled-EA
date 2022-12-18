@@ -57,7 +57,7 @@ namespace Exiled.Events.Patches.Events.Player
                     // true
                     new(OpCodes.Ldc_I4_1),
 
-                    // var ev = new TogglingFlashlightEventArgs(Player, FlashlightItem, bool, bool)
+                    // TogglingFlashlightEventArgs ev = new(Player, FlashlightItem, bool, bool)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(TogglingFlashlightEventArgs))[0]),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),

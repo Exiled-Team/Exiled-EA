@@ -20,7 +20,7 @@ namespace Exiled.Events.Patches.Events.Player
     using static HarmonyLib.AccessTools;
 
     /// <summary>
-    ///     Patches <see cref="BanHandler.IssueBan(BanDetails, BanHandler.BanType)" />.
+    ///     Patches <see cref="BanHandler.IssueBan(BanDetails, BanHandler.BanType, bool)" />.
     ///     Adds the <see cref="Handlers.Player.Banned" /> event.
     /// </summary>
     [HarmonyPatch(typeof(BanHandler), nameof(BanHandler.IssueBan))]
@@ -48,10 +48,10 @@ namespace Exiled.Events.Patches.Events.Player
 
             newInstructions.InsertRange(
                 index,
-                new CodeInstruction[]
+                new[]
                 {
                     // Player.Get(ban.Id)
-                    new(OpCodes.Ldarg_0),
+                    new CodeInstruction(OpCodes.Ldarg_0).MoveLabelsFrom(newInstructions[index]),
                     new(OpCodes.Ldfld, Field(typeof(BanDetails), nameof(BanDetails.Id))),
                     new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(string) })),
 
@@ -63,6 +63,9 @@ namespace Exiled.Events.Patches.Events.Player
 
                     // banType
                     new(OpCodes.Ldarg_1),
+
+                    // forced
+                    new(OpCodes.Ldarg_2),
 
                     // BannedEventArgs ev = new(Player, Player, BanDetails, BanType)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(BannedEventArgs))[0]),

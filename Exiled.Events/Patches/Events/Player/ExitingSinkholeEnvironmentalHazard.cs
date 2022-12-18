@@ -46,7 +46,7 @@ namespace Exiled.Events.Patches.Events.Player
                     // true
                     new(OpCodes.Ldc_I4_1),
 
-                    // var ev = new ExitingEnvironmentalHazardEventArgs(Player, EnvironmentalHazard, bool)
+                    // ExitingEnvironmentalHazardEventArgs ev = new(Player, EnvironmentalHazard, bool)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(ExitingEnvironmentalHazardEventArgs))[0]),
                     new(OpCodes.Dup),
 

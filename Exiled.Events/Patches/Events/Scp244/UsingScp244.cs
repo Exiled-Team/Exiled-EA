@@ -53,7 +53,7 @@ namespace Exiled.Events.Patches.Events.Scp244
                     // true
                     new(OpCodes.Ldc_I4_1),
 
-                    // var ev = new UsingScp244EventArgs(Scp244Item, Player, bool)
+                    // UsingScp244EventArgs ev = new(Scp244Item, Player, bool)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(UsingScp244EventArgs))[0]),
                     new(OpCodes.Dup),
 

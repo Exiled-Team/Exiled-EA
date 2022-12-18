@@ -65,7 +65,7 @@ namespace Exiled.Events.Patches.Events.Player
                     // true
                     new(OpCodes.Ldc_I4_1),
 
-                    // var ev = FlippingCoinEventArgs(Player, IsTails, true)
+                    // FlippingCoinEventArgs ev = new(Player, IsTails, true)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(FlippingCoinEventArgs))[0]),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),
@@ -87,7 +87,7 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Ldloc_S, ev.LocalIndex),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(FlippingCoinEventArgs), nameof(FlippingCoinEventArgs.IsTails))),
 
-                    // var coinFlipMessage = new CoinFlipMessage(SerialNumber, IsTails)
+                    // CoinFlipMessage coinFlipMessage = new(SerialNumber, IsTails)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(CoinNetworkHandler.CoinFlipMessage))[0]),
 
                     // 0

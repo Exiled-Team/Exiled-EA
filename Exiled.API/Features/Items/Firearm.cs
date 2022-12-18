@@ -33,22 +33,9 @@ namespace Exiled.API.Features.Items
         internal static readonly List<Firearm> FirearmInstances = new();
 
         /// <summary>
-        /// Gets a <see cref="IReadOnlyDictionary{TKey, TValue}"/> which contains all pairs for <see cref="ItemType"/> and <see cref="Enums.BaseCode"/>.
+        /// Gets a <see cref="Dictionary{TKey, TValue}"/> which contains all the base codes expressed in <see cref="ItemType"/> and <see cref="uint"/>.
         /// </summary>
-        internal static readonly IReadOnlyDictionary<ItemType, BaseCode> FirearmPairs = new Dictionary<ItemType, BaseCode>()
-        {
-            { ItemType.GunCOM15, BaseCode.GunCom15 },
-            { ItemType.GunCOM18, BaseCode.GunCom18 },
-            { ItemType.GunCom45, BaseCode.GunCom45 },
-            { ItemType.GunRevolver, BaseCode.GunRevolver },
-            { ItemType.GunE11SR, BaseCode.GunE11SR },
-            { ItemType.GunCrossvec, BaseCode.GunCrossvec },
-            { ItemType.GunFSP9, BaseCode.GunFSP9 },
-            { ItemType.GunLogicer, BaseCode.GunLogicer },
-            { ItemType.GunAK, BaseCode.GunAK },
-            { ItemType.GunShotgun, BaseCode.GunShotgun },
-            { ItemType.ParticleDisruptor, BaseCode.Disruptor },
-        };
+        internal static readonly Dictionary<ItemType, uint> BaseCodesValue = new();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Firearm"/> class.
@@ -77,6 +64,9 @@ namespace Exiled.API.Features.Items
             : this((InventorySystem.Items.Firearms.Firearm)Server.Host.Inventory.CreateItemInstance(type, false))
         {
         }
+
+        /// <inheritdoc cref="BaseCodesValue"/>.
+        public static IReadOnlyDictionary<ItemType, uint> BaseCodes => BaseCodesValue;
 
         /// <inheritdoc cref="AvailableAttachmentsValue"/>.
         public static IReadOnlyDictionary<ItemType, AttachmentIdentifier[]> AvailableAttachments => AvailableAttachmentsValue;
@@ -146,12 +136,19 @@ namespace Exiled.API.Features.Items
         /// <summary>
         /// Gets the <see cref="AttachmentIdentifier"/>s of the firearm.
         /// </summary>
-        public IEnumerable<AttachmentIdentifier> AttachmentIdentifiers => this.GetAttachmentIdentifiers();
+        public IEnumerable<AttachmentIdentifier> AttachmentIdentifiers
+        {
+            get
+            {
+                foreach (Attachment attachment in Attachments.Where(att => att.IsEnabled))
+                    yield return AvailableAttachments[Type].FirstOrDefault(att => att == attachment);
+            }
+        }
 
         /// <summary>
-        /// Gets the <see cref="Enums.BaseCode"/> of the firearm.
+        /// Gets the base code of the firearm.
         /// </summary>
-        public BaseCode BaseCode => FirearmPairs[Type];
+        public uint BaseCode => BaseCodesValue[Type];
 
         /// <summary>
         /// Gets or sets the fire rate of the firearm, if it is an automatic weapon.
@@ -165,7 +162,7 @@ namespace Exiled.API.Features.Items
                 if (Base is AutomaticFirearm auto)
                     auto._fireRate = value;
                 else
-                    throw new InvalidOperationException("You cannot change the firerate of non-automatic weapons.");
+                    throw new InvalidOperationException("You cannot change the fire rate of non-automatic weapons.");
             }
         }
 
@@ -198,6 +195,7 @@ namespace Exiled.API.Features.Items
         {
             uint toRemove = 0;
             uint code = 1;
+
             foreach (Attachment attachment in Base.Attachments)
             {
                 if ((attachment.Name == identifier.Name) && attachment.IsEnabled)
@@ -217,7 +215,7 @@ namespace Exiled.API.Features.Items
 
             Base.ApplyAttachmentsCode((Base.GetCurrentAttachmentsCode() & ~toRemove) | newCode, true);
 
-            Base.Status = new FirearmStatus((byte)UnityEngine.Mathf.Min(Ammo, MaxAmmo), Base.Status.Flags, Base.GetCurrentAttachmentsCode());
+            Base.Status = new FirearmStatus((byte)Mathf.Min(Ammo, MaxAmmo), Base.Status.Flags, Base.GetCurrentAttachmentsCode());
         }
 
         /// <summary>
@@ -264,9 +262,9 @@ namespace Exiled.API.Features.Items
             Base.ApplyAttachmentsCode(Base.GetCurrentAttachmentsCode() & ~code, true);
 
             if (identifier.Name == AttachmentName.Flashlight)
-                Base.Status = new FirearmStatus((byte)UnityEngine.Mathf.Min(Ammo, MaxAmmo), Base.Status.Flags & ~FirearmStatusFlags.FlashlightEnabled, Base.GetCurrentAttachmentsCode());
+                Base.Status = new FirearmStatus((byte)Mathf.Min(Ammo, MaxAmmo), Base.Status.Flags & ~FirearmStatusFlags.FlashlightEnabled, Base.GetCurrentAttachmentsCode());
             else
-                Base.Status = new FirearmStatus((byte)UnityEngine.Mathf.Min(Ammo, MaxAmmo), Base.Status.Flags, Base.GetCurrentAttachmentsCode());
+                Base.Status = new FirearmStatus((byte)Mathf.Min(Ammo, MaxAmmo), Base.Status.Flags, Base.GetCurrentAttachmentsCode());
         }
 
         /// <summary>
@@ -285,9 +283,9 @@ namespace Exiled.API.Features.Items
             Base.ApplyAttachmentsCode(Base.GetCurrentAttachmentsCode() & ~code, true);
 
             if (attachmentName == AttachmentName.Flashlight)
-                Base.Status = new FirearmStatus((byte)UnityEngine.Mathf.Min(Ammo, MaxAmmo), Base.Status.Flags & ~FirearmStatusFlags.FlashlightEnabled, Base.GetCurrentAttachmentsCode());
+                Base.Status = new FirearmStatus((byte)Mathf.Min(Ammo, MaxAmmo), Base.Status.Flags & ~FirearmStatusFlags.FlashlightEnabled, Base.GetCurrentAttachmentsCode());
             else
-                Base.Status = new FirearmStatus((byte)UnityEngine.Mathf.Min(Ammo, MaxAmmo), Base.Status.Flags, Base.GetCurrentAttachmentsCode());
+                Base.Status = new FirearmStatus((byte)Mathf.Min(Ammo, MaxAmmo), Base.Status.Flags, Base.GetCurrentAttachmentsCode());
         }
 
         /// <summary>
@@ -306,9 +304,9 @@ namespace Exiled.API.Features.Items
             Base.ApplyAttachmentsCode(Base.GetCurrentAttachmentsCode() & ~code, true);
 
             if (firearmAttachment.Name == AttachmentName.Flashlight)
-                Base.Status = new FirearmStatus((byte)UnityEngine.Mathf.Min(Ammo, MaxAmmo), Base.Status.Flags & ~FirearmStatusFlags.FlashlightEnabled, Base.GetCurrentAttachmentsCode());
+                Base.Status = new FirearmStatus((byte)Mathf.Min(Ammo, MaxAmmo), Base.Status.Flags & ~FirearmStatusFlags.FlashlightEnabled, Base.GetCurrentAttachmentsCode());
             else
-                Base.Status = new FirearmStatus((byte)UnityEngine.Mathf.Min(Ammo, MaxAmmo), Base.Status.Flags, Base.GetCurrentAttachmentsCode());
+                Base.Status = new FirearmStatus((byte)Mathf.Min(Ammo, MaxAmmo), Base.Status.Flags, Base.GetCurrentAttachmentsCode());
         }
 
         /// <summary>
@@ -344,7 +342,7 @@ namespace Exiled.API.Features.Items
         /// <summary>
         /// Removes all attachments from the firearm.
         /// </summary>
-        public void ClearAttachments() => Base.ApplyAttachmentsCode((uint)BaseCode, true);
+        public void ClearAttachments() => Base.ApplyAttachmentsCode(BaseCode, true);
 
         /// <summary>
         /// Gets a <see cref="Attachment"/> of the specified <see cref="AttachmentIdentifier"/>.
@@ -472,7 +470,7 @@ namespace Exiled.API.Features.Items
                     continue;
 
                 if (AttachmentsServerHandler.PlayerPreferences.TryGetValue(player.ReferenceHub, out Dictionary<ItemType, uint> dictionary))
-                    dictionary[itemType] = (uint)itemType.GetBaseCode();
+                    dictionary[itemType] = itemType.GetBaseCode();
             }
         }
 
@@ -518,7 +516,7 @@ namespace Exiled.API.Features.Items
             if (AttachmentsServerHandler.PlayerPreferences.TryGetValue(player.ReferenceHub, out Dictionary<ItemType, uint> dictionary))
             {
                 foreach (KeyValuePair<ItemType, uint> kvp in dictionary)
-                    dictionary[kvp.Key] = (uint)kvp.Key.GetBaseCode();
+                    dictionary[kvp.Key] = kvp.Key.GetBaseCode();
             }
         }
 
@@ -547,10 +545,11 @@ namespace Exiled.API.Features.Items
         /// <returns> New <see cref="Firearm"/> object. </returns>
         public override Item Clone()
         {
-            Firearm cloneableItem = new(Type);
-
-            cloneableItem.Ammo = Ammo;
-            cloneableItem.FireRate = FireRate;
+            Firearm cloneableItem = new(Type)
+            {
+                Ammo = Ammo,
+                FireRate = FireRate,
+            };
 
             return cloneableItem;
         }
