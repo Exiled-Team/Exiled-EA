@@ -62,7 +62,6 @@ namespace Exiled.Events.Patches.Events.Player
             // Log.SendRaw("Player {player.Nickname} ({player.UserId}) ({player.Id}) connected with the IP: {player.IPAddress}", ConsoleColor.Green);
             //
             // Player.OnVerified(new VerifiedEventArgs(player));
-            Log.Info("\n\n\n{player.Nickname} joining!");
             newInstructions.InsertRange(
                 index,
                 new[]
@@ -80,12 +79,10 @@ namespace Exiled.Events.Patches.Events.Player
 
         public static void handleCmdServerSignature(ServerRoles inst)
         {
-            Log.Info("\n\n\n{player.Nickname} joining!");
             if(!Player.UnverifiedPlayers.TryGetValue(inst._hub, out Player player)) {
                 Joined.CallEvent(inst._hub, out player);
             }
             //
-            Log.Info("{player.Nickname} has verified!");
 
             Player.Dictionary.Add(inst._hub.gameObject, player);
 
