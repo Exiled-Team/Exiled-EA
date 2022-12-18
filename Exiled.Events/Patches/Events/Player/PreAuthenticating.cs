@@ -46,10 +46,11 @@ namespace Exiled.Events.Patches.Events.Player
             int index = newInstructions.FindIndex(
                 instruction => instruction.Calls(PropertyGetter(typeof(LiteNetLib4MirrorCore), nameof(LiteNetLib4MirrorCore.Host)))) + offset;
 
-            int acceptIndex = newInstructions.FindIndex(instruction => instruction.LoadsField(Field(typeof(CustomNetworkManager), nameof(CustomNetworkManager.slots))));
+            int acceptIndex = newInstructions.FindIndex(instruction => instruction.LoadsField(Field(typeof(CustomNetworkManager), nameof(CustomNetworkManager.slots)))) + 1;
             newInstructions[acceptIndex].WithLabels(acceptLabel);
 
-            int rejectIndex = newInstructions.FindLastIndex(instruction => instruction.Calls(Method(typeof(CustomLiteNetLib4MirrorTransport), nameof(CustomLiteNetLib4MirrorTransport.PreauthDisableIdleMode)))) + 2;
+            int rejectOffset = 2;
+            int rejectIndex = newInstructions.FindLastIndex(instruction => instruction.Calls(Method(typeof(CustomLiteNetLib4MirrorTransport), nameof(CustomLiteNetLib4MirrorTransport.PreauthDisableIdleMode)))) + rejectOffset;
             newInstructions[rejectIndex].WithLabels(fullRejectLabel);
             newInstructions.InsertRange(
                 index,

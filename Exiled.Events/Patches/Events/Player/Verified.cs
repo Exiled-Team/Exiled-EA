@@ -82,7 +82,6 @@ namespace Exiled.Events.Patches.Events.Player
             if(!Player.UnverifiedPlayers.TryGetValue(inst._hub, out Player player)) {
                 Joined.CallEvent(inst._hub, out player);
             }
-            //
 
             Player.Dictionary.Add(inst._hub.gameObject, player);
 
