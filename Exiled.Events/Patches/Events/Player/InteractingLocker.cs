@@ -25,7 +25,7 @@ namespace Exiled.Events.Patches.Events.Player
     ///     Patches <see cref="Locker.ServerInteract(ReferenceHub, byte)" />.
     ///     Adds the <see cref="Handlers.Player.InteractingLocker" /> event.
     /// </summary>
-    [HarmonyPatch(typeof(Locker), nameof(Locker.ServerInteract))]
+   // [HarmonyPatch(typeof(Locker), nameof(Locker.ServerInteract))]
     internal static class InteractingLocker
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
@@ -40,7 +40,7 @@ namespace Exiled.Events.Patches.Events.Player
                 new[]
                 {
                     // Player.Get(ply);
-                    new CodeInstruction(OpCodes.Ldarg_1),
+                    new CodeInstruction(OpCodes.Ldarg_1).MoveLabelsFrom(newInstructions[index]),
                     new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
 
                     // this
@@ -60,14 +60,14 @@ namespace Exiled.Events.Patches.Events.Player
 
                     // InteractingLockerEventArgs ev = new(Player, Locker, LockerChamber, byte, bool)
                     new CodeInstruction(OpCodes.Newobj, GetDeclaredConstructors(typeof(InteractingLockerEventArgs))[0]),
-                    new(OpCodes.Dup),
-
-                    // Handlers.Player.OnInteractingLocker(ev)
-                    new(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnInteractingLocker))),
-
-                    // flag = ev.IsAllowed
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(InteractingLockerEventArgs), nameof(InteractingLockerEventArgs.IsAllowed))),
-                    new(OpCodes.Stloc_0),
+                    // new(OpCodes.Dup),
+                    //
+                    // // Handlers.Player.OnInteractingLocker(ev)
+                    // new(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnInteractingLocker))),
+                    //
+                    // // flag = ev.IsAllowed
+                    // new(OpCodes.Callvirt, PropertyGetter(typeof(InteractingLockerEventArgs), nameof(InteractingLockerEventArgs.IsAllowed))),
+                    // new(OpCodes.Stloc_0),
                 });
 
             for (int z = 0; z < newInstructions.Count; z++)
