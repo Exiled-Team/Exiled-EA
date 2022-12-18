@@ -65,7 +65,7 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Ldarg_1),
 
                     // forced
-                    new(OpCodes.Ldc_I4_1),
+                    new(OpCodes.Ldarg_2),
 
                     // BannedEventArgs ev = new(Player, Player, BanDetails, BanType)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(BannedEventArgs))[0]),
