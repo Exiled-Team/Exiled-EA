@@ -82,15 +82,15 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Ldc_I4_2),
                     new(OpCodes.Beq, acceptLabel),
 
-                    // If server full
-                    new(OpCodes.Ldloc, jumpConditions.LocalIndex),
-                    new(OpCodes.Ldc_I4_1),
-                    new(OpCodes.Beq, fullRejectLabel),
-
                     // If allow further if condition checks
                     new(OpCodes.Ldloc, jumpConditions.LocalIndex),
                     new(OpCodes.Ldc_I4_0),
                     new(OpCodes.Beq, continueConditions),
+
+                    // If server full
+                    new(OpCodes.Ldloc, jumpConditions.LocalIndex),
+                    new(OpCodes.Ldc_I4_1),
+                    new(OpCodes.Beq, fullRejectLabel),
 
                     // If fully reject
                     new(OpCodes.Ldloc, jumpConditions.LocalIndex),

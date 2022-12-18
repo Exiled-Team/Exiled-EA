@@ -30,7 +30,7 @@ namespace Exiled.Events.Patches.Events.Item
     ///     <see cref="AttachmentsServerHandler.ServerReceivePreference(NetworkConnection, AttachmentsSetupPreference)" />.
     ///     Adds the <see cref="Item.ReceivingPreference" /> event.
     /// </summary>
-    [HarmonyPatch(typeof(AttachmentsServerHandler), nameof(AttachmentsServerHandler.ServerReceivePreference))]
+    // [HarmonyPatch(typeof(AttachmentsServerHandler), nameof(AttachmentsServerHandler.ServerReceivePreference))]
     internal static class ReceivingPreference
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
