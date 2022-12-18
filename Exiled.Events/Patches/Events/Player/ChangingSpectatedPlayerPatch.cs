@@ -8,6 +8,7 @@
 namespace Exiled.Events.Patches.Events.Player
 {
     using System.Collections.Generic;
+    using System.Reflection;
     using System.Reflection.Emit;
 
     using Exiled.Events.EventArgs.Player;
@@ -36,16 +37,25 @@ namespace Exiled.Events.Patches.Events.Player
             Label nullLabel = generator.DefineLabel();
             Label skipNull = generator.DefineLabel();
             Label returnLabel = generator.DefineLabel();
+            Label continueLabel = generator.DefineLabel();
 
             LocalBuilder owner = generator.DeclareLocal(typeof(ReferenceHub));
-            LocalBuilder player = generator.DeclareLocal(typeof(API.Features.Player));
             LocalBuilder previousSpectatedPlayer = generator.DeclareLocal(typeof(API.Features.Player));
             LocalBuilder ev = generator.DeclareLocal(typeof(ChangingSpectatedPlayerEventArgs));
 
+            const int index = 0;
+
+            newInstructions[index].WithLabels(continueLabel);
+
             newInstructions.InsertRange(
-                0,
+                index,
                 new[]
                 {
+                    // if (value == 0)
+                    //    goto continueLabel;
+                    new(OpCodes.Ldarg_1),
+                    new(OpCodes.Brfalse_S, continueLabel),
+
                     // if (!this.TryGetOwner(out ReferenceHub owner))
                     //    return;
                     new(OpCodes.Ldarg_0),
@@ -53,13 +63,13 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Call, Method(typeof(PlayerRoleBase), nameof(PlayerRoleBase.TryGetOwner), new[] { typeof(ReferenceHub).MakeByRefType() })),
                     new(OpCodes.Brfalse_S, returnLabel),
 
-                    // Player player = Player.Get(owner)
+                    // Player.Get(owner)
                     new(OpCodes.Ldloc_S, owner.LocalIndex),
                     new(OpCodes.Call, Method(typeof(API.Features.Player), nameof(API.Features.Player.Get), new[] { typeof(ReferenceHub) })),
 
                     // Player previousSpectatedPlayer = Player.Get(this.SyncedSpectatedNetId)
                     //
-                    // if (previousSpectatedPlayer is null)
+                    // if (previousSpectatedPlayer == null)
                     //    goto nullLabel;
                     new(OpCodes.Ldarg_0),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(SpectatorRole), nameof(SpectatorRole.SyncedSpectatedNetId))),
