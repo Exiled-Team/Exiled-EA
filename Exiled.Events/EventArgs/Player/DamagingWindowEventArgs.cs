@@ -31,7 +31,7 @@ namespace Exiled.Events.EventArgs.Player
         /// </param>
         public DamagingWindowEventArgs(BreakableWindow window, float damage, DamageHandlerBase handler)
         {
-            // Window = Window.Get(window);
+            Window = Window.Get(window);
             Handler = new DamageHandler(handler is AttackerDamageHandler attackerDamageHandler ? Player.Get(attackerDamageHandler.Attacker.Hub) : null, handler);
             Handler.Damage = damage;
             Player = Handler.Attacker;

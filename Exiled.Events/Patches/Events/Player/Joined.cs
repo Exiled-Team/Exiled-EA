@@ -34,14 +34,10 @@ namespace Exiled.Events.Patches.Events.Player
         {
             try
             {
-#if DEBUG
-                Log.Debug("Creating new player object");
-#endif
+                Log.Info("Creating new player object");
                 player = new Player(hub);
-#if DEBUG
-                Log.Debug($"Object exists {player is not null}");
-                Log.Debug($"Creating player object for {hub.nicknameSync.Network_displayName}");
-#endif
+                Log.Info($"Object exists {player is not null}");
+                Log.Info($"Creating player object for {hub.nicknameSync.Network_displayName}");
                 Player.UnverifiedPlayers.Add(hub, player);
 
                 Handlers.Player.OnJoined(new JoinedEventArgs(player));
