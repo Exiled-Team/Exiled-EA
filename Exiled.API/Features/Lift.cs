@@ -24,10 +24,11 @@ namespace Exiled.API.Features
     /// </summary>
     public class Lift
     {
-        /// <summary>
-        /// Gets the map elevators.
-        /// </summary>
-        public static readonly Dictionary<ElevatorGroup, ElevatorChamber> Elevators = SpawnedChambers;
+        /// <inheritdoc cref="Elevators"/>
+        internal static readonly Dictionary<ElevatorGroup, ElevatorChamber> ElevatorsValue = SpawnedChambers;
+
+        /// <inheritdoc cref="List"/>
+        internal static readonly List<Lift> LiftsValue = new();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Lift"/> class.
@@ -38,16 +39,26 @@ namespace Exiled.API.Features
         {
             Base = elevator;
 
-            if (!Elevators.ContainsKey(group))
-                Elevators.Add(group, elevator);
+            if (!ElevatorsValue.ContainsKey(group))
+            {
+                ElevatorsValue.Add(group, elevator);
+                LiftsValue.Add(this);
+            }
             else
+            {
                 throw new ArgumentException($"Lift with group {group} already exists!");
+            }
         }
 
         /// <summary>
-        /// Gets a <see cref="IEnumerable{T}"/> of <see cref="Lift"/> which contains all the <see cref="Lift"/> instances.
+        /// Gets a <see cref="IEnumerable{T}"/> of <see cref="Lift"/> containing all the <see cref="Lift"/> instances.
         /// </summary>
-        public static IEnumerable<Lift> List => Elevators.Select(elevator => new Lift(elevator.Key, elevator.Value));
+        public static IEnumerable<Lift> List => LiftsValue;
+
+        /// <summary>
+        /// Gets a <see cref="Dictionary{TKey, TValue}"/> of <see cref="ElevatorGroup"/> and <see cref="ElevatorChamber"/> containing all the elevators.
+        /// </summary>
+        public static IReadOnlyDictionary<ElevatorGroup, ElevatorChamber> Elevators => SpawnedChambers;
 
         /// <summary>
         /// Gets a random <see cref="Lift"/>.
