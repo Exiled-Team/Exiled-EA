@@ -5,6 +5,8 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
+using Exiled.API.Features;
+
 namespace Exiled.API.Extensions
 {
     using System;
@@ -211,7 +213,7 @@ namespace Exiled.API.Extensions
         {
             if ((uint) type.GetBaseCode() > code)
             {
-                Firearm.BaseCodesValue[type] = code;
+                throw new ArgumentException($"The attachments code ({code}) can't be less than the item's base code ({type.GetBaseCode()}), weapon: {type}.");
             }
 
 
