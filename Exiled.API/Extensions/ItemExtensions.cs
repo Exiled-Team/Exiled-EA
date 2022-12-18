@@ -16,7 +16,6 @@ namespace Exiled.API.Extensions
     using InventorySystem;
     using InventorySystem.Items;
     using InventorySystem.Items.Firearms.Attachments;
-    using InventorySystem.Items.Firearms.Attachments.Components;
     using Structs;
 
     /// <summary>

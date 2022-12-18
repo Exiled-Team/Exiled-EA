@@ -23,7 +23,6 @@ namespace Exiled.Loader
     using Features;
     using Features.Configs;
     using Features.Configs.CustomConverters;
-    using NorthwoodLib;
     using YamlDotNet.Serialization;
     using YamlDotNet.Serialization.NamingConventions;
     using YamlDotNet.Serialization.NodeDeserializers;

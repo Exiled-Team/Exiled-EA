@@ -7,12 +7,8 @@
 
 namespace Exiled.Loader
 {
-    using System;
     using System.IO;
     using System.Reflection;
-
-    using Exiled.API.Enums;
-    using NorthwoodLib;
     using PluginAPI.Core.Attributes;
 
     using Log = API.Features.Log;

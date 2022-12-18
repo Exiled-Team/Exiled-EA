@@ -10,8 +10,6 @@ namespace Exiled.API.Structs
     using System;
     using System.Linq;
 
-    using Enums;
-
     using InventorySystem.Items.Firearms.Attachments;
     using InventorySystem.Items.Firearms.Attachments.Components;
 

@@ -23,7 +23,6 @@ namespace Exiled.Events.Handlers.Internal
     using MEC;
     using NorthwoodLib.Pools;
     using PlayerRoles.PlayableScps.Scp079.Cameras;
-    using UnityEngine;
     using Utils.NonAllocLINQ;
 
     using Broadcast = Broadcast;
