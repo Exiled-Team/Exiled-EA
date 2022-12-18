@@ -7,7 +7,6 @@
 
 namespace Exiled.Events.EventArgs.Map
 {
-#pragma warning disable SA1401
     using API.Features;
     using Interfaces;
 

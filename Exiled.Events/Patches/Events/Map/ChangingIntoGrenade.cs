@@ -73,7 +73,7 @@ namespace Exiled.Events.Patches.Events.Map
                     // itemPickupBase
                     new CodeInstruction(OpCodes.Ldarg_0).WithLabels(enterLabel),
 
-                    // var ev = new ChangingIntoGrenadeEventArgs(ItemPickupBase);
+                    // ChangingIntoGrenadeEventArgs ev = new(ItemPickupBase);
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(ChangingIntoGrenadeEventArgs))[0]),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),

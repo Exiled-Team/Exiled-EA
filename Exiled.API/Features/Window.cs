@@ -11,7 +11,6 @@ namespace Exiled.API.Features
 
     using DamageHandlers;
     using Enums;
-    using Extensions;
     using UnityEngine;
 
     /// <summary>
@@ -20,11 +19,9 @@ namespace Exiled.API.Features
     public class Window
     {
         /// <summary>
-        /// A <see cref="List{T}"/> of <see cref="Window"/> on the map.
+        /// A <see cref="Dictionary{TKey,TValue}"/> containing all known <see cref="BreakableWindow"/>s and their corresponding <see cref="Window"/>.
         /// </summary>
-        internal static readonly List<Window> WindowValue = new(30);
-
-        private static readonly Dictionary<BreakableWindow, Window> BreakableWindowToWindow = new();
+        internal static readonly Dictionary<BreakableWindow, Window> BreakableWindowToWindow = new();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Window"/> class.
@@ -32,16 +29,16 @@ namespace Exiled.API.Features
         /// <param name="window">The base <see cref="BreakableWindow"/> for this door.</param>
         public Window(BreakableWindow window)
         {
-            BreakableWindowToWindow.Add(window, this);
             Base = window;
             Room = window.GetComponentInParent<Room>();
             Type = GetGlassType();
+            BreakableWindowToWindow.Add(window, this);
         }
 
         /// <summary>
         /// Gets a <see cref="IEnumerable{T}"/> of <see cref="Door"/> which contains all the <see cref="Door"/> instances.
         /// </summary>
-        public static IEnumerable<Window> List => WindowValue.AsReadOnly();
+        public static IEnumerable<Window> List => BreakableWindowToWindow.Values;
 
         /// <summary>
         /// Gets the base-game <see cref="BreakableWindow"/> for this window.
@@ -156,9 +153,9 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="breakableWindow">The base-game <see cref="Window"/>.</param>
         /// <returns>A <see cref="Door"/> wrapper object.</returns>
-        public static Window Get(BreakableWindow breakableWindow) => BreakableWindowToWindow.ContainsKey(breakableWindow)
-            ? BreakableWindowToWindow[breakableWindow]
-            : new Window(breakableWindow);
+        public static Window Get(BreakableWindow breakableWindow) => BreakableWindowToWindow.TryGetValue(breakableWindow, out Window window)
+            ? window
+            : new(breakableWindow);
 
         /// <summary>
         /// Break the window.
@@ -189,16 +186,20 @@ namespace Exiled.API.Features
 
         private GlassType GetGlassType()
         {
-            // if (Recontainer.ActivatorWindow.Base == Base)
-                // return GlassType.Scp079Trigger;
-            return Room.gameObject.name.RemoveBracketsOnEndOfName() switch
+            if (Recontainer.ActivatorWindow.Base == Base)
+                return GlassType.Scp079Trigger;
+
+            return Room?.Type switch
             {
-                "LCZ_330" => GlassType.Scp330,
-                "LCZ_372" => GlassType.GR18,
-                "LCZ_Plants" => GlassType.Plants,
-                "HCZ_049" => GlassType.Scp049,
-                "HCZ_079" => GlassType.Scp079,
-                "HCZ_Hid" => GlassType.MicroHid,
+                RoomType.Lcz330 => GlassType.Scp330,
+                RoomType.LczGlassBox => GlassType.GR18,
+                RoomType.LczPlants => GlassType.Plants,
+                RoomType.Hcz049 => GlassType.Scp049,
+                RoomType.Hcz079 => GlassType.Scp079,
+                RoomType.HczHid => GlassType.MicroHid,
+                RoomType.HczTestRoom => GlassType.TestRoom,
+                RoomType.HczEzCheckpointA => GlassType.HczEzCheckpointA,
+                RoomType.HczEzCheckpointB => GlassType.HczEzCheckpointB,
                 _ => GlassType.Unknown,
             };
         }

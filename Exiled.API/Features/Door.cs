@@ -23,6 +23,8 @@ namespace Exiled.API.Features
 
     using UnityEngine;
 
+    using static Interactables.Interobjects.ElevatorManager;
+
     /// <summary>
     /// A wrapper class for <see cref="DoorVariant"/>.
     /// </summary>
@@ -49,7 +51,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets a <see cref="IEnumerable{T}"/> of <see cref="Door"/> which contains all the <see cref="Door"/> instances.
         /// </summary>
-        public static IEnumerable<Door> List => DoorVariantToDoor.Values.ToList().AsReadOnly();
+        public static IEnumerable<Door> List => DoorVariantToDoor.Values;
 
         /// <summary>
         /// Gets the base-game <see cref="DoorVariant"/> for this door.
@@ -109,12 +111,13 @@ namespace Exiled.API.Features
         /// Gets a value indicating whether or not this door is a gate.
         /// </summary>
         public bool IsGate => Type is DoorType.GateA or DoorType.GateB or DoorType.GR18Gate or
-                DoorType.Scp049Gate or DoorType.Scp173Gate or DoorType.Scp914Gate or DoorType.SurfaceGate;
+                DoorType.Scp049Gate or DoorType.Scp173Gate or DoorType.Scp914Gate or
+                DoorType.SurfaceGate or DoorType.UnknownGate or DoorType.CheckpointGate;
 
         /// <summary>
         /// Gets a value indicating whether or not this door is a checkpoint door.
         /// </summary>
-        public bool IsCheckpoint => Type is DoorType.CheckpointEntrance or DoorType.CheckpointLczA or
+        public bool IsCheckpoint => Type is DoorType.CheckpointEzHczA or DoorType.CheckpointEzHczB or DoorType.CheckpointLczA or
                 DoorType.CheckpointLczB;
 
         /// <summary>
@@ -495,7 +498,28 @@ namespace Exiled.API.Features
                     "EZ" => DoorType.EntranceDoor,
                     "Prison" => DoorType.PrisonDoor,
                     "914" => DoorType.Scp914Door,
-                    "Unsecured" => DoorType.Scp049Gate,
+                    "Intercom" => Room?.Type switch
+                    {
+                        RoomType.HczEzCheckpointA => DoorType.CheckpointArmoryA,
+                        RoomType.HczEzCheckpointB => DoorType.CheckpointArmoryB,
+                        _ => DoorType.UnknownDoor,
+                    },
+                    "Unsecured" => Room?.Type switch
+                    {
+                        RoomType.EzCheckpointHallway => DoorType.CheckpointGate,
+                        RoomType.Hcz049 => DoorType.Scp049Gate,
+                        _ => DoorType.UnknownGate,
+                    },
+                    "Elevator" => (Base as ElevatorDoor)?.Group switch
+                    {
+                        ElevatorGroup.Nuke => DoorType.ElevatorNuke,
+                        ElevatorGroup.Scp049 => DoorType.ElevatorScp049,
+                        ElevatorGroup.GateB => DoorType.ElevatorGateB,
+                        ElevatorGroup.GateA => DoorType.ElevatorGateA,
+                        ElevatorGroup.LczA01 or ElevatorGroup.LczA02 => DoorType.ElevatorLczA,
+                        ElevatorGroup.LczB01 or ElevatorGroup.LczB02 => DoorType.ElevatorLczB,
+                        _ => DoorType.UnknownElevator,
+                    },
                     _ => DoorType.UnknownDoor,
                 };
             }
@@ -504,8 +528,9 @@ namespace Exiled.API.Features
             {
                 // Doors contains the DoorNameTagExtension component
                 "CHECKPOINT_LCZ_A" => DoorType.CheckpointLczA,
-                "CHECKPOINT_EZ_HCZ" => DoorType.CheckpointEntrance,
                 "CHECKPOINT_LCZ_B" => DoorType.CheckpointLczB,
+                "CHECKPOINT_EZ_HCZ_A" => DoorType.CheckpointEzHczA,
+                "CHECKPOINT_EZ_HCZ_B" => DoorType.CheckpointEzHczB,
                 "106_PRIMARY" => DoorType.Scp106Primary,
                 "106_SECONDARY" => DoorType.Scp106Secondary,
                 "106_BOTTOM" => DoorType.Scp106Bottom,
@@ -536,6 +561,7 @@ namespace Exiled.API.Features
                 "330" => DoorType.Scp330,
                 "330_CHAMBER" => DoorType.Scp330Chamber,
                 "GR18_INNER" => DoorType.GR18Inner,
+                "939_CRYO" => DoorType.Scp939Cryo,
 
                 // Doors spawned by the DoorSpawnPoint component
                 "LCZ_CAFE" => DoorType.LczCafe,

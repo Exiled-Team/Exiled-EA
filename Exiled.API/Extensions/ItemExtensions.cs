@@ -210,13 +210,13 @@ namespace Exiled.API.Extensions
         /// <returns>A <see cref="IEnumerable{T}"/> of <see cref="AttachmentIdentifier"/> value which represents all the attachments present on the specified <see cref="ItemType"/>.</returns>
         public static IEnumerable<AttachmentIdentifier> GetAttachmentIdentifiers(this ItemType type, uint code)
         {
-            if (type.GetBaseCode() > code)
-                throw new ArgumentException("The attachments code can't be less than the item's base code.");
+            if ((uint)type.GetBaseCode() > code)
+                throw new ArgumentException($"The attachments code ({code}) can't be less than the item's base code ({type.GetBaseCode()}), weapon: {type}.");
 
             Firearm firearm = Firearm.FirearmInstances.FirstOrDefault(item => item.Type == type);
 
             if (firearm is null)
-                throw new ArgumentException($"Couldn't find a Firearm instance matching the ItemType value. {type}");
+                throw new ArgumentException($"Couldn't find a Firearm instance matching the ItemType value: {type}.");
 
             firearm.Base.ApplyAttachmentsCode(code, true);
 

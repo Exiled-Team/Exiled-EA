@@ -135,12 +135,12 @@ namespace Exiled.Permissions.Extensions
 
                     group.Value.CombinedPermissions = group.Value.Permissions.Union(inheritedPerms).ToList();
 
-                    Log.Debug($"{group.Key} permissions loaded.", Instance.Config.ShouldDebugBeShown);
+                    Log.Debug($"{group.Key} permissions loaded.");
                 }
                 catch (Exception e)
                 {
                     Log.Error($"Failed to load permissions/inheritance for: {group.Key}.\n{e.Message}.\nMake sure your config file is setup correctly, every group defined must include inheritance and permissions values, even if they are empty.");
-                    Log.Debug($"{e}", Instance.Config.ShouldDebugBeShown);
+                    Log.Debug($"{e}");
                 }
             }
         }
@@ -191,21 +191,21 @@ namespace Exiled.Permissions.Extensions
             if (player is null || player.GameObject == null || Groups is null || Groups.Count == 0)
                 return false;
 
-            Log.Debug($"UserID: {player.UserId} | PlayerId: {player.Id}", Instance.Config.ShouldDebugBeShown);
-            Log.Debug($"Permission string: {permission}", Instance.Config.ShouldDebugBeShown);
+            Log.Debug($"UserID: {player.UserId} | PlayerId: {player.Id}");
+            Log.Debug($"Permission string: {permission}");
 
             string plyGroupKey = player.Group is not null ? ServerStatic.GetPermissionsHandler()._groups.FirstOrDefault(g => g.Value.EqualsTo(player.Group)).Key : null;
-            Log.Debug($"GroupKey: {plyGroupKey ?? "(null)"}", Instance.Config.ShouldDebugBeShown);
+            Log.Debug($"GroupKey: {plyGroupKey ?? "(null)"}");
 
             if (plyGroupKey is null || !Groups.TryGetValue(plyGroupKey, out Group group))
             {
-                Log.Debug("The source group is null, the default group is used", Instance.Config.ShouldDebugBeShown);
+                Log.Debug("The source group is null, the default group is used");
                 group = DefaultGroup;
             }
 
             if (group is null)
             {
-                Log.Debug("There's no default group, returning false...", Instance.Config.ShouldDebugBeShown);
+                Log.Debug("There's no default group, returning false...");
                 return false;
             }
 
@@ -255,14 +255,14 @@ namespace Exiled.Permissions.Extensions
 
                 StringBuilderPool.Shared.Return(strBuilder);
 
-                Log.Debug($"Result in the block: {result}", Instance.Config.ShouldDebugBeShown);
+                Log.Debug($"Result in the block: {result}");
                 return result;
             }
 
             // It'll work when there is no dot in the permission.
             bool result2 = group.CombinedPermissions.Contains(permission, StringComparison.OrdinalIgnoreCase);
 
-            Log.Debug($"Result outside the block: {result2}", Instance.Config.ShouldDebugBeShown);
+            Log.Debug($"Result outside the block: {result2}");
 
             return result2;
         }

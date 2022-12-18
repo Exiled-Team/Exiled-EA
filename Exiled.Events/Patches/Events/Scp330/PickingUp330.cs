@@ -55,7 +55,7 @@ namespace Exiled.Events.Patches.Events.Scp330
                     // pickup
                     new(OpCodes.Ldarg_1),
 
-                    // var ev = new PickingUpScp330EventArgs(Player.Get(ply), pickup);
+                    // PickingUpScp330EventArgs ev = new(Player.Get(ply), pickup);
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(PickingUpScp330EventArgs))[0]),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),

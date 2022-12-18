@@ -16,10 +16,7 @@ namespace Exiled.API.Features
     using Enums;
     using Exiled.API.Extensions;
     using Mirror;
-
-    using PlayableScps;
     using PlayerRoles;
-    using PlayerRoles.PlayableScps.Scp049;
     using PlayerRoles.Ragdolls;
     using PlayerStatsSystem;
 

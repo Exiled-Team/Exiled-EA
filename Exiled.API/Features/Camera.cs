@@ -18,14 +18,14 @@ namespace Exiled.API.Features
     using CameraType = Enums.CameraType;
 
     /// <summary>
-    /// The in-game Camera079.
+    /// The in-game Scp079Camera.
     /// </summary>
     public class Camera
     {
         /// <summary>
-        /// A <see cref="List{T}"/> of <see cref="Camera"/>s on the map.
+        /// A <see cref="Dictionary{TKey,TValue}"/> containing all known <see cref="Scp079Camera"/>s and their corresponding <see cref="Camera"/>.
         /// </summary>
-        internal static readonly List<Camera> CamerasValue = new(250);
+        internal static readonly Dictionary<Scp079Camera, Camera> Camera079ToCamera = new(250);
 
         private static readonly Dictionary<string, CameraType> NameToCameraType = new()
         {
@@ -124,29 +124,28 @@ namespace Exiled.API.Features
             ["TUNNEL ENTRANCE"] = CameraType.TunnelEntrance,
         };
 
+        private Room room;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="Camera"/> class.
         /// </summary>
         /// <param name="camera079">The base camera.</param>
-        internal Camera(Scp079Camera camera079) => Base = camera079;
+        internal Camera(Scp079Camera camera079)
+        {
+            Base = camera079;
+            Camera079ToCamera.Add(camera079, this);
+        }
 
         /// <summary>
         /// Gets a <see cref="IEnumerable{T}"/> of <see cref="Camera"/> which contains all the <see cref="Camera"/> instances.
         /// </summary>
-        public static IEnumerable<Camera> List => CamerasValue;
+        public static IEnumerable<Camera> List => Camera079ToCamera.Values;
 
         /// <summary>
         /// Gets a random <see cref="Camera"/>.
         /// </summary>
         /// <returns><see cref="Camera"/> object.</returns>
-        public static Camera Random
-        {
-            get
-            {
-                Camera[] cameras = List.ToArray();
-                return cameras[UnityEngine.Random.Range(0, cameras.Length)];
-            }
-        }
+        public static Camera Random => List.ToArray()[UnityEngine.Random.Range(0, Camera079ToCamera.Count)];
 
         /// <summary>
         /// Gets the base <see cref="Scp079Camera"/>.
@@ -174,9 +173,9 @@ namespace Exiled.API.Features
         public ushort Id => Base.SyncId;
 
         /// <summary>
-        /// Gets the camera's <see cref="Features.Room"/>.
+        /// Gets the generator's <see cref="Room"/>.
         /// </summary>
-        public Room Room => Map.FindParentRoom(GameObject);
+        public Room Room => room ??= Room.Get(Base.Room);
 
         /// <summary>
         /// Gets the camera's <see cref="ZoneType"/>.
@@ -231,7 +230,7 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="camera079">The base <see cref="Scp079Camera"/>.</param>
         /// <returns>A <see cref="Camera"/> or <see langword="null"/> if not found.</returns>
-        public static Camera Get(Scp079Camera camera079) => List.FirstOrDefault(camera => camera.Base == camera079);
+        public static Camera Get(Scp079Camera camera079) => Camera079ToCamera.TryGetValue(camera079, out Camera camera) ? camera : new(camera079);
 
         /// <summary>
         /// Gets a <see cref="Camera"/> given the specified id.

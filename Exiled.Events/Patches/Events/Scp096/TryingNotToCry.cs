@@ -38,7 +38,7 @@ namespace Exiled.Events.Patches.Events.Scp096
             const int offset = 0;
             int index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Ret) + offset;
 
-            // var ev = new TryingNotToCryEventArgs(Scp096 scp096, Player player, door, true);
+            // TryingNotToCryEventArgs ev = new(Scp096 scp096, Player player, door, true);
             //
             // Handlers.Scp096.OnTryingNotToCry(ev);
             //
@@ -60,7 +60,7 @@ namespace Exiled.Events.Patches.Events.Scp096
                     // true
                     new(OpCodes.Ldc_I4_1),
 
-                    // var ev = new TryingNotToCryEventArgs(Scp096Role, Player, DoorVariant, bool);
+                    // TryingNotToCryEventArgs ev = new(Scp096Role, Player, DoorVariant, bool);
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(TryingNotToCryEventArgs))[0]),
                     new(OpCodes.Dup),
 

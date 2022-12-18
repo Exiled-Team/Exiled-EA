@@ -24,47 +24,31 @@ namespace Exiled.API.Features
     /// </summary>
     public class Lift
     {
-        /// <inheritdoc cref="Elevators"/>
-        internal static readonly Dictionary<ElevatorGroup, ElevatorChamber> ElevatorsValue = SpawnedChambers;
-
-        /// <inheritdoc cref="List"/>
-        internal static readonly List<Lift> LiftsValue = new();
+        /// <summary>
+        /// A <see cref="Dictionary{TKey,TValue}"/> containing all known <see cref="ElevatorChamber"/>s and their corresponding <see cref="Lift"/>.
+        /// </summary>
+        internal static readonly Dictionary<ElevatorChamber, Lift> ElevatorChamberToLift = new(8);
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Lift"/> class.
         /// </summary>
-        /// <param name="group">The <see cref="ElevatorGroup"/> to wrap.</param>
         /// <param name="elevator">The <see cref="ElevatorChamber"/> to wrap.</param>
-        internal Lift(ElevatorGroup group, ElevatorChamber elevator)
+        internal Lift(ElevatorChamber elevator)
         {
             Base = elevator;
-
-            if (!ElevatorsValue.ContainsKey(group))
-            {
-                ElevatorsValue.Add(group, elevator);
-                LiftsValue.Add(this);
-            }
-            else
-            {
-                throw new ArgumentException($"Lift with group {group} already exists!");
-            }
+            ElevatorChamberToLift.Add(elevator, this);
         }
 
         /// <summary>
-        /// Gets a <see cref="IEnumerable{T}"/> of <see cref="Lift"/> containing all the <see cref="Lift"/> instances.
+        /// Gets a <see cref="IEnumerable{T}"/> of <see cref="Lift"/> which contains all the <see cref="Lift"/> instances.
         /// </summary>
-        public static IEnumerable<Lift> List => LiftsValue;
-
-        /// <summary>
-        /// Gets a <see cref="Dictionary{TKey, TValue}"/> of <see cref="ElevatorGroup"/> and <see cref="ElevatorChamber"/> containing all the elevators.
-        /// </summary>
-        public static IReadOnlyDictionary<ElevatorGroup, ElevatorChamber> Elevators => SpawnedChambers;
+        public static IEnumerable<Lift> List => ElevatorChamberToLift.Values;
 
         /// <summary>
         /// Gets a random <see cref="Lift"/>.
         /// </summary>
         /// <returns><see cref="Lift"/> object.</returns>
-        public static Lift Random => List.ToList()[UnityEngine.Random.Range(0, Elevators.Count)];
+        public static Lift Random => List.ToArray()[UnityEngine.Random.Range(0, ElevatorChamberToLift.Count)];
 
         /// <summary>
         /// Gets the base <see cref="ElevatorChamber"/>.
@@ -126,6 +110,11 @@ namespace Exiled.API.Features
             ElevatorGroup.Nuke => ElevatorType.Nuke,
             _ => ElevatorType.Unknown,
         };
+
+        /// <summary>
+        /// Gets the <see cref="ElevatorGroup"/>.
+        /// </summary>
+        public ElevatorGroup Group => Base.AssignedGroup;
 
         /// <summary>
         /// Gets a value indicating whether the lift is operative.
@@ -193,7 +182,7 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="elevator">The <see cref="ElevatorChamber"/> instance.</param>
         /// <returns>A <see cref="Lift"/> or <see langword="null"/> if not found.</returns>
-        public static Lift Get(ElevatorChamber elevator) => Get(lift => lift.Base == elevator).FirstOrDefault();
+        public static Lift Get(ElevatorChamber elevator) => ElevatorChamberToLift.TryGetValue(elevator, out Lift lift) ? lift : new(elevator);
 
         /// <summary>
         /// Gets the <see cref="Lift"/> corresponding to the specified <see cref="ElevatorType"/>, if any.

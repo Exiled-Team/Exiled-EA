@@ -46,7 +46,7 @@ namespace Exiled.Events.Patches.Events.Scp244
                     // this
                     new(OpCodes.Ldarg_0),
 
-                    // var ev = new OpeningScp244EventArgs(Scp244DeployablePickup)
+                    // OpeningScp244EventArgs ev = new(Scp244DeployablePickup)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(OpeningScp244EventArgs))[0]),
                     new(OpCodes.Dup),
 

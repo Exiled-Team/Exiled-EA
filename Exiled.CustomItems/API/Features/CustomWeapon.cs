@@ -25,8 +25,6 @@ namespace Exiled.CustomItems.API.Features
     using PlayerRoles;
     using UnityEngine;
 
-    using static CustomItems;
-
     using Firearm = Exiled.API.Features.Items.Firearm;
     using Player = Exiled.API.Features.Player;
 
@@ -75,7 +73,7 @@ namespace Exiled.CustomItems.API.Features
 
             if (item is null)
             {
-                Log.Debug($"{nameof(Spawn)}: Item is null.", Instance.Config.Debug);
+                Log.Debug($"{nameof(Spawn)}: Item is null.");
                 return null;
             }
 
@@ -85,7 +83,7 @@ namespace Exiled.CustomItems.API.Features
             Pickup pickup = item.Spawn(position);
             if (pickup is null)
             {
-                Log.Debug($"{nameof(Spawn)}: Pickup is null.", Instance.Config.Debug);
+                Log.Debug($"{nameof(Spawn)}: Pickup is null.");
                 return null;
             }
 
@@ -104,7 +102,7 @@ namespace Exiled.CustomItems.API.Features
                     {
                         firearmPickup.Status = new FirearmStatus(ClipSize, firearmPickup.Status.Flags, firearmPickup.Status.Attachments);
                         firearmPickup.NetworkStatus = firearmPickup.Status;
-                        Log.Debug($"{nameof(Name)}.{nameof(Spawn)}: Spawned item has: {firearmPickup.Status.Ammo}", Instance.Config.Debug);
+                        Log.Debug($"{nameof(Name)}.{nameof(Spawn)}: Spawned item has: {firearmPickup.Status.Ammo}");
                     }
                 });
 
@@ -119,7 +117,7 @@ namespace Exiled.CustomItems.API.Features
                 if (!Attachments.IsEmpty())
                     firearm.AddAttachment(Attachments);
                 byte ammo = firearm.Ammo;
-                Log.Debug($"{nameof(Name)}.{nameof(Spawn)}: Spawning weapon with {ammo} ammo.", Instance.Config.Debug);
+                Log.Debug($"{nameof(Name)}.{nameof(Spawn)}: Spawning weapon with {ammo} ammo.");
                 Pickup pickup = firearm.Spawn(position);
                 pickup.Scale = Scale;
 
@@ -136,7 +134,7 @@ namespace Exiled.CustomItems.API.Features
                         {
                             firearmPickup.Status = new FirearmStatus(ammo, firearmPickup.Status.Flags, firearmPickup.Status.Attachments);
                             firearmPickup.NetworkStatus = firearmPickup.Status;
-                            Log.Debug($"{nameof(Name)}.{nameof(Spawn)}: Spawned item has: {firearmPickup.Status.Ammo}", Instance.Config.Debug);
+                            Log.Debug($"{nameof(Name)}.{nameof(Spawn)}: Spawned item has: {firearmPickup.Status.Ammo}");
                         }
                     });
 
@@ -158,7 +156,7 @@ namespace Exiled.CustomItems.API.Features
                 firearm.Ammo = ClipSize;
             }
 
-            Log.Debug($"{nameof(Give)}: Adding {item.Serial} to tracker.", Instance.Config.Debug);
+            Log.Debug($"{nameof(Give)}: Adding {item.Serial} to tracker.");
             TrackedSerials.Add(item.Serial);
 
             if (displayMessage)
@@ -226,17 +224,17 @@ namespace Exiled.CustomItems.API.Features
             if (!Check(ev.Firearm))
                 return;
 
-            Log.Debug($"{nameof(Name)}.{nameof(OnInternalReloading)}: Reloading weapon. Calling external reload event..", Instance.Config.Debug);
+            Log.Debug($"{nameof(Name)}.{nameof(OnInternalReloading)}: Reloading weapon. Calling external reload event..");
             OnReloading(ev);
 
-            Log.Debug($"{nameof(Name)}.{nameof(OnInternalReloading)}: External event ended. {ev.IsAllowed}", Instance.Config.Debug);
+            Log.Debug($"{nameof(Name)}.{nameof(OnInternalReloading)}: External event ended. {ev.IsAllowed}");
             if (!ev.IsAllowed)
             {
-                Log.Debug($"{nameof(Name)}.{nameof(OnInternalReloading)}: External event turned is allowed to false, returning.", Instance.Config.Debug);
+                Log.Debug($"{nameof(Name)}.{nameof(OnInternalReloading)}: External event turned is allowed to false, returning.");
                 return;
             }
 
-            Log.Debug($"{nameof(Name)}.{nameof(OnInternalReloading)}: Continuing with internal reload..", Instance.Config.Debug);
+            Log.Debug($"{nameof(Name)}.{nameof(OnInternalReloading)}: Continuing with internal reload..");
             ev.IsAllowed = false;
 
             byte remainingClip = ((Firearm)ev.Player.CurrentItem).Ammo;
@@ -244,13 +242,13 @@ namespace Exiled.CustomItems.API.Features
             if (remainingClip >= ClipSize)
                 return;
 
-            Log.Debug($"{ev.Player.Nickname} ({ev.Player.UserId}) [{ev.Player.Role}] is reloading a {Name} ({Id}) [{Type} ({remainingClip}/{ClipSize})]!", Instance.Config.Debug);
+            Log.Debug($"{ev.Player.Nickname} ({ev.Player.UserId}) [{ev.Player.Role}] is reloading a {Name} ({Id}) [{Type} ({remainingClip}/{ClipSize})]!");
 
             AmmoType ammoType = ((Firearm)ev.Player.CurrentItem).AmmoType;
 
             if (!ev.Player.Ammo.ContainsKey(ammoType.GetItemType()))
             {
-                Log.Debug($"{nameof(Name)}.{nameof(OnInternalReloading)}: {ev.Player.Nickname} does not have ammo to reload this weapon.", Instance.Config.Debug);
+                Log.Debug($"{nameof(Name)}.{nameof(OnInternalReloading)}: {ev.Player.Nickname} does not have ammo to reload this weapon.");
                 return;
             }
 
@@ -266,7 +264,7 @@ namespace Exiled.CustomItems.API.Features
             ev.Player.Ammo[ammoType.GetItemType()] -= amountToReload;
             ((Firearm)ev.Player.CurrentItem).Ammo = (byte)(((Firearm)ev.Player.CurrentItem).Ammo + amountToReload);
 
-            Log.Debug($"{ev.Player.Nickname} ({ev.Player.UserId}) [{ev.Player.Role}] reloaded a {Name} ({Id}) [{Type} ({((Firearm)ev.Player.CurrentItem).Ammo}/{ClipSize})]!", Instance.Config.Debug);
+            Log.Debug($"{ev.Player.Nickname} ({ev.Player.UserId}) [{ev.Player.Role}] reloaded a {Name} ({Id}) [{Type} ({((Firearm)ev.Player.CurrentItem).Ammo}/{ClipSize})]!");
         }
 
         private void OnInternalShooting(ShootingEventArgs ev)
@@ -294,43 +292,43 @@ namespace Exiled.CustomItems.API.Features
 
             if (ev.Player is null)
             {
-                Log.Debug($"{Name}: {nameof(OnInternalHurting)}: target null", Instance.Config.Debug);
+                Log.Debug($"{Name}: {nameof(OnInternalHurting)}: target null");
                 return;
             }
 
             if (!Check(ev.Attacker.CurrentItem))
             {
-                Log.Debug($"{Name}: {nameof(OnInternalHurting)}: !Check()", Instance.Config.Debug);
+                Log.Debug($"{Name}: {nameof(OnInternalHurting)}: !Check()");
                 return;
             }
 
             if (ev.Attacker == ev.Player)
             {
-                Log.Debug($"{Name}: {nameof(OnInternalHurting)}: attacker == target", Instance.Config.Debug);
+                Log.Debug($"{Name}: {nameof(OnInternalHurting)}: attacker == target");
                 return;
             }
 
             if (ev.DamageHandler is null)
             {
-                Log.Debug($"{Name}: {nameof(OnInternalHurting)}: Handler null", Instance.Config.Debug);
+                Log.Debug($"{Name}: {nameof(OnInternalHurting)}: Handler null");
                 return;
             }
 
             if (!ev.DamageHandler.CustomBase.BaseIs(out FirearmDamageHandler firearmDamageHandler))
             {
-                Log.Debug($"{Name}: {nameof(OnInternalHurting)}: Handler not firearm", Instance.Config.Debug);
+                Log.Debug($"{Name}: {nameof(OnInternalHurting)}: Handler not firearm");
                 return;
             }
 
             if (!Check(firearmDamageHandler.Item))
             {
-                Log.Debug($"{Name}: {nameof(OnInternalHurting)}: type != type", Instance.Config.Debug);
+                Log.Debug($"{Name}: {nameof(OnInternalHurting)}: type != type");
                 return;
             }
 
             if (!FriendlyFire && (ev.Attacker.Role.Team == ev.Player.Role.Team))
             {
-                Log.Debug($"{Name}: {nameof(OnInternalHurting)}: FF is disabled for this weapon!", Instance.Config.Debug);
+                Log.Debug($"{Name}: {nameof(OnInternalHurting)}: FF is disabled for this weapon!");
                 return;
             }
 

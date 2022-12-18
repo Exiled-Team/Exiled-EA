@@ -41,7 +41,7 @@ namespace Exiled.Events.Patches.Events.Player
                 0,
                 new CodeInstruction[]
                 {
-                    // var player = Player.Get(this)
+                    // Player player = Player.Get(this)
                     //
                     // if (player == null)
                     //    goto continueLabel;
@@ -53,7 +53,7 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Ceq),
                     new(OpCodes.Brtrue_S, continueLabel),
 
-                    // var ev = new DestroyingEventArgs(Player)
+                    // DestroyingEventArgs ev = new(Player)
                     new(OpCodes.Ldloc_S, player.LocalIndex),
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(DestroyingEventArgs))[0]),
 
