@@ -156,6 +156,9 @@ namespace Exiled.API.Features
         /// <returns>The <see cref="Room"/> that the <see cref="GameObject"/> is located inside.</returns>
         public static Room FindParentRoom(GameObject objectInRoom)
         {
+            if (objectInRoom == null)
+                return null;
+
             // Avoid errors by forcing Map.Rooms to populate when this is called.
             IEnumerable<Room> rooms = Room.List;
 
