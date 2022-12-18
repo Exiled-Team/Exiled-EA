@@ -7,10 +7,13 @@
 
 namespace Exiled.Loader
 {
+    using System;
     using System.ComponentModel;
+    using System.IO;
 
     using API.Enums;
     using API.Interfaces;
+    using Exiled.API.Features;
 
     /// <summary>
     /// The configs of the loader.
@@ -30,6 +33,12 @@ namespace Exiled.Loader
         /// </summary>
         [Description("Indicates whether outdated plugins should be loaded or not")]
         public bool ShouldLoadOutdatedPlugins { get; set; } = true;
+
+        /// <summary>
+        /// Gets or sets the Exiled directory path from which plugins will be loaded.
+        /// </summary>
+        [Description("The Exiled directory path from which plugins will be loaded")]
+        public string ExiledDirectoryPath { get; set; } = Path.Combine(Paths.AppData, "EXILED");
 
         /// <summary>
         /// Gets or sets the environment type.

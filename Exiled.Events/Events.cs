@@ -16,7 +16,6 @@ namespace Exiled.Events
     using API.Features;
     using EventArgs.Interfaces;
     using HarmonyLib;
-    using Loader;
     using PlayerRoles.FirstPersonControl.Thirdperson;
     using UnityEngine.SceneManagement;
 

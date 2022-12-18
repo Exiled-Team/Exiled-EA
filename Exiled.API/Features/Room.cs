@@ -7,21 +7,18 @@
 
 namespace Exiled.API.Features
 {
-#pragma warning disable 1584
     using System;
     using System.Collections.Generic;
     using System.Linq;
 
     using Enums;
     using Exiled.API.Extensions;
-    using Interactables;
     using Interactables.Interobjects.DoorUtils;
     using Items;
     using MapGeneration;
     using MEC;
     using Mirror;
     using PlayerRoles.PlayableScps.Scp079;
-    using PlayerRoles.PlayableScps.Scp079.Cameras;
     using UnityEngine;
 
     /// <summary>
@@ -102,6 +99,7 @@ namespace Exiled.API.Features
             get
             {
                 List<Pickup> pickups = new();
+
                 foreach (Pickup pickup in Map.Pickups)
                 {
                     if (Map.FindParentRoom(pickup.GameObject) == this)
@@ -181,8 +179,8 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="roomIdentifier">The <see cref="Identifier"/> to search with.</param>
         /// <returns>The <see cref="Room"/> of the given identified, if any. Can be <see langword="null"/>.</returns>
-        public static Room Get(RoomIdentifier roomIdentifier) => RoomIdentifierToRoom.ContainsKey(roomIdentifier)
-            ? RoomIdentifierToRoom[roomIdentifier]
+        public static Room Get(RoomIdentifier roomIdentifier) => RoomIdentifierToRoom.TryGetValue(roomIdentifier, out Room room)
+            ? room
             : null;
 
         /// <summary>
@@ -394,15 +392,12 @@ namespace Exiled.API.Features
             Doors = DoorVariant.DoorsByRoom.ContainsKey(Identifier) ? DoorVariant.DoorsByRoom[Identifier].Select(x => Door.Get(x, this)).ToList() : new();
             Cameras = Camera.List.Where(x => x.Base.Room == Identifier).ToList();
             Speaker = Scp079Speaker.SpeakersInRooms.ContainsKey(Identifier) ? Scp079Speaker.SpeakersInRooms[Identifier] : new();
+
             if (Type is RoomType.HczTesla)
-            {
                 TeslaGate = TeslaGate.List.Single(x => this == x.Room);
-            }
 
             if (gameObject.TryGetComponent(out FlickerableLightController flickerableLightController))
-            {
                 flickerableLightController = gameObject.AddComponent<FlickerableLightController>();
-            }
 
             FlickerableLightController = flickerableLightController;
         }

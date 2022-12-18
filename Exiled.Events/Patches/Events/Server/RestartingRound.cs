@@ -13,7 +13,6 @@ namespace Exiled.Events.Patches.Events.Server
 
     using GameCore;
     using HarmonyLib;
-    using Loader;
     using NorthwoodLib.Pools;
     using RoundRestarting;
 

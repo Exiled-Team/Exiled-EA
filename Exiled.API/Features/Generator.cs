@@ -213,14 +213,18 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="scp079Generator">The <see cref="Scp079Generator"/> instance.</param>
         /// <returns>A <see cref="Generator"/> or <see langword="null"/> if not found.</returns>
-        public static Generator Get(Scp079Generator scp079Generator) => List.FirstOrDefault(generator => generator.Base == scp079Generator);
+        public static Generator Get(Scp079Generator scp079Generator) =>
+            Scp079GeneratorToGenerator.TryGetValue(scp079Generator, out Generator generator) ?
+            generator :
+            new(scp079Generator);
 
         /// <summary>
         /// Gets a <see cref="IEnumerable{T}"/> of <see cref="Generator"/> given the specified <see cref="GeneratorState"/>.
         /// </summary>
         /// <param name="state">The <see cref="GeneratorState"/> to search for.</param>
         /// <returns>The <see cref="Generator"/> with the given <see cref="GeneratorState"/> or <see langword="null"/> if not found.</returns>
-        public static IEnumerable<Generator> Get(GeneratorState state) => List.Where(generator => generator.Base.HasFlag(generator.Base.Network_flags, (Scp079Generator.GeneratorFlags)state));
+        public static IEnumerable<Generator> Get(GeneratorState state)
+            => List.Where(generator => generator.Base.HasFlag(generator.Base.Network_flags, (Scp079Generator.GeneratorFlags)state));
 
         /// <summary>
         /// Denies the unlock.

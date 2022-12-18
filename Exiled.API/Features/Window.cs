@@ -11,7 +11,6 @@ namespace Exiled.API.Features
 
     using DamageHandlers;
     using Enums;
-    using Extensions;
     using UnityEngine;
 
     /// <summary>
@@ -30,10 +29,10 @@ namespace Exiled.API.Features
         /// <param name="window">The base <see cref="BreakableWindow"/> for this door.</param>
         public Window(BreakableWindow window)
         {
-            BreakableWindowToWindow.Add(window, this);
             Base = window;
             Room = window.GetComponentInParent<Room>();
             Type = GetGlassType();
+            BreakableWindowToWindow.Add(window, this);
         }
 
         /// <summary>
@@ -154,9 +153,9 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="breakableWindow">The base-game <see cref="Window"/>.</param>
         /// <returns>A <see cref="Door"/> wrapper object.</returns>
-        public static Window Get(BreakableWindow breakableWindow) => BreakableWindowToWindow.ContainsKey(breakableWindow)
-            ? BreakableWindowToWindow[breakableWindow]
-            : new Window(breakableWindow);
+        public static Window Get(BreakableWindow breakableWindow) => BreakableWindowToWindow.TryGetValue(breakableWindow, out Window window)
+            ? window
+            : new(breakableWindow);
 
         /// <summary>
         /// Break the window.
@@ -189,6 +188,7 @@ namespace Exiled.API.Features
         {
             if (Recontainer.ActivatorWindow.Base == Base)
                 return GlassType.Scp079Trigger;
+
             return Room?.Type switch
             {
                 RoomType.Lcz330 => GlassType.Scp330,

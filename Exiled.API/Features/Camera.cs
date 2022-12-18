@@ -130,7 +130,11 @@ namespace Exiled.API.Features
         /// Initializes a new instance of the <see cref="Camera"/> class.
         /// </summary>
         /// <param name="camera079">The base camera.</param>
-        internal Camera(Scp079Camera camera079) => Base = camera079;
+        internal Camera(Scp079Camera camera079)
+        {
+            Base = camera079;
+            Camera079ToCamera.Add(camera079, this);
+        }
 
         /// <summary>
         /// Gets a <see cref="IEnumerable{T}"/> of <see cref="Camera"/> which contains all the <see cref="Camera"/> instances.
@@ -141,14 +145,7 @@ namespace Exiled.API.Features
         /// Gets a random <see cref="Camera"/>.
         /// </summary>
         /// <returns><see cref="Camera"/> object.</returns>
-        public static Camera Random
-        {
-            get
-            {
-                Camera[] cameras = List.ToArray();
-                return cameras[UnityEngine.Random.Range(0, cameras.Length)];
-            }
-        }
+        public static Camera Random => List.ToArray()[UnityEngine.Random.Range(0, Camera079ToCamera.Count)];
 
         /// <summary>
         /// Gets the base <see cref="Scp079Camera"/>.
@@ -233,7 +230,7 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="camera079">The base <see cref="Scp079Camera"/>.</param>
         /// <returns>A <see cref="Camera"/> or <see langword="null"/> if not found.</returns>
-        public static Camera Get(Scp079Camera camera079) => List.FirstOrDefault(camera => camera.Base == camera079) ?? new Camera(camera079);
+        public static Camera Get(Scp079Camera camera079) => Camera079ToCamera.TryGetValue(camera079, out Camera camera) ? camera : new(camera079);
 
         /// <summary>
         /// Gets a <see cref="Camera"/> given the specified id.

@@ -18,18 +18,18 @@ namespace Exiled.Events.EventArgs.Player
         /// <summary>
         ///     Initializes a new instance of the <see cref="BannedEventArgs" /> class.
         /// </summary>
-        /// <param name="target">The banned player.</param>
-        /// <param name="issuer">The issuer player.</param>
-        /// <param name="details">The ban details.</param>
-        /// <param name="type">
-        ///     <inheritdoc cref="Type" />
-        /// </param>
-        public BannedEventArgs(Player target, Player issuer, BanDetails details, BanHandler.BanType type)
+        /// <param name="target"><inheritdoc cref="Target" /></param>
+        /// <param name="issuer"><inheritdoc cref="Player" /></param>
+        /// <param name="details"><inheritdoc cref="Details" /></param>
+        /// <param name="type"><inheritdoc cref="Type" /></param>
+        /// <param name="isForced"><inheritdoc cref="IsForced" /></param>
+        public BannedEventArgs(Player target, Player issuer, BanDetails details, BanHandler.BanType type, bool isForced)
         {
             Target = target;
             Player = issuer;
             Details = details;
             Type = type;
+            IsForced = isForced;
         }
 
         /// <summary>
@@ -51,5 +51,10 @@ namespace Exiled.Events.EventArgs.Player
         ///     Gets the ban type.
         /// </summary>
         public BanHandler.BanType Type { get; }
+
+        /// <summary>
+        ///     Gets a value indicating whether the ban is forced or not.
+        /// </summary>
+        public bool IsForced { get; }
     }
 }

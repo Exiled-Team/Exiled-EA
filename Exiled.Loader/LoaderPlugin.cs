@@ -11,9 +11,12 @@ namespace Exiled.Loader
     using System.IO;
     using System.Reflection;
 
+    using Exiled.API.Enums;
     using NorthwoodLib;
-    using PluginAPI.Core;
     using PluginAPI.Core.Attributes;
+
+    using Log = API.Features.Log;
+    using Paths = API.Features.Paths;
 
     /// <summary>
     /// The PluginAPI Plugin class for the EXILED Loader.
@@ -27,8 +30,6 @@ namespace Exiled.Loader
         [PluginConfig]
         public static Config Config;
 #pragma warning restore SA1401
-
-        private static Loader loader;
 
         /// <summary>
         /// Called by PluginAPI when the plugin is enabled.
@@ -51,36 +52,33 @@ namespace Exiled.Loader
 
             Log.Info($"Loading EXILED Version: {Assembly.GetExecutingAssembly().GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion}");
 
-            string rootPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "EXILED");
+            if (Config.Environment != EnvironmentType.Production && Config.Environment != EnvironmentType.ProductionDebug)
+                Paths.Reload(Path.Combine(Paths.AppData, $"EXILED-{Config.Environment.ToString().ToUpper()}"));
+            else if (Environment.CurrentDirectory.Contains("testing", StringComparison.OrdinalIgnoreCase))
+                Paths.Reload(Path.Combine(Paths.AppData, $"EXILED-Testing"));
+            else
+                Paths.Reload(Config.ExiledDirectoryPath);
 
-            if (Environment.CurrentDirectory.Contains("testing", StringComparison.OrdinalIgnoreCase))
+            Log.Info($"Exiled root path set to: {Paths.Exiled}");
+
+            Directory.CreateDirectory(Paths.Exiled);
+            Directory.CreateDirectory(Paths.Configs);
+            Directory.CreateDirectory(Paths.Plugins);
+            Directory.CreateDirectory(Paths.Dependencies);
+
+            if (!File.Exists(Path.Combine(Paths.Dependencies, "Exiled.API.dll")))
             {
-                Log.Warning("Switching root patch to EXILED-Testing.");
-                rootPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "EXILED-Testing");
-            }
-
-            string dependenciesPath = PluginAPI.Helpers.Paths.GlobalPlugins.Dependencies;
-
-            if (!Directory.Exists(rootPath))
-                Directory.CreateDirectory(rootPath);
-
-            if (!File.Exists(Path.Combine(dependenciesPath, "Exiled.API.dll")))
-            {
-                Log.Error($"[Exiled.Loader] Exiled.API.dll was not found at {dependenciesPath}, Exiled won't be loaded!", "Exiled.Loader");
+                Log.Error($"Exiled.API.dll was not found at {Path.Combine(Paths.Dependencies, "Exiled.API.dll")}, Exiled won't be loaded!");
                 return;
             }
 
-            if (!File.Exists(Path.Combine(dependenciesPath, "YamlDotNet.dll")))
+            if (!File.Exists(Path.Combine(Paths.Dependencies, "YamlDotNet.dll")))
             {
-                ServerConsole.AddLog($"[Exiled.Loader] YamlDotNet.dll was not found at {dependenciesPath}, Exiled won't be loaded!", ConsoleColor.DarkRed);
+                Log.Error($"YamlDotNet.dll was not found at {Path.Combine(Paths.Dependencies, "YamlDotNet.dll")}, Exiled won't be loaded!");
                 return;
             }
 
-            loader = new Loader();
-
-            Log.Info("Calling run");
-
-            loader.Run();
+            new Loader().Run();
         }
     }
 }

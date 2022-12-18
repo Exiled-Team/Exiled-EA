@@ -56,16 +56,6 @@ namespace Exiled.Loader
 
             CustomNetworkManager.Modded = true;
 
-            if ((LoaderPlugin.Config.Environment != EnvironmentType.Production) && (LoaderPlugin.Config.Environment != EnvironmentType.ProductionDebug))
-                Paths.Reload($"EXILED-{LoaderPlugin.Config.Environment.ToString().ToUpper()}");
-
-            if (Environment.CurrentDirectory.Contains("testing", StringComparison.OrdinalIgnoreCase))
-                Paths.Reload($"EXILED-Testing");
-
-            Directory.CreateDirectory(Paths.Configs);
-            Directory.CreateDirectory(Paths.Plugins);
-            Directory.CreateDirectory(Paths.Dependencies);
-
             if (LoaderPlugin.Config.ConfigType == ConfigType.Separated)
                 Directory.CreateDirectory(Paths.IndividualConfigs);
         }

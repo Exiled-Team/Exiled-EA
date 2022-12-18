@@ -25,8 +25,6 @@ namespace Exiled.CustomItems.API.Features
     using PlayerRoles;
     using UnityEngine;
 
-    using static CustomItems;
-
     using Firearm = Exiled.API.Features.Items.Firearm;
     using Player = Exiled.API.Features.Player;
 

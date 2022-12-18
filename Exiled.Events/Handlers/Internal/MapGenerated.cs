@@ -9,20 +9,18 @@ namespace Exiled.Events.Handlers.Internal
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
 
     using API.Features;
     using API.Features.Items;
     using API.Structs;
     using Exiled.API.Extensions;
+    using Interactables.Interobjects;
     using InventorySystem.Items.Firearms.Attachments.Components;
     using MapGeneration;
     using MapGeneration.Distributors;
     using MEC;
     using NorthwoodLib.Pools;
-    using PlayerRoles.PlayableScps.Scp079;
     using PlayerRoles.PlayableScps.Scp079.Cameras;
-    using UnityEngine;
 
     using Broadcast = Broadcast;
     using Camera = API.Features.Camera;
@@ -61,7 +59,8 @@ namespace Exiled.Events.Handlers.Internal
             GenerateCamera();
             GenerateTeslaGates();
             GenerateRooms();
-            GenerateWindow();
+            GenerateWindows();
+            GenerateLifts();
             GeneratePocketTeleports();
             GenerateAttachments();
             GenerateLockers();
@@ -88,22 +87,28 @@ namespace Exiled.Events.Handlers.Internal
             ListPool<RoomIdentifier>.Shared.Return(roomIdentifiers);
         }
 
-        private static void GenerateWindow()
+        private static void GenerateWindows()
         {
             foreach (BreakableWindow breakableWindow in Object.FindObjectsOfType<BreakableWindow>())
-                Window.Get(breakableWindow);
+                new Window(breakableWindow);
+        }
+
+        private static void GenerateLifts()
+        {
+            foreach (ElevatorChamber elevatorChamber in Object.FindObjectsOfType<ElevatorChamber>())
+                new Lift(elevatorChamber);
         }
 
         private static void GenerateCamera()
         {
             foreach (Scp079Camera camera079 in Object.FindObjectsOfType<Scp079Camera>())
-                Camera.Camera079ToCamera.Add(camera079, new(camera079));
+                new Camera(camera079);
         }
 
         private static void GenerateTeslaGates()
         {
             foreach (global::TeslaGate teslaGate in TeslaGateController.Singleton.TeslaGates)
-                TeslaGate.BaseTeslaGateToTeslaGate.Add(teslaGate, new(teslaGate));
+                new TeslaGate(teslaGate);
         }
 
         private static void GeneratePocketTeleports() => Map.TeleportsValue.AddRange(Object.FindObjectsOfType<PocketDimensionTeleport>());

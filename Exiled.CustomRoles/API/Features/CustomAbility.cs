@@ -16,7 +16,6 @@ namespace Exiled.CustomRoles.API.Features
     using Exiled.API.Features;
     using Exiled.API.Features.Attributes;
     using Exiled.API.Interfaces;
-    using Exiled.Loader;
 
     using YamlDotNet.Serialization;
 

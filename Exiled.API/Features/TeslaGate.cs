@@ -33,7 +33,11 @@ namespace Exiled.API.Features
         /// Initializes a new instance of the <see cref="TeslaGate"/> class.
         /// </summary>
         /// <param name="baseTeslaGate">The <see cref="BaseTeslaGate"/> instance.</param>
-        internal TeslaGate(BaseTeslaGate baseTeslaGate) => Base = baseTeslaGate;
+        internal TeslaGate(BaseTeslaGate baseTeslaGate)
+        {
+            Base = baseTeslaGate;
+            BaseTeslaGateToTeslaGate.Add(baseTeslaGate, this);
+        }
 
         /// <summary>
         /// Gets a <see cref="IEnumerable{T}"/> of <see cref="TeslaGate"/> which contains all the <see cref="TeslaGate"/> instances.
@@ -194,7 +198,9 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="baseTeslaGate">The <see cref="BaseTeslaGate"/> instance.</param>
         /// <returns>The corresponding <see cref="TeslaGate"/> instance.</returns>
-        public static TeslaGate Get(BaseTeslaGate baseTeslaGate) => BaseTeslaGateToTeslaGate[baseTeslaGate] ?? new(baseTeslaGate);
+        public static TeslaGate Get(BaseTeslaGate baseTeslaGate) => BaseTeslaGateToTeslaGate.TryGetValue(baseTeslaGate, out TeslaGate teslagate) ?
+            teslagate :
+            new(baseTeslaGate);
 
         /// <summary>
         /// Gets a <see cref="IEnumerable{T}"/> of <see cref="TeslaGate"/> filtered based on a predicate.
