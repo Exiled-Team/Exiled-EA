@@ -33,11 +33,21 @@
     </ItemGroup>
 
 
+
+
+
     <PropertyGroup Condition=" '$(OS)' == 'Windows_NT' ">
         <PostBuildEvent>if not "$(EXILED_DEV_REFERENCES)"=="" copy /y "$(OutputPath)$(AssemblyName).dll" "$(EXILED_DEV_REFERENCES)\"</PostBuildEvent>
+        <PostBuildEvent>if not "$(EXILED_DEV_PLUGINAPI_REFERENCE)"=="" copy /y "$(OutputPath)$(AssemblyName).dll" "$(EXILED_DEV_PLUGINAPI_REFERENCE)\"</PostBuildEvent>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(OS)' == 'Unix' ">
         <PostBuildEvent>if [[ ! -z "$EXILED_DEV_REFERENCES" ]]; then cp "$(OutputPath)$(AssemblyName).dll" "$EXILED_DEV_REFERENCES/"; fi</PostBuildEvent>
+        <PostBuildEvent>if [[ ! -z "$EXILED_DEV_PLUGINAPI_REFERENCE" ]]; then cp "$(OutputPath)$(AssemblyName).dll" "$EXILED_DEV_PLUGINAPI_REFERENCE/"; fi</PostBuildEvent>
     </PropertyGroup>
+
+<!--    <PropertyGroup>-->
+<!--        <PreBuildEvent>echo "$(OutputPath) prebuild"</PreBuildEvent>-->
+<!--        <PostBuildEvent>echo "$(OutputPath) XX $(EXILED_DEV_PLUGINAPI_REFERENCE) XX"</PostBuildEvent>-->
+<!--    </PropertyGroup>-->
 
 </Project>
