@@ -33,7 +33,6 @@ namespace Exiled.Events.Patches.Events.Player
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Shared.Rent(instructions);
 
-            API.Features.Log.Debug($"\n\n\n\n\n\n\nWAHHHHHHHHHHHHHHHHHHHHHHHH\n\n: Loading events.");
             newInstructions.InsertRange(
                 0,
                 new[]
@@ -51,22 +50,15 @@ namespace Exiled.Events.Patches.Events.Player
 
         public static void processNewPlayer(SpectatorRole spec, ref int new_netid)
         {
-            Exiled.API.Features.Log.Info($"ProcessNewPlayer 1 -- {new_netid}");
             if (!spec.TryGetOwner(out ReferenceHub owner))
             {
                 return;
             }
-            Exiled.API.Features.Log.Info("ProcessNewPlayer 2");
             API.Features.Player player =  API.Features.Player.Get(owner);
-            Exiled.API.Features.Log.Info("ProcessNewPlayer 3");
             API.Features.Player previousSpectatedPlayer = API.Features.Player.Get(spec.SyncedSpectatedNetId);
-            Exiled.API.Features.Log.Info("ProcessNewPlayer 4");
             API.Features.Player getFuturePlayer = API.Features.Player.Get(new_netid);
-            Exiled.API.Features.Log.Info("ProcessNewPlayer 5");
             ChangingSpectatedPlayerEventArgs temp = new ChangingSpectatedPlayerEventArgs(player, previousSpectatedPlayer, getFuturePlayer, true);
-            Exiled.API.Features.Log.Info("ProcessNewPlayer 6");
             Handlers.Player.OnChangingSpectatedPlayer(temp);
-            Exiled.API.Features.Log.Info("ProcessNewPlayer 7");
             // if (!temp.IsAllowed)
             // {
             //     Exiled.API.Features.Log.Info("ProcessNewPlayer 8");
