@@ -83,7 +83,7 @@ namespace Exiled.Events.EventArgs.Player
         /// <summary>
         ///     Gets a value indicating whether the player can be authenticated or not.
         /// </summary>
-        public bool IsAllowed { get; private set; }
+        public bool IsAllowed { get; set; }
 
         /// <summary>
         ///     Gets or sets a value indicating whether all available slots on the server are occupied.

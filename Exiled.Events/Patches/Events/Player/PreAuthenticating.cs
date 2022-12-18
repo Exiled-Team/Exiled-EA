@@ -90,6 +90,7 @@ namespace Exiled.Events.Patches.Events.Player
               return false;
             }
 
+            // Exiled.API.Features.Log.Info("Well time to accept connection");
             return true;
 
         }
