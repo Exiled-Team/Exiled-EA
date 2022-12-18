@@ -9,6 +9,7 @@ namespace Exiled.Loader
 {
     using System.IO;
     using System.Reflection;
+
     using PluginAPI.Core.Attributes;
 
     using Log = API.Features.Log;
