@@ -52,12 +52,7 @@ namespace Exiled.Loader
 
             Log.Info($"Loading EXILED Version: {Assembly.GetExecutingAssembly().GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion}");
 
-            if (Config.Environment != EnvironmentType.Production && Config.Environment != EnvironmentType.ProductionDebug)
-                Paths.Reload(Path.Combine(Paths.AppData, $"EXILED-{Config.Environment.ToString().ToUpper()}"));
-            else if (Environment.CurrentDirectory.Contains("testing", StringComparison.OrdinalIgnoreCase))
-                Paths.Reload(Path.Combine(Paths.AppData, $"EXILED-Testing"));
-            else
-                Paths.Reload(Config.ExiledDirectoryPath);
+            Paths.Reload(Config.ExiledDirectoryPath);
 
             Log.Info($"Exiled root path set to: {Paths.Exiled}");
 
