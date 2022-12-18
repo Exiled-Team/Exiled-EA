@@ -39,13 +39,14 @@ namespace Exiled.Events.Patches.Events.Player
             LocalBuilder failedMessage = generator.DeclareLocal(typeof(string));
             LocalBuilder ev = generator.DeclareLocal(typeof(PreAuthenticatingEventArgs));
 
-            const int offset = -1;
+            int offset = 2;
             int index = newInstructions.FindLastIndex(
-                instruction => instruction.Calls(PropertyGetter(typeof(NetManager), nameof(NetManager.ConnectedPeersCount)))) + offset;
+                instruction => instruction.Calls(Method(typeof(HashSet<string>), nameof(HashSet<string>.Remove)))) + offset;
 
-            newInstructions[index + 4].WithLabels(elseLabel);
+            newInstructions[index + 33].WithLabels(elseLabel);
 
-            int rejectIndex = newInstructions.FindLastIndex(instruction => instruction.opcode == OpCodes.Br_S) + 1;
+            offset = 1;
+            int rejectIndex = newInstructions.FindLastIndex(instruction => instruction.opcode == OpCodes.Br_S) + offset;
 
             newInstructions[rejectIndex].WithLabels(fullRejectLabel);
 
