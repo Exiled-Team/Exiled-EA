@@ -67,23 +67,23 @@ namespace Exiled.Events.Patches.Events.Player
             Exiled.API.Features.Log.Info("ProcessNewPlayer 6");
             Handlers.Player.OnChangingSpectatedPlayer(temp);
             Exiled.API.Features.Log.Info("ProcessNewPlayer 7");
-            if (!temp.IsAllowed)
-            {
-                Exiled.API.Features.Log.Info("ProcessNewPlayer 8");
-                return;
-            }
+            // if (!temp.IsAllowed)
+            // {
+            //     Exiled.API.Features.Log.Info("ProcessNewPlayer 8");
+            //     return;
+            // }
 
-            Exiled.API.Features.Log.Info("ProcessNewPlayer 9");
-            if (temp.NewTarget != null)
-            {
-                Exiled.API.Features.Log.Info("ProcessNewPlayer 10");
-                new_netid = (int) temp.NewTarget.NetworkIdentity.netId;
-            }
-            else
-            {
-                Exiled.API.Features.Log.Info("ProcessNewPlayer 11");
-                new_netid = (int) temp.Player.NetworkIdentity.netId;
-            }
+            // Exiled.API.Features.Log.Info("ProcessNewPlayer 9");
+            // if (temp.NewTarget != null)
+            // {
+            //     Exiled.API.Features.Log.Info("ProcessNewPlayer 10");
+            //     new_netid = (int) temp.NewTarget.NetworkIdentity.netId;
+            // }
+            // else
+            // {
+            //     Exiled.API.Features.Log.Info("ProcessNewPlayer 11");
+            //     new_netid = (int) temp.Player.NetworkIdentity.netId;
+            // }
         }
     }
 }
