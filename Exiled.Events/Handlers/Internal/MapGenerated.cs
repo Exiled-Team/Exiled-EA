@@ -14,13 +14,24 @@ namespace Exiled.Events.Handlers.Internal
     using API.Features.Items;
     using API.Structs;
     using Exiled.API.Extensions;
-    using Interactables.Interobjects;
+
+    using InventorySystem.Items.Firearms.Attachments;
     using InventorySystem.Items.Firearms.Attachments.Components;
+
+    using Interactables.Interobjects;
+
     using MapGeneration;
     using MapGeneration.Distributors;
+
     using MEC;
+
     using NorthwoodLib.Pools;
+
     using PlayerRoles.PlayableScps.Scp079.Cameras;
+
+    using UnityEngine;
+
+    using Utils.NonAllocLINQ;
 
     using Broadcast = Broadcast;
     using Camera = API.Features.Camera;
@@ -128,15 +139,25 @@ namespace Exiled.Events.Handlers.Internal
                     continue;
 
                 Firearm.FirearmInstances.Add(firearm);
-                uint code = 1;
-                List<AttachmentIdentifier> attachmentIdentifiers = new();
 
+                List<AttachmentIdentifier> attachmentIdentifiers = new();
+                HashSet<AttachmentSlot> attachmentsSlots = new();
+
+                uint code = 1;
                 foreach (Attachment att in firearm.Attachments)
                 {
-                    attachmentIdentifiers.Add(new AttachmentIdentifier(code, att.Name, att.Slot));
+                    attachmentsSlots.Add(att.Slot);
+                    attachmentIdentifiers.Add(new(code, att.Name, att.Slot));
                     code *= 2U;
                 }
 
+                uint baseCode = 0;
+                attachmentsSlots.ForEach(slot =>
+                baseCode += attachmentIdentifiers.Where(att =>
+                att.Slot == slot).Aggregate((curMin, nextEntry) =>
+                nextEntry.Code < curMin.Code ? nextEntry : curMin));
+
+                Firearm.BaseCodesValue.Add(type, baseCode);
                 Firearm.AvailableAttachmentsValue.Add(type, attachmentIdentifiers.ToArray());
             }
         }
