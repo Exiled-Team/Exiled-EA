@@ -352,6 +352,7 @@ namespace Exiled.API.Features
         {
             Room.RoomIdentifierToRoom.Clear();
             Door.DoorVariantToDoor.Clear();
+            Lift.ElevatorChamberToLift.Clear();
             Camera.Camera079ToCamera.Clear();
             Window.BreakableWindowToWindow.Clear();
             TeslaGate.BaseTeslaGateToTeslaGate.Clear();

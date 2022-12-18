@@ -9,28 +9,21 @@ namespace Exiled.Events.Handlers.Internal
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
 
     using API.Features;
     using API.Features.Items;
     using API.Structs;
     using Exiled.API.Extensions;
-
+    using Interactables.Interobjects;
     using InventorySystem.Items.Firearms.Attachments;
     using InventorySystem.Items.Firearms.Attachments.Components;
-
-    using Interactables.Interobjects;
-
     using MapGeneration;
     using MapGeneration.Distributors;
-
     using MEC;
-
     using NorthwoodLib.Pools;
-
     using PlayerRoles.PlayableScps.Scp079.Cameras;
-
     using UnityEngine;
-
     using Utils.NonAllocLINQ;
 
     using Broadcast = Broadcast;
