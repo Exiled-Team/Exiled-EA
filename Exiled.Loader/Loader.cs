@@ -388,9 +388,7 @@ namespace Exiled.Loader
                     Type genericTypeDef = type.GetGenericTypeDefinition();
 
                     if (genericTypeDef == typeof(Plugin<>) || genericTypeDef == typeof(Plugin<,>))
-                    {
                         return true;
-                    }
                 }
             }
 

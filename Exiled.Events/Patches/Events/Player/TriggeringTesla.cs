@@ -36,6 +36,7 @@ namespace Exiled.Events.Patches.Events.Player
 
                 if (TeslaGate.BaseTeslaGateToTeslaGate.Count == 0)
                     return true;
+
                 foreach (BaseTeslaGate baseTeslaGate in __instance.TeslaGates)
                 {
                     if (!baseTeslaGate.isActiveAndEnabled || baseTeslaGate.InProgress)

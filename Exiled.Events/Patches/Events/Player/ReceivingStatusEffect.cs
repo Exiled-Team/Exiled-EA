@@ -73,7 +73,11 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Ldarg_0),
                     new(OpCodes.Ldfld, Field(typeof(StatusEffectBase), nameof(StatusEffectBase._intensity))),
 
-                    // ReceivingEventArgs ev = new(player, this, value, currentState)
+                    // this.Duration
+                    new(OpCodes.Ldarg_0),
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(StatusEffectBase), nameof(StatusEffectBase.Duration))),
+
+                    // ReceivingEventArgs ev = new(Player, StatusEffectBase, byte, byte, float)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(ReceivingEffectEventArgs))[0]),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),
@@ -87,7 +91,7 @@ namespace Exiled.Events.Patches.Events.Player
 
                     // value = ev.State
                     new(OpCodes.Ldloc_S, ev.LocalIndex),
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(ReceivingEffectEventArgs), nameof(ReceivingEffectEventArgs.State))),
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(ReceivingEffectEventArgs), nameof(ReceivingEffectEventArgs.Intensity))),
                     new(OpCodes.Starg_S, 1),
 
                     // this.Duration = ev.Duration

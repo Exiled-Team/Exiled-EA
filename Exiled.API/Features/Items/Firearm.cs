@@ -30,7 +30,7 @@ namespace Exiled.API.Features.Items
         /// <summary>
         /// A <see cref="List{T}"/> of <see cref="Firearm"/> which contains all the existing firearms based on all the <see cref="ItemType"/>s.
         /// </summary>
-        internal static readonly List<Firearm> FirearmInstances = new();
+        internal static readonly Dictionary<ItemType, Firearm> ItemTypeToFirearmInstance = new();
 
         /// <summary>
         /// Gets a <see cref="Dictionary{TKey, TValue}"/> which contains all the base codes expressed in <see cref="ItemType"/> and <see cref="uint"/>.
