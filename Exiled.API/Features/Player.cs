@@ -376,6 +376,11 @@ namespace Exiled.API.Features
         public bool IsConnected => GameObject != null;
 
         /// <summary>
+        /// Gets a value indicating whether or not the player has a reserved slot.
+        /// </summary>
+        public bool HasReservedSlot => ReservedSlot.HasReservedSlot(UserId, out _);
+
+        /// <summary>
         /// Gets a list of player ids who can't see the player.
         /// </summary>
         public HashSet<int> TargetGhostsHashSet { get; } = HashSetPool<int>.Shared.Rent();
@@ -1250,6 +1255,38 @@ namespace Exiled.API.Features
         /// <param name="player">The player found or <see langword="null"/> if not found.</param>
         /// <returns>A boolean indicating whether or not a player was found.</returns>
         public static bool TryGet(string args, out Player player) => (player = Get(args)) is not null;
+
+        /// <summary>
+        /// Adds a player's UserId to the list of reserved slots.
+        /// </summary>
+        /// <remarks>This method does not permanently give a user a reserved slot. The slot will be removed if the reserved slots are reloaded.</remarks>
+        /// <param name="userId">The UserId of the player to add.</param>
+        /// <returns><see langword="true"/> if the slot was successfully added, or <see langword="false"/> if the provided UserId already has a reserved slot.</returns>
+        /// <seealso cref="AddReservedSlot(Player)"/>
+        public static bool AddReservedSlot(string userId)
+        {
+            if (!ReservedSlot.HasReservedSlot(userId, out _))
+            {
+                ReservedSlot.Users.Add(userId);
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Adds a player's UserId to the list of reserved slots.
+        /// </summary>
+        /// <remarks>This method does not permanently give a user a reserved slot. The slot will be removed if the reserved slots are reloaded.</remarks>
+        /// <param name="player">The player to add.</param>
+        /// <returns><see langword="true"/> if the slot was successfully added, or <see langword="false"/> if the provided player already has a reserved slot.</returns>
+        /// <seealso cref="AddReservedSlot(string)"/>
+        public static bool AddReservedSlot(Player player) => AddReservedSlot(player.UserId);
+
+        /// <summary>
+        /// Reloads the reserved slot list, clearing all reserved slot changes made with add/remove methods and reverting to the reserved slots files.
+        /// </summary>
+        public static void ReloadReservedSlots() => ReservedSlot.Reload();
 
         /// <summary>
         /// Tries to add <see cref="RoleTypeId"/> to FriendlyFire rules.
