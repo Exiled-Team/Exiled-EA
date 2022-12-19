@@ -41,10 +41,7 @@ namespace Exiled.Events.EventArgs.Player
         /// <param name="country">
         ///     <inheritdoc cref="Country" />
         /// </param>
-        /// <param name="num">
-        ///     Maximum amount of allowed players.
-        /// </param>
-        public PreAuthenticatingEventArgs(string userId, ConnectionRequest request, int readerStartPosition, byte flags, string country, int num)
+        public PreAuthenticatingEventArgs(string userId, ConnectionRequest request, int readerStartPosition, byte flags, string country)
         {
             UserId = userId;
             Request = request;
@@ -52,7 +49,7 @@ namespace Exiled.Events.EventArgs.Player
             Flags = flags;
             Country = country;
             IsAllowed = true;
-            serverFull = LiteNetLib4MirrorCore.Host.ConnectedPeersCount >= num;
+            serverFull = LiteNetLib4MirrorCore.Host.ConnectedPeersCount >= CustomNetworkManager.slots;
         }
 
         /// <summary>

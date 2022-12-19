@@ -89,10 +89,7 @@ namespace Exiled.Events.Patches.Events.Player
                     // text2 (country)
                     new(OpCodes.Ldloc_S, 13),
 
-                    // true
-                    new(OpCodes.Ldloc_S, 28),
-
-                    // PreAuthenticatingEventArgs ev = new(string, ConnectionRequest, int, byte, string, int)
+                    // PreAuthenticatingEventArgs ev = new(string, ConnectionRequest, int, byte, string)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(PreAuthenticatingEventArgs))[0]),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),
