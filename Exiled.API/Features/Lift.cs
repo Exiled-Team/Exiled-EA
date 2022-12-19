@@ -238,24 +238,21 @@ namespace Exiled.API.Features
         /// <param name="lockReason">Type of lift lockdown.</param>
         public void ChangeLock(DoorLockReason lockReason)
         {
-            DoorLockReason lockFlags = Base.ActiveLocks;
-
-            if (lockReason == DoorLockReason.None)
-                lockFlags = 0;
-            else
-                lockFlags |= lockReason;
+            bool forceLock = lockReason != DoorLockReason.None;
 
             List<ElevatorDoor> targetDoors = ElevatorDoor.AllElevatorDoors.First(x => x.Key == Base.AssignedGroup).Value;
 
             foreach (ElevatorDoor door in targetDoors)
             {
-                if (lockFlags == 0)
+                if (!forceLock)
                 {
                     door.NetworkActiveLocks = 0;
+
+                    door.ServerChangeLock(DoorLockReason.None, true);
                 }
                 else
                 {
-                    door.NetworkActiveLocks = (ushort)lockFlags;
+                    door.ServerChangeLock(lockReason, true);
 
                     if (Base.CurrentLevel != 1)
                         TrySetDestination(Base.AssignedGroup, 1, true);
