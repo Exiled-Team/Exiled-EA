@@ -36,24 +36,8 @@ namespace Exiled.Events.Patches.Events.Player
     ///     Adds the <see cref="Player.ReservedSlot" /> event.
     /// </summary>
     [HarmonyPatch(typeof(ReservedSlot), "HasReservedSlot")]
-    // [HarmonyPatch]
     internal static class ReservedSlotPatch
     {
-        // public static MethodBase TargetMethod()
-        // {
-        //     foreach (var method in typeof(ReservedSlot).GetMethods(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.DeclaredOnly))
-        //     {
-        //         Log.Info($"What are the available methods {method}");
-        //         if (method.Name.Contains("HasReservedSlot"))
-        //         {
-        //             Log.Info($"What is the method I am giving back {method}");
-        //             return method;
-        //         }
-        //     }
-        //     Log.Warn("ReservedSlotPatch did not find method");
-        //     return null;
-        // }
-
         [HarmonyTranspiler]
         private static IEnumerable<CodeInstruction> ReservedSlotPatchTranspiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
@@ -71,8 +55,6 @@ namespace Exiled.Events.Patches.Events.Player
             int offset = -1;
             int index = newInstructions.FindLastIndex(
                 instruction => instruction.LoadsField(Field(typeof(PlayerCheckReservedSlotCancellationData), nameof(PlayerCheckReservedSlotCancellationData.HasReservedSlot)))) + offset;
-
-            Log.Info($"What is the index we got {index}");
 
             newInstructions[index].WithLabels(continueConditions);
 
