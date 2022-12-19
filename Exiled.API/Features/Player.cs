@@ -438,7 +438,7 @@ namespace Exiled.API.Features
         public Vector3 Position
         {
             get => GameObject.transform.position;
-            set => ReferenceHub.TryOverridePosition(value, Rotation);
+            set => ReferenceHub.TryOverridePosition(value, Vector3.zero);
         }
 
         /// <summary>
@@ -448,7 +448,7 @@ namespace Exiled.API.Features
         public Vector3 Rotation
         {
             get => GameObject.transform.eulerAngles;
-            set => ReferenceHub.TryOverridePosition(Position, value);
+            set => ReferenceHub.TryOverridePosition(Position, value - Rotation);
         }
 
         /// <summary>
