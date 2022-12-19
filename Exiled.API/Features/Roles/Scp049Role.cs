@@ -83,7 +83,7 @@ namespace Exiled.API.Features.Roles
         /// <summary>
         /// Gets or sets the amount of time before SCP-049 can use its Good Sense ability again.
         /// </summary>
-        public float AmnesticCloudCooldown
+        public float GoodSenseCooldown
         {
             get => SubroutineModule.TryGetSubroutine(out Scp049SenseAbility ability) ? ability.Cooldown.Remaining : 0f;
             set
