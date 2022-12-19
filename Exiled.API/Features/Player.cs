@@ -385,6 +385,11 @@ namespace Exiled.API.Features
         public bool RemoteAdminAccess => ReferenceHub.serverRoles.RemoteAdmin;
 
         /// <summary>
+        /// Gets a value indicating a player's kick power.
+        /// </summary>
+        public byte KickPower => ReferenceHub.serverRoles.KickPower;
+
+        /// <summary>
         /// Gets or sets a value indicating whether or not the player's overwatch is enabled.
         /// </summary>
         public bool IsOverwatchEnabled
@@ -706,6 +711,26 @@ namespace Exiled.API.Features
         /// Gets a value indicating whether or not the player is speaking.
         /// </summary>
         public bool IsSpeaking => VoiceModule?.IsSpeaking ?? false;
+
+        /// <summary>
+        /// Gets the player's voice color.
+        /// </summary>
+        public Color VoiceColor => ReferenceHub.serverRoles.GetVoiceColor();
+
+        /// <summary>
+        /// Gets or sets the player's voice channel.
+        /// </summary>
+        public VoiceChatChannel VoiceChannel
+        {
+            get => VoiceModule?.CurrentChannel ?? VoiceChatChannel.None;
+            set
+            {
+                if (VoiceModule is null)
+                    return;
+
+                VoiceModule.CurrentChannel = value;
+            }
+        }
 
         /// <summary>
         /// Gets a value indicating whether or not the player is transmitting on a Radio.
