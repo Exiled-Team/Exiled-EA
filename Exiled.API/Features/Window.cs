@@ -186,7 +186,7 @@ namespace Exiled.API.Features
 
         private GlassType GetGlassType()
         {
-            if (Recontainer.ActivatorWindow.Base == Base)
+            if (Recontainer.Base._activatorGlass == Base)
                 return GlassType.Scp079Trigger;
 
             return Room?.Type switch
