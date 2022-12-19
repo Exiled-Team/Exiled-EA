@@ -8,6 +8,7 @@
 namespace Exiled.API.Features.Roles
 {
     using PlayerRoles;
+    using PlayerRoles.PlayableScps.Scp049;
     using PlayerRoles.PlayableScps.Scp049.Zombies;
     using PlayerRoles.PlayableScps.Subroutines;
 
@@ -31,6 +32,15 @@ namespace Exiled.API.Features.Roles
 
         /// <inheritdoc/>
         public override SubroutineManagerModule SubroutineModule { get; }
+
+        /// <summary>
+        /// Gets or sets the amount of times this SCP-049-2 has been resurrected.
+        /// </summary>
+        public int ResurrectNumber
+        {
+            get => Scp049ResurrectAbility.GetResurrectionsNumber(Owner.ReferenceHub);
+            set => Scp049ResurrectAbility.ResurrectedPlayers[Owner.ReferenceHub.netId] = value;
+        }
 
         /// <summary>
         /// Gets the SCP-049-2 attack damage.
@@ -79,5 +89,21 @@ namespace Exiled.API.Features.Roles
         {
             get => SubroutineModule.TryGetSubroutine(out ZombieAttackAbility ability) ? ability.BaseCooldown : 0;
         }
+
+        /// <summary>
+        /// Returns a <see langword="bool"/> indicating whether or not SCP-049-2 is close enough to a ragdoll to consume it.
+        /// </summary>
+        /// <remarks>This method only returns whether or not SCP-049-2 is close enough to the body to consume it; the body may have been consumed previously. Make sure to check <see cref="Ragdoll.IsConsumed"/> to ensure the body can be consumed.</remarks>
+        /// <param name="ragdoll">The ragdoll to check.</param>
+        /// <returns><see langword="true"/> if close enough to consume the body; otherwise, <see langword="false"/>.</returns>
+        public bool IsInConsumeRange(BasicRagdoll ragdoll) => SubroutineModule.TryGetSubroutine(out ZombieConsumeAbility ability) && ability.IsCloseEnough(Owner.Position, ragdoll.transform.position);
+
+        /// <summary>
+        /// Returns a <see langword="bool"/> indicating whether or not SCP-049-2 is close enough to a ragdoll to consume it.
+        /// </summary>
+        /// <remarks>This method only returns whether or not SCP-049-2 is close enough to the body to consume it; the body may have been consumed previously. Make sure to check <see cref="Ragdoll.IsConsumed"/> to ensure the body can be consumed.</remarks>
+        /// <param name="ragdoll">The ragdoll to check.</param>
+        /// <returns><see langword="true"/> if close enough to consume the body; otherwise, <see langword="false"/>.</returns>
+        public bool IsInConsumeRange(Ragdoll ragdoll) => IsInConsumeRange(ragdoll.Base);
     }
 }
