@@ -195,11 +195,7 @@ namespace Exiled.API.Extensions
         /// </summary>
         /// <param name="items">The items to convert.</param>
         /// <returns>A new <see cref="List{T}"/> of <see cref="ItemType"/>s.</returns>
-        public static IEnumerable<ItemType> GetItemTypes(this IEnumerable<Item> items)
-        {
-            foreach (Item item in items)
-                yield return item.Type;
-        }
+        public static IEnumerable<ItemType> GetItemTypes(this IEnumerable<Item> items) => items.Select(item => item.Type);
 
         /// <summary>
         /// Gets all <see cref="AttachmentIdentifier"/>s present on an <see cref="ItemType"/>.
@@ -212,9 +208,7 @@ namespace Exiled.API.Extensions
             if (type.GetBaseCode() > code)
                 code = type.GetBaseCode();
 
-            Firearm firearm = Firearm.FirearmInstances.FirstOrDefault(item => item.Type == type);
-
-            if (firearm is null)
+            if (!Firearm.ItemTypeToFirearmInstance.TryGetValue(type, out Firearm firearm))
                 throw new ArgumentException($"Couldn't find a Firearm instance matching the ItemType value: {type}.");
 
             firearm.Base.ApplyAttachmentsCode(code, true);

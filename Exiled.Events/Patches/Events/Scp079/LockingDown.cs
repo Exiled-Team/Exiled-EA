@@ -39,8 +39,8 @@ namespace Exiled.Events.Patches.Events.Scp079
 
             LocalBuilder ev = generator.DeclareLocal(typeof(LockingDownEventArgs));
 
-            int offset = 1;
-            int index = newInstructions.FindLastIndex(instruction => instruction.opcode == OpCodes.Brtrue_S) + offset;
+            int offset = 0;
+            int index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Ldc_I4_S) + offset;
 
             // LockingDownEventArgs ev = new(Player.Get(base.Owner), base.CurrentCamSync.CurrentCamera.Room, (float)this._cost);
             //

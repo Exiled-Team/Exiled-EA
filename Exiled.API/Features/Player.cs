@@ -42,6 +42,7 @@ namespace Exiled.API.Features
     using PlayerRoles.PlayableScps.Scp106;
     using PlayerRoles.PlayableScps.Scp173;
     using PlayerRoles.PlayableScps.Scp939;
+    using PlayerRoles.Spectating;
     using PlayerRoles.Voice;
     using PlayerStatsSystem;
     using RemoteAdmin;
@@ -442,7 +443,7 @@ namespace Exiled.API.Features
         public Vector3 Position
         {
             get => GameObject.transform.position;
-            set => ReferenceHub.TryOverridePosition(value, Rotation);
+            set => ReferenceHub.TryOverridePosition(value, Vector3.zero);
         }
 
         /// <summary>
@@ -452,7 +453,7 @@ namespace Exiled.API.Features
         public Vector3 Rotation
         {
             get => GameObject.transform.eulerAngles;
-            set => ReferenceHub.TryOverridePosition(Position, value);
+            set => ReferenceHub.TryOverridePosition(Position, value - Rotation);
         }
 
         /// <summary>
@@ -980,19 +981,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets a <see cref="Player"/> <see cref="IEnumerable{T}"/> of spectators that are currently spectating this <see cref="Player"/>.
         /// </summary>
-        public IEnumerable<Player> CurrentSpectatingPlayers
-        {
-            get
-            {
-                foreach (Player player in List)
-                {
-                    if (player == this || player.Role is not SpectatorRole role || role.SpectatedPlayer != this)
-                        continue;
-
-                    yield return player;
-                }
-            }
-        }
+        public IEnumerable<Player> CurrentSpectatingPlayers => List.Where(player => ReferenceHub.IsSpectatedBy(player.ReferenceHub));
 
         /// <summary>
         /// Gets a <see cref="Dictionary{TKey, TValue}"/> which contains all player's preferences.
@@ -2015,16 +2004,13 @@ namespace Exiled.API.Features
         public Item AddItem(ItemType itemType, IEnumerable<AttachmentIdentifier> identifiers = null)
         {
             Item item = Item.Get(Inventory.ServerAddItem(itemType));
+
             if (item is Firearm firearm)
             {
                 if (identifiers is not null)
-                {
                     firearm.AddAttachment(identifiers);
-                }
                 else if (Preferences is not null && Preferences.TryGetValue(itemType, out AttachmentIdentifier[] attachments))
-                {
                     firearm.Base.ApplyAttachmentsCode(attachments.GetAttachmentsCode(), true);
-                }
 
                 FirearmStatusFlags flags = FirearmStatusFlags.MagazineInserted;
 

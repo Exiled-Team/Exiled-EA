@@ -125,29 +125,29 @@ namespace Exiled.Events.Handlers.Internal
                 if (!type.IsWeapon(false))
                     continue;
 
-                Item item = Item.Create(type);
-
-                if (item is not Firearm firearm)
+                if (Item.Create(type) is not Firearm firearm)
                     continue;
 
-                Firearm.FirearmInstances.Add(firearm);
+                Firearm.ItemTypeToFirearmInstance.Add(type, firearm);
 
                 List<AttachmentIdentifier> attachmentIdentifiers = new();
                 HashSet<AttachmentSlot> attachmentsSlots = new();
 
                 uint code = 1;
-                foreach (Attachment att in firearm.Attachments)
+
+                foreach (Attachment attachment in firearm.Attachments)
                 {
-                    attachmentsSlots.Add(att.Slot);
-                    attachmentIdentifiers.Add(new(code, att.Name, att.Slot));
+                    attachmentsSlots.Add(attachment.Slot);
+                    attachmentIdentifiers.Add(new(code, attachment.Name, attachment.Slot));
                     code *= 2U;
                 }
 
                 uint baseCode = 0;
-                attachmentsSlots.ForEach(slot =>
-                baseCode += attachmentIdentifiers.Where(att =>
-                att.Slot == slot).Aggregate((curMin, nextEntry) =>
-                nextEntry.Code < curMin.Code ? nextEntry : curMin));
+
+                attachmentsSlots
+                    .ForEach(slot => baseCode += attachmentIdentifiers
+                    .Where(attachment => attachment.Slot == slot)
+                    .Aggregate((curMin, nextEntry) => nextEntry.Code < curMin.Code ? nextEntry : curMin));
 
                 Firearm.BaseCodesValue.Add(type, baseCode);
                 Firearm.AvailableAttachmentsValue.Add(type, attachmentIdentifiers.ToArray());
