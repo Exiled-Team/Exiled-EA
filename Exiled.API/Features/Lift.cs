@@ -30,6 +30,11 @@ namespace Exiled.API.Features
         internal static readonly Dictionary<ElevatorChamber, Lift> ElevatorChamberToLift = new(8);
 
         /// <summary>
+        /// Internal list that contains all ElevatorDoor for current group.
+        /// </summary>
+        private readonly List<ElevatorDoor> internalDoorsList = new();
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="Lift"/> class.
         /// </summary>
         /// <param name="elevator">The <see cref="ElevatorChamber"/> to wrap.</param>
@@ -37,6 +42,9 @@ namespace Exiled.API.Features
         {
             Base = elevator;
             ElevatorChamberToLift.Add(elevator, this);
+
+            foreach (ElevatorDoor door in ElevatorDoor.AllElevatorDoors.First(x => x.Key == Base.AssignedGroup).Value)
+                internalDoorsList.Add(door);
         }
 
         /// <summary>
@@ -54,6 +62,11 @@ namespace Exiled.API.Features
         /// Gets the base <see cref="ElevatorChamber"/>.
         /// </summary>
         public ElevatorChamber Base { get; }
+
+        /// <summary>
+        /// Gets a value of the internal doors list.
+        /// </summary>
+        public IReadOnlyCollection<ElevatorDoor> Doors => internalDoorsList;
 
         /// <summary>
         /// Gets the lift's name.
