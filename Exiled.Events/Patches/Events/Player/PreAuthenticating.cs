@@ -37,28 +37,10 @@ namespace Exiled.Events.Patches.Events.Player
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Shared.Rent(instructions);
 
+            int offset = -1;
+            int index = newInstructions.FindLastIndex(
+                instruction => instruction.Calls(Method(typeof(ConnectionRequest), nameof(ConnectionRequest.Accept)))) + offset;
 
-            LocalBuilder jumpConditions = generator.DeclareLocal(typeof(int));
-
-            Label acceptLabel = generator.DefineLabel();
-            Label fullRejectLabel = generator.DefineLabel();
-            Label continueConditions = generator.DefineLabel();
-
-            int offset = 0;
-            int index = newInstructions.FindIndex(
-                instruction => instruction.Calls(PropertyGetter(typeof(LiteNetLib4MirrorCore), nameof(LiteNetLib4MirrorCore.Host)))) + offset;
-
-            int acceptIndex = newInstructions.FindIndex(index, instruction => instruction.LoadsField(Field(typeof(CustomLiteNetLib4MirrorTransport), nameof(CustomLiteNetLib4MirrorTransport.UserIds))));
-            newInstructions[acceptIndex].WithLabels(acceptLabel);
-
-            int offsetCondition = 2;
-            int continueConditionsIndex = newInstructions.FindIndex(instruction => instruction.LoadsField(Field(typeof(CustomNetworkManager), nameof(CustomNetworkManager.slots)))) + offsetCondition;
-            newInstructions[continueConditionsIndex].WithLabels(continueConditions);
-
-
-            int rejectOffset = 2;
-            int rejectIndex = newInstructions.FindLastIndex(instruction => instruction.Calls(Method(typeof(CustomLiteNetLib4MirrorTransport), nameof(CustomLiteNetLib4MirrorTransport.PreauthDisableIdleMode)))) + rejectOffset;
-            newInstructions[rejectIndex].WithLabels(fullRejectLabel);
 
             object returnLabel = newInstructions.FindLast(instruction => instruction.opcode == OpCodes.Br_S).operand;
 
@@ -66,37 +48,27 @@ namespace Exiled.Events.Patches.Events.Player
                 index,
                 new[]
                 {
+                    // userid
                     new CodeInstruction(OpCodes.Ldloc_S, 10).MoveLabelsFrom(newInstructions[index]),
+                    // Request
                     new(OpCodes.Ldarg_1),
+                    // Request.Data.Position
+                    new(OpCodes.Dup),
+                    new(OpCodes.Ldfld, Field(typeof(ConnectionRequest), nameof(ConnectionRequest.Data))),
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(NetDataReader), nameof(NetDataReader.Position))),
                     // b3 (flags)
                     new(OpCodes.Ldloc_S, 12),
                     // text2 (country)
                     new(OpCodes.Ldloc_S, 13),
-                    // Players connected
-                    new(OpCodes.Ldsfld, Field(typeof(CustomNetworkManager), nameof(CustomNetworkManager.slots))),
-                    new(OpCodes.Call, Method(typeof(PreAuthenticating), nameof(PreAuthenticating.authenticatePlayer))),
-                    new(OpCodes.Stloc, jumpConditions.LocalIndex),
 
-                    // If allow connection override
-                    new(OpCodes.Ldloc, jumpConditions.LocalIndex),
-                    new(OpCodes.Ldc_I4_2),
-                    new(OpCodes.Beq, acceptLabel),
+                    //public PreAuthenticatingEventArgs(string userId, ConnectionRequest request, int readerStartPosition, byte flags, string country)
+                    new CodeInstruction(OpCodes.Newobj, GetDeclaredConstructors(typeof(PreAuthenticatingEventArgs))[0]),
+                    new(OpCodes.Dup),
 
-                    // If allow further if condition checks
-                    new(OpCodes.Ldloc, jumpConditions.LocalIndex),
-                    new(OpCodes.Ldc_I4_0),
-                    new(OpCodes.Beq, continueConditions),
-
-                    // If server full
-                    new(OpCodes.Ldloc, jumpConditions.LocalIndex),
-                    new(OpCodes.Ldc_I4_1),
-                    new(OpCodes.Beq, fullRejectLabel),
-
-                    // If fully reject
-                    new(OpCodes.Ldloc, jumpConditions.LocalIndex),
-                    new(OpCodes.Ldc_I4_M1),
-                    new(OpCodes.Beq, returnLabel),
-
+                    // Handlers.Player.OnPreAuthenticating(ev)
+                    new(OpCodes.Call, Method(typeof(Player), nameof(Player.OnPreAuthenticating))),
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(PreAuthenticatingEventArgs), nameof(PreAuthenticatingEventArgs.IsAllowed))),
+                    new(OpCodes.Brfalse, returnLabel),
                 });
 
             for (int z = 0; z < newInstructions.Count; z++)
@@ -105,45 +77,5 @@ namespace Exiled.Events.Patches.Events.Player
             ListPool<CodeInstruction>.Shared.Return(newInstructions);
         }
 
-        public static int authenticatePlayer(string userId, ConnectionRequest request, byte flags, string country, int cur_slots)
-        {
-            PreAuthenticatingEventArgs ev = new(userId, request, request.Data.Position,  flags, country, cur_slots);
-
-            Player.OnPreAuthenticating(ev);
-
-            // If there is a desire to accept the connection naturally (server not full, and accept condition left alone)
-            if (ev.AcceptConnection)
-            {
-                return 2;
-            }
-
-            // If the server wants the rest of NW condition checks
-            if (ev.AllowFurtherChecks)
-            {
-                return 0;
-            }
-
-            // If the connection should be accepted due to ForceAcceptConnection default/
-            if (ev.ForceAllowConnection)
-            {
-                return 2;
-            }
-
-            // If the server is "full"
-            if (ev.IsServerFull)
-            {
-                return 1;
-            }
-
-            // If the event was not allowed via isAllowed
-
-            string failedMessage = string.Format($"Player {userId} tried to pre-authenticated from endpoint {request.RemoteEndPoint}, but the request has been rejected by a plugin.");
-
-            ServerConsole.AddLog(failedMessage);
-            ServerLogs.AddLog(ServerLogs.Modules.Networking, failedMessage, ServerLogs.ServerLogType.ConnectionUpdate);
-
-            return -1;
-
-        }
     }
 }
