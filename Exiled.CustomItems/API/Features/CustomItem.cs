@@ -231,7 +231,7 @@ namespace Exiled.CustomItems.API.Features
             if (!TryGet(id, out CustomItem item))
                 return false;
 
-            pickup = item.Spawn(position, (Player)null);
+            pickup = item.Spawn(position, null);
 
             return true;
         }
@@ -250,7 +250,7 @@ namespace Exiled.CustomItems.API.Features
             if (!TryGet(name, out CustomItem item))
                 return false;
 
-            pickup = item.Spawn(position, (Player)null);
+            pickup = item.Spawn(position, null);
 
             return true;
         }
@@ -469,7 +469,7 @@ namespace Exiled.CustomItems.API.Features
         /// <param name="y">The y coordinate.</param>
         /// <param name="z">The z coordinate.</param>
         /// <returns>The <see cref="Pickup"/> wrapper of the spawned <see cref="CustomItem"/>.</returns>
-        public virtual Pickup Spawn(float x, float y, float z) => Spawn(new Vector3(x, y, z), (Player)null);
+        public virtual Pickup Spawn(float x, float y, float z) => Spawn(new Vector3(x, y, z), null);
 
         /// <summary>
         /// Spawns a <see cref="Item"/> as a <see cref="CustomItem"/> in a specific location.
@@ -587,7 +587,7 @@ namespace Exiled.CustomItems.API.Features
                         }
 
                         Vector3 position = chamber._spawnpoint.transform.position;
-                        Spawn(position, (Player)null);
+                        Spawn(position, null);
                         Log.Debug($"Spawned {Name} at {position} ({spawnPoint.Name})");
 
                         break;
@@ -596,11 +596,11 @@ namespace Exiled.CustomItems.API.Features
                 else if (spawnPoint is RoleSpawnPoint roleSpawnPoint)
                 {
                     Vector3 position = roleSpawnPoint.Role.GetRandomSpawnProperties().Item1;
-                    Spawn(position, (Player)null);
+                    Spawn(position, null);
                 }
                 else
                 {
-                    Pickup pickup = Spawn(spawnPoint.Position, (Player)null);
+                    Pickup pickup = Spawn(spawnPoint.Position, null);
                     if (pickup.Base is FirearmPickup firearmPickup && this is CustomWeapon customWeapon)
                     {
                         firearmPickup.Status = new FirearmStatus(customWeapon.ClipSize, firearmPickup.Status.Flags, firearmPickup.Status.Attachments);
