@@ -114,29 +114,24 @@ namespace Exiled.Events.Patches.Events.Player
             // If there is a desire to accept the connection naturally (server not full, and accept condition left alone)
             if (ev.AcceptConnection)
             {
-                API.Features.Log.Info($"What is current peer count and such {LiteNetLib4MirrorCore.Host.ConnectedPeersCount} and {cur_slots} and max {LiteNetLib4MirrorNetworkManager.singleton.maxConnections}" +
-                                             $" flags {flags} and country {country}");
                 return 2;
             }
 
             // If the server wants the rest of NW condition checks
             if (ev.AllowFurtherChecks)
             {
-                API.Features.Log.Info("Allowing further checks");
                 return 0;
             }
 
             // If the connection should be accepted due to ForceAcceptConnection default/
             if (ev.ForceAllowConnection)
             {
-                API.Features.Log.Info("Force allowing connection");
                 return 2;
             }
 
             // If the server is "full"
             if (ev.ServerFull)
             {
-                API.Features.Log.Info("Server is currently full");
                 return 1;
             }
 
@@ -147,11 +142,6 @@ namespace Exiled.Events.Patches.Events.Player
             ServerConsole.AddLog(failedMessage);
             ServerLogs.AddLog(ServerLogs.Modules.Networking, failedMessage, ServerLogs.ServerLogType.ConnectionUpdate);
 
-
-            Exiled.API.Features.Log.Info($"Rejected by isAllowed {LiteNetLib4MirrorCore.Host.ConnectedPeersCount} and {cur_slots} and max {LiteNetLib4MirrorNetworkManager.singleton.maxConnections}" +
-                                         $" flags {flags} and country {country}");
-
-            // Exiled.API.Features.Log.Info("Well time to accept connection");
             return -1;
 
         }

@@ -112,6 +112,9 @@ namespace Exiled.Events.EventArgs.Player
         /// </summary>
         public bool AcceptConnection => isAllowed && !ServerFull;
 
+        /// <summary>
+        /// Allows default NW logic checks.
+        /// </summary>
         public bool AllowFurtherChecks { get; set; }
 
         /// <summary>
