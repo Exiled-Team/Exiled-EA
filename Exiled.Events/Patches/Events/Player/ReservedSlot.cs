@@ -86,7 +86,7 @@ namespace Exiled.Events.Patches.Events.Player
 
                     // Allow unconditional connection - AllowConnectionUnconditionally - 3 - return true with bypass to true
                     new(OpCodes.Ldloc, jumpConditions.LocalIndex),
-                    new(OpCodes.Ldc_I4_1),
+                    new(OpCodes.Ldc_I4_3),
                     new(OpCodes.Beq, allowUnconditional),
 
                     //Return true, but set bypass to true.
