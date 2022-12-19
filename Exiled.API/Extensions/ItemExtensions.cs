@@ -212,9 +212,7 @@ namespace Exiled.API.Extensions
             if (type.GetBaseCode() > code)
                 code = type.GetBaseCode();
 
-            Firearm firearm = Firearm.FirearmInstances.FirstOrDefault(item => item.Type == type);
-
-            if (firearm is null)
+            if (!Firearm.ItemTypeToFirearmInstance.TryGetValue(type, out Firearm firearm))
                 throw new ArgumentException($"Couldn't find a Firearm instance matching the ItemType value: {type}.");
 
             firearm.Base.ApplyAttachmentsCode(code, true);
