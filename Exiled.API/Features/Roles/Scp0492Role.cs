@@ -41,6 +41,20 @@ namespace Exiled.API.Features.Roles
         }
 
         /// <summary>
+        /// Gets or sets a value indicating the amount of time to simulate SCP-049-2's Bloodlust ability.
+        /// </summary>
+        public float SimulatedStare
+        {
+            get => SubroutineModule.TryGetSubroutine(out ZombieBloodlustAbility ability) ? ability.SimulatedStare : 0;
+            set
+            {
+                if (!SubroutineModule.TryGetSubroutine(out ZombieBloodlustAbility ability))
+                    return;
+                ability.SimulatedStare = value;
+            }
+        }
+
+        /// <summary>
         /// Gets a value indicating whether or not SCP-049-2 is currently pursuing a target (Bloodlust ability).
         /// </summary>
         public bool BloodlustActive

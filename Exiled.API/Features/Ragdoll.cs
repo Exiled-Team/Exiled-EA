@@ -17,6 +17,7 @@ namespace Exiled.API.Features
     using Exiled.API.Extensions;
     using Mirror;
     using PlayerRoles;
+    using PlayerRoles.PlayableScps.Scp049.Zombies;
     using PlayerRoles.Ragdolls;
     using PlayerStatsSystem;
 
@@ -183,6 +184,21 @@ namespace Exiled.API.Features
         /// Gets a value indicating whether or not the ragdoll is respawnable by SCP-049.
         /// </summary>
         public bool AllowRecall => NetworkInfo.ExistenceTime > PlayerRoles.PlayableScps.Scp049.Scp049ResurrectAbility.HumanCorpseDuration;
+
+        /// <summary>
+        /// Gets or sets a value indicating whether or not this ragdoll has been consumed by an SCP-049-2.
+        /// </summary>
+        public bool IsConsumed
+        {
+            get => ZombieConsumeAbility.ConsumedRagdolls.Contains(Base);
+            set
+            {
+                if (value && !ZombieConsumeAbility.ConsumedRagdolls.Contains(Base))
+                    ZombieConsumeAbility.ConsumedRagdolls.Add(Base);
+                else if (!value && ZombieConsumeAbility.ConsumedRagdolls.Contains(Base))
+                    ZombieConsumeAbility.ConsumedRagdolls.Remove(Base);
+            }
+        }
 
         /// <summary>
         /// Gets the <see cref="Features.Room"/> the ragdoll is located in.
