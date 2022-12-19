@@ -60,14 +60,14 @@ namespace Exiled.Events.Patches.Events.Player
 
                     // InteractingLockerEventArgs ev = new(Player, Locker, LockerChamber, byte, bool)
                     new CodeInstruction(OpCodes.Newobj, GetDeclaredConstructors(typeof(InteractingLockerEventArgs))[0]),
-                    // new(OpCodes.Dup),
-                    //
-                    // // Handlers.Player.OnInteractingLocker(ev)
-                    // new(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnInteractingLocker))),
-                    //
-                    // // flag = ev.IsAllowed
-                    // new(OpCodes.Callvirt, PropertyGetter(typeof(InteractingLockerEventArgs), nameof(InteractingLockerEventArgs.IsAllowed))),
-                    // new(OpCodes.Stloc_0),
+                    new(OpCodes.Dup),
+
+                    // Handlers.Player.OnInteractingLocker(ev)
+                    new(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnInteractingLocker))),
+
+                    // flag = ev.IsAllowed
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(InteractingLockerEventArgs), nameof(InteractingLockerEventArgs.IsAllowed))),
+                    new(OpCodes.Stloc_0),
                 });
 
             for (int z = 0; z < newInstructions.Count; z++)
