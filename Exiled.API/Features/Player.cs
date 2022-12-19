@@ -1979,16 +1979,13 @@ namespace Exiled.API.Features
         public Item AddItem(ItemType itemType, IEnumerable<AttachmentIdentifier> identifiers = null)
         {
             Item item = Item.Get(Inventory.ServerAddItem(itemType));
+
             if (item is Firearm firearm)
             {
                 if (identifiers is not null)
-                {
                     firearm.AddAttachment(identifiers);
-                }
                 else if (Preferences is not null && Preferences.TryGetValue(itemType, out AttachmentIdentifier[] attachments))
-                {
                     firearm.Base.ApplyAttachmentsCode(attachments.GetAttachmentsCode(), true);
-                }
 
                 FirearmStatusFlags flags = FirearmStatusFlags.MagazineInserted;
 

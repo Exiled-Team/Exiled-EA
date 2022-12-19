@@ -52,10 +52,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets or sets a <see cref="HashSet{T}"/> of <see cref="RoleTypeId"/> which contains all the roles ignored by tesla gates.
         /// </summary>
-        public static List<RoleTypeId> IgnoredRoles { get; set; } = new()
-        {
-            RoleTypeId.Scp079,
-        };
+        public static List<RoleTypeId> IgnoredRoles { get; set; } = new();
 
         /// <summary>
         /// Gets or sets a <see cref="HashSet{T}"/> of <see cref="Team"/> which contains all the teams ignored by tesla gates.
