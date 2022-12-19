@@ -20,7 +20,7 @@ namespace Exiled.Events.Patches.Events.Player
     using static HarmonyLib.AccessTools;
 
     /// <summary>
-    ///     Patches <see cref="BanHandler.IssueBan" />.
+    ///     Patches <see cref="BanHandler.IssueBan(BanDetails, BanHandler.BanType, bool)" />.
     ///     Adds the <see cref="Handlers.Player.Banned" /> event.
     /// </summary>
     [HarmonyPatch(typeof(BanHandler), nameof(BanHandler.IssueBan))]
