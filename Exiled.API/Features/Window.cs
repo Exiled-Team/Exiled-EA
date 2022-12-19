@@ -29,10 +29,10 @@ namespace Exiled.API.Features
         /// <param name="window">The base <see cref="BreakableWindow"/> for this door.</param>
         public Window(BreakableWindow window)
         {
+            BreakableWindowToWindow.Add(window, this);
             Base = window;
             Room = window.GetComponentInParent<Room>();
             Type = GetGlassType();
-            BreakableWindowToWindow.Add(window, this);
         }
 
         /// <summary>

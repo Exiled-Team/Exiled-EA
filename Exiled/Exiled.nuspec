@@ -30,9 +30,6 @@
     <file src="..\bin\Release\Exiled.API.dll" target="lib\net472" />
     <file src="..\bin\Release\Exiled.API.xml" target="lib\net472" />
 
-    <file src="..\bin\Release\Exiled.Bootstrap.dll" target="lib\net472" />
-    <file src="..\bin\Release\Exiled.Bootstrap.xml" target="lib\net472" />
-
     <file src="..\bin\Release\Exiled.Events.dll" target="lib\net472" />
     <file src="..\bin\Release\Exiled.Events.xml" target="lib\net472" />
 
@@ -51,8 +48,8 @@
     <file src="..\bin\Release\Exiled.CustomItems.dll" target="lib\net472" />
     <file src="..\bin\Release\Exiled.CustomItems.xml" target="lib\net472" />
 
-	<file src="..\bin\Release\Exiled.CustomRoles.dll" target="lib\net472" />
-	<file src="..\bin\Release\Exiled.CustomRoles.xml" target="lib\net472" />
+    <file src="..\bin\Release\Exiled.CustomRoles.dll" target="lib\net472" />
+    <file src="..\bin\Release\Exiled.CustomRoles.xml" target="lib\net472" />
     <!-- Project files -->
 
     <!-- Icon -->
