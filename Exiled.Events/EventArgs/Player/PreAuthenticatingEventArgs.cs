@@ -21,7 +21,7 @@ namespace Exiled.Events.EventArgs.Player
     /// </summary>
     public class PreAuthenticatingEventArgs : IExiledEvent
     {
-        private bool serverFull;
+        private bool isServerFull;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="PreAuthenticatingEventArgs" /> class.
@@ -51,8 +51,8 @@ namespace Exiled.Events.EventArgs.Player
             ReaderStartPosition = readerStartPosition;
             Flags = flags;
             Country = country;
-            isAllowed = true;
-            serverFull = LiteNetLib4MirrorCore.Host.ConnectedPeersCount >= num;
+            IsAllowed = true;
+            isServerFull = LiteNetLib4MirrorCore.Host.ConnectedPeersCount >= num;
             ForceAllowConnection = false;
             AllowFurtherChecks = false;
         }
@@ -85,7 +85,7 @@ namespace Exiled.Events.EventArgs.Player
         /// <summary>
         ///     Gets a value indicating whether the player can be authenticated or not.
         /// </summary>
-        public bool isAllowed { get; set; }
+        public bool IsAllowed { get; set; }
 
         /// <summary>
         ///
@@ -95,22 +95,22 @@ namespace Exiled.Events.EventArgs.Player
         /// <summary>
         ///     Gets or sets a value indicating whether all available slots on the server are occupied.
         /// </summary>
-        public bool ServerFull
+        public bool IsServerFull
         {
-            get => serverFull;
+            get => isServerFull;
             set
             {
-                if (!isAllowed)
+                if (!IsAllowed)
                     throw new InvalidOperationException("You cannot set this value if the event is not allowed.");
 
-                serverFull = value;
+                isServerFull = value;
             }
         }
 
         /// <summary>
         /// Gets a value indicating whether the connection should be accepted (player can be authenticated and has a free slot).
         /// </summary>
-        public bool AcceptConnection => isAllowed && !ServerFull;
+        public bool AcceptConnection => IsAllowed && !IsServerFull;
 
         /// <summary>
         /// Allows default NW logic checks.
@@ -160,7 +160,7 @@ namespace Exiled.Events.EventArgs.Player
         /// <param name="isForced">Indicates whether the player has to be rejected forcefully or not.</param>
         public void Reject(NetDataWriter writer, bool isForced)
         {
-            if (!isAllowed)
+            if (!IsAllowed)
                 return;
 
             Disallow();
@@ -192,7 +192,7 @@ namespace Exiled.Events.EventArgs.Player
             if (customReason is not null && (customReason.Length > 400))
                 throw new ArgumentOutOfRangeException(nameof(rejectionReason), "Reason can't be longer than 400 characters.");
 
-            if (!isAllowed)
+            if (!IsAllowed)
                 return;
 
             Disallow();
@@ -233,8 +233,8 @@ namespace Exiled.Events.EventArgs.Player
         /// </summary>
         public void Disallow()
         {
-            isAllowed = false;
-            serverFull = false;
+            IsAllowed = false;
+            isServerFull = false;
         }
     }
 }

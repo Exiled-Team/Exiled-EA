@@ -42,26 +42,6 @@ namespace Exiled.Events.Patches.Events.Player
             const int offset = -2;
             int index = newInstructions.FindIndex(instruction => instruction.Calls(Method(typeof(ServerRoles), nameof(ServerRoles.RefreshPermissions)))) + offset;
 
-            // if(!Player.UnverifiedPlayers.TryGetValue(this._hub, out Player player)) {
-            //     Means the player connected before WaitingForPlayers event is fired
-            //     Let's call Joined event, since it wasn't called, to avoid breaking the logic of the order of event calls
-            //     Blame NorthWood
-            //
-            //     Joined.CallEvent(_hub, out player);
-            // }
-            //
-            // #if DEBUG
-            // Log.Debug("{player.Nickname} has verified!");
-            // #endif
-            //
-            // Player.Dictionary.Add(this._hub.gameObject, player);
-            //
-            // player.IsVerified = true;
-            // player.RawUserId = player.UserId.GetRawUserId();
-            //
-            // Log.SendRaw("Player {player.Nickname} ({player.UserId}) ({player.Id}) connected with the IP: {player.IPAddress}", ConsoleColor.Green);
-            //
-            // Player.OnVerified(new VerifiedEventArgs(player));
             newInstructions.InsertRange(
                 index,
                 new[]

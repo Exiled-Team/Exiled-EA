@@ -130,7 +130,7 @@ namespace Exiled.Events.Patches.Events.Player
             }
 
             // If the server is "full"
-            if (ev.ServerFull)
+            if (ev.IsServerFull)
             {
                 return 1;
             }
