@@ -984,6 +984,11 @@ namespace Exiled.API.Features
         public bool CanSendInputs => Role.FirstPersonController.FpcModule.LockMovement;
 
         /// <summary>
+        /// Gets a value indicating whether or not the player has agreed to microphone recording.
+        /// </summary>
+        public bool AgreedToRecording => VoiceChatPrivacySettings.CheckUserFlags(ReferenceHub, VcPrivacyFlags.SettingsSelected | VcPrivacyFlags.AllowRecording | VcPrivacyFlags.AllowMicCapture);
+
+        /// <summary>
         /// Gets a <see cref="Player"/> <see cref="IEnumerable{T}"/> of spectators that are currently spectating this <see cref="Player"/>.
         /// </summary>
         public IEnumerable<Player> CurrentSpectatingPlayers => List.Where(player => ReferenceHub.IsSpectatedBy(player.ReferenceHub));
