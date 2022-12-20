@@ -52,32 +52,20 @@ namespace Exiled.Events.Patches.Events.Player
         public static void ProcessNewPlayer(SpectatorRole spectator, ref int newNetId)
         {
             if (newNetId == 0)
-            {
                 return;
-            }
             if (!spectator.TryGetOwner(out ReferenceHub owner))
-            {
                 return;
-            }
-            API.Features.Player player =  API.Features.Player.Get(owner);
+            API.Features.Player player = API.Features.Player.Get(owner);
             API.Features.Player previousSpectatedPlayer = API.Features.Player.Get(spectator.SyncedSpectatedNetId);
             API.Features.Player getFuturePlayer = API.Features.Player.Get(newNetId);
-            ChangingSpectatedPlayerEventArgs temp = new ChangingSpectatedPlayerEventArgs(player, previousSpectatedPlayer, getFuturePlayer, true);
-            Handlers.Player.OnChangingSpectatedPlayer(temp);
-            //NOT RECOMMENDED PER IRACLE AND I BELIEVING CLIENT SIDE PICKS TARGET.
-            if (!temp.IsAllowed)
-            {
-                return;
-            }
 
-            if (temp.NewTarget != null)
-            {
-                newNetId = (int) temp.NewTarget.NetworkIdentity.netId;
-            }
-            else
-            {
-                newNetId = (int) temp.Player.NetworkIdentity.netId;
-            }
+            ChangingSpectatedPlayerEventArgs ev = new ChangingSpectatedPlayerEventArgs(player, previousSpectatedPlayer, getFuturePlayer, true);
+            Handlers.Player.OnChangingSpectatedPlayer(ev);
+
+            //NOT RECOMMENDED PER IRACLE AND I BELIEVING CLIENT SIDE PICKS TARGET.
+            if (!ev.IsAllowed)
+                return;
+            newNetId = (int)(ev.NewTarget != null ? ev.NewTarget.NetworkIdentity.netId : ev.Player.NetworkIdentity.netId);
         }
     }
 }
