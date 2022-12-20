@@ -68,7 +68,7 @@ namespace Exiled.Events.Patches.Events.Player
                     // Handlers.Player.OnPreAuthenticating(ev)
                     new(OpCodes.Call, Method(typeof(Player), nameof(Player.OnPreAuthenticating))),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(PreAuthenticatingEventArgs), nameof(PreAuthenticatingEventArgs.IsAllowed))),
-                    new(OpCodes.Brfalse, returnLabel),
+                    new(OpCodes.Brfalse_S, returnLabel),
                 });
 
             for (int z = 0; z < newInstructions.Count; z++)

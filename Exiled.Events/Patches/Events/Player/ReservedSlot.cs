@@ -78,27 +78,27 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Stloc_S, jumpConditions.LocalIndex),
 
                     // Let normal NW code proceed. UseBaseGameSystem - 0 -> Allow base game check
-                    new(OpCodes.Ldloc, jumpConditions.LocalIndex),
+                    new(OpCodes.Ldloc_S, jumpConditions.LocalIndex),
                     new(OpCodes.Brfalse_S, continueConditions),
 
                     // Allow use of reserved slots, returning true CanUseReservedSlots - 1 - return true
-                    new(OpCodes.Ldloc, jumpConditions.LocalIndex),
+                    new(OpCodes.Ldloc_S, jumpConditions.LocalIndex),
                     new(OpCodes.Ldc_I4_1),
-                    new(OpCodes.Beq, returnTrue),
+                    new(OpCodes.Beq_S, returnTrue),
 
                     // Reserved slot rejection - CannotUseReservedSlots - 2 - return false
-                    new(OpCodes.Ldloc, jumpConditions.LocalIndex),
+                    new(OpCodes.Ldloc_S, jumpConditions.LocalIndex),
                     new(OpCodes.Ldc_I4_2),
-                    new(OpCodes.Beq, returnFalse),
+                    new(OpCodes.Beq_S, returnFalse),
 
                     // Allow unconditional connection - AllowConnectionUnconditionally - 3 - return true with bypass to true
-                    new(OpCodes.Ldloc, jumpConditions.LocalIndex),
+                    new(OpCodes.Ldloc_S, jumpConditions.LocalIndex),
                     new(OpCodes.Ldc_I4_3),
-                    new(OpCodes.Beq, allowUnconditional),
+                    new(OpCodes.Beq_S, allowUnconditional),
 
                     //Return true, but set bypass to true.
                     new CodeInstruction(OpCodes.Ldc_I4_1).WithLabels(allowUnconditional),
-                    new CodeInstruction(OpCodes.Starg, 1),
+                    new CodeInstruction(OpCodes.Starg_S, 1),
                     //Return True
                     new CodeInstruction(OpCodes.Ldc_I4_1).WithLabels(returnTrue),
                     new(OpCodes.Ret),
