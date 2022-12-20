@@ -25,6 +25,7 @@ namespace Exiled.API.Features
     using Mirror;
     using PlayerRoles;
     using PlayerRoles.PlayableScps.Scp173;
+    using PlayerRoles.PlayableScps.Scp939;
     using RelativePositioning;
     using Toys;
     using UnityEngine;
@@ -33,6 +34,7 @@ namespace Exiled.API.Features
     using Object = UnityEngine.Object;
     using Random = UnityEngine.Random;
     using Scp173GameRole = PlayerRoles.PlayableScps.Scp173.Scp173Role;
+    using Scp939GameRole = PlayerRoles.PlayableScps.Scp939.Scp939Role;
 
     /// <summary>
     /// A set of tools to easily handle the in-game map.
@@ -67,6 +69,7 @@ namespace Exiled.API.Features
         private static readonly RaycastHit[] CachedFindParentRoomRaycast = new RaycastHit[1];
 
         private static TantrumEnvironmentalHazard tantrumPrefab;
+        private static Scp939AmnesticCloudInstance amnesticCloudPrefab;
 
         /// <summary>
         /// Gets the tantrum prefab.
@@ -84,6 +87,25 @@ namespace Exiled.API.Features
                 }
 
                 return tantrumPrefab;
+            }
+        }
+
+        /// <summary>
+        /// Gets the amnestic cloud prefab.
+        /// </summary>
+        public static Scp939AmnesticCloudInstance AmnesticCloudPrefab
+        {
+            get
+            {
+                if (amnesticCloudPrefab == null)
+                {
+                    Scp939GameRole scp939Role = RoleTypeId.Scp939.GetRoleBase() as Scp939GameRole;
+
+                    if (scp939Role.SubroutineModule.TryGetComponent(out Scp939AmnesticCloudAbility ability))
+                        amnesticCloudPrefab = ability._instancePrefab;
+                }
+
+                return amnesticCloudPrefab;
             }
         }
 
@@ -327,6 +349,27 @@ namespace Exiled.API.Features
             NetworkServer.Spawn(tantrum.gameObject);
 
             return tantrum.gameObject;
+        }
+
+        /// <summary>
+        /// Spawns an amnestic cloud on the map.
+        /// </summary>
+        /// <param name="position">The position to spawn the amnestic cloud.</param>
+        /// <param name="owner">The owner of the cloud, optional.</param>
+        /// <returns>The cloud's <see cref="GameObject"/>.</returns>
+        public static GameObject PlaceAmnesticCloud(Vector3 position, Player owner = null)
+        {
+            Scp939AmnesticCloudInstance cloud = Object.Instantiate(AmnesticCloudPrefab);
+
+            cloud.gameObject.transform.position = position;
+            cloud.Network_syncPos = new RelativePosition(position);
+
+            if (owner is not null)
+                cloud.ServerSetup(owner.ReferenceHub);
+
+            NetworkServer.Spawn(cloud.gameObject);
+
+            return cloud.gameObject;
         }
 
         /// <summary>
