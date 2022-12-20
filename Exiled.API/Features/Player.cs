@@ -723,7 +723,7 @@ namespace Exiled.API.Features
         /// </summary>
         public VoiceChatChannel VoiceChannel
         {
-            get => VoiceModule?.CurrentChannel ?? VoiceChatChannel.None;
+            get => VoiceModule == null ? VoiceChatChannel.None : VoiceModule.CurrentChannel;
             set
             {
                 if (VoiceModule == null)
