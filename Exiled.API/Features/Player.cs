@@ -726,7 +726,7 @@ namespace Exiled.API.Features
             get => VoiceModule?.CurrentChannel ?? VoiceChatChannel.None;
             set
             {
-                if (VoiceModule is null)
+                if (VoiceModule == null)
                     return;
 
                 VoiceModule.CurrentChannel = value;
