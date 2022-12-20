@@ -45,7 +45,10 @@ namespace Exiled.API.Features.Roles
             set
             {
                 if (SubroutineModule.TryGetSubroutine(out Scp939ClawAbility ability))
+                {
                     ability.Cooldown.Remaining = value;
+                    ability.ServerSendRpc(true);
+                }
             }
         }
 
@@ -83,7 +86,10 @@ namespace Exiled.API.Features.Roles
             set
             {
                 if (SubroutineModule.TryGetSubroutine(out Scp939AmnesticCloudAbility ability))
+                {
                     ability.Cooldown.Remaining = value;
+                    ability.ServerSendRpc(true);
+                }
             }
         }
 

@@ -163,6 +163,7 @@ namespace Exiled.API.Features.Roles
                     return;
 
                 ability.RemainingCooldown = value;
+                ability.ServerSendRpc(true);
             }
         }
 
@@ -185,7 +186,10 @@ namespace Exiled.API.Features.Roles
             set
             {
                 if (SubroutineModule.TryGetSubroutine(out Scp079BlackoutZoneAbility ability))
+                {
                     ability._cooldownTimer.Remaining = value;
+                    ability.ServerSendRpc(true);
+                }
             }
         }
 

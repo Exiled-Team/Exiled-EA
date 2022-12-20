@@ -40,6 +40,11 @@ namespace Exiled.API.Features.Roles
         public bool IsRecalling => SubroutineModule.TryGetSubroutine(out Scp049ResurrectAbility ability) && ability.IsInProgress;
 
         /// <summary>
+        /// Gets a value indicating whether or not SCP-049's "Doctor's Call" ability is currently active.
+        /// </summary>
+        public bool IsCallActive => SubroutineModule.TryGetSubroutine(out Scp049CallAbility ability) && ability.IsMarkerShown;
+
+        /// <summary>
         /// Gets the player that is currently being revived by SCP-049. Will be <see langword="null"/> if <see cref="IsRecalling"/> is <see langword="false"/>.
         /// </summary>
         public Player RecallingPlayer
@@ -76,7 +81,10 @@ namespace Exiled.API.Features.Roles
             set
             {
                 if (SubroutineModule.TryGetSubroutine(out Scp049CallAbility ability))
+                {
                     ability.Cooldown.Remaining = value;
+                    ability.ServerSendRpc(true);
+                }
             }
         }
 
@@ -89,7 +97,10 @@ namespace Exiled.API.Features.Roles
             set
             {
                 if (SubroutineModule.TryGetSubroutine(out Scp049SenseAbility ability))
+                {
                     ability.Cooldown.Remaining = value;
+                    ability.ServerSendRpc(true);
+                }
             }
         }
 
