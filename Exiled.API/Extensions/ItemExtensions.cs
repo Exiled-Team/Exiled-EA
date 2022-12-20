@@ -250,8 +250,6 @@ namespace Exiled.API.Extensions
         /// <returns>The corresponding base code.</returns>
         public static uint GetBaseCode(this ItemType type)
         {
-            Log.Error($"\n{Firearm.BaseCodesValue.Keys.ToString(true)}\n{Firearm.BaseCodesValue.Values.ToString(true)}");
-
             if (!type.IsWeapon())
                 return 0;
             else if (Firearm.BaseCodesValue.TryGetValue(type, out uint baseCode))
