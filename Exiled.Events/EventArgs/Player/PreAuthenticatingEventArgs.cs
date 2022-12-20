@@ -9,21 +9,16 @@ namespace Exiled.Events.EventArgs.Player
 {
     using System;
 
-    using GameCore;
     using Interfaces;
 
     using LiteNetLib;
     using LiteNetLib.Utils;
 
-    using Mirror.LiteNetLib4Mirror;
-
     /// <summary>
-    ///     Contains all information before pre-autenticating a player.
+    ///     Contains all information before pre-authenticating a player.
     /// </summary>
     public class PreAuthenticatingEventArgs : IExiledEvent
     {
-        private bool isServerFull;
-
         /// <summary>
         ///     Initializes a new instance of the <see cref="PreAuthenticatingEventArgs" /> class.
         /// </summary>
@@ -49,12 +44,6 @@ namespace Exiled.Events.EventArgs.Player
             ReaderStartPosition = readerStartPosition;
             Flags = flags;
             Country = country;
-            IsAllowed = true;
-            isServerFull = !(LiteNetLib4MirrorCore.Host.ConnectedPeersCount < CustomNetworkManager.slots ||
-                (LiteNetLib4MirrorCore.Host.ConnectedPeersCount != LiteNetLib4MirrorNetworkManager.singleton.maxConnections &&
-                ((((CentralAuthPreauthFlags)flags).HasFlagFast(CentralAuthPreauthFlags.ReservedSlot) && ServerStatic.PermissionsHandler.BanTeamSlots) ||
-                (ConfigFile.ServerConfig.GetBool("use_reserved_slots", true) && ReservedSlot.HasReservedSlot(userId, out bool hasReservedSlot) &&
-                (hasReservedSlot || LiteNetLib4MirrorCore.Host.ConnectedPeersCount < CustomNetworkManager.slots + CustomNetworkManager.reservedSlots)))));
         }
 
         /// <summary>
@@ -85,27 +74,7 @@ namespace Exiled.Events.EventArgs.Player
         /// <summary>
         ///     Gets a value indicating whether the player can be authenticated or not.
         /// </summary>
-        public bool IsAllowed { get; private set; }
-
-        /// <summary>
-        ///     Gets or sets a value indicating whether all available slots on the server are occupied for the authenticating player.
-        /// </summary>
-        public bool IsServerFull
-        {
-            get => isServerFull;
-            set
-            {
-                if (!IsAllowed)
-                    throw new InvalidOperationException("You cannot set this value if the event is not allowed.");
-
-                isServerFull = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets a value indicating whether the connection should be accepted (player can be authenticated and has a free slot).
-        /// </summary>
-        internal bool AcceptConnection => IsAllowed && !IsServerFull;
+        public bool IsAllowed { get; private set; } = true;
 
         /// <summary>
         ///     Delays the connection.
@@ -153,7 +122,7 @@ namespace Exiled.Events.EventArgs.Player
             if (!IsAllowed)
                 return;
 
-            Disallow();
+            IsAllowed = false;
 
             if (isForced)
                 Request.RejectForce(writer);
@@ -185,7 +154,7 @@ namespace Exiled.Events.EventArgs.Player
             if (!IsAllowed)
                 return;
 
-            Disallow();
+            IsAllowed = false;
 
             NetDataWriter rejectData = new();
 
@@ -221,10 +190,6 @@ namespace Exiled.Events.EventArgs.Player
         ///     Disallows the connection without sending any reason. Should only be used when the connection has already been
         ///     terminated by the plugin itself.
         /// </summary>
-        public void Disallow()
-        {
-            IsAllowed = false;
-            isServerFull = false;
-        }
+        public void Disallow() => IsAllowed = false;
     }
 }

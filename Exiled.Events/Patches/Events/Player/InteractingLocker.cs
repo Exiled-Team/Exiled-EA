@@ -25,7 +25,7 @@ namespace Exiled.Events.Patches.Events.Player
     ///     Patches <see cref="Locker.ServerInteract(ReferenceHub, byte)" />.
     ///     Adds the <see cref="Handlers.Player.InteractingLocker" /> event.
     /// </summary>
-    [HarmonyPatch(typeof(Locker), nameof(Locker.ServerInteract))]
+   [HarmonyPatch(typeof(Locker), nameof(Locker.ServerInteract))]
     internal static class InteractingLocker
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
@@ -40,7 +40,7 @@ namespace Exiled.Events.Patches.Events.Player
                 new[]
                 {
                     // Player.Get(ply);
-                    new CodeInstruction(OpCodes.Ldarg_1),
+                    new CodeInstruction(OpCodes.Ldarg_1).MoveLabelsFrom(newInstructions[index]),
                     new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
 
                     // this
