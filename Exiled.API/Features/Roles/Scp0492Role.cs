@@ -60,6 +60,7 @@ namespace Exiled.API.Features.Roles
             {
                 if (!SubroutineModule.TryGetSubroutine(out ZombieBloodlustAbility ability))
                     return;
+
                 ability.SimulatedStare = value;
             }
         }
