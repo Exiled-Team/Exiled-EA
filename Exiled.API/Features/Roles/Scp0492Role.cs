@@ -68,10 +68,7 @@ namespace Exiled.API.Features.Roles
         /// <summary>
         /// Gets a value indicating whether or not SCP-049-2 is currently pursuing a target (Bloodlust ability).
         /// </summary>
-        public bool BloodlustActive
-        {
-            get => SubroutineModule.TryGetSubroutine(out ZombieBloodlustAbility ability) ? ability.LookingAtTarget : false;
-        }
+        public bool BloodlustActive => SubroutineModule.TryGetSubroutine(out ZombieBloodlustAbility ability) ? ability.LookingAtTarget : false;
 
         /// <summary>
         /// Gets a value indicating whether or not SCP-049-2 is consuming a ragdoll.
