@@ -5,27 +5,21 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-
-using Exiled.Events.EventArgs.Player;
-using GameCore;
-using PlayerRoles.Spectating;
-using Log = Exiled.API.Features.Log;
-
 namespace Exiled.Events.Patches.Events.Player
 {
     using System.Collections.Generic;
     using System.Reflection.Emit;
 
-
+    using Exiled.Events.EventArgs.Player;
     using HarmonyLib;
-    using Mirror;
     using NorthwoodLib.Pools;
+    using PlayerRoles.Spectating;
 
     using static HarmonyLib.AccessTools;
 
     /// <summary>
     ///     Patches <see cref="SpectatorRole.SyncedSpectatedNetId" /> setter.
-    ///     Adds the <see cref="Player.ChangingSpectatedPlayer" />.
+    ///     Adds the <see cref="Handlers.Player.ChangingSpectatedPlayer" />.
     /// </summary>
     [HarmonyPatch(typeof(SpectatorRole), nameof(SpectatorRole.SyncedSpectatedNetId), MethodType.Setter)]
     internal static class ChangingSpectatedPlayerPatch
@@ -40,7 +34,7 @@ namespace Exiled.Events.Patches.Events.Player
                 {
                     new CodeInstruction(OpCodes.Ldarg_0),
                     new(OpCodes.Ldarga_S, 1),
-                    new(OpCodes.Call, Method(typeof(ChangingSpectatedPlayerPatch), nameof(ProcessNewPlayer), new []{ typeof(SpectatorRole), typeof(uint).MakeByRefType()})),
+                    new(OpCodes.Call, Method(typeof(ChangingSpectatedPlayerPatch), nameof(ProcessNewPlayer), new[] { typeof(SpectatorRole), typeof(uint).MakeByRefType() })),
                 });
 
             for (int z = 0; z < newInstructions.Count; z++)
@@ -49,22 +43,25 @@ namespace Exiled.Events.Patches.Events.Player
             ListPool<CodeInstruction>.Shared.Return(newInstructions);
         }
 
-        public static void ProcessNewPlayer(SpectatorRole spectator, ref int newNetId)
+        private static void ProcessNewPlayer(SpectatorRole spectator, ref int newNetId)
         {
             if (newNetId == 0)
                 return;
+
             if (!spectator.TryGetOwner(out ReferenceHub owner))
                 return;
+
             API.Features.Player player = API.Features.Player.Get(owner);
             API.Features.Player previousSpectatedPlayer = API.Features.Player.Get(spectator.SyncedSpectatedNetId);
             API.Features.Player getFuturePlayer = API.Features.Player.Get(newNetId);
 
-            ChangingSpectatedPlayerEventArgs ev = new ChangingSpectatedPlayerEventArgs(player, previousSpectatedPlayer, getFuturePlayer, true);
+            ChangingSpectatedPlayerEventArgs ev = new(player, previousSpectatedPlayer, getFuturePlayer, true);
             Handlers.Player.OnChangingSpectatedPlayer(ev);
 
-            //NOT RECOMMENDED PER IRACLE AND I BELIEVING CLIENT SIDE PICKS TARGET.
+            // NOT RECOMMENDED PER IRACLE AND I BELIEVING CLIENT SIDE PICKS TARGET.
             if (!ev.IsAllowed)
                 return;
+
             newNetId = (int)(ev.NewTarget != null ? ev.NewTarget.NetworkIdentity.netId : ev.Player.NetworkIdentity.netId);
         }
     }

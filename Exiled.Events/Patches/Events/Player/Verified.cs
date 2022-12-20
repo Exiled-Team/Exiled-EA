@@ -10,7 +10,6 @@ namespace Exiled.Events.Patches.Events.Player
     using System;
     using System.Collections.Generic;
     using System.Reflection.Emit;
-    using System.Runtime.CompilerServices;
 
     using Exiled.API.Extensions;
     using Exiled.API.Features;
@@ -19,8 +18,6 @@ namespace Exiled.Events.Patches.Events.Player
     using HarmonyLib;
 
     using NorthwoodLib.Pools;
-
-    using UnityEngine;
 
     using static HarmonyLib.AccessTools;
 
@@ -48,7 +45,6 @@ namespace Exiled.Events.Patches.Events.Player
                 {
                     new(OpCodes.Ldarg_0),
                     new CodeInstruction(OpCodes.Call, Method(typeof(Verified), nameof(Verified.HandleCmdServerSignature))),
-
                 });
 
             for (int z = 0; z < newInstructions.Count; z++)
@@ -57,11 +53,10 @@ namespace Exiled.Events.Patches.Events.Player
             ListPool<CodeInstruction>.Shared.Return(newInstructions);
         }
 
-        public static void HandleCmdServerSignature(ServerRoles instance)
+        private static void HandleCmdServerSignature(ServerRoles instance)
         {
-            if(!Player.UnverifiedPlayers.TryGetValue(instance._hub, out Player player)) {
+            if(!Player.UnverifiedPlayers.TryGetValue(instance._hub, out Player player))
                 Joined.CallEvent(instance._hub, out player);
-            }
 
             Player.Dictionary.Add(instance._hub.gameObject, player);
 
