@@ -12,7 +12,6 @@ namespace Exiled.API.Extensions
     using System.Linq;
 
     using Enums;
-    using Exiled.API.Features;
     using Features.Items;
     using InventorySystem;
     using InventorySystem.Items;
