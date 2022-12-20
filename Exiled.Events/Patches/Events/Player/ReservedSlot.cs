@@ -75,7 +75,7 @@ namespace Exiled.Events.Patches.Events.Player
                     // Using duped value from before, grab result from event
                     new(OpCodes.Callvirt, PropertyGetter(typeof(ReservedSlotsCheckEventArgs), nameof(ReservedSlotsCheckEventArgs.Result))),
                     // Store result value in local variable.
-                    new(OpCodes.Stloc, jumpConditions.LocalIndex),
+                    new(OpCodes.Stloc_S, jumpConditions.LocalIndex),
 
                     // Let normal NW code proceed. UseBaseGameSystem - 0 -> Allow base game check
                     new(OpCodes.Ldloc, jumpConditions.LocalIndex),
