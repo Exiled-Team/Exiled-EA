@@ -43,7 +43,7 @@ namespace Exiled.API.Features
             Base = elevator;
             ElevatorChamberToLift.Add(elevator, this);
 
-            foreach (ElevatorDoor door in ElevatorDoor.AllElevatorDoors.First(x => x.Key == Base.AssignedGroup).Value)
+            foreach (ElevatorDoor door in ElevatorDoor.AllElevatorDoors.First(elevator => elevator.Key == Base.AssignedGroup).Value)
                 internalDoorsList.Add(door);
         }
 
@@ -253,9 +253,7 @@ namespace Exiled.API.Features
         {
             bool forceLock = lockReason != DoorLockReason.None;
 
-            List<ElevatorDoor> targetDoors = ElevatorDoor.AllElevatorDoors.First(x => x.Key == Base.AssignedGroup).Value;
-
-            foreach (ElevatorDoor door in targetDoors)
+            foreach (ElevatorDoor door in Doors)
             {
                 if (!forceLock)
                 {
@@ -267,11 +265,11 @@ namespace Exiled.API.Features
                 {
                     door.ServerChangeLock(lockReason, true);
 
-                    if (Base.CurrentLevel != 1)
-                        TrySetDestination(Base.AssignedGroup, 1, true);
+                    if (CurrentLevel != 1)
+                        TrySetDestination(Group, 1, true);
                 }
 
-                Base.RefreshLocks(Base.AssignedGroup, door);
+                Base.RefreshLocks(Group, door);
             }
         }
 
