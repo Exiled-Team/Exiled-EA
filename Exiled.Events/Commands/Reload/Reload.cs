@@ -44,6 +44,7 @@ namespace Exiled.Events.Commands.Reload
             RegisterCommand(Plugins.Instance);
             RegisterCommand(GamePlay.Instance);
             RegisterCommand(RemoteAdmin.Instance);
+            RegisterCommand(Permissions.Instance);
         }
 
         /// <inheritdoc/>
