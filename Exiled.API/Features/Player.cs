@@ -1613,19 +1613,38 @@ namespace Exiled.API.Features
         /// Drops an item from the player's inventory.
         /// </summary>
         /// <param name="item">The item to be dropped.</param>
-        public void DropItem(Item item) => Inventory.ServerDropItem(item.Serial);
+        /// <exception cref="ArgumentNullException">If the item parameter is <see langword="null"/>.</exception>
+        public void DropItem(Item item)
+        {
+            if (item is null)
+                throw new ArgumentNullException(nameof(item));
+            Inventory.ServerDropItem(item.Serial);
+        }
 
         /// <summary>
-        /// Drops the held item.
+        /// Drops the held item. Will not do anything if the player is not holding an item.
         /// </summary>
-        public void DropHeldItem() => DropItem(CurrentItem);
+        public void DropHeldItem()
+        {
+            if (CurrentItem is null)
+                return;
+
+            DropItem(CurrentItem);
+        }
 
         /// <summary>
         /// Indicates whether or not the player has an item.
         /// </summary>
         /// <param name="item">The item to search for.</param>
         /// <returns><see langword="true"/>, if the player has it; otherwise, <see langword="false"/>.</returns>
-        public bool HasItem(Item item) => Inventory.UserInventory.Items.ContainsValue(item.Base);
+        /// <exception cref="ArgumentNullException">If the item parameter is <see langword="null"/>.</exception>
+        public bool HasItem(Item item)
+        {
+            if (item is null)
+                throw new ArgumentNullException(nameof(item));
+
+            return Inventory.UserInventory.Items.ContainsValue(item.Base);
+        }
 
         /// <summary>
         /// Indicates whether or not the player has an item type.
