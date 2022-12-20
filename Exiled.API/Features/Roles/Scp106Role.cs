@@ -98,7 +98,10 @@ namespace Exiled.API.Features.Roles
             set
             {
                 if (SubroutineModule.TryGetSubroutine(out Scp106Attack ability))
+                {
                     ability._hitCooldown = value;
+                    ability.ServerSendRpc(true);
+                }
             }
         }
 

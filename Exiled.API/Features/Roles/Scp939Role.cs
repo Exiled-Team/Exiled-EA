@@ -11,6 +11,7 @@ namespace Exiled.API.Features.Roles
 
     using PlayerRoles;
     using PlayerRoles.PlayableScps.Scp939;
+    using PlayerRoles.PlayableScps.Scp939.Mimicry;
     using PlayerRoles.PlayableScps.Subroutines;
 
     using Scp939GameRole = PlayerRoles.PlayableScps.Scp939.Scp939Role;
@@ -45,7 +46,10 @@ namespace Exiled.API.Features.Roles
             set
             {
                 if (SubroutineModule.TryGetSubroutine(out Scp939ClawAbility ability))
+                {
                     ability.Cooldown.Remaining = value;
+                    ability.ServerSendRpc(true);
+                }
             }
         }
 
@@ -83,7 +87,26 @@ namespace Exiled.API.Features.Roles
             set
             {
                 if (SubroutineModule.TryGetSubroutine(out Scp939AmnesticCloudAbility ability))
+                {
                     ability.Cooldown.Remaining = value;
+                    ability.ServerSendRpc(true);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the amount of time before SCP-939 can use any of its mimicry abilities again.
+        /// </summary>
+        public float MimicryCooldown
+        {
+            get => SubroutineModule.TryGetSubroutine(out EnvironmentalMimicry ability) ? ability.Cooldown.Remaining : 0f;
+            set
+            {
+                if (SubroutineModule.TryGetSubroutine(out EnvironmentalMimicry ability))
+                {
+                    ability.Cooldown.Remaining = value;
+                    ability.ServerSendRpc(true);
+                }
             }
         }
 

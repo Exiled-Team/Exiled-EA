@@ -94,7 +94,10 @@ namespace Exiled.API.Features.Roles
             set
             {
                 if (SubroutineModule.TryGetSubroutine(out Scp096RageCycleAbility ability))
+                {
                     ability._timeToChangeState = value;
+                    ability.ServerSendRpc(true);
+                }
             }
         }
 
@@ -107,7 +110,10 @@ namespace Exiled.API.Features.Roles
             set
             {
                 if (SubroutineModule.TryGetSubroutine(out Scp096RageCycleAbility ability))
+                {
                     ability._activationTime.Remaining = value;
+                    ability.ServerSendRpc(true);
+                }
             }
         }
 
@@ -120,7 +126,10 @@ namespace Exiled.API.Features.Roles
             set
             {
                 if (SubroutineModule.TryGetSubroutine(out Scp096RageManager ability))
+                {
                     ability.EnragedTimeLeft = value;
+                    ability.ServerSendRpc(true);
+                }
             }
         }
 
@@ -133,7 +142,10 @@ namespace Exiled.API.Features.Roles
             set
             {
                 if (SubroutineModule.TryGetSubroutine(out Scp096RageManager ability))
+                {
                     ability.TotalRageTime = value;
+                    ability.ServerSendRpc(true);
+                }
             }
         }
 
