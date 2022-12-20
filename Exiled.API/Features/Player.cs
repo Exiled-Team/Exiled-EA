@@ -190,30 +190,12 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets the <see cref="ReferenceHub"/>'s <see cref="VoiceModule"/>, can be null.
         /// </summary>
-        public VoiceModuleBase VoiceModule
-        {
-            get
-            {
-                if (RoleManager.CurrentRole is IVoiceRole voiceRole)
-                    return voiceRole.VoiceModule;
-
-                return null;
-            }
-        }
+        public VoiceModuleBase VoiceModule => RoleManager.CurrentRole is IVoiceRole voiceRole ? voiceRole.VoiceModule : null;
 
         /// <summary>
         /// Gets the <see cref="ReferenceHub"/>'s <see cref="PersonalRadioPlayback"/>, can be null.
         /// </summary>
-        public PersonalRadioPlayback RadioPlayback
-        {
-            get
-            {
-                if (VoiceModule is IRadioVoiceModule radioVoiceModule)
-                    return radioVoiceModule.RadioPlayback;
-
-                return null;
-            }
-        }
+        public PersonalRadioPlayback RadioPlayback => VoiceModule is IRadioVoiceModule radioVoiceModule ? radioVoiceModule.RadioPlayback : null;
 
         /// <summary>
         /// Gets the <see cref="Hints.HintDisplay"/> of the player.
@@ -245,7 +227,7 @@ namespace Exiled.API.Features
         public int Id
         {
             get => ReferenceHub.PlayerId;
-            set => ReferenceHub._playerId = new RecyclablePlayerId(value);
+            set => ReferenceHub._playerId = new(value);
         }
 
         /// <summary>
@@ -412,17 +394,7 @@ namespace Exiled.API.Features
         /// </summary>
         public Player Cuffer
         {
-            get
-            {
-                foreach (DisarmedPlayers.DisarmedEntry disarmed in DisarmedPlayers.Entries)
-                {
-                    if (Get(disarmed.DisarmedPlayer) == this)
-                        return Get(disarmed.Disarmer);
-                }
-
-                return null;
-            }
-
+            get => Get(DisarmedPlayers.Entries.FirstOrDefault(entry => entry.DisarmedPlayer == NetworkIdentity.netId).DisarmedPlayer);
             set
             {
                 for (int i = 0; i < DisarmedPlayers.Entries.Count; i++)
@@ -686,31 +658,49 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets or sets a value indicating whether or not the player is muted.
         /// </summary>
-        /// <remarks>This property will NOT persistently mute and unmute the player. For persistent mutes, see <see cref="Mute(bool, bool)"/> and <see cref="UnMute(bool)"/>.</remarks>
+        /// <remarks>This property will NOT persistently mute and unmute the player. For persistent mutes, see <see cref="Mute(bool)"/> and <see cref="UnMute(bool)"/>.</remarks>
         public bool IsMuted
         {
-            get
+            get => VoiceChatMutes.Mutes.Contains(UserId) && (VoiceChatMuteFlags.HasFlag(VcMuteFlags.GlobalRegular) || VoiceChatMuteFlags.HasFlag(VcMuteFlags.LocalRegular));
+            set
             {
-                return VoiceChatMutes.Mutes.Contains(UserId) &&
-                    (VoiceChatMuteFlags.HasFlag(VcMuteFlags.GlobalRegular) || VoiceChatMuteFlags.HasFlag(VcMuteFlags.LocalRegular));
+                if (value)
+                    VoiceChatMuteFlags |= VcMuteFlags.LocalRegular;
+                else
+                    VoiceChatMuteFlags &= ~VcMuteFlags.LocalRegular;
             }
+        }
 
-            set => VoiceChatMuteFlags |= VcMuteFlags.LocalRegular;
+        /// <summary>
+        /// Gets or sets a value indicating whether or not the player is global muted.
+        /// </summary>
+        /// <remarks>This property will NOT persistently mute and unmute the player. For persistent mutes, see <see cref="Mute(bool)"/> and <see cref="UnMute(bool)"/>.</remarks>
+        public bool IsGlobalMuted
+        {
+            get => VoiceChatMutes.Mutes.Contains(UserId) && VoiceChatMuteFlags.HasFlag(VcMuteFlags.GlobalRegular);
+            set
+            {
+                if (value)
+                    VoiceChatMuteFlags |= VcMuteFlags.GlobalRegular;
+                else
+                    VoiceChatMuteFlags &= ~VcMuteFlags.GlobalRegular;
+            }
         }
 
         /// <summary>
         /// Gets or sets a value indicating whether or not the player is intercom muted.
         /// </summary>
-        /// <remarks>This property will NOT persistently mute and unmute the player. For persistent mutes, see <see cref="Mute(bool, bool)"/> and <see cref="UnMute(bool)"/>.</remarks>
+        /// <remarks>This property will NOT persistently mute and unmute the player. For persistent mutes, see <see cref="Mute(bool)"/> and <see cref="UnMute(bool)"/>.</remarks>
         public bool IsIntercomMuted
         {
-            get
+            get => VoiceChatMutes.Mutes.Contains(UserId) && (VoiceChatMuteFlags.HasFlag(VcMuteFlags.GlobalIntercom) || VoiceChatMuteFlags.HasFlag(VcMuteFlags.LocalIntercom));
+            set
             {
-                return VoiceChatMutes.Mutes.Contains(UserId) &&
-                    (VoiceChatMuteFlags.HasFlag(VcMuteFlags.GlobalIntercom) || VoiceChatMuteFlags.HasFlag(VcMuteFlags.LocalIntercom));
+                if (value)
+                    VoiceChatMuteFlags |= VcMuteFlags.LocalIntercom;
+                else
+                    VoiceChatMuteFlags &= ~VcMuteFlags.LocalIntercom;
             }
-
-            set => VoiceChatMuteFlags |= VcMuteFlags.LocalIntercom;
         }
 
         /// <summary>
@@ -835,14 +825,13 @@ namespace Exiled.API.Features
                 if (value is null || value.Type == ItemType.None)
                 {
                     Inventory.ServerSelectItem(0);
+                    return;
                 }
-                else
-                {
-                    if (!Inventory.UserInventory.Items.TryGetValue(value.Serial, out _))
-                        AddItem(value.Base);
 
-                    Timing.CallDelayed(0.5f, () => Inventory.ServerSelectItem(value.Serial));
-                }
+                if (!Inventory.UserInventory.Items.TryGetValue(value.Serial, out _))
+                    AddItem(value.Base);
+
+                Timing.CallDelayed(0.5f, () => Inventory.ServerSelectItem(value.Serial));
             }
         }
 
@@ -1166,8 +1155,7 @@ namespace Exiled.API.Features
                 if (int.TryParse(args, out int id))
                     return Get(id);
 
-                if (args.EndsWith("@steam") || args.EndsWith("@discord") || args.EndsWith("@northwood") ||
-                    args.EndsWith("@patreon"))
+                if (args.EndsWith("@steam") || args.EndsWith("@discord") || args.EndsWith("@northwood") || args.EndsWith("@patreon"))
                 {
                     foreach (Player player in Dictionary.Values)
                     {
@@ -1401,15 +1389,17 @@ namespace Exiled.API.Features
         {
             if (CustomRoleFriendlyFireMultiplier.TryGetValue(roleTypeId, out Dictionary<RoleTypeId, float> currentPairedData))
             {
-                if (currentPairedData.ContainsKey(roleToAdd))
-                    currentPairedData[roleToAdd] = ffMult;
-                else
+                if (!currentPairedData.ContainsKey(roleToAdd))
+                {
                     currentPairedData.Add(roleToAdd, ffMult);
+                    return;
+                }
+
+                currentPairedData[roleToAdd] = ffMult;
+                return;
             }
-            else
-            {
-                CustomRoleFriendlyFireMultiplier.Add(roleTypeId, new Dictionary<RoleTypeId, float>() { { roleToAdd, ffMult } });
-            }
+
+            CustomRoleFriendlyFireMultiplier.Add(roleTypeId, new() { { roleToAdd, ffMult } });
         }
 
         /// <summary>
@@ -1417,10 +1407,7 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="roleTypeId"> Role associated for CustomFF. </param>
         /// <param name="roleFF"> Role with FF to add even if it exists. </param>
-        public void SetCustomRoleFriendlyFire(string roleTypeId, KeyValuePair<RoleTypeId, float> roleFF)
-        {
-            SetCustomRoleFriendlyFire(roleTypeId, roleFF.Key, roleFF.Value);
-        }
+        public void SetCustomRoleFriendlyFire(string roleTypeId, KeyValuePair<RoleTypeId, float> roleFF) => SetCustomRoleFriendlyFire(roleTypeId, roleFF.Key, roleFF.Value);
 
         /// <summary>
         /// Tries to add <see cref="RoleTypeId"/> to FriendlyFire rules for CustomRole.
@@ -1521,10 +1508,8 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="roleTypeId"> Role to associate FF rules to. </param>
         /// <param name="customRoleFriendlyFireMultiplier"> New rules for CustomeRoleFriendlyFireMultiplier to set to. </param>
-        public void TrySetCustomRoleFriendlyFire(string roleTypeId, Dictionary<RoleTypeId, float> customRoleFriendlyFireMultiplier)
-        {
+        public void TrySetCustomRoleFriendlyFire(string roleTypeId, Dictionary<RoleTypeId, float> customRoleFriendlyFireMultiplier) =>
             CustomRoleFriendlyFireMultiplier[roleTypeId] = customRoleFriendlyFireMultiplier;
-        }
 
         /// <summary>
         /// Tries to remove <see cref="RoleTypeId"/> from FriendlyFire rules.
@@ -1730,9 +1715,7 @@ namespace Exiled.API.Features
         public bool RemoveItem(Item item, bool destroy = true)
         {
             if (!ItemsValue.Contains(item))
-            {
                 return false;
-            }
 
             if (!Inventory.UserInventory.Items.ContainsKey(item.Serial))
             {
@@ -1771,9 +1754,7 @@ namespace Exiled.API.Features
             foreach (Item item in enumeratedItems)
             {
                 if (predicate(item) && RemoveItem(item, destroy))
-                {
                     ++count;
-                }
             }
 
             ListPool<Item>.Shared.Return(enumeratedItems);
@@ -1942,8 +1923,7 @@ namespace Exiled.API.Features
         /// Persistently mutes the player. For temporary mutes, see <see cref="IsMuted"/> and <see cref="IsIntercomMuted"/>.
         /// </summary>
         /// <param name="isIntercom">Whether or not this mute is for the intercom only.</param>
-        /// <param name="isGlobal">Whether or not this mute is global.</param>
-        public void Mute(bool isIntercom = false, bool isGlobal = true) => VoiceChatMutes.IssueLocalMute(UserId, isIntercom);
+        public void Mute(bool isIntercom = false) => VoiceChatMutes.IssueLocalMute(UserId, isIntercom);
 
         /// <summary>
         /// Revokes a persistent mute. For temporary mutes, see <see cref="IsMuted"/> and <see cref="IsIntercomMuted"/>.
@@ -2346,13 +2326,11 @@ namespace Exiled.API.Features
 
             Scp330 scp330 = (Scp330)AddItem(ItemType.SCP330);
 
-            Timing.CallDelayed(
-                0.02f,
-                () =>
-                {
-                    scp330.Base.Candies.Clear();
-                    scp330.AddCandy(candyType);
-                });
+            Timing.CallDelayed(0.02f, () =>
+            {
+                scp330.Base.Candies.Clear();
+                scp330.AddCandy(candyType);
+            });
 
             return true;
         }
@@ -2758,12 +2736,7 @@ namespace Exiled.API.Features
         public void Reconnect(ushort newPort = 0, float delay = 5, bool reconnect = true, RoundRestartType roundRestartType = RoundRestartType.FullRestart)
         {
             if (newPort != 0)
-            {
-                if ((newPort == Server.Port) && (roundRestartType == RoundRestartType.RedirectRestart))
-                    roundRestartType = RoundRestartType.FullRestart;
-                else
-                    roundRestartType = RoundRestartType.RedirectRestart;
-            }
+                roundRestartType = newPort == Server.Port && roundRestartType is RoundRestartType.RedirectRestart ? RoundRestartType.FullRestart : RoundRestartType.RedirectRestart;
 
             Connection.Send(new RoundRestartMessage(roundRestartType, delay, newPort, reconnect, false));
         }
