@@ -60,7 +60,7 @@ namespace Exiled.API.Features.Roles
         protected HumanGameRole Internal { get; }
 
         /// <summary>
-        /// Gets the <see cref="HumanRole"/> armor efficacy based on a specific <see cref="HitboxType"/>.
+        /// Gets the <see cref="HumanRole"/> armor efficacy based on a specific <see cref="HitboxType"/> and the armor the <see cref="Role.Owner"/> is wearing.
         /// </summary>
         /// <param name="hitbox">The <see cref="HitboxType"/>.</param>
         /// <returns>The armor efficacy.</returns>

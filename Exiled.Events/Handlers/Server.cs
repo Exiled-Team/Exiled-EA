@@ -84,6 +84,16 @@ namespace Exiled.Events.Handlers
         public static event CustomEventHandler ReloadedRA;
 
         /// <summary>
+        /// Invoked after the "reload plugins" command is ran.
+        /// </summary>
+        public static event CustomEventHandler ReloadedPlugins;
+
+        /// <summary>
+        /// Invoked after the "reload permissions" command is ran.
+        /// </summary>
+        public static event CustomEventHandler ReloadedPermissions;
+
+        /// <summary>
         /// Called before waiting for players.
         /// </summary>
         public static void OnWaitingForPlayers() => WaitingForPlayers.InvokeSafely();
@@ -153,5 +163,15 @@ namespace Exiled.Events.Handlers
         /// Called after the "reload remoteadminconfigs" command is ran.
         /// </summary>
         public static void OnReloadedRA() => ReloadedRA.InvokeSafely();
+
+        /// <summary>
+        /// Called after the "reload plugins" command is ran.
+        /// </summary>
+        public static void OnReloadedPlugins() => ReloadedPlugins.InvokeSafely();
+
+        /// <summary>
+        /// Called after the "reload permissions" command is ran.
+        /// </summary>
+        public static void OnReloadedPermissions() => ReloadedPermissions.InvokeSafely();
     }
 }
