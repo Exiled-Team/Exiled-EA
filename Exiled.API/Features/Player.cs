@@ -498,7 +498,7 @@ namespace Exiled.API.Features
         /// </para>
         /// <para>
         /// If the role object is stored, it may become invalid if the player changes roles. Thus, the <see cref="Role.IsValid"/> property can be checked. If this property is <see langword="false"/>, the role should be discarded and this property should be used again to get the new Role.
-        /// This role is automatically cached until it changes, and it is recommended to use this propertly directly rather than storing the property yourself.
+        /// This role is automatically cached until it changes, and it is recommended to use this property directly rather than storing the property yourself.
         /// </para>
         /// <para>
         /// Roles and RoleTypeIds can be compared directly. <c>Player.Role == RoleTypeId.Scp079</c> is valid and will return <see langword="true"/> if the player is SCP-079. To set the player's role, see <see cref="SetRole(RoleTypeId, SpawnReason)"/>.
