@@ -1,41 +1,29 @@
 // -----------------------------------------------------------------------
-// <copyright file="PreAuthenticating.cs" company="Exiled Team">
+// <copyright file="ReservedSlotPatch.cs" company="Exiled Team">
 // Copyright (c) Exiled Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
-
-using System;
-using System.Reflection;
-using Exiled.API.Enums;
-using GameCore;
-using Mirror.LiteNetLib4Mirror;
-using PlayerRoles.PlayableScps.Scp079;
-using PluginAPI.Events;
-using Log = Exiled.API.Features.Log;
 
 namespace Exiled.Events.Patches.Events.Player
 {
     using System.Collections.Generic;
     using System.Reflection.Emit;
 
+    using Exiled.API.Enums;
     using Exiled.Events.EventArgs.Player;
     using Handlers;
-
     using HarmonyLib;
-
-    using LiteNetLib;
-    using LiteNetLib.Utils;
-
     using NorthwoodLib.Pools;
+    using PluginAPI.Events;
 
     using static HarmonyLib.AccessTools;
 
     /// <summary>
-    ///     Patches <see cref="ReservedSlot.HasReservedSlot(string userId, out bool bypass)" />.
+    ///     Patches <see cref="ReservedSlot.HasReservedSlot(string, out bool)" />.
     ///     Adds the <see cref="Player.ReservedSlot" /> event.
     /// </summary>
-    [HarmonyPatch(typeof(ReservedSlot), "HasReservedSlot")]
+    [HarmonyPatch(typeof(ReservedSlot), nameof(ReservedSlot.HasReservedSlot))]
     internal static class ReservedSlotPatch
     {
         [HarmonyTranspiler]
@@ -51,7 +39,6 @@ namespace Exiled.Events.Patches.Events.Player
             Label returnTrue = generator.DefineLabel();
             Label returnFalse = generator.DefineLabel();
 
-
             int offset = -1;
             int index = newInstructions.FindLastIndex(
                 instruction => instruction.LoadsField(Field(typeof(PlayerCheckReservedSlotCancellationData), nameof(PlayerCheckReservedSlotCancellationData.HasReservedSlot)))) + offset;
@@ -64,16 +51,22 @@ namespace Exiled.Events.Patches.Events.Player
                 {
                     // Grab user-id, copy label from current newInstruction[index] to ensure jumps to the label come to this instr instead
                     new CodeInstruction(OpCodes.Ldarg_0).MoveLabelsFrom(newInstructions[index]),
+
                     // Grab reserved slot bool
                     new(OpCodes.Ldarg_1),
+
                     // Instantiate object with previous vars
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(ReservedSlotsCheckEventArgs))[0]),
+
                     // Duplicate for future use
                     new(OpCodes.Dup),
+
                     // Pass event to be invoked
                     new(OpCodes.Call, Method(typeof(Player), nameof(Player.OnReservedSlot))),
+
                     // Using duped value from before, grab result from event
                     new(OpCodes.Callvirt, PropertyGetter(typeof(ReservedSlotsCheckEventArgs), nameof(ReservedSlotsCheckEventArgs.Result))),
+
                     // Store result value in local variable.
                     new(OpCodes.Stloc_S, jumpConditions.LocalIndex),
 
@@ -96,17 +89,17 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Ldc_I4_3),
                     new(OpCodes.Beq_S, allowUnconditional),
 
-                    //Return true, but set bypass to true.
+                    // Return true, but set bypass to true.
                     new CodeInstruction(OpCodes.Ldc_I4_1).WithLabels(allowUnconditional),
                     new CodeInstruction(OpCodes.Starg_S, 1),
-                    //Return True
+
+                    // Return True
                     new CodeInstruction(OpCodes.Ldc_I4_1).WithLabels(returnTrue),
                     new(OpCodes.Ret),
 
-                    //Return false
+                    // Return false
                     new CodeInstruction(OpCodes.Ldc_I4_0).WithLabels(returnFalse),
                     new(OpCodes.Ret),
-
                 });
 
             for (int z = 0; z < newInstructions.Count; z++)

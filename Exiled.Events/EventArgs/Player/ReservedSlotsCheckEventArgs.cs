@@ -1,4 +1,4 @@
-﻿// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
 // <copyright file="ReservedSlotsCheckEventArgs.cs" company="Exiled Team">
 // Copyright (c) Exiled Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
@@ -22,7 +22,7 @@ namespace Exiled.Events.EventArgs.Player
         ///     <inheritdoc cref="UserId" />
         /// </param>
         /// <param name="hasReservedSlot">
-        ///     <inheritdoc cref="hasReservedSlot" />
+        ///     <inheritdoc cref="HasReservedSlot" />
         /// </param>
         public ReservedSlotsCheckEventArgs(string userId, bool hasReservedSlot)
         {

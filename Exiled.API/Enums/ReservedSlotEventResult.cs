@@ -1,4 +1,4 @@
-﻿// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
 // <copyright file="ReservedSlotEventResult.cs" company="Exiled Team">
 // Copyright (c) Exiled Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
@@ -8,7 +8,7 @@
 namespace Exiled.API.Enums
 {
     /// <summary>
-    /// Result for <see cref="Exiled.Events.EventArgs.Player.ReservedSlotsCheckEventArgs" />
+    /// Result for ReservedSlots event.
     /// </summary>
     public enum ReservedSlotEventResult
     {
