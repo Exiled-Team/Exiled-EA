@@ -1283,7 +1283,7 @@ namespace Exiled.API.Features
         /// Adds the player's UserId to the list of reserved slots.
         /// </summary>
         /// <remarks>This method does not permanently give a user a reserved slot. The slot will be removed if the reserved slots are reloaded.</remarks>
-        /// <returns><see langword="true"/> if the slot was successfully added, or <see langword="false"/> if the provided player already has a reserved slot.</returns>
+        /// <returns><see langword="true"/> if the slot was successfully added, or <see langword="false"/> if the player already has a reserved slot.</returns>
         /// <seealso cref="AddReservedSlot(string)"/>
         public bool GiveReservedSlot() => AddReservedSlot(UserId);
 
