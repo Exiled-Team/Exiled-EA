@@ -1281,7 +1281,7 @@ namespace Exiled.API.Features
         /// <param name="player">The player to add.</param>
         /// <returns><see langword="true"/> if the slot was successfully added, or <see langword="false"/> if the provided player already has a reserved slot.</returns>
         /// <seealso cref="AddReservedSlot(string)"/>
-        public static bool AddReservedSlot(Player player) => AddReservedSlot(player.UserId);
+        public bool AddReservedSlot() => AddReservedSlot(UserId);
 
         /// <summary>
         /// Reloads the reserved slot list, clearing all reserved slot changes made with add/remove methods and reverting to the reserved slots files.
