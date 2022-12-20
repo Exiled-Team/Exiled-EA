@@ -43,7 +43,7 @@ namespace Exiled.Events.Patches.Events.Scp173
                 instruction => instruction.Calls(
                     Method(typeof(NetworkServer), nameof(NetworkServer.Spawn), new[] { typeof(GameObject), typeof(NetworkConnection) }))) + offset;
 
-            // var ev = new PlacingTantrumEventArgs(this, Player, gameObject, cooldown, true);
+            // PlacingTantrumEventArgs ev = new(this, Player, gameObject, cooldown, true);
             //
             // Handlers.Player.OnPlacingTantrum(ev);
             //
@@ -74,7 +74,7 @@ namespace Exiled.Events.Patches.Events.Scp173
                     // true
                     new(OpCodes.Ldc_I4_1),
 
-                    // var ev = new PlacingTantrumEventArgs(Scp173Role, Player, TantrumEnvironmentalHazard, AbilityCooldown, bool)
+                    // PlacingTantrumEventArgs ev = new(Scp173Role, Player, TantrumEnvironmentalHazard, AbilityCooldown, bool)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(PlacingTantrumEventArgs))[0]),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),

@@ -86,7 +86,7 @@ namespace Exiled.Events.Patches.Events.Item
                     // true
                     new(OpCodes.Ldc_I4_1),
 
-                    // var ev = new ChangingDurabilityEventArgs(...)
+                    // ChangingDurabilityEventArgs ev = new(Player, ItemBase, byte, byte, bool)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(ChangingDurabilityEventArgs))[0]),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),

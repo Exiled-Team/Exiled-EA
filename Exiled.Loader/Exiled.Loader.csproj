@@ -25,6 +25,7 @@
         <Reference Include="Assembly-CSharp" HintPath="$(BETA_EXILED_REFERENCES)\Assembly-CSharp-Publicized.dll" Private="false" />
         <Reference Include="Assembly-CSharp-firstpass" HintPath="$(BETA_EXILED_REFERENCES)\Assembly-CSharp-firstpass.dll" Private="false" />
         <Reference Include="NorthwoodLib" HintPath="$(BETA_EXILED_REFERENCES)\NorthwoodLib.dll" Private="false" />
+        <Reference Include="PluginAPI" HintPath="$(BETA_EXILED_REFERENCES)\PluginAPI.dll" Private="false" />
         <Reference Include="UnityEngine.AudioModule" HintPath="$(BETA_EXILED_REFERENCES)\UnityEngine.AudioModule.dll" Private="false" />
         <Reference Include="UnityEngine.CoreModule" HintPath="$(BETA_EXILED_REFERENCES)\UnityEngine.CoreModule.dll" Private="false" />
         <Reference Include="Mirror" HintPath="$(BETA_EXILED_REFERENCES)\Mirror.dll" Private="false" />
@@ -32,11 +33,21 @@
     </ItemGroup>
 
 
+
+
+
     <PropertyGroup Condition=" '$(OS)' == 'Windows_NT' ">
         <PostBuildEvent>if not "$(EXILED_DEV_REFERENCES)"=="" copy /y "$(OutputPath)$(AssemblyName).dll" "$(EXILED_DEV_REFERENCES)\"</PostBuildEvent>
+        <PostBuildEvent>if not "$(EXILED_DEV_PLUGINAPI_REFERENCE)"=="" copy /y "$(OutputPath)$(AssemblyName).dll" "$(EXILED_DEV_PLUGINAPI_REFERENCE)\"</PostBuildEvent>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(OS)' == 'Unix' ">
         <PostBuildEvent>if [[ ! -z "$EXILED_DEV_REFERENCES" ]]; then cp "$(OutputPath)$(AssemblyName).dll" "$EXILED_DEV_REFERENCES/"; fi</PostBuildEvent>
+        <PostBuildEvent>if [[ ! -z "$EXILED_DEV_PLUGINAPI_REFERENCE" ]]; then cp "$(OutputPath)$(AssemblyName).dll" "$EXILED_DEV_PLUGINAPI_REFERENCE/"; fi</PostBuildEvent>
     </PropertyGroup>
+
+<!--    <PropertyGroup>-->
+<!--        <PreBuildEvent>echo "$(OutputPath) prebuild"</PreBuildEvent>-->
+<!--        <PostBuildEvent>echo "$(OutputPath) XX $(EXILED_DEV_PLUGINAPI_REFERENCE) XX"</PostBuildEvent>-->
+<!--    </PropertyGroup>-->
 
 </Project>

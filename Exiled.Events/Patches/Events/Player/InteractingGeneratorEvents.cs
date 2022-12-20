@@ -51,7 +51,7 @@ namespace Exiled.Events.Patches.Events.Player
                 index,
                 new[]
                 {
-                    // var player = Player.Get(ply)
+                    // Player player = Player.Get(ply)
                     new CodeInstruction(OpCodes.Ldarg_1),
                     new(OpCodes.Call, Method(typeof(API.Features.Player), nameof(API.Features.Player.Get), new[] { typeof(ReferenceHub) })),
                     new(OpCodes.Stloc_S, player.LocalIndex),
@@ -108,7 +108,7 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Callvirt, Method(typeof(Scp079Generator), nameof(Scp079Generator.HasFlag))),
                     new(OpCodes.Brfalse_S, isOpening),
 
-                    // var ev = new ClosingGeneratorEventArgs(Player, Scp079Generator, bool)
+                    // ClosingGeneratorEventArgs ev = new(Player, Scp079Generator, bool)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(ClosingGeneratorEventArgs))[0]),
                     new(OpCodes.Dup),
 
@@ -121,7 +121,7 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Callvirt, PropertyGetter(typeof(ClosingGeneratorEventArgs), nameof(ClosingGeneratorEventArgs.IsAllowed))),
                     new(OpCodes.Br_S, check),
 
-                    // var ev = new OpeningGeneratorEventArgs(Player, Scp079Generator, bool)
+                    // OpeningGeneratorEventArgs ev = new(Player, Scp079Generator, bool)
                     new CodeInstruction(OpCodes.Newobj, GetDeclaredConstructors(typeof(OpeningGeneratorEventArgs))[0]).WithLabels(isOpening),
                     new(OpCodes.Dup),
 
@@ -186,7 +186,7 @@ namespace Exiled.Events.Patches.Events.Player
                 index,
                 new[]
                 {
-                    // var ev = new UnlockingGeneratorEventArgs(Player, Scp079Generator, bool)
+                    // UnlockingGeneratorEventArgs ev = new(Player, Scp079Generator, bool)
                     new CodeInstruction(OpCodes.Newobj, GetDeclaredConstructors(typeof(UnlockingGeneratorEventArgs))[0]),
                     new(OpCodes.Dup),
 
@@ -260,7 +260,7 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Callvirt, PropertyGetter(typeof(Scp079Generator), nameof(Scp079Generator.Activating))),
                     new(OpCodes.Brfalse_S, isActivating),
 
-                    // var ev = new StoppingGeneratorEventArgs(Player, Scp079Generator, bool)
+                    // StoppingGeneratorEventArgs ev = new(Player, Scp079Generator, bool)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(StoppingGeneratorEventArgs))[0]),
                     new(OpCodes.Dup),
 
@@ -273,7 +273,7 @@ namespace Exiled.Events.Patches.Events.Player
 
                     // isActivating:
                     //
-                    // var ev = new ActivatingGeneratorEventArgs(Player, Scp079Generator, bool)
+                    // ActivatingGeneratorEventArgs ev = new(Player, Scp079Generator, bool)
                     new CodeInstruction(OpCodes.Newobj, GetDeclaredConstructors(typeof(ActivatingGeneratorEventArgs))[0]).WithLabels(isActivating),
                     new(OpCodes.Dup),
 
@@ -302,7 +302,7 @@ namespace Exiled.Events.Patches.Events.Player
                     // true
                     new(OpCodes.Ldc_I4_1),
 
-                    // var ev = new StoppingGeneratorEventArgs(Player, Scp079Generator, bool)
+                    // StoppingGeneratorEventArgs ev = new(Player, Scp079Generator, bool)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(StoppingGeneratorEventArgs))[0]),
                     new(OpCodes.Dup),
 

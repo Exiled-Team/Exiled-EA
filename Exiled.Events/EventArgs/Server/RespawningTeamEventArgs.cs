@@ -13,8 +13,6 @@ namespace Exiled.Events.EventArgs.Server
     using Exiled.Events.EventArgs.Interfaces;
     using Respawning;
 
-    using UnityEngine;
-
     /// <summary>
     ///     Contains all information before spawning a wave of <see cref="SpawnableTeamType.NineTailedFox" /> or
     ///     <see cref="SpawnableTeamType.ChaosInsurgency" />.
@@ -41,9 +39,7 @@ namespace Exiled.Events.EventArgs.Server
         public RespawningTeamEventArgs(List<Player> players, int maxRespawn, SpawnableTeamType nextKnownTeam, bool isAllowed = true)
         {
             Players = players;
-            MaximumRespawnAmount = Mathf.Min(
-                maxRespawn,
-                NextKnownTeam != SpawnableTeamType.None ? RespawnManager.SpawnableTeams[NextKnownTeam].MaxWaveSize : 0);
+            MaximumRespawnAmount = maxRespawn;
 
             this.nextKnownTeam = nextKnownTeam;
             IsAllowed = isAllowed;
@@ -68,7 +64,14 @@ namespace Exiled.Events.EventArgs.Server
             set
             {
                 nextKnownTeam = value;
-                ReissueNextKnownTeam();
+
+                if (!RespawnManager.SpawnableTeams.TryGetValue(value, out SpawnableTeamHandlerBase spawnableTeam))
+                {
+                    MaximumRespawnAmount = 0;
+                    return;
+                }
+
+                MaximumRespawnAmount = spawnableTeam.MaxWaveSize;
             }
         }
 
@@ -82,32 +85,5 @@ namespace Exiled.Events.EventArgs.Server
         ///     Gets or sets a value indicating whether or not the spawn can occur.
         /// </summary>
         public bool IsAllowed { get; set; }
-
-        private void ReissueNextKnownTeam()
-        {
-            SpawnableTeamHandlerBase @base = SpawnableTeam;
-
-            if (@base is null)
-                return;
-
-            // Refer to the game code
-            int availableTickets = 0;
-
-            for (int i = 0; i < RespawnTokensManager._teamsCount; i++)
-            {
-                if (NextKnownTeam == RespawnTokensManager.Counters[i].Team)
-                    availableTickets = (int)RespawnTokensManager.Counters[i].Amount;
-            }
-
-            if (availableTickets == 0)
-            {
-                availableTickets = 5;
-                RespawnTokensManager.GrantTokens(SpawnableTeamType.ChaosInsurgency, availableTickets);
-            }
-
-            MaximumRespawnAmount = Mathf.Min(
-                availableTickets,
-                NextKnownTeam != SpawnableTeamType.None ? RespawnManager.SpawnableTeams[NextKnownTeam].MaxWaveSize : 0);
-        }
     }
 }

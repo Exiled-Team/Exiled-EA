@@ -59,7 +59,7 @@ namespace Exiled.Events.Patches.Events.Scp096
                     // true
                     new(OpCodes.Ldc_I4_1),
 
-                    // var ev = new ChargingEventArgs(Scp096Role, Player, bool)
+                    // ChargingEventArgs ev = new(Scp096Role, Player, bool)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(ChargingEventArgs))[0]),
                     new(OpCodes.Dup),
 

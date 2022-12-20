@@ -60,7 +60,7 @@ namespace Exiled.Events.Patches.Events.Server
                     // true
                     new(OpCodes.Ldc_I4_1),
 
-                    // var ev = new RespawningTeamEventArgs(players, num, this.NextKnownTeam)
+                    // RespawningTeamEventArgs ev = new(players, num, this.NextKnownTeam)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(RespawningTeamEventArgs))[0]),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),

@@ -28,31 +28,31 @@ namespace Exiled.API.Enums
         /// <summary>
         /// An unspecified zone.
         /// </summary>
-        Unspecified,
+        Unspecified = 0,
 
         /// <summary>
         /// The Light Containment Zone.
         /// </summary>
-        LightContainment,
+        LightContainment = 1,
 
         /// <summary>
         /// The Heavy Containment Zone.
         /// </summary>
-        HeavyContainment,
+        HeavyContainment = 2,
 
         /// <summary>
         /// The Entrance Zone.
         /// </summary>
-        Entrance,
+        Entrance = 4,
 
         /// <summary>
         /// The Surface Zone.
         /// </summary>
-        Surface,
+        Surface = 8,
 
         /// <summary>
         /// An unknown type of zone.
         /// </summary>
-        Other,
+        Other = 16,
     }
 }

@@ -16,10 +16,8 @@ namespace Exiled.API.Features
     using Enums;
     using Exiled.API.Extensions;
     using Mirror;
-
-    using PlayableScps;
     using PlayerRoles;
-    using PlayerRoles.PlayableScps.Scp049;
+    using PlayerRoles.PlayableScps.Scp049.Zombies;
     using PlayerRoles.Ragdolls;
     using PlayerStatsSystem;
 
@@ -183,9 +181,24 @@ namespace Exiled.API.Features
         public RoleTypeId Role => NetworkInfo.RoleType;
 
         /// <summary>
-        /// Gets a value indicating whether or not the ragdoll is respawnable by SCP-049.
+        /// Gets a value indicating whether or not the ragdoll has expired and SCP-049 is unable to revive it.
         /// </summary>
-        public bool AllowRecall => NetworkInfo.ExistenceTime > PlayerRoles.PlayableScps.Scp049.Scp049ResurrectAbility.HumanCorpseDuration;
+        public bool IsExpired => NetworkInfo.ExistenceTime > PlayerRoles.PlayableScps.Scp049.Scp049ResurrectAbility.HumanCorpseDuration;
+
+        /// <summary>
+        /// Gets or sets a value indicating whether or not this ragdoll has been consumed by an SCP-049-2.
+        /// </summary>
+        public bool IsConsumed
+        {
+            get => ZombieConsumeAbility.ConsumedRagdolls.Contains(Base);
+            set
+            {
+                if (value && !ZombieConsumeAbility.ConsumedRagdolls.Contains(Base))
+                    ZombieConsumeAbility.ConsumedRagdolls.Add(Base);
+                else if (!value && ZombieConsumeAbility.ConsumedRagdolls.Contains(Base))
+                    ZombieConsumeAbility.ConsumedRagdolls.Remove(Base);
+            }
+        }
 
         /// <summary>
         /// Gets the <see cref="Features.Room"/> the ragdoll is located in.
@@ -307,6 +320,6 @@ namespace Exiled.API.Features
         /// Returns the Ragdoll in a human-readable format.
         /// </summary>
         /// <returns>A string containing Ragdoll-related data.</returns>
-        public override string ToString() => $"{Owner} ({Name}) [{DeathReason}] *{Role}* |{CreationTime}| ={AllowRecall}=";
+        public override string ToString() => $"{Owner} ({Name}) [{DeathReason}] *{Role}* |{CreationTime}| ={IsExpired}=";
     }
 }

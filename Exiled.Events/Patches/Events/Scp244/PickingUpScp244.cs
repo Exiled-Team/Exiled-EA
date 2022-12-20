@@ -51,7 +51,7 @@ namespace Exiled.Events.Patches.Events.Scp244
                     // scp244DeployablePickup
                     new(OpCodes.Ldloc_0),
 
-                    // var ev = new PickingUpScp244EventArgs(Player, Scp244DeployablePickup)
+                    // PickingUpScp244EventArgs ev = new(Player, Scp244DeployablePickup)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(PickingUpScp244EventArgs))[0]),
                     new(OpCodes.Dup),
 

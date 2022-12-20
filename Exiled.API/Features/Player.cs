@@ -42,6 +42,7 @@ namespace Exiled.API.Features
     using PlayerRoles.PlayableScps.Scp106;
     using PlayerRoles.PlayableScps.Scp173;
     using PlayerRoles.PlayableScps.Scp939;
+    using PlayerRoles.Spectating;
     using PlayerRoles.Voice;
     using PlayerStatsSystem;
     using RemoteAdmin;
@@ -107,7 +108,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets a <see cref="Dictionary{TKey, TValue}"/> containing all <see cref="Player"/>'s on the server.
         /// </summary>
-        public static Dictionary<GameObject, Player> Dictionary { get; } = new(20, new ReferenceHub.GameObjectComparer());
+        public static Dictionary<GameObject, Player> Dictionary { get; } = new(Server.MaxPlayerCount, new ReferenceHub.GameObjectComparer());
 
         /// <summary>
         /// Gets a list of all <see cref="Player"/>'s on the server.
@@ -357,6 +358,11 @@ namespace Exiled.API.Features
         public bool IsConnected => GameObject != null;
 
         /// <summary>
+        /// Gets a value indicating whether or not the player has a reserved slot.
+        /// </summary>
+        public bool HasReservedSlot => ReservedSlot.HasReservedSlot(UserId, out _);
+
+        /// <summary>
         /// Gets a list of player ids who can't see the player.
         /// </summary>
         public HashSet<int> TargetGhostsHashSet { get; } = HashSetPool<int>.Shared.Rent();
@@ -365,6 +371,11 @@ namespace Exiled.API.Features
         /// Gets a value indicating whether or not the player has Remote Admin access.
         /// </summary>
         public bool RemoteAdminAccess => ReferenceHub.serverRoles.RemoteAdmin;
+
+        /// <summary>
+        /// Gets a value indicating a player's kick power.
+        /// </summary>
+        public byte KickPower => ReferenceHub.serverRoles.KickPower;
 
         /// <summary>
         /// Gets or sets a value indicating whether or not the player's overwatch is enabled.
@@ -409,7 +420,7 @@ namespace Exiled.API.Features
         public Vector3 Position
         {
             get => GameObject.transform.position;
-            set => ReferenceHub.TryOverridePosition(value, Rotation);
+            set => ReferenceHub.TryOverridePosition(value, Vector3.zero);
         }
 
         /// <summary>
@@ -419,7 +430,7 @@ namespace Exiled.API.Features
         public Vector3 Rotation
         {
             get => GameObject.transform.eulerAngles;
-            set => ReferenceHub.TryOverridePosition(Position, value);
+            set => ReferenceHub.TryOverridePosition(Position, value - Rotation);
         }
 
         /// <summary>
@@ -459,7 +470,7 @@ namespace Exiled.API.Features
         /// </para>
         /// <para>
         /// If the role object is stored, it may become invalid if the player changes roles. Thus, the <see cref="Role.IsValid"/> property can be checked. If this property is <see langword="false"/>, the role should be discarded and this property should be used again to get the new Role.
-        /// This role is automatically cached until it changes, and it is recommended to use this propertly directly rather than storing the property yourself.
+        /// This role is automatically cached until it changes, and it is recommended to use this property directly rather than storing the property yourself.
         /// </para>
         /// <para>
         /// Roles and RoleTypeIds can be compared directly. <c>Player.Role == RoleTypeId.Scp079</c> is valid and will return <see langword="true"/> if the player is SCP-079. To set the player's role, see <see cref="SetRole(RoleTypeId, SpawnReason)"/>.
@@ -695,7 +706,27 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets a value indicating whether or not the player is speaking.
         /// </summary>
-        public bool IsSpeaking => VoiceModule?.IsSpeaking ?? false;
+        public bool IsSpeaking => VoiceModule != null && VoiceModule.IsSpeaking;
+
+        /// <summary>
+        /// Gets the player's voice color.
+        /// </summary>
+        public Color VoiceColor => ReferenceHub.serverRoles.GetVoiceColor();
+
+        /// <summary>
+        /// Gets or sets the player's voice channel.
+        /// </summary>
+        public VoiceChatChannel VoiceChannel
+        {
+            get => VoiceModule == null ? VoiceChatChannel.None : VoiceModule.CurrentChannel;
+            set
+            {
+                if (VoiceModule == null)
+                    return;
+
+                VoiceModule.CurrentChannel = value;
+            }
+        }
 
         /// <summary>
         /// Gets a value indicating whether or not the player is transmitting on a Radio.
@@ -934,7 +965,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets a value indicating whether or not the player's inventory is full.
         /// </summary>
-        public bool IsInventoryFull => Items.Count >= 8;
+        public bool IsInventoryFull => Items.Count >= Inventory.MaxSlots;
 
         /// <summary>
         /// Gets a value indicating whether or not the player can send inputs.
@@ -942,16 +973,14 @@ namespace Exiled.API.Features
         public bool CanSendInputs => Role.FirstPersonController.FpcModule.LockMovement;
 
         /// <summary>
+        /// Gets a value indicating whether or not the player has agreed to microphone recording.
+        /// </summary>
+        public bool AgreedToRecording => VoiceChatPrivacySettings.CheckUserFlags(ReferenceHub, VcPrivacyFlags.SettingsSelected | VcPrivacyFlags.AllowRecording | VcPrivacyFlags.AllowMicCapture);
+
+        /// <summary>
         /// Gets a <see cref="Player"/> <see cref="IEnumerable{T}"/> of spectators that are currently spectating this <see cref="Player"/>.
         /// </summary>
-        public IEnumerable<Player> CurrentSpectatingPlayers
-        {
-            get
-            {
-                foreach (Player player in List.Where(player => player == this || player.Role is not SpectatorRole role || role.SpectatedPlayer != this))
-                    yield return player;
-            }
-        }
+        public IEnumerable<Player> CurrentSpectatingPlayers => List.Where(player => ReferenceHub.IsSpectatedBy(player.ReferenceHub));
 
         /// <summary>
         /// Gets a <see cref="Dictionary{TKey, TValue}"/> which contains all player's preferences.
@@ -1244,6 +1273,37 @@ namespace Exiled.API.Features
         /// <param name="player">The player found or <see langword="null"/> if not found.</param>
         /// <returns>A boolean indicating whether or not a player was found.</returns>
         public static bool TryGet(string args, out Player player) => (player = Get(args)) is not null;
+
+        /// <summary>
+        /// Adds a player's UserId to the list of reserved slots.
+        /// </summary>
+        /// <remarks>This method does not permanently give a user a reserved slot. The slot will be removed if the reserved slots are reloaded.</remarks>
+        /// <param name="userId">The UserId of the player to add.</param>
+        /// <returns><see langword="true"/> if the slot was successfully added, or <see langword="false"/> if the provided UserId already has a reserved slot.</returns>
+        /// <seealso cref="GiveReservedSlot()"/>
+        public static bool AddReservedSlot(string userId)
+        {
+            if (!ReservedSlot.HasReservedSlot(userId, out _))
+            {
+                ReservedSlot.Users.Add(userId);
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Reloads the reserved slot list, clearing all reserved slot changes made with add/remove methods and reverting to the reserved slots files.
+        /// </summary>
+        public static void ReloadReservedSlots() => ReservedSlot.Reload();
+
+        /// <summary>
+        /// Adds the player's UserId to the list of reserved slots.
+        /// </summary>
+        /// <remarks>This method does not permanently give a user a reserved slot. The slot will be removed if the reserved slots are reloaded.</remarks>
+        /// <returns><see langword="true"/> if the slot was successfully added, or <see langword="false"/> if the player already has a reserved slot.</returns>
+        /// <seealso cref="AddReservedSlot(string)"/>
+        public bool GiveReservedSlot() => AddReservedSlot(UserId);
 
         /// <summary>
         /// Tries to add <see cref="RoleTypeId"/> to FriendlyFire rules.
@@ -1579,19 +1639,38 @@ namespace Exiled.API.Features
         /// Drops an item from the player's inventory.
         /// </summary>
         /// <param name="item">The item to be dropped.</param>
-        public void DropItem(Item item) => Inventory.ServerDropItem(item.Serial);
+        /// <exception cref="ArgumentNullException">If the item parameter is <see langword="null"/>.</exception>
+        public void DropItem(Item item)
+        {
+            if (item is null)
+                throw new ArgumentNullException(nameof(item));
+            Inventory.ServerDropItem(item.Serial);
+        }
 
         /// <summary>
-        /// Drops the held item.
+        /// Drops the held item. Will not do anything if the player is not holding an item.
         /// </summary>
-        public void DropHeldItem() => DropItem(CurrentItem);
+        public void DropHeldItem()
+        {
+            if (CurrentItem is null)
+                return;
+
+            DropItem(CurrentItem);
+        }
 
         /// <summary>
         /// Indicates whether or not the player has an item.
         /// </summary>
         /// <param name="item">The item to search for.</param>
         /// <returns><see langword="true"/>, if the player has it; otherwise, <see langword="false"/>.</returns>
-        public bool HasItem(Item item) => Inventory.UserInventory.Items.ContainsValue(item.Base);
+        /// <exception cref="ArgumentNullException">If the item parameter is <see langword="null"/>.</exception>
+        public bool HasItem(Item item)
+        {
+            if (item is null)
+                throw new ArgumentNullException(nameof(item));
+
+            return Inventory.UserInventory.Items.ContainsValue(item.Base);
+        }
 
         /// <summary>
         /// Indicates whether or not the player has an item type.
@@ -1965,16 +2044,13 @@ namespace Exiled.API.Features
         public Item AddItem(ItemType itemType, IEnumerable<AttachmentIdentifier> identifiers = null)
         {
             Item item = Item.Get(Inventory.ServerAddItem(itemType));
+
             if (item is Firearm firearm)
             {
                 if (identifiers is not null)
-                {
                     firearm.AddAttachment(identifiers);
-                }
                 else if (Preferences is not null && Preferences.TryGetValue(itemType, out AttachmentIdentifier[] attachments))
-                {
                     firearm.Base.ApplyAttachmentsCode(attachments.GetAttachmentsCode(), true);
-                }
 
                 FirearmStatusFlags flags = FirearmStatusFlags.MagazineInserted;
 
@@ -2790,16 +2866,16 @@ namespace Exiled.API.Features
 
             object randomObject = type.Name switch
             {
-                nameof(Camera) => Camera.CamerasValue[Random.Range(0, Camera.CamerasValue.Count)],
+                nameof(Camera) => Camera.List.ElementAt(Random.Range(0, Camera.Camera079ToCamera.Count)),
                 nameof(Door) => Door.Random(),
-                nameof(Room) => Room.RoomsValue[Random.Range(0, Room.RoomsValue.Count)],
-                nameof(TeslaGate) => TeslaGate.TeslasValue[Random.Range(0, TeslaGate.TeslasValue.Count)],
+                nameof(Room) => Room.List.ElementAt(Random.Range(0, Room.RoomIdentifierToRoom.Count)),
+                nameof(TeslaGate) => TeslaGate.List.ElementAt(Random.Range(0, TeslaGate.BaseTeslaGateToTeslaGate.Count)),
                 nameof(Player) => Dictionary.Values.ElementAt(Random.Range(0, Dictionary.Count)),
                 nameof(Pickup) => Map.Pickups[Random.Range(0, Map.Pickups.Count)],
                 nameof(Ragdoll) => Map.RagdollsValue[Random.Range(0, Map.RagdollsValue.Count)],
                 nameof(Locker) => Map.GetRandomLocker(),
-                nameof(Generator) => Generator.GeneratorValues[Random.Range(0, Generator.GeneratorValues.Count)],
-                nameof(Window) => Window.WindowValue[Random.Range(0, Window.WindowValue.Count)],
+                nameof(Generator) => Generator.List.ElementAt(Random.Range(0, Generator.Scp079GeneratorToGenerator.Count)),
+                nameof(Window) => Window.List.ElementAt(Random.Range(0, Window.BreakableWindowToWindow.Count)),
                 nameof(Scp914) => Scp914.Scp914Controller,
                 nameof(LockerChamber) => (chambers = Map.GetRandomLocker().Chambers)[Random.Range(0, chambers.Length)],
                 _ => null,

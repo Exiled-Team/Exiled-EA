@@ -51,7 +51,7 @@ namespace Exiled.Events.Patches.Events.Map
                     // hit
                     new(OpCodes.Ldarg_2),
 
-                    // var ev = new PlacingBulletHole(Player, RaycastHit)
+                    // PlacingBulletHole ev = new(Player, RaycastHit)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(EventArgs.Map.PlacingBulletHole))[0]),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),

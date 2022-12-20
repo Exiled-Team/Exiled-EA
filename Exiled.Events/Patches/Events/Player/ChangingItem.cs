@@ -56,7 +56,7 @@ namespace Exiled.Events.Patches.Events.Player
                     // itemBase
                     new(OpCodes.Ldloc_1),
 
-                    // var ev = new ChangingItemEventArgs(Player, ItemBase)
+                    // ChangingItemEventArgs ev = new(Player, ItemBase)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(ChangingItemEventArgs))[0]),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),

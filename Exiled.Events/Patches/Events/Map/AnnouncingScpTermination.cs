@@ -58,7 +58,7 @@ namespace Exiled.Events.Patches.Events.Map
                     // true
                     new(OpCodes.Ldc_I4_1),
 
-                    // var ev = new AnnouncingScpTerminationEventArgs(Player, DamageHandlerBase, bool)
+                    // AnnouncingScpTerminationEventArgs ev = new(Player, DamageHandlerBase, bool)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(AnnouncingScpTerminationEventArgs))[0]),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),

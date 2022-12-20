@@ -56,7 +56,7 @@ namespace Exiled.Events.Patches.Events.Scp173
                     // pos
                     new(OpCodes.Ldarg_1),
 
-                    // var ev = new BlinkingEventArgs(Player, List<Player>, Vector3)
+                    // BlinkingEventArgs ev = new(Player, List<Player>, Vector3)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(BlinkingEventArgs))[0]),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),

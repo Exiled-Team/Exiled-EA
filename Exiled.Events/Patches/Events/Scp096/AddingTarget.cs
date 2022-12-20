@@ -37,7 +37,7 @@ namespace Exiled.Events.Patches.Events.Scp096
             const int offset = 1;
             int index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Ret) + offset;
 
-            // var ev = new AddingTargetEventArgs(Player.Get(base.Owner), Player.Get(target), true);
+            // AddingTargetEventArgs ev = new(Player.Get(base.Owner), Player.Get(target), true);
             //
             // Handlers.Scp096.OnAddingTarget(ev);
             //
@@ -59,7 +59,7 @@ namespace Exiled.Events.Patches.Events.Scp096
                     // true
                     new(OpCodes.Ldc_I4_1),
 
-                    // var ev = new AddingTargetEventArgs(Player, Player, bool)
+                    // AddingTargetEventArgs ev = new(Player, Player, bool)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(AddingTargetEventArgs))[0]),
                     new(OpCodes.Dup),
 

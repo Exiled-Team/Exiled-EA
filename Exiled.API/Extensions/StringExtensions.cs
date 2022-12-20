@@ -104,9 +104,7 @@ namespace Exiled.API.Extensions
             foreach (T enumerator in enumerable)
             {
                 if (showIndex)
-                {
                     stringBuilder.Append($"{index++} ");
-                }
 
                 stringBuilder.AppendLine(enumerator.ToString());
             }

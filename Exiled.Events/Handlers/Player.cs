@@ -24,6 +24,11 @@ namespace Exiled.Events.Handlers
         public static event CustomEventHandler<PreAuthenticatingEventArgs> PreAuthenticating;
 
         /// <summary>
+        /// Invoked before reserved slot is finalized for a <see cref="API.Features.Player"/>.
+        /// </summary>
+        public static event CustomEventHandler<ReservedSlotsCheckEventArgs> ReservedSlot;
+
+        /// <summary>
         /// Invoked before kicking a <see cref="API.Features.Player"/> from the server.
         /// </summary>
         public static event CustomEventHandler<KickingEventArgs> Kicking;
@@ -453,6 +458,12 @@ namespace Exiled.Events.Handlers
         /// </summary>
         /// <param name="ev">The <see cref="PreAuthenticatingEventArgs"/> instance.</param>
         public static void OnPreAuthenticating(PreAuthenticatingEventArgs ev) => PreAuthenticating.InvokeSafely(ev);
+
+        /// <summary>
+        /// Called before reserved slot is resolved for a <see cref="API.Features.Player"/>.
+        /// </summary>
+        /// <param name="ev">The <see cref="ReservedSlotsCheckEventArgs"/> instance.</param>
+        public static void OnReservedSlot(ReservedSlotsCheckEventArgs ev) => ReservedSlot.InvokeSafely(ev);
 
         /// <summary>
         /// Called before kicking a <see cref="API.Features.Player"/> from the server.

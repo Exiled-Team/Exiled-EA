@@ -167,7 +167,7 @@ namespace Exiled.Example.Events
         /// <inheritdoc cref="Exiled.Events.Handlers.Player.OnReceivingEffect(ReceivingEffectEventArgs)"/>
         public void OnReceivingEffect(ReceivingEffectEventArgs ev)
         {
-            Log.Info($"{ev.Player.Nickname} is receiving effect {ev.Effect}. Duration: {ev.Duration} New Intensity: {ev.State} Old Intensity: {ev.CurrentState}");
+            Log.Info($"{ev.Player.Nickname} is receiving effect {ev.Effect}. Duration: {ev.Duration} New Intensity: {ev.Intensity} Old Intensity: {ev.CurrentIntensity}");
 
             if (ev.Effect is Invigorated)
             {

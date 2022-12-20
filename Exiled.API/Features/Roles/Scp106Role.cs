@@ -8,6 +8,7 @@
 namespace Exiled.API.Features.Roles
 {
     using PlayerRoles;
+    using PlayerRoles.PlayableScps.HumeShield;
     using PlayerRoles.PlayableScps.Scp106;
     using PlayerRoles.PlayableScps.Subroutines;
 
@@ -36,6 +37,11 @@ namespace Exiled.API.Features.Roles
         public override SubroutineManagerModule SubroutineModule { get; }
 
         /// <summary>
+        /// Gets the <see cref="HumeShieldModuleBase"/>.
+        /// </summary>
+        public HumeShieldModuleBase HumeShieldModule => Internal.HumeShieldModule;
+
+        /// <summary>
         /// Gets or sets SCP-106's Vigor.
         /// </summary>
         public float Vigor
@@ -59,6 +65,16 @@ namespace Exiled.API.Features.Roles
         public bool IsSubmerged => Internal.IsSubmerged;
 
         /// <summary>
+        /// Gets a value indicating whether or not SCP-106 can activate the shock.
+        /// </summary>
+        public bool CanActivateShock => Internal.CanActivateShock;
+
+        /// <summary>
+        /// Gets a value indicating whether or not SCP-106 is ready for idle.
+        /// </summary>
+        public bool CanActivateIdle => Internal.CanActivateIdle;
+
+        /// <summary>
         /// Gets a value indicating whether or not SCP-106 is currently inside of a door.
         /// </summary>
         public bool IsInsideDoor => false; // TODO
@@ -69,6 +85,11 @@ namespace Exiled.API.Features.Roles
         public Door InsideDoor => null; // TODO
 
         /// <summary>
+        /// Gets the <see cref="Scp106SinkholeController"/>.
+        /// </summary>
+        public Scp106SinkholeController SinkholeController => Internal.Sinkhole;
+
+        /// <summary>
         /// Gets or sets the amount of time in between player captures.
         /// </summary>
         public float CaptureCooldown
@@ -77,7 +98,10 @@ namespace Exiled.API.Features.Roles
             set
             {
                 if (SubroutineModule.TryGetSubroutine(out Scp106Attack ability))
+                {
                     ability._hitCooldown = value;
+                    ability.ServerSendRpc(true);
+                }
             }
         }
 
