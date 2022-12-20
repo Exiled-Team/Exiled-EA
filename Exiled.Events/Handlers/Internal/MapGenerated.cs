@@ -49,7 +49,7 @@ namespace Exiled.Events.Handlers.Internal
         public static void OnMapGenerated()
         {
             Map.ClearCache();
-            Timing.CallDelayed(0.25f, GenerateCache);
+            Timing.CallDelayed(1, GenerateCache);
         }
 
         private static void GenerateCache()
