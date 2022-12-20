@@ -56,12 +56,12 @@ namespace Exiled.API.Features.Roles
         /// <summary>
         /// Gets a value indicating whether or not SCP-939 is currently using its focus ability.
         /// </summary>
-        public bool IsFocused => SubroutineModule.TryGetSubroutine(out Scp939FocusAbility focus) ? focus.TargetState : false;
+        public bool IsFocused => SubroutineModule.TryGetSubroutine(out Scp939FocusAbility focus) && focus.TargetState;
 
         /// <summary>
         /// Gets a value indicating whether or not SCP-939 is currently lunging.
         /// </summary>
-        public bool IsLunging => SubroutineModule.TryGetSubroutine(out Scp939LungeAbility ability) ? ability.State != Scp939LungeState.None : false;
+        public bool IsLunging => SubroutineModule.TryGetSubroutine(out Scp939LungeAbility ability) && ability.State != Scp939LungeState.None;
 
         /// <summary>
         /// Gets or sets SCP-939's <see cref="Scp939LungeState"/>.
