@@ -47,7 +47,7 @@ namespace Exiled.Events.Patches.Events.Player
                 new[]
                 {
                     new(OpCodes.Ldarg_0),
-                    new CodeInstruction(OpCodes.Call, Method(typeof(Verified), nameof(Verified.handleCmdServerSignature))),
+                    new CodeInstruction(OpCodes.Call, Method(typeof(Verified), nameof(Verified.HandleCmdServerSignature))),
 
                 });
 
@@ -57,13 +57,13 @@ namespace Exiled.Events.Patches.Events.Player
             ListPool<CodeInstruction>.Shared.Return(newInstructions);
         }
 
-        public static void handleCmdServerSignature(ServerRoles inst)
+        public static void HandleCmdServerSignature(ServerRoles instance)
         {
-            if(!Player.UnverifiedPlayers.TryGetValue(inst._hub, out Player player)) {
-                Joined.CallEvent(inst._hub, out player);
+            if(!Player.UnverifiedPlayers.TryGetValue(instance._hub, out Player player)) {
+                Joined.CallEvent(instance._hub, out player);
             }
 
-            Player.Dictionary.Add(inst._hub.gameObject, player);
+            Player.Dictionary.Add(instance._hub.gameObject, player);
 
             player.IsVerified = true;
             player.RawUserId = player.UserId.GetRawUserId();

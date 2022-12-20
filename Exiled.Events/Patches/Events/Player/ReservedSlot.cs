@@ -62,12 +62,19 @@ namespace Exiled.Events.Patches.Events.Player
                 index,
                 new[]
                 {
+                    // Grab user-id, copy label from current newInstruction[index] to ensure jumps to the label come to this instr instead
                     new CodeInstruction(OpCodes.Ldarg_0).MoveLabelsFrom(newInstructions[index]),
+                    // Grab reserved slot bool
                     new(OpCodes.Ldarg_1),
+                    // Instantiate object with previous vars
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(ReservedSlotsCheckEventArgs))[0]),
+                    // Duplicate for future use
                     new(OpCodes.Dup),
+                    // Pass event to be invoked
                     new(OpCodes.Call, Method(typeof(Player), nameof(Player.OnReservedSlot))),
+                    // Using duped value from before, grab result from event
                     new(OpCodes.Callvirt, PropertyGetter(typeof(ReservedSlotsCheckEventArgs), nameof(ReservedSlotsCheckEventArgs.Result))),
+                    // Store result value in local variable.
                     new(OpCodes.Stloc, jumpConditions.LocalIndex),
 
                     // Let normal NW code proceed. UseBaseGameSystem - 0 -> Allow base game check

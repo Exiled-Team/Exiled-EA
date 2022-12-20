@@ -40,7 +40,7 @@ namespace Exiled.Events.Patches.Events.Player
                 {
                     new CodeInstruction(OpCodes.Ldarg_0),
                     new(OpCodes.Ldarga_S, 1),
-                    new(OpCodes.Call, Method(typeof(ChangingSpectatedPlayerPatch), nameof(processNewPlayer), new []{ typeof(SpectatorRole), typeof(uint).MakeByRefType()})),
+                    new(OpCodes.Call, Method(typeof(ChangingSpectatedPlayerPatch), nameof(ProcessNewPlayer), new []{ typeof(SpectatorRole), typeof(uint).MakeByRefType()})),
                 });
 
             for (int z = 0; z < newInstructions.Count; z++)
@@ -49,19 +49,19 @@ namespace Exiled.Events.Patches.Events.Player
             ListPool<CodeInstruction>.Shared.Return(newInstructions);
         }
 
-        public static void processNewPlayer(SpectatorRole spec, ref int new_netid)
+        public static void ProcessNewPlayer(SpectatorRole spectator, ref int newNetId)
         {
-            if (new_netid == 0)
+            if (newNetId == 0)
             {
                 return;
             }
-            if (!spec.TryGetOwner(out ReferenceHub owner))
+            if (!spectator.TryGetOwner(out ReferenceHub owner))
             {
                 return;
             }
             API.Features.Player player =  API.Features.Player.Get(owner);
-            API.Features.Player previousSpectatedPlayer = API.Features.Player.Get(spec.SyncedSpectatedNetId);
-            API.Features.Player getFuturePlayer = API.Features.Player.Get(new_netid);
+            API.Features.Player previousSpectatedPlayer = API.Features.Player.Get(spectator.SyncedSpectatedNetId);
+            API.Features.Player getFuturePlayer = API.Features.Player.Get(newNetId);
             ChangingSpectatedPlayerEventArgs temp = new ChangingSpectatedPlayerEventArgs(player, previousSpectatedPlayer, getFuturePlayer, true);
             Handlers.Player.OnChangingSpectatedPlayer(temp);
             //NOT RECOMMENDED PER IRACLE AND I BELIEVING CLIENT SIDE PICKS TARGET.
@@ -72,11 +72,11 @@ namespace Exiled.Events.Patches.Events.Player
 
             if (temp.NewTarget != null)
             {
-                new_netid = (int) temp.NewTarget.NetworkIdentity.netId;
+                newNetId = (int) temp.NewTarget.NetworkIdentity.netId;
             }
             else
             {
-                new_netid = (int) temp.Player.NetworkIdentity.netId;
+                newNetId = (int) temp.Player.NetworkIdentity.netId;
             }
         }
     }
