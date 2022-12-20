@@ -716,7 +716,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets a value indicating whether or not the player is speaking.
         /// </summary>
-        public bool IsSpeaking => VoiceModule?.IsSpeaking ?? false;
+        public bool IsSpeaking => VoiceModule != null && VoiceModule.IsSpeaking;
 
         /// <summary>
         /// Gets the player's voice color.
