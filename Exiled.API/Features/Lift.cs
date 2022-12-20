@@ -30,6 +30,11 @@ namespace Exiled.API.Features
         internal static readonly Dictionary<ElevatorChamber, Lift> ElevatorChamberToLift = new(8);
 
         /// <summary>
+        /// Internal list that contains all ElevatorDoor for current group.
+        /// </summary>
+        private readonly List<ElevatorDoor> internalDoorsList = new();
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="Lift"/> class.
         /// </summary>
         /// <param name="elevator">The <see cref="ElevatorChamber"/> to wrap.</param>
@@ -37,6 +42,9 @@ namespace Exiled.API.Features
         {
             Base = elevator;
             ElevatorChamberToLift.Add(elevator, this);
+
+            foreach (ElevatorDoor door in ElevatorDoor.AllElevatorDoors.First(x => x.Key == Base.AssignedGroup).Value)
+                internalDoorsList.Add(door);
         }
 
         /// <summary>
@@ -54,6 +62,11 @@ namespace Exiled.API.Features
         /// Gets the base <see cref="ElevatorChamber"/>.
         /// </summary>
         public ElevatorChamber Base { get; }
+
+        /// <summary>
+        /// Gets a value of the internal doors list.
+        /// </summary>
+        public IReadOnlyCollection<ElevatorDoor> Doors => internalDoorsList;
 
         /// <summary>
         /// Gets the lift's name.
@@ -127,13 +140,9 @@ namespace Exiled.API.Features
         public bool IsMoving => Status == ElevatorSequence.MovingAway || Status == ElevatorSequence.Arriving;
 
         /// <summary>
-        /// Gets or sets a value indicating whether the lift is locked.
+        /// Gets a value indicating whether the lift is locked.
         /// </summary>
-        public bool IsLocked
-        {
-            get => Base.ActiveLocks != DoorLockReason.None;
-            set => Base.ActiveLocks = DoorLockReason.AdminCommand;
-        }
+        public bool IsLocked => Base.ActiveLocks > 0;
 
         /// <summary>
         /// Gets or sets the <see cref="AnimationTime"/>.
@@ -235,6 +244,36 @@ namespace Exiled.API.Features
         /// <param name="isForced">Indicates whether the start will be forced or not.</param>
         /// <returns><see langword="true"/> if the lift was started successfully; otherwise, <see langword="false"/>.</returns>
         public bool TryStart(int level, bool isForced = false) => TrySetDestination(Base.AssignedGroup, level, isForced);
+
+        /// <summary>
+        /// Changes lock of the lift.
+        /// </summary>
+        /// <param name="lockReason">Type of lift lockdown.</param>
+        public void ChangeLock(DoorLockReason lockReason)
+        {
+            bool forceLock = lockReason != DoorLockReason.None;
+
+            List<ElevatorDoor> targetDoors = ElevatorDoor.AllElevatorDoors.First(x => x.Key == Base.AssignedGroup).Value;
+
+            foreach (ElevatorDoor door in targetDoors)
+            {
+                if (!forceLock)
+                {
+                    door.NetworkActiveLocks = 0;
+
+                    door.ServerChangeLock(DoorLockReason.None, true);
+                }
+                else
+                {
+                    door.ServerChangeLock(lockReason, true);
+
+                    if (Base.CurrentLevel != 1)
+                        TrySetDestination(Base.AssignedGroup, 1, true);
+                }
+
+                Base.RefreshLocks(Base.AssignedGroup, door);
+            }
+        }
 
         /// <inheritdoc/>
         public override bool Equals(object obj) => Base.Equals(obj);
