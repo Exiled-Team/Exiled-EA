@@ -109,16 +109,16 @@ namespace Exiled.Events.Patches.Events.Player
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Shared.Rent(instructions);
 
             Label continueLabel = generator.DefineLabel();
-            Label returnLabel = generator.DefineLabel();
 
             LocalBuilder player = generator.DeclareLocal(typeof(Player));
+            LocalBuilder eventArgs = generator.DeclareLocal(typeof(SpawningEventArgs));
 
             const int toRemove = 7;
             int offset = -1;
 
             int index = newInstructions.FindLastIndex(instruction => instruction.Calls(PropertyGetter(typeof(Component), nameof(Component.transform)))) + offset;
 
-            newInstructions[index + toRemove + 1].MoveLabelsFrom(newInstructions[index]);
+            newInstructions[index + toRemove].MoveLabelsFrom(newInstructions[index]);
 
             newInstructions.RemoveRange(index, toRemove);
 
@@ -133,7 +133,7 @@ namespace Exiled.Events.Patches.Events.Player
                     //
                     // if (player == null)
                     //    goto continueLabel;
-                    new CodeInstruction(OpCodes.Ldarg_1).MoveLabelsFrom(newInstructions[index]),
+                    new CodeInstruction(OpCodes.Ldloc_0),
                     new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
                     new(OpCodes.Dup),
                     new(OpCodes.Stloc_S, player.LocalIndex),
@@ -151,6 +151,7 @@ namespace Exiled.Events.Patches.Events.Player
                     // SpawningEventArgs ev = new(player, oldRole, this.ScpRole.FpcModule.Position)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(SpawningEventArgs))[0]),
                     new(OpCodes.Dup),
+                    new(OpCodes.Stloc_S, eventArgs.LocalIndex),
 
                     // Handlers.Player.OnSpawning(ev);
                     new(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnSpawning))),
@@ -158,14 +159,12 @@ namespace Exiled.Events.Patches.Events.Player
                     // hub.transform.position = ev.Position
                     new(OpCodes.Ldloc_0),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(Component), nameof(Component.transform))),
+                    new(OpCodes.Ldloc_S, eventArgs.LocalIndex),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(SpawningEventArgs), nameof(SpawningEventArgs.Position))),
-                    new(OpCodes.Stloc_1),
                     new(OpCodes.Callvirt, PropertySetter(typeof(Transform), nameof(Transform.position))),
 
                     new CodeInstruction(OpCodes.Nop).WithLabels(continueLabel),
                 });
-
-            newInstructions[newInstructions.Count - 1].WithLabels(returnLabel);
 
             for (int z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
