@@ -229,11 +229,6 @@ namespace Exiled.Events.Handlers
         public static event CustomEventHandler<SpawnedEventArgs> Spawned;
 
         /// <summary>
-        /// Invoked before a <see cref="API.Features.Player"/> enters the femur breaker.
-        /// </summary>
-        public static event CustomEventHandler<EnteringFemurBreakerEventArgs> EnteringFemurBreaker;
-
-        /// <summary>
         /// Invoked before a <see cref="API.Features.Player"/> held <see cref="API.Features.Items.Item"/> changes.
         /// </summary>
         public static event CustomEventHandler<ChangingItemEventArgs> ChangingItem;
@@ -699,12 +694,6 @@ namespace Exiled.Events.Handlers
         /// </summary>
         /// <param name="ev">The <see cref="SpawnedEventArgs"/> instance.</param>
         public static void OnSpawned(SpawnedEventArgs ev) => Spawned.InvokeSafely(ev);
-
-        /// <summary>
-        /// Called before a <see cref="API.Features.Player"/> enters the femur breaker.
-        /// </summary>
-        /// <param name="ev">The <see cref="EnteringFemurBreakerEventArgs"/> instance.</param>
-        public static void OnEnteringFemurBreaker(EnteringFemurBreakerEventArgs ev) => EnteringFemurBreaker.InvokeSafely(ev);
 
         /// <summary>
         /// Called before a <see cref="API.Features.Player"/> held item changes.
