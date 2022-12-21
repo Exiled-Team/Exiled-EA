@@ -8,6 +8,7 @@
 namespace Exiled.Events.EventArgs.Player
 {
     using API.Features;
+    using Exiled.API.Features.Roles;
     using Interfaces;
     using PlayerRoles;
 
@@ -24,7 +25,7 @@ namespace Exiled.Events.EventArgs.Player
         public SpawnedEventArgs(ReferenceHub player, PlayerRoleBase oldRole)
         {
             Player = Player.Get(player);
-            OldRole = oldRole;
+            OldRole = Role.Create(oldRole);
         }
 
         /// <summary>
@@ -35,6 +36,6 @@ namespace Exiled.Events.EventArgs.Player
         /// <summary>
         ///     Gets the player's old <see cref="PlayerRoleBase">role</see>.
         /// </summary>
-        public PlayerRoleBase OldRole { get; }
+        public Role OldRole { get; }
     }
 }

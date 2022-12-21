@@ -11,7 +11,7 @@ namespace Exiled.API.Features.Roles
 
     using PlayerRoles;
     using RelativePositioning;
-
+    using UnityEngine;
     using SpectatorGameRole = PlayerRoles.Spectating.SpectatorRole;
 
     /// <summary>
@@ -45,7 +45,7 @@ namespace Exiled.API.Features.Roles
         /// <summary>
         /// Gets the <see cref="Player"/>'s death position.
         /// </summary>
-        public RelativePosition DeathPosition => Internal.DeathPosition;
+        public Vector3 DeathPosition => Internal.DeathPosition.Position;
 
         /// <summary>
         /// Gets a value indicating whether the <see cref="Player"/> is ready to respawn or not.
