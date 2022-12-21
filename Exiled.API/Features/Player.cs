@@ -338,14 +338,14 @@ namespace Exiled.API.Features
         /// </summary>
         public bool IsInvisible
         {
-            get => Role.FirstPersonController.FpcModule.Motor.IsInvisible;
-            set => Role.FirstPersonController.FpcModule.Motor.IsInvisible = true;
+            get => (Role as FpcRole).FirstPersonController.FpcModule.Motor.IsInvisible;
+            set => (Role as FpcRole).FirstPersonController.FpcModule.Motor.IsInvisible = true;
         }
 
         /// <summary>
         /// Gets a value indicating whether or not the <see cref="Player"/> is in darkness.
         /// </summary>
-        public bool IsInDarknes => Role.FirstPersonController.InDarkness;
+        public bool IsInDarknes => (Role as FpcRole).FirstPersonController.InDarkness;
 
         /// <summary>
         /// Gets a value indicating whether or not the player has Do Not Track (DNT) enabled. If this value is <see langword="true"/>, data about the player unrelated to server security shouldn't be stored.
@@ -436,7 +436,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets the <see cref="Player"/>'s current movement speed.
         /// </summary>
-        public float MovementSpeed => Role.FirstPersonController.FpcModule.VelocityForState(MoveState, IsCrouching);
+        public float MovementSpeed => (Role as FpcRole).FirstPersonController.FpcModule.VelocityForState(MoveState, IsCrouching);
 
         /// <summary>
         /// Gets the <see cref="Player"/>'s current movement speed.
@@ -446,7 +446,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets a value indicating whether the <see cref="Player"/> is crouching or not.
         /// </summary>
-        public bool IsCrouching => Role.FirstPersonController.FpcModule.StateProcessor.CrouchPercent > 0;
+        public bool IsCrouching => (Role as FpcRole).FirstPersonController.FpcModule.StateProcessor.CrouchPercent > 0;
 
         /// <summary>
         /// Gets the player's <see cref="Enums.LeadingTeam"/>.
@@ -970,7 +970,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets a value indicating whether or not the player can send inputs.
         /// </summary>
-        public bool CanSendInputs => Role.FirstPersonController.FpcModule.LockMovement;
+        public bool CanSendInputs => (Role as FpcRole).FirstPersonController.FpcModule.LockMovement;
 
         /// <summary>
         /// Gets a value indicating whether or not the player has agreed to microphone recording.
