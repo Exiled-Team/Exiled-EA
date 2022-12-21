@@ -74,7 +74,7 @@ namespace Exiled.Events.Patches.Events.Player
                     // position
                     new(OpCodes.Ldloc_1),
 
-                    // SpawningEventArgs ev = new(player, oldRole, position)
+                    // SpawningEventArgs ev = new(player, position)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(SpawningEventArgs))[0]),
                     new(OpCodes.Dup),
 
@@ -115,7 +115,6 @@ namespace Exiled.Events.Patches.Events.Player
 
             const int toRemove = 7;
             int offset = -1;
-
             int index = newInstructions.FindLastIndex(instruction => instruction.Calls(PropertyGetter(typeof(Component), nameof(Component.transform)))) + offset;
 
             newInstructions[index + toRemove].MoveLabelsFrom(newInstructions[index]);
@@ -148,7 +147,7 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Callvirt, PropertyGetter(typeof(FpcStandardRoleBase), nameof(FpcStandardRoleBase.FpcModule))),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(FirstPersonMovementModule), nameof(FirstPersonMovementModule.Position))),
 
-                    // SpawningEventArgs ev = new(player, oldRole, this.ScpRole.FpcModule.Position)
+                    // SpawningEventArgs ev = new(player, this.ScpRole.FpcModule.Position)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(SpawningEventArgs))[0]),
                     new(OpCodes.Dup),
                     new(OpCodes.Stloc_S, eventArgs.LocalIndex),
