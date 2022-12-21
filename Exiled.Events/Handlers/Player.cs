@@ -220,7 +220,7 @@ namespace Exiled.Events.Handlers
         public static event CustomEventHandler<ReloadingWeaponEventArgs> ReloadingWeapon;
 
         /// <summary>
-        /// Invoked before spawning a <see cref="API.Features.Player"/>.
+        /// Invoked before spawning a <see cref="API.Features.Player"/>(called only when possibly to change position).
         /// </summary>
         public static event CustomEventHandler<SpawningEventArgs> Spawning;
 
