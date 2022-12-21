@@ -100,11 +100,6 @@ namespace Exiled.API.Enums
         Crushed,
 
         /// <summary>
-        /// Damage caused by the femur breaker.
-        /// </summary>
-        FemurBreaker,
-
-        /// <summary>
         /// Damage caused by the pocket dimension.
         /// </summary>
         PocketDimension,

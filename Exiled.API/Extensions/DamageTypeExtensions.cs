@@ -46,7 +46,6 @@ namespace Exiled.API.Extensions
             { DeathTranslations.PocketDecay.Id, DamageType.PocketDimension },
             { DeathTranslations.SeveredHands.Id, DamageType.SeveredHands },
             { DeathTranslations.FriendlyFireDetector.Id, DamageType.FriendlyFireDetector },
-            { DeathTranslations.UsedAs106Bait.Id, DamageType.FemurBreaker },
             { DeathTranslations.MicroHID.Id, DamageType.MicroHid },
             { DeathTranslations.Hypothermia.Id, DamageType.Hypothermia },
         };
@@ -78,7 +77,6 @@ namespace Exiled.API.Extensions
             { DeathTranslations.PocketDecay, DamageType.PocketDimension },
             { DeathTranslations.SeveredHands, DamageType.SeveredHands },
             { DeathTranslations.FriendlyFireDetector, DamageType.FriendlyFireDetector },
-            { DeathTranslations.UsedAs106Bait, DamageType.FemurBreaker },
             { DeathTranslations.MicroHID, DamageType.MicroHid },
             { DeathTranslations.Hypothermia, DamageType.Hypothermia },
         };

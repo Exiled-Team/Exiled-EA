@@ -402,6 +402,8 @@ namespace Exiled.API.Features
             TeleportsValue.Clear();
             LockersValue.Clear();
             RagdollsValue.Clear();
+            Firearm.ItemTypeToFirearmInstance.Clear();
+            Firearm.BaseCodesValue.Clear();
             Firearm.AvailableAttachmentsValue.Clear();
         }
     }
