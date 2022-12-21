@@ -148,7 +148,7 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Callvirt, PropertyGetter(typeof(FpcStandardRoleBase), nameof(FpcStandardRoleBase.FpcModule))),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(FirstPersonMovementModule), nameof(FirstPersonMovementModule.Position))),
 
-                    // SpawningEventArgs ev = new(player, oldRole, this.ScpRole.FpcModule.Position)
+                    // SpawningEventArgs ev = new(player, this.ScpRole.FpcModule.Position)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(SpawningEventArgs))[0]),
                     new(OpCodes.Dup),
                     new(OpCodes.Stloc_S, eventArgs.LocalIndex),
