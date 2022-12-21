@@ -48,7 +48,7 @@ namespace Exiled.Events.Patches.Events.Server
                 index + offset,
                 new CodeInstruction[]
                 {
-                    // if(ServerStatic.StopNextRound == ServerStatic.NextRoundAction.Restart)  -> goto normal round restart
+                    // if (ServerStatic.StopNextRound == ServerStatic.NextRoundAction.Restart)  -> goto normal round restart
                     new(OpCodes.Call, PropertyGetter(typeof(ServerStatic), nameof(ServerStatic.StopNextRound))),
                     new(OpCodes.Ldc_I4_1),
                     new(OpCodes.Beq_S, newInstructions[index].operand),

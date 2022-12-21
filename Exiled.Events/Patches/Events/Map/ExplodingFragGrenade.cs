@@ -88,7 +88,7 @@ namespace Exiled.Events.Patches.Events.Map
                     //
                     // Map.OnExplodingGrenade(ev);
                     //
-                    // if(!ev.IsAllowed)
+                    // if (!ev.IsAllowed)
                     //     return;
                     new(OpCodes.Newobj, DeclaredConstructor(typeof(ExplodingGrenadeEventArgs), new[] { typeof(Player), typeof(Vector3), typeof(EffectGrenade), typeof(Collider[]) })),
                     new(OpCodes.Dup),

@@ -66,7 +66,7 @@ namespace Exiled.Events.Patches.Events.Player
             //
             //     Player.OnClosingGenerator(ev);
             //
-            //     if(!ev.IsAllowed)
+            //     if (!ev.IsAllowed)
             //     {
             //         this._targetCooldown = this._unlockCooldownTime;
             //         this.RpcDenied();
@@ -79,7 +79,7 @@ namespace Exiled.Events.Patches.Events.Player
             //
             //     Player.OnOpeningGenerator(ev);
             //
-            //     if(!ev.IsAllowed)
+            //     if (!ev.IsAllowed)
             //     {
             //         this._targetCooldown = this._unlockCooldownTime;
             //         this.RpcDenied();
@@ -221,7 +221,7 @@ namespace Exiled.Events.Patches.Events.Player
             //
             //     Player.OnStoppingGenerator(ev);
             //
-            //     if(!ev.IsAllowed)
+            //     if (!ev.IsAllowed)
             //     {
             //         this._targetCooldown = this._unlockCooldownTime;
             //         this.RpcDenied();
@@ -234,7 +234,7 @@ namespace Exiled.Events.Patches.Events.Player
             //
             //     Player.OnActivatingGenerator(ev);
             //
-            //     if(!ev.IsAllowed)
+            //     if (!ev.IsAllowed)
             //     {
             //         this._targetCooldown = this._unlockCooldownTime;
             //         this.RpcDenied();

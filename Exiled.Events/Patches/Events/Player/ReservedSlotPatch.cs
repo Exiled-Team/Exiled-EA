@@ -26,8 +26,7 @@ namespace Exiled.Events.Patches.Events.Player
     [HarmonyPatch(typeof(ReservedSlot), nameof(ReservedSlot.HasReservedSlot))]
     internal static class ReservedSlotPatch
     {
-        [HarmonyTranspiler]
-        private static IEnumerable<CodeInstruction> ReservedSlotPatchTranspiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Shared.Rent(instructions);
 
