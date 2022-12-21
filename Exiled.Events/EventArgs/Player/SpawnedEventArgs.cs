@@ -20,14 +20,21 @@ namespace Exiled.Events.EventArgs.Player
         ///     Initializes a new instance of the <see cref="SpawnedEventArgs" /> class.
         /// </summary>
         /// <param name="player">the spawned player.</param>
-        public SpawnedEventArgs(ReferenceHub player)
+        /// <param name="oldRole">the spawned player's old <see cref="PlayerRoleBase">role</see>.</param>
+        public SpawnedEventArgs(ReferenceHub player, PlayerRoleBase oldRole)
         {
             Player = Player.Get(player);
+            OldRole = oldRole;
         }
 
         /// <summary>
         ///     Gets the <see cref="API.Features.Player" /> who spawned.
         /// </summary>
         public Player Player { get; }
+
+        /// <summary>
+        ///     Gets the player's old <see cref="PlayerRoleBase">role</see>.
+        /// </summary>
+        public PlayerRoleBase OldRole { get; }
     }
 }
