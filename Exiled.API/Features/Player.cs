@@ -473,10 +473,10 @@ namespace Exiled.API.Features
         /// This role is automatically cached until it changes, and it is recommended to use this property directly rather than storing the property yourself.
         /// </para>
         /// <para>
-        /// Roles and RoleTypeIds can be compared directly. <c>Player.Role == RoleTypeId.Scp079</c> is valid and will return <see langword="true"/> if the player is SCP-079. To set the player's role, see <see cref="SetRole(RoleTypeId, SpawnReason)"/>.
+        /// Roles and RoleTypeIds can be compared directly. <c>Player.Role == RoleTypeId.Scp079</c> is valid and will return <see langword="true"/> if the player is SCP-079. To set the player's role, see <see cref="Role.Set(RoleTypeId, SpawnReason)"/>.
         /// </para>
         /// </summary>
-        /// <seealso cref="SetRole(RoleTypeId, SpawnReason)"/>
+        /// <seealso cref="Role.Set(RoleTypeId, SpawnReason)"/>
         public Role Role
         {
             get => role ??= Role.Create(this, RoleTypeId.None);
@@ -1616,13 +1616,6 @@ namespace Exiled.API.Features
             Inventory.SetDisarmedStatus(null);
             new DisarmedPlayersListMessage(DisarmedPlayers.Entries).SendToAuthenticated();
         }
-
-        /// <summary>
-        /// Sets the player's <see cref="RoleTypeId"/>.
-        /// </summary>
-        /// <param name="newRole">The new <see cref="RoleTypeId"/> to be set.</param>
-        /// <param name="reason">The <see cref="SpawnReason"/> defining why the player's role was changed.</param>
-        public void SetRole(RoleTypeId newRole, SpawnReason reason = SpawnReason.ForceClass) => RoleManager.ServerSetRole(newRole, (RoleChangeReason)reason);
 
         /// <summary>
         /// Broadcasts the given <see cref="Features.Broadcast"/> to the player.
