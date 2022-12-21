@@ -13,7 +13,8 @@ namespace Exiled.Events.EventArgs.Player
     using UnityEngine;
 
     /// <summary>
-    ///     Contains all information before spawning a player.
+    ///     Contains all information before spawning a player(called only when possibly to change position).
+    ///     use <see cref="SpawnedEventArgs"/> or <see cref="ChangingRoleEventArgs"/>for all class changes.
     /// </summary>
     public class SpawningEventArgs : IPlayerEvent
     {
