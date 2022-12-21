@@ -221,6 +221,7 @@ namespace Exiled.Events.Handlers
 
         /// <summary>
         /// Invoked before spawning a <see cref="API.Features.Player"/>(called only when possibly to change position).
+        /// use <see cref="Spawned"/> or <see cref="ChangingRole"/>for all class changes.
         /// </summary>
         public static event CustomEventHandler<SpawningEventArgs> Spawning;
 
