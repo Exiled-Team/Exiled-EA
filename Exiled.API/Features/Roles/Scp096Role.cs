@@ -19,19 +19,19 @@ namespace Exiled.API.Features.Roles
     /// <summary>
     /// Defines a role that represents SCP-096.
     /// </summary>
-    public class Scp096Role : ScpRole
+    public class Scp096Role : FpcRole, ISubroutinedScpRole
     {
         private readonly IReadOnlyCollection<Player> emptyList = new List<Player>().AsReadOnly();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Scp096Role"/> class.
         /// </summary>
-        /// <param name="owner">The encapsulated <see cref="Player"/>.</param>
-        public Scp096Role(Player owner)
-            : base(owner)
+        /// <param name="baseRole">the base <see cref="Scp096GameRole"/>.</param>
+        internal Scp096Role(Scp096GameRole baseRole)
+            : base(baseRole)
         {
-            Internal = Base as Scp096GameRole;
-            SubroutineModule = Internal.SubroutineModule;
+            SubroutineModule = baseRole.SubroutineModule;
+            Internal = baseRole;
         }
 
         /// <summary>
@@ -43,7 +43,7 @@ namespace Exiled.API.Features.Roles
         public override RoleTypeId Type { get; } = RoleTypeId.Scp096;
 
         /// <inheritdoc/>
-        public override SubroutineManagerModule SubroutineModule { get; }
+        public SubroutineManagerModule SubroutineModule { get; }
 
         /// <summary>
         /// Gets a value indicating SCP-096's ability state.

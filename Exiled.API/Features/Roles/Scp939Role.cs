@@ -10,6 +10,7 @@ namespace Exiled.API.Features.Roles
     using System.Collections.Generic;
 
     using PlayerRoles;
+    using PlayerRoles.PlayableScps.Scp173;
     using PlayerRoles.PlayableScps.Scp939;
     using PlayerRoles.PlayableScps.Scp939.Mimicry;
     using PlayerRoles.PlayableScps.Subroutines;
@@ -19,23 +20,23 @@ namespace Exiled.API.Features.Roles
     /// <summary>
     /// Defines a role that represents SCP-939.
     /// </summary>
-    public class Scp939Role : ScpRole
+    public class Scp939Role : FpcRole, ISubroutinedScpRole
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Scp939Role"/> class.
         /// </summary>
-        /// <param name="owner">The encapsulated <see cref="Player"/>.</param>
-        public Scp939Role(Player owner)
-            : base(owner)
+        /// <param name="baseRole">the base <see cref="Scp939GameRole"/>.</param>
+        internal Scp939Role(Scp939GameRole baseRole)
+            : base(baseRole)
         {
-            SubroutineModule = (Base as Scp939GameRole).SubroutineModule;
+            SubroutineModule = baseRole.SubroutineModule;
         }
 
         /// <inheritdoc/>
-        public override SubroutineManagerModule SubroutineModule { get; }
+        public override RoleTypeId Type { get; } = RoleTypeId.Scp939;
 
         /// <inheritdoc/>
-        public override RoleTypeId Type { get; } = RoleTypeId.Scp939;
+        public SubroutineManagerModule SubroutineModule { get; }
 
         /// <summary>
         /// Gets or sets the amount of time before SCP-939 can attack again.

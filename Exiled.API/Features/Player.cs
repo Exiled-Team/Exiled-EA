@@ -479,7 +479,7 @@ namespace Exiled.API.Features
         /// <seealso cref="Role.Set(RoleTypeId, SpawnReason)"/>
         public Role Role
         {
-            get => role ??= Role.Create(this, RoleTypeId.None);
+            get => role ??= Role.Create(RoleManager.CurrentRole);
             internal set => role = value;
         }
 

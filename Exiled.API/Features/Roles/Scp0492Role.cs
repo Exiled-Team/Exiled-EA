@@ -15,23 +15,23 @@ namespace Exiled.API.Features.Roles
     /// <summary>
     /// Defines a role that represents SCP-049-2.
     /// </summary>
-    public class Scp0492Role : ScpRole
+    public class Scp0492Role : FpcRole, ISubroutinedScpRole
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Scp0492Role"/> class.
         /// </summary>
-        /// <param name="owner">The encapsulated <see cref="Player"/>.</param>
-        public Scp0492Role(Player owner)
-            : base(owner)
+        /// <param name="baseRole">the base <see cref="ZombieRole"/>.</param>
+        internal Scp0492Role(ZombieRole baseRole)
+            : base(baseRole)
         {
-            SubroutineModule = (Base as ZombieRole).SubroutineModule;
+            SubroutineModule = baseRole.SubroutineModule;
         }
 
         /// <inheritdoc/>
         public override RoleTypeId Type { get; } = RoleTypeId.Scp0492;
 
         /// <inheritdoc/>
-        public override SubroutineManagerModule SubroutineModule { get; }
+        public SubroutineManagerModule SubroutineModule { get; }
 
         /// <summary>
         /// Gets or sets the amount of times this SCP-049-2 has been resurrected.
