@@ -9,6 +9,7 @@ namespace Exiled.Events.EventArgs.Player
 {
     using API.Features;
     using Interfaces;
+    using PlayerRoles;
 
     /// <summary>
     ///     Contains all information after spawning a player.
@@ -18,8 +19,11 @@ namespace Exiled.Events.EventArgs.Player
         /// <summary>
         ///     Initializes a new instance of the <see cref="SpawnedEventArgs" /> class.
         /// </summary>
-        /// <param name="player"><see cref="Player" /> of the spawned player.</param>
-        public SpawnedEventArgs(Player player) => Player = player;
+        /// <param name="player">the spawned player.</param>
+        public SpawnedEventArgs(ReferenceHub player)
+        {
+            Player = Player.Get(player);
+        }
 
         /// <summary>
         ///     Gets the <see cref="API.Features.Player" /> who spawned.

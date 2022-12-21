@@ -9,6 +9,7 @@ namespace Exiled.Events.Handlers
 {
     using Exiled.Events.EventArgs.Player;
     using Extensions;
+    using PlayerRoles;
     using PlayerRoles.FirstPersonControl.Thirdperson;
 
     using static Events;
@@ -692,8 +693,10 @@ namespace Exiled.Events.Handlers
         /// <summary>
         /// Called after a <see cref="API.Features.Player"/> has spawned.
         /// </summary>
-        /// <param name="ev">The <see cref="SpawnedEventArgs"/> instance.</param>
-        public static void OnSpawned(SpawnedEventArgs ev) => Spawned.InvokeSafely(ev);
+        /// <param name="hub">The <see cref="ReferenceHub"/> instance.</param>
+        /// <param name="oldRole">The player's old <see cref="PlayerRoleBase"/> instance.</param>
+        /// <param name="newRole">The player's new <see cref="PlayerRoleBase"/> instance.</param>
+        public static void OnSpawned(ReferenceHub hub, PlayerRoleBase oldRole, PlayerRoleBase newRole) => Spawned.InvokeSafely(new SpawnedEventArgs(hub));
 
         /// <summary>
         /// Called before a <see cref="API.Features.Player"/> held item changes.
