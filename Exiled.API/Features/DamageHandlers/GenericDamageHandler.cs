@@ -72,6 +72,9 @@ namespace Exiled.API.Features.DamageHandlers
                 case DamageType.Crushed:
                     Base = new UniversalDamageHandler(damage, DeathTranslations.Crushed, cassieAnnouncement);
                     break;
+                case DamageType.FemurBreaker:
+                    Base = new UniversalDamageHandler(damage, DeathTranslations.UsedAs106Bait, cassieAnnouncement);
+                    break;
                 case DamageType.PocketDimension:
                     Base = new UniversalDamageHandler(damage, DeathTranslations.PocketDecay, cassieAnnouncement);
                     break;
