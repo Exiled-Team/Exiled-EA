@@ -509,8 +509,8 @@ namespace Exiled.API.Features
         /// </summary>
         public PlayerMovementState MoveState
         {
-            get => ReferenceHub.animationController.MoveState;
-            set => ReferenceHub.animationController.MoveState = value;
+            get => Role.FirstPersonController.FpcModule.CurrentMovementState;
+            set => Role.FirstPersonController.FpcModule.CurrentMovementState = value;
         }
 
         /// <summary>

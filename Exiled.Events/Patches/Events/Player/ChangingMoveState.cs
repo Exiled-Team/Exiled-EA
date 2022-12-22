@@ -16,14 +16,15 @@ namespace Exiled.Events.Patches.Events.Player
     using HarmonyLib;
 
     using NorthwoodLib.Pools;
+    using PlayerRoles.FirstPersonControl;
 
     using static HarmonyLib.AccessTools;
 
     /// <summary>
-    ///     Patches <see cref="AnimationController.UserCode_CmdChangeSpeedState" />.
+    ///     Patches <see cref="FpcStateProcessor.UpdateMovementState(PlayerMovementState)" />.
     ///     Adds the <see cref="Player.ChangingMoveState" /> event.
     /// </summary>
-    [HarmonyPatch(typeof(AnimationController), nameof(AnimationController.UserCode_CmdChangeSpeedState))]
+    [HarmonyPatch(typeof(FpcStateProcessor), nameof(FpcStateProcessor.UpdateMovementState))]
     internal static class ChangingMoveState
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
@@ -32,7 +33,7 @@ namespace Exiled.Events.Patches.Events.Player
 
             LocalBuilder ev = generator.DeclareLocal(typeof(ChangingMoveStateEventArgs));
 
-            Label retLabel = generator.DefineLabel();
+            Label returnLabel = generator.DefineLabel();
 
             newInstructions.InsertRange(
                 0,
@@ -40,7 +41,7 @@ namespace Exiled.Events.Patches.Events.Player
                 {
                     // Player.Get(this._hub)
                     new(OpCodes.Ldarg_0),
-                    new(OpCodes.Ldfld, Field(typeof(AnimationController), nameof(AnimationController._hub))),
+                    new(OpCodes.Ldfld, Field(typeof(FpcStateProcessor), nameof(FpcStateProcessor._hub))),
                     new(OpCodes.Call, Method(typeof(API.Features.Player), nameof(API.Features.Player.Get), new[] { typeof(ReferenceHub) })),
                     new(OpCodes.Dup),
 
@@ -65,7 +66,7 @@ namespace Exiled.Events.Patches.Events.Player
                     // if (!ev.IsAllowed)
                     //    return;
                     new(OpCodes.Callvirt, PropertyGetter(typeof(ChangingMoveStateEventArgs), nameof(ChangingMoveStateEventArgs.IsAllowed))),
-                    new(OpCodes.Brfalse_S, retLabel),
+                    new(OpCodes.Brfalse_S, returnLabel),
 
                     // newState = ev.NewState
                     new(OpCodes.Ldloc_S, ev.LocalIndex),
@@ -73,7 +74,8 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Starg_S, 1),
                 });
 
-            newInstructions[newInstructions.Count - 1].WithLabels(retLabel);
+            // return the state
+            newInstructions[newInstructions.Count - 2].WithLabels(returnLabel);
 
             for (int z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
