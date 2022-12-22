@@ -47,10 +47,7 @@ namespace Exiled.Events.Handlers
         ///     Called before starting the warhead.
         /// </summary>
         /// <param name="ev">The <see cref="StartingEventArgs" /> instance.</param>
-        public static void OnStarting(StartingEventArgs ev)
-        {
-            Starting.InvokeSafely(ev);
-        }
+        public static void OnStarting(StartingEventArgs ev) => Starting.InvokeSafely(ev);
 
         /// <summary>
         ///     Called after the warhead has been detonated.
