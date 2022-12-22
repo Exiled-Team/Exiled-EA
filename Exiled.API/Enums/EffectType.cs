@@ -166,5 +166,15 @@ namespace Exiled.API.Enums
         /// Cause the player more effective for fight.
         /// </summary>
         Scp1853,
+
+        /// <summary>
+        /// Player will be followed by Scp956 the Pinata.
+        /// </summary>
+        Scp956Target,
+
+        /// <summary>
+        /// Effect give to player after eating SCP-559 cake.
+        /// </summary>
+        Scp559,
     }
 }
