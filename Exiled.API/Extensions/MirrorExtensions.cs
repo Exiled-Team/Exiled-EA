@@ -169,7 +169,7 @@ namespace Exiled.API.Extensions
             target.SendFakeSyncVar(room.FlickerableLightControllerNetIdentity, typeof(FlickerableLightController), nameof(FlickerableLightController.Network_lightIntensityMultiplier), multiplier);
         }
 
-        /*/// <summary>
+        /// <summary>
         /// Change <see cref="Player"/> character model for appearance.
         /// It will continue until <see cref="Player"/>'s <see cref="RoleTypeId"/> changes.
         /// </summary>
@@ -178,8 +178,8 @@ namespace Exiled.API.Extensions
         public static void ChangeAppearance(this Player player, RoleTypeId type)
         {
             foreach (Player target in Player.List.Where(x => x != player))
-                SendFakeSyncVar(target, player.ReferenceHub.networkIdentity, typeof(PlayerRoleManager), nameof(PlayerRoleManager.CurrentRole), (sbyte)type);
-        }*/
+                target.Connection.Send(new RoleSyncInfo(player.ReferenceHub, type, target.ReferenceHub));
+        }
 
         /// <summary>
         /// Send CASSIE announcement that only <see cref="Player"/> can hear.
