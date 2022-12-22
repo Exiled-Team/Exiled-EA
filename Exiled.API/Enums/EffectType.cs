@@ -170,7 +170,7 @@ namespace Exiled.API.Enums
         /// <summary>
         /// Player will be followed by Scp956 the Pinata.
         /// </summary>
-        Scp956Target,
+        Scp956,
 
         /// <summary>
         /// Effect give to player after eating SCP-559 cake.
