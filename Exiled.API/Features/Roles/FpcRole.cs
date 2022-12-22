@@ -65,5 +65,48 @@ namespace Exiled.API.Features.Roles
             get => FirstPersonController.FpcModule.CrouchSpeed;
             set => FirstPersonController.FpcModule.CrouchSpeed = value;
         }
+
+        /// <summary>
+        /// Gets a value indicating whether or not the player can send inputs.
+        /// </summary>
+        public bool CanSendInputs => FirstPersonController.FpcModule.LockMovement;
+
+        /// <summary>
+        /// Gets or sets a value indicating whether or not the player is invisible.
+        /// </summary>
+        public bool IsInvisible
+        {
+            get => FirstPersonController.FpcModule.Motor.IsInvisible;
+            set => FirstPersonController.FpcModule.Motor.IsInvisible = true;
+        }
+
+        /// <summary>
+        /// Gets or sets the player's current <see cref="PlayerMovementState"/>.
+        /// </summary>
+        public PlayerMovementState MoveState
+        {
+            get => FirstPersonController.FpcModule.CurrentMovementState;
+            set => FirstPersonController.FpcModule.CurrentMovementState = value;
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether the <see cref="Player"/> is crouching or not.
+        /// </summary>
+        public bool IsCrouching => FirstPersonController.FpcModule.StateProcessor.CrouchPercent > 0;
+
+        /// <summary>
+        /// Gets a value indicating whether or not the player is on the ground.
+        /// </summary>
+        public bool IsGrounded => FirstPersonController.FpcModule.IsGrounded;
+
+        /// <summary>
+        /// Gets the <see cref="Player"/>'s current movement speed.
+        /// </summary>
+        public float MovementSpeed => FirstPersonController.FpcModule.VelocityForState(MoveState, IsCrouching);
+
+        /// <summary>
+        /// Gets a value indicating whether or not the <see cref="Player"/> is in darkness.
+        /// </summary>
+        public bool IsInDarknes => FirstPersonController.InDarkness;
     }
 }
