@@ -97,7 +97,7 @@ namespace Exiled.API.Extensions
         /// </summary>
         /// <param name="roleType">The <see cref="RoleTypeId"/> to get the spawn point from.</param>
         /// <returns>Returns a <see cref="SpawnPosition"/> representing the spawn, or <see langword="null"/> if no spawns were found.</returns>
-        public static SpawnPosition GetRandomSpawnProperties(this RoleTypeId roleType)
+        public static SpawnPosition GetRandomSpawnPosition(this RoleTypeId roleType)
         {
             return !RoleSpawnpointManager.TryGetSpawnpointForRole(roleType, out ISpawnpointHandler spawnpoint) ||
                 !spawnpoint.TryGetSpawnpoint(out Vector3 position, out float horizontalRotation) ?
