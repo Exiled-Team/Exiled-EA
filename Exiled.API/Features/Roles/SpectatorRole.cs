@@ -71,7 +71,7 @@ namespace Exiled.API.Features.Roles
         }
 
         /// <summary>
-        /// Gets the game <see cref="PlayerRoles.SpectatorGameRole"/>.
+        /// Gets the game <see cref="SpectatorGameRole"/>.
         /// </summary>
         private SpectatorGameRole Internal { get; }
     }

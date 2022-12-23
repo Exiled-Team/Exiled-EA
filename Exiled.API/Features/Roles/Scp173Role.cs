@@ -81,13 +81,9 @@ namespace Exiled.API.Features.Roles
         public float MaxMovementSpeed => MovementModule.MaxMovementSpeed;
 
         /// <summary>
-        /// Gets or sets the SCP-173's movement speed.
+        /// Gets the SCP-173's movement speed.
         /// </summary>
-        public float MovementSpeed
-        {
-            get => MovementModule.ServerSpeed;
-            set => MovementModule.MovementSpeed = value;
-        }
+        public override float MovementSpeed => MovementModule.ServerSpeed;
 
         /// <summary>
         /// Gets or sets SCP-173's simulated stare. SCP-173 will be treated as though it is being looked at while this value is greater than <c>0</c>.

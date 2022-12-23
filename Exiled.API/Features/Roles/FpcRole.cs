@@ -102,7 +102,7 @@ namespace Exiled.API.Features.Roles
         /// <summary>
         /// Gets the <see cref="Player"/>'s current movement speed.
         /// </summary>
-        public float MovementSpeed => FirstPersonController.FpcModule.VelocityForState(MoveState, IsCrouching);
+        public virtual float MovementSpeed => FirstPersonController.FpcModule.VelocityForState(MoveState, IsCrouching);
 
         /// <summary>
         /// Gets a value indicating whether or not the <see cref="Player"/> is in darkness.
