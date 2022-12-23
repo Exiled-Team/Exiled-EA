@@ -24,10 +24,7 @@ namespace Exiled.API.Features.Roles
         /// <param name="owner">The encapsulated <see cref="Player"/>.</param>
         /// <param name="type">The <see cref="Role.Type"/>.</param>
         public SpectatorRole(Player owner, RoleTypeId type)
-            : base(owner)
-        {
-            Type = type;
-        }
+            : base(owner) => Type = type;
 
         /// <inheritdoc/>
         public override RoleTypeId Type { get; }
