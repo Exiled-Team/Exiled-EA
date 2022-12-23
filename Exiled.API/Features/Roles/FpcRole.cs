@@ -107,6 +107,6 @@ namespace Exiled.API.Features.Roles
         /// <summary>
         /// Gets a value indicating whether or not the <see cref="Player"/> is in darkness.
         /// </summary>
-        public bool IsInDarknes => FirstPersonController.InDarkness;
+        public bool IsInDarkness => FirstPersonController.InDarkness;
     }
 }
