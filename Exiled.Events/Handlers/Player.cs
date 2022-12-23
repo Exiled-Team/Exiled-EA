@@ -955,6 +955,9 @@ namespace Exiled.Events.Handlers
 
             UnlockingGenerator.InvokeSafely(ev);
 
+            if (!ev.IsAllowed)
+                ev.Generator.DenyUnlockAndResetCooldown();
+
             return ev.IsAllowed;
         }
 
@@ -970,6 +973,9 @@ namespace Exiled.Events.Handlers
             OpeningGeneratorEventArgs ev = new(API.Features.Player.Get(player.ReferenceHub), generator);
 
             OpeningGenerator.InvokeSafely(ev);
+
+            if (!ev.IsAllowed)
+                ev.Generator.DenyUnlockAndResetCooldown();
 
             return ev.IsAllowed;
         }
@@ -987,6 +993,9 @@ namespace Exiled.Events.Handlers
 
             ClosingGenerator.InvokeSafely(ev);
 
+            if (!ev.IsAllowed)
+                ev.Generator.DenyUnlockAndResetCooldown();
+
             return ev.IsAllowed;
         }
 
@@ -1003,6 +1012,9 @@ namespace Exiled.Events.Handlers
 
             ActivatingGenerator.InvokeSafely(ev);
 
+            if (!ev.IsAllowed)
+                ev.Generator.DenyUnlockAndResetCooldown();
+
             return ev.IsAllowed;
         }
 
@@ -1018,6 +1030,9 @@ namespace Exiled.Events.Handlers
             StoppingGeneratorEventArgs ev = new(API.Features.Player.Get(player.ReferenceHub), generator);
 
             StoppingGenerator.InvokeSafely(ev);
+
+            if (!ev.IsAllowed)
+                ev.Generator.DenyUnlockAndResetCooldown();
 
             return ev.IsAllowed;
         }
