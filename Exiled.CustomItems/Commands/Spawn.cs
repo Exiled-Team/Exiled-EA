@@ -65,7 +65,7 @@ namespace Exiled.CustomItems.Commands
 
             Vector3 position;
 
-            if (Enum.TryParse(arguments.At(1), out SpawnLocation location))
+            if (Enum.TryParse(arguments.At(1), out SpawnLocationType location))
             {
                 position = location.GetPosition();
             }

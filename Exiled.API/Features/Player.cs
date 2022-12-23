@@ -2767,7 +2767,7 @@ namespace Exiled.API.Features
                 case DoorType doorType:
                     Teleport(Door.Get(doorType).Position + Vector3.up);
                     break;
-                case SpawnLocation sp:
+                case SpawnLocationType sp:
                     Teleport(sp.GetPosition());
                     break;
                 case Spawn.SpawnPoint sp:
