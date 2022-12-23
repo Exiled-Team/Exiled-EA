@@ -22,13 +22,15 @@ namespace Exiled.API.Features.Roles
         /// Initializes a new instance of the <see cref="SpectatorRole"/> class.
         /// </summary>
         /// <param name="owner">The encapsulated <see cref="Player"/>.</param>
-        public SpectatorRole(Player owner)
+        /// <param name="type">The <see cref="Role.Type"/>.</param>
+        public SpectatorRole(Player owner, RoleTypeId type)
             : base(owner)
         {
+            Type = type;
         }
 
         /// <inheritdoc/>
-        public override RoleTypeId Type => Base is OverwatchRole ? RoleTypeId.Overwatch : RoleTypeId.Spectator;
+        public override RoleTypeId Type { get; }
 
         /// <summary>
         /// Gets the <see cref="DateTime"/> at which the player died.
