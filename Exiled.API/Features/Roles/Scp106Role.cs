@@ -17,24 +17,24 @@ namespace Exiled.API.Features.Roles
     /// <summary>
     /// Defines a role that represents SCP-106.
     /// </summary>
-    public class Scp106Role : ScpRole
+    public class Scp106Role : FpcRole, ISubroutinedScpRole
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Scp106Role"/> class.
         /// </summary>
-        /// <param name="owner">The encapsulated <see cref="Player"/>.</param>
-        internal Scp106Role(Player owner)
-            : base(owner)
+        /// <param name="baseRole">the base <see cref="Scp106GameRole"/>.</param>
+        internal Scp106Role(Scp106GameRole baseRole)
+            : base(baseRole)
         {
-            Internal = Base as Scp106GameRole;
-            SubroutineModule = Internal.SubroutineModule;
+            SubroutineModule = baseRole.SubroutineModule;
+            Internal = baseRole;
         }
 
         /// <inheritdoc/>
         public override RoleTypeId Type { get; } = RoleTypeId.Scp106;
 
         /// <inheritdoc/>
-        public override SubroutineManagerModule SubroutineModule { get; }
+        public SubroutineManagerModule SubroutineModule { get; }
 
         /// <summary>
         /// Gets the <see cref="HumeShieldModuleBase"/>.

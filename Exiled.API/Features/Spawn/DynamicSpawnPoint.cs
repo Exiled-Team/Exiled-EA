@@ -9,7 +9,7 @@ namespace Exiled.API.Features.Spawn
 {
     using System;
 
-    using Enums;
+    using Exiled.API.Enums;
     using Extensions;
 
     using UnityEngine;
@@ -22,9 +22,9 @@ namespace Exiled.API.Features.Spawn
     public class DynamicSpawnPoint : SpawnPoint
     {
         /// <summary>
-        /// Gets or sets the <see cref="SpawnLocation"/> for this item.
+        /// Gets or sets the <see cref="SpawnLocationType"/> for this item.
         /// </summary>
-        public SpawnLocation Location { get; set; }
+        public SpawnLocationType Location { get; set; }
 
         /// <inheritdoc/>
         public override float Chance { get; set; }

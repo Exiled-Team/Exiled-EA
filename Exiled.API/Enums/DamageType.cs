@@ -100,6 +100,11 @@ namespace Exiled.API.Enums
         Crushed,
 
         /// <summary>
+        /// Damage caused by the femur breaker.
+        /// </summary>
+        FemurBreaker,
+
+        /// <summary>
         /// Damage caused by the pocket dimension.
         /// </summary>
         PocketDimension,
@@ -203,5 +208,10 @@ namespace Exiled.API.Enums
         /// Damage caused by <see cref="ItemType.ParticleDisruptor"/>.
         /// </summary>
         ParticleDisruptor,
+
+        /// <summary>
+        /// Damage caused by SCP-956.
+        /// </summary>
+        Scp956,
     }
 }

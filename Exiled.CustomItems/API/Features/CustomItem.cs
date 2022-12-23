@@ -546,7 +546,7 @@ namespace Exiled.CustomItems.API.Features
 
                 spawned++;
 
-                if (spawnPoint is DynamicSpawnPoint dynamicSpawnPoint && (dynamicSpawnPoint.Location == SpawnLocation.InsideLocker))
+                if (spawnPoint is DynamicSpawnPoint dynamicSpawnPoint && (dynamicSpawnPoint.Location == SpawnLocationType.InsideLocker))
                 {
                     for (int i = 0; i < 50; i++)
                     {
@@ -595,8 +595,7 @@ namespace Exiled.CustomItems.API.Features
                 }
                 else if (spawnPoint is RoleSpawnPoint roleSpawnPoint)
                 {
-                    Vector3 position = roleSpawnPoint.Role.GetRandomSpawnProperties().Item1;
-                    Spawn(position, null);
+                    Spawn(roleSpawnPoint.Role.GetRandomSpawnLocation().Position, null);
                 }
                 else
                 {
@@ -971,7 +970,7 @@ namespace Exiled.CustomItems.API.Features
 
                 TrackedSerials.Remove(item.Serial);
 
-                Timing.CallDelayed(1.5f, () => Spawn(ev.NewRole.GetRandomSpawnProperties().Item1, item, null));
+                Timing.CallDelayed(1.5f, () => Spawn(ev.NewRole.GetRandomSpawnLocation().Position, item, null));
 
                 MirrorExtensions.ResyncSyncVar(ev.Player.ReferenceHub.networkIdentity, typeof(NicknameSync), nameof(NicknameSync.Network_myNickSync));
             }
