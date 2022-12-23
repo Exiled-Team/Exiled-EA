@@ -16,23 +16,23 @@ namespace Exiled.API.Features.Roles
     /// <summary>
     /// Defines a role that represents SCP-049.
     /// </summary>
-    public class Scp049Role : ScpRole
+    public class Scp049Role : FpcRole, ISubroutinedScpRole
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Scp049Role"/> class.
         /// </summary>
-        /// <param name="owner">The encapsulated <see cref="Player"/>.</param>
-        public Scp049Role(Player owner)
-            : base(owner)
+        /// <param name="baseRole">the base <see cref="Scp049GameRole"/>.</param>
+        internal Scp049Role(Scp049GameRole baseRole)
+            : base(baseRole)
         {
-            SubroutineModule = (Base as Scp049GameRole).SubroutineModule;
+            SubroutineModule = baseRole.SubroutineModule;
         }
 
         /// <inheritdoc/>
         public override RoleTypeId Type { get; } = RoleTypeId.Scp049;
 
         /// <inheritdoc/>
-        public override SubroutineManagerModule SubroutineModule { get; }
+        public SubroutineManagerModule SubroutineModule { get; }
 
         /// <summary>
         /// Gets a value indicating whether or not SCP-049 is currently recalling a player.

@@ -334,20 +334,6 @@ namespace Exiled.API.Features
         public Dictionary<string, object> SessionVariables { get; } = new();
 
         /// <summary>
-        /// Gets or sets a value indicating whether or not the player is invisible.
-        /// </summary>
-        public bool IsInvisible
-        {
-            get => Role.FirstPersonController.FpcModule.Motor.IsInvisible;
-            set => Role.FirstPersonController.FpcModule.Motor.IsInvisible = true;
-        }
-
-        /// <summary>
-        /// Gets a value indicating whether or not the <see cref="Player"/> is in darkness.
-        /// </summary>
-        public bool IsInDarknes => Role.FirstPersonController.InDarkness;
-
-        /// <summary>
         /// Gets a value indicating whether or not the player has Do Not Track (DNT) enabled. If this value is <see langword="true"/>, data about the player unrelated to server security shouldn't be stored.
         /// </summary>
         public bool DoNotTrack => ReferenceHub.serverRoles.DoNotTrack;
@@ -436,17 +422,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets the <see cref="Player"/>'s current movement speed.
         /// </summary>
-        public float MovementSpeed => Role.FirstPersonController.FpcModule.VelocityForState(MoveState, IsCrouching);
-
-        /// <summary>
-        /// Gets the <see cref="Player"/>'s current movement speed.
-        /// </summary>
         public Vector3 Velocity => ReferenceHub.GetVelocity();
-
-        /// <summary>
-        /// Gets a value indicating whether the <see cref="Player"/> is crouching or not.
-        /// </summary>
-        public bool IsCrouching => Role.FirstPersonController.FpcModule.StateProcessor.CrouchPercent > 0;
 
         /// <summary>
         /// Gets the player's <see cref="Enums.LeadingTeam"/>.
@@ -479,7 +455,7 @@ namespace Exiled.API.Features
         /// <seealso cref="Role.Set(RoleTypeId, SpawnReason)"/>
         public Role Role
         {
-            get => role ??= Role.Create(this, RoleTypeId.None);
+            get => role ??= Role.Create(RoleManager.CurrentRole);
             internal set => role = value;
         }
 
@@ -505,38 +481,9 @@ namespace Exiled.API.Features
         public bool HasFlashlightModuleEnabled => CurrentItem is Firearm firearm && firearm.FlashlightEnabled;
 
         /// <summary>
-        /// Gets or sets the player's current <see cref="PlayerMovementState"/>.
-        /// </summary>
-        public PlayerMovementState MoveState
-        {
-            get => Role.FirstPersonController.FpcModule.CurrentMovementState;
-            set => Role.FirstPersonController.FpcModule.CurrentMovementState = value;
-        }
-
-        /// <summary>
         /// Gets a value indicating whether or not the player is jumping.
         /// </summary>
         public bool IsJumping { get; internal set; }
-
-        /// <summary>
-        /// Gets a value indicating whether or not the player is on the ground.
-        /// </summary>
-        public bool IsGrounded => Role.Base is FpcStandardRoleBase fpcStandardRoleBase && fpcStandardRoleBase.FpcModule.IsGrounded;
-
-        /// <summary>
-        /// Gets a value indicating whether or not the player is sprinting.
-        /// </summary>
-        public bool IsSprinting => MoveState == PlayerMovementState.Sprinting;
-
-        /// <summary>
-        /// Gets a value indicating whether or not the player is walking.
-        /// </summary>
-        public bool IsWalking => MoveState == PlayerMovementState.Walking;
-
-        /// <summary>
-        /// Gets a value indicating whether or not the player is sneaking.
-        /// </summary>
-        public bool IsSneaking => MoveState == PlayerMovementState.Sneaking;
 
         /// <summary>
         /// Gets the player's IP address.
@@ -966,11 +913,6 @@ namespace Exiled.API.Features
         /// Gets a value indicating whether or not the player's inventory is full.
         /// </summary>
         public bool IsInventoryFull => Items.Count >= Inventory.MaxSlots;
-
-        /// <summary>
-        /// Gets a value indicating whether or not the player can send inputs.
-        /// </summary>
-        public bool CanSendInputs => Role.FirstPersonController.FpcModule.LockMovement;
 
         /// <summary>
         /// Gets a value indicating whether or not the player has agreed to microphone recording.

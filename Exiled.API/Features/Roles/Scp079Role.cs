@@ -19,24 +19,23 @@ namespace Exiled.API.Features.Roles
     /// <summary>
     /// Defines a role that represents SCP-079.
     /// </summary>
-    public class Scp079Role : ScpRole
+    public class Scp079Role : Role, ISubroutinedScpRole
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Scp079Role"/> class.
         /// </summary>
-        /// <param name="owner">The encapsulated <see cref="Player"/>.</param>
-        public Scp079Role(Player owner)
-            : base(owner)
+        /// <param name="baseRole">the base <see cref="Scp079GameRole"/>.</param>
+        internal Scp079Role(Scp079GameRole baseRole)
+            : base(baseRole)
         {
-            Internal = Base as Scp079GameRole;
-            SubroutineModule = Internal.SubroutineModule;
+            SubroutineModule = baseRole.SubroutineModule;
         }
 
         /// <inheritdoc/>
         public override RoleTypeId Type { get; } = RoleTypeId.Scp079;
 
         /// <inheritdoc/>
-        public override SubroutineManagerModule SubroutineModule { get; }
+        public SubroutineManagerModule SubroutineModule { get; }
 
         /// <summary>
         /// Gets the camera SCP-079 is currently controlling.
