@@ -18,7 +18,7 @@ namespace Exiled.API.Features.Roles
     using UnityEngine;
 
     using HumanGameRole = PlayerRoles.HumanRole;
-    using NoneGameRole = PlayerRoles.NoneRole;
+    using OverwatchGameRole = PlayerRoles.Spectating.OverwatchRole;
     using Scp049GameRole = PlayerRoles.PlayableScps.Scp049.Scp049Role;
     using Scp079GameRole = PlayerRoles.PlayableScps.Scp079.Scp079Role;
     using Scp096GameRole = PlayerRoles.PlayableScps.Scp096.Scp096Role;
@@ -219,6 +219,7 @@ namespace Exiled.API.Features.Roles
             Scp106GameRole scp106Role => new Scp106Role(scp106Role),
             Scp173GameRole scp173Role => new Scp173Role(scp173Role),
             Scp939GameRole scp939Role => new Scp939Role(scp939Role),
+            OverwatchGameRole overwatchRole => new OverwatchRole(overwatchRole),
             SpectatorGameRole spectatorRole => new SpectatorRole(spectatorRole),
             HumanGameRole humanRole => new HumanRole(humanRole),
             _ => new NoneRole(role),

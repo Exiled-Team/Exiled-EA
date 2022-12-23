@@ -30,7 +30,7 @@ namespace Exiled.API.Features.Roles
         }
 
         /// <inheritdoc/>
-        public override RoleTypeId Type => Base is OverwatchRole ? RoleTypeId.Overwatch : RoleTypeId.Spectator;
+        public override RoleTypeId Type => RoleTypeId.Spectator;
 
         /// <summary>
         /// Gets the <see cref="DateTime"/> at which the player died.
@@ -71,7 +71,7 @@ namespace Exiled.API.Features.Roles
         }
 
         /// <summary>
-        /// Gets the game <see cref="PlayerRoles.HumanRole"/>.
+        /// Gets the game <see cref="PlayerRoles.SpectatorGameRole"/>.
         /// </summary>
         private SpectatorGameRole Internal { get; }
     }
