@@ -10,6 +10,7 @@ namespace Exiled.API.Features.Roles
     using System;
 
     using PlayerRoles;
+    using PlayerRoles.Spectating;
     using RelativePositioning;
 
     /// <summary>
@@ -27,12 +28,17 @@ namespace Exiled.API.Features.Roles
         }
 
         /// <inheritdoc/>
-        public override RoleTypeId Type { get; } = RoleTypeId.Spectator;
+        public override RoleTypeId Type => Base is OverwatchRole ? RoleTypeId.Overwatch : RoleTypeId.Spectator;
 
         /// <summary>
         /// Gets the <see cref="DateTime"/> at which the player died.
         /// </summary>
         public DateTime DeathTime => Round.StartedTime + ActiveTime;
+
+        /// <summary>
+        /// Gets a value indicating whether or not this role represents a player on overwatch.
+        /// </summary>
+        public bool IsOverwatch => Type is RoleTypeId.Overwatch;
 
         /// <summary>
         /// Gets the total amount of time the player has been dead.
