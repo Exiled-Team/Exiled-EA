@@ -71,10 +71,6 @@ namespace Exiled.Events.Handlers
         ///     Called before detonating the warhead.
         /// </summary>
         [PluginEvent(ServerEventType.WarheadDetonation)]
-        public void OnDetonating()
-        {
-            API.Features.Log.Error("test");
-            Detonating.InvokeSafely();
-        }
+        public void OnDetonating() => Detonating.InvokeSafely();
     }
 }
