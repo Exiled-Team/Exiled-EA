@@ -102,7 +102,7 @@ namespace Exiled.API.Extensions
             return !RoleSpawnpointManager.TryGetSpawnpointForRole(roleType, out ISpawnpointHandler spawnpoint) ||
                 !spawnpoint.TryGetSpawnpoint(out Vector3 position, out float horizontalRotation) ?
                 null :
-                new SpawnPosition(roleType, position, horizontalRotation);
+                new SpawnLocation(roleType, position, horizontalRotation);
         }
     }
 }
