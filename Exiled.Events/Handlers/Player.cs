@@ -7,8 +7,10 @@
 
 namespace Exiled.Events.Handlers
 {
+    using API.Extensions;
     using Exiled.Events.EventArgs.Player;
     using Extensions;
+    using InventorySystem.Items.Radio;
     using MapGeneration.Distributors;
     using PlayerRoles;
     using PlayerRoles.FirstPersonControl.Thirdperson;
@@ -739,19 +741,28 @@ namespace Exiled.Events.Handlers
         /// <summary>
         /// Called before a <see cref="API.Features.Player"/> interacts with a door.
         /// </summary>
-        /// <param name="ev">The <see cref="InteractingDoorEventArgs"/> instance.</param>
-        public static void OnInteractingDoor(InteractingDoorEventArgs ev) => InteractingDoor.InvokeSafely(ev);
+        [PluginEvent(ServerEventType.PlayerInteractDoor)]
+        public bool OnInteractingDoor(IPlayer player, Interactables.Interobjects.DoorUtils.DoorVariant doorVariant, bool canOpen)
+        {
+            // TODO: NWAPI supports skipping permission check, so player can change door's TargetStatus even if it doesn't met the keycard permissions. EXILED should implement that too.
+            InteractingDoorEventArgs ev = new(API.Features.Player.Get(player.ReferenceHub), doorVariant);
+            InteractingDoor.InvokeSafely(ev);
+            return ev.IsAllowed;
+        }
 
         /// <summary>
         /// Called before a <see cref="API.Features.Player"/> interacts with an elevator.
         /// </summary>
-        /// <param name="ev">The <see cref="InteractingElevatorEventArgs"/> instance.</param>
+        // [PluginEvent(ServerEventType.PlayerInteractElevator)]
+        // TODO: Can't be implemented right now. Missing Elevator argument.
         public static void OnInteractingElevator(InteractingElevatorEventArgs ev) => InteractingElevator.InvokeSafely(ev);
 
         /// <summary>
         /// Called before a <see cref="API.Features.Player"/> interacts with a locker.
         /// </summary>
         /// <param name="ev">The <see cref="InteractingLockerEventArgs"/> instance.</param>
+        // [PluginEvent(ServerEventType.PlayerInteractLocker)]
+        // TODO: Can't be implemented right now. Missing LockerChamber argument.
         public static void OnInteractingLocker(InteractingLockerEventArgs ev) => InteractingLocker.InvokeSafely(ev);
 
         /// <summary>
@@ -764,19 +775,31 @@ namespace Exiled.Events.Handlers
         /// Called before a <see cref="API.Features.Player"/> receives a status effect.
         /// </summary>
         /// <param name="ev">The <see cref="ReceivingEffectEventArgs"/> instance.</param>
+        // [PluginEvent(ServerEventType.PlayerReceiveEffect)]
+        // TODO: Can't be implemented right now. Missing effect properties.
         public static void OnReceivingEffect(ReceivingEffectEventArgs ev) => ReceivingEffect.InvokeSafely(ev);
 
         /// <summary>
         /// Called before muting a user.
         /// </summary>
-        /// <param name="ev">The <see cref="IssuingMuteEventArgs"/> instance.</param>
-        public static void OnIssuingMute(IssuingMuteEventArgs ev) => IssuingMute.InvokeSafely(ev);
+        [PluginEvent(ServerEventType.PlayerMuted)]
+        public bool OnIssuingMute(IPlayer player, bool isIntercom)
+        {
+            IssuingMuteEventArgs ev = new(API.Features.Player.Get(player.ReferenceHub), isIntercom);
+            IssuingMute.InvokeSafely(ev);
+            return ev.IsAllowed;
+        }
 
         /// <summary>
         /// Called before unmuting a user.
         /// </summary>
-        /// <param name="ev">The <see cref="RevokingMuteEventArgs"/> instance.</param>
-        public static void OnRevokingMute(RevokingMuteEventArgs ev) => RevokingMute.InvokeSafely(ev);
+        [PluginEvent(ServerEventType.PlayerUnmuted)]
+        public bool OnRevokingMute(IPlayer player, bool isIntercom)
+        {
+            RevokingMuteEventArgs ev = new(API.Features.Player.Get(player.ReferenceHub), isIntercom);
+            RevokingMute.InvokeSafely(ev);
+            return ev.IsAllowed;
+        }
 
         /// <summary>
         /// Called before a user's radio battery charge is changed.
@@ -787,8 +810,13 @@ namespace Exiled.Events.Handlers
         /// <summary>
         /// Called before a user's radio preset is changed.
         /// </summary>
-        /// <param name="ev">The <see cref="ChangingRadioPresetEventArgs"/> instance.</param>
-        public static void OnChangingRadioPreset(ChangingRadioPresetEventArgs ev) => ChangingRadioPreset.InvokeSafely(ev);
+        [PluginEvent(ServerEventType.PlayerChangeRadioRange)]
+        public bool OnChangingRadioPreset(IPlayer player, RadioItem radio, byte range)
+        {
+            ChangingRadioPresetEventArgs ev = new(API.Features.Player.Get(player.ReferenceHub), radio.RangeLevel, (RadioMessages.RadioRangeLevel)range);
+            ChangingRadioPreset.InvokeSafely(ev);
+            return ev.IsAllowed;
+        }
 
         /// <summary>
         /// Called before a <see cref="API.Features.Player"/> MicroHID state is changed.
@@ -806,24 +834,35 @@ namespace Exiled.Events.Handlers
         /// Called before processing a hotkey.
         /// </summary>
         /// <param name="ev">The <see cref="ProcessingHotkeyEventArgs"/> instance.</param>
+        // [PluginEvent(ServerEventType.PlayerUseHotkey)]
+        // TODO: Can't be implemented right now. Looks like our enum is outdated. We can also use NW's one.
         public static void OnProcessingHotkey(ProcessingHotkeyEventArgs ev) => ProcessingHotkey.InvokeSafely(ev);
 
         /// <summary>
         /// Called before dropping ammo.
         /// </summary>
-        /// <param name="ev">The <see cref="DroppingAmmoEventArgs"/> instance.</param>
-        public static void OnDroppingAmmo(DroppingAmmoEventArgs ev) => DroppingAmmo.InvokeSafely(ev);
+        [PluginEvent(ServerEventType.PlayerDropAmmo)]
+        public bool OnDroppingAmmo(IPlayer player, ItemType item, int amount)
+        {
+            DroppingAmmoEventArgs ev = new(API.Features.Player.Get(player.ReferenceHub), item.GetAmmoType(), (ushort)amount);
+            DroppingAmmo.InvokeSafely(ev);
+            return ev.IsAllowed;
+        }
 
         /// <summary>
         /// Called before a <see cref="API.Features.Player"/> interacts with a shooting target.
         /// </summary>
-        /// <param name="ev">The <see cref="InteractingShootingTargetEventArgs"/> instance.</param>
+        /// <param name="ev">The <see cref="InteractingShootingTargetEventArgs"/> instance.</
+        // [PluginEvent(ServerEventType.PlayerInteractShootingTarget)]
+        // TODO: Can't be implemented right now. No ShootingTarget argument.
         public static void OnInteractingShootingTarget(InteractingShootingTargetEventArgs ev) => InteractingShootingTarget.InvokeSafely(ev);
 
         /// <summary>
         /// Called before a <see cref="API.Features.Player"/> damages a shooting target.
         /// </summary>
         /// <param name="ev">The <see cref="DamagingShootingTargetEventArgs"/> instance.</param>
+        // [PluginEvent(ServerEventType.PlayerDamagedShootingTarget)]
+        // TODO: Can't be implemented right now. Missing arguments like distance and hitpoint.
         public static void OnDamagingShootingTarget(DamagingShootingTargetEventArgs ev) => DamagingShootingTarget.InvokeSafely(ev);
 
         /// <summary>
