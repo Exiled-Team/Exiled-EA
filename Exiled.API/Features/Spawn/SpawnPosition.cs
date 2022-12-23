@@ -21,7 +21,7 @@ namespace Exiled.API.Features.Spawn
         /// <param name="roleType">The <see cref="RoleTypeId"/> this spawn is for.</param>
         /// <param name="position">The <see cref="Vector3"/> position of the spawn.</param>
         /// <param name="horizontalRotation">The horizontal rotation of the spawn.</param>
-        internal SpawnPosition(RoleTypeId roleType, Vector3 position, float horizontalRotation)
+        public SpawnPosition(RoleTypeId roleType, Vector3 position, float horizontalRotation)
         {
             RoleType = roleType;
             Position = position;
