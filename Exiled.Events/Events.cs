@@ -18,6 +18,7 @@ namespace Exiled.Events
     using HarmonyLib;
     using PlayerRoles;
     using PlayerRoles.FirstPersonControl.Thirdperson;
+    using PluginAPI.Events;
     using UnityEngine.SceneManagement;
 
     /// <summary>
@@ -94,6 +95,8 @@ namespace Exiled.Events
             AnimatedCharacterModel.OnFootstepPlayed += Handlers.Player.OnMakingNoise;
 
             ServerConsole.ReloadServerName();
+
+            EventManager.RegisterEvents<Handlers.Warhead>(this);
         }
 
         /// <inheritdoc/>
@@ -120,6 +123,8 @@ namespace Exiled.Events
             InventorySystem.InventoryExtensions.OnItemAdded -= Handlers.Player.OnItemAdded;
 
             AnimatedCharacterModel.OnFootstepPlayed -= Handlers.Player.OnMakingNoise;
+
+            EventManager.UnregisterEvents<Handlers.Warhead>(this);
         }
 
         /// <summary>
