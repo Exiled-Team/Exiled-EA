@@ -7,10 +7,9 @@
 
 namespace Exiled.API.Extensions
 {
-    using System;
-
     using Enums;
     using Exiled.API.Features;
+    using Exiled.API.Features.Spawn;
     using PlayerRoles;
     using PlayerRoles.FirstPersonControl.Spawnpoints;
     using UnityEngine;
@@ -97,13 +96,13 @@ namespace Exiled.API.Extensions
         /// Gets a random spawn point of a <see cref="RoleTypeId"/>.
         /// </summary>
         /// <param name="roleType">The <see cref="RoleTypeId"/> to get the spawn point from.</param>
-        /// <returns>Returns the spawn point <see cref="Vector3"/> and horizontal rotation <see cref="float"/>.</returns>
-        public static Tuple<Vector3, float> GetRandomSpawnProperties(this RoleTypeId roleType)
+        /// <returns>Returns a <see cref="SpawnPosition"/> representing the spawn, or <see langword="null"/> if no spawns were found.</returns>
+        public static SpawnPosition GetRandomSpawnProperties(this RoleTypeId roleType)
         {
             return !RoleSpawnpointManager.TryGetSpawnpointForRole(roleType, out ISpawnpointHandler spawnpoint) ||
                 !spawnpoint.TryGetSpawnpoint(out Vector3 position, out float horizontalRotation) ?
-                new Tuple<Vector3, float>(Vector3.zero, 0) :
-                new Tuple<Vector3, float>(position, horizontalRotation);
+                null :
+                new SpawnPosition(roleType, position, horizontalRotation);
         }
     }
 }
