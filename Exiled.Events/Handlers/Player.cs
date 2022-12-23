@@ -15,7 +15,6 @@ namespace Exiled.Events.Handlers
     using PluginAPI.Core.Attributes;
     using PluginAPI.Core.Interfaces;
     using PluginAPI.Enums;
-
     using static Events;
 
     /// <summary>
@@ -541,14 +540,21 @@ namespace Exiled.Events.Handlers
         /// <summary>
         /// Called after a <see cref="API.Features.Player"/> has joined the server.
         /// </summary>
-        /// <param name="ev">The <see cref="JoinedEventArgs"/> instance.</param>
-        public static void OnJoined(JoinedEventArgs ev) => Joined.InvokeSafely(ev);
+        public void OnJoined(IPlayer player)
+        {
+            JoinedEventArgs ev = new(API.Features.Player.Get(player.ReferenceHub));
+            Joined.InvokeSafely(ev);
+        }
 
         /// <summary>
         /// Called after a <see cref="API.Features.Player"/> has been verified.
         /// </summary>
-        /// <param name="ev">The <see cref="VerifiedEventArgs"/> instance.</param>
-        public static void OnVerified(VerifiedEventArgs ev) => Verified.InvokeSafely(ev);
+        [PluginEvent(ServerEventType.PlayerJoined)]
+        public void OnVerified(IPlayer player)
+        {
+            VerifiedEventArgs ev = new(API.Features.Player.Get(player.ReferenceHub));
+            Verified.InvokeSafely(ev);
+        }
 
         /// <summary>
         /// Called after a <see cref="API.Features.Player"/> has left the server.
@@ -560,19 +566,34 @@ namespace Exiled.Events.Handlers
         /// Called before destroying a <see cref="API.Features.Player"/>.
         /// </summary>
         /// <param name="ev">The <see cref="DestroyingEventArgs"/> instance.</param>
-        public static void OnDestroying(DestroyingEventArgs ev) => Destroying.InvokeSafely(ev);
+        [PluginEvent(ServerEventType.PlayerLeft)]
+        public static void OnDestroying(IPlayer player)
+        {
+            DestroyingEventArgs ev = new(API.Features.Player.Get(player.ReferenceHub));
+            Destroying.InvokeSafely(ev);
+        }
 
         /// <summary>
         /// Called before hurting a player.
         /// </summary>
-        /// <param name="ev">The <see cref="HurtingEventArgs"/> instance.</param>
-        public static void OnHurting(HurtingEventArgs ev) => Hurting.InvokeSafely(ev);
+        [PluginEvent(ServerEventType.PlayerDamage)]
+        public bool OnHurting(IPlayer player, IPlayer target, PlayerStatsSystem.DamageHandlerBase damageHandler)
+        {
+            HurtingEventArgs ev = new(API.Features.Player.Get(target.ReferenceHub), damageHandler);
+            Hurting.InvokeSafely(ev);
+            return ev.IsAllowed;
+        }
 
         /// <summary>
         /// Called before a <see cref="API.Features.Player"/> dies.
         /// </summary>
-        /// <param name="ev"><see cref="DyingEventArgs"/> instance.</param>
-        public static void OnDying(DyingEventArgs ev) => Dying.InvokeSafely(ev);
+        [PluginEvent(ServerEventType.PlayerDeath)]
+        public bool OnDying(IPlayer player, IPlayer attacker, PlayerStatsSystem.DamageHandlerBase damageHandler)
+        {
+            DyingEventArgs ev = new(API.Features.Player.Get(player.ReferenceHub), damageHandler);
+            Dying.InvokeSafely(ev);
+            return ev.IsAllowed;
+        }
 
         /// <summary>
         /// Called after a <see cref="API.Features.Player"/> died.
