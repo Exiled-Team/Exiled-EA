@@ -16,7 +16,7 @@ namespace Exiled.API.Features.Spawn
     public class SpawnPosition
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="SpawnPosition"/> class.
+        /// Initializes a new instance of the <see cref="SpawnLocation"/> class.
         /// </summary>
         /// <param name="roleType">The <see cref="RoleTypeId"/> this spawn is for.</param>
         /// <param name="position">The <see cref="Vector3"/> position of the spawn.</param>
