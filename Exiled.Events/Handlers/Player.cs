@@ -542,9 +542,10 @@ namespace Exiled.Events.Handlers
         /// <summary>
         /// Called after a <see cref="API.Features.Player"/> has joined the server.
         /// </summary>
-        public void OnJoined(IPlayer player)
+        [PluginEvent(ServerEventType.PlayerJoined)]
+        public void OnJoined(PluginAPI.Core.Player player)
         {
-            JoinedEventArgs ev = new(API.Features.Player.Get(player.ReferenceHub));
+            JoinedEventArgs ev = new(player);
             Joined.InvokeSafely(ev);
         }
 
@@ -552,9 +553,9 @@ namespace Exiled.Events.Handlers
         /// Called after a <see cref="API.Features.Player"/> has been verified.
         /// </summary>
         [PluginEvent(ServerEventType.PlayerJoined)]
-        public void OnVerified(IPlayer player)
+        public void OnVerified(PluginAPI.Core.Player player)
         {
-            VerifiedEventArgs ev = new(API.Features.Player.Get(player.ReferenceHub));
+            VerifiedEventArgs ev = new(player);
             Verified.InvokeSafely(ev);
         }
 
@@ -569,9 +570,9 @@ namespace Exiled.Events.Handlers
         /// </summary>
         /// <param name="ev">The <see cref="DestroyingEventArgs"/> instance.</param>
         [PluginEvent(ServerEventType.PlayerLeft)]
-        public static void OnDestroying(IPlayer player)
+        public static void OnDestroying(PluginAPI.Core.Player player)
         {
-            DestroyingEventArgs ev = new(API.Features.Player.Get(player.ReferenceHub));
+            DestroyingEventArgs ev = new(player);
             Destroying.InvokeSafely(ev);
         }
 
@@ -579,9 +580,9 @@ namespace Exiled.Events.Handlers
         /// Called before hurting a player.
         /// </summary>
         [PluginEvent(ServerEventType.PlayerDamage)]
-        public bool OnHurting(IPlayer player, IPlayer target, PlayerStatsSystem.DamageHandlerBase damageHandler)
+        public bool OnHurting(PluginAPI.Core.Player player, PluginAPI.Core.Player target, PlayerStatsSystem.DamageHandlerBase damageHandler)
         {
-            HurtingEventArgs ev = new(API.Features.Player.Get(target.ReferenceHub), damageHandler);
+            HurtingEventArgs ev = new(target, damageHandler);
             Hurting.InvokeSafely(ev);
             return ev.IsAllowed;
         }
@@ -590,9 +591,9 @@ namespace Exiled.Events.Handlers
         /// Called before a <see cref="API.Features.Player"/> dies.
         /// </summary>
         [PluginEvent(ServerEventType.PlayerDeath)]
-        public bool OnDying(IPlayer player, IPlayer attacker, PlayerStatsSystem.DamageHandlerBase damageHandler)
+        public bool OnDying(PluginAPI.Core.Player player, PluginAPI.Core.Player attacker, PlayerStatsSystem.DamageHandlerBase damageHandler)
         {
-            DyingEventArgs ev = new(API.Features.Player.Get(player.ReferenceHub), damageHandler);
+            DyingEventArgs ev = new(player, damageHandler);
             Dying.InvokeSafely(ev);
             return ev.IsAllowed;
         }
@@ -742,10 +743,10 @@ namespace Exiled.Events.Handlers
         /// Called before a <see cref="API.Features.Player"/> interacts with a door.
         /// </summary>
         [PluginEvent(ServerEventType.PlayerInteractDoor)]
-        public bool OnInteractingDoor(IPlayer player, Interactables.Interobjects.DoorUtils.DoorVariant doorVariant, bool canOpen)
+        public bool OnInteractingDoor(PluginAPI.Core.Player player, Interactables.Interobjects.DoorUtils.DoorVariant doorVariant, bool canOpen)
         {
             // TODO: NWAPI supports skipping permission check, so player can change door's TargetStatus even if it doesn't met the keycard permissions. EXILED should implement that too.
-            InteractingDoorEventArgs ev = new(API.Features.Player.Get(player.ReferenceHub), doorVariant);
+            InteractingDoorEventArgs ev = new(player, doorVariant);
             InteractingDoor.InvokeSafely(ev);
             return ev.IsAllowed;
         }
@@ -783,9 +784,9 @@ namespace Exiled.Events.Handlers
         /// Called before muting a user.
         /// </summary>
         [PluginEvent(ServerEventType.PlayerMuted)]
-        public bool OnIssuingMute(IPlayer player, bool isIntercom)
+        public bool OnIssuingMute(PluginAPI.Core.Player player, bool isIntercom)
         {
-            IssuingMuteEventArgs ev = new(API.Features.Player.Get(player.ReferenceHub), isIntercom);
+            IssuingMuteEventArgs ev = new(player, isIntercom);
             IssuingMute.InvokeSafely(ev);
             return ev.IsAllowed;
         }
@@ -794,9 +795,9 @@ namespace Exiled.Events.Handlers
         /// Called before unmuting a user.
         /// </summary>
         [PluginEvent(ServerEventType.PlayerUnmuted)]
-        public bool OnRevokingMute(IPlayer player, bool isIntercom)
+        public bool OnRevokingMute(PluginAPI.Core.Player player, bool isIntercom)
         {
-            RevokingMuteEventArgs ev = new(API.Features.Player.Get(player.ReferenceHub), isIntercom);
+            RevokingMuteEventArgs ev = new(player, isIntercom);
             RevokingMute.InvokeSafely(ev);
             return ev.IsAllowed;
         }
@@ -811,9 +812,9 @@ namespace Exiled.Events.Handlers
         /// Called before a user's radio preset is changed.
         /// </summary>
         [PluginEvent(ServerEventType.PlayerChangeRadioRange)]
-        public bool OnChangingRadioPreset(IPlayer player, RadioItem radio, byte range)
+        public bool OnChangingRadioPreset(PluginAPI.Core.Player player, RadioItem radio, byte range)
         {
-            ChangingRadioPresetEventArgs ev = new(API.Features.Player.Get(player.ReferenceHub), radio.RangeLevel, (RadioMessages.RadioRangeLevel)range);
+            ChangingRadioPresetEventArgs ev = new(player, radio.RangeLevel, (RadioMessages.RadioRangeLevel)range);
             ChangingRadioPreset.InvokeSafely(ev);
             return ev.IsAllowed;
         }
@@ -842,9 +843,9 @@ namespace Exiled.Events.Handlers
         /// Called before dropping ammo.
         /// </summary>
         [PluginEvent(ServerEventType.PlayerDropAmmo)]
-        public bool OnDroppingAmmo(IPlayer player, ItemType item, int amount)
+        public bool OnDroppingAmmo(PluginAPI.Core.Player player, ItemType item, int amount)
         {
-            DroppingAmmoEventArgs ev = new(API.Features.Player.Get(player.ReferenceHub), item.GetAmmoType(), (ushort)amount);
+            DroppingAmmoEventArgs ev = new(player, item.GetAmmoType(), (ushort)amount);
             DroppingAmmo.InvokeSafely(ev);
             return ev.IsAllowed;
         }
@@ -1009,9 +1010,9 @@ namespace Exiled.Events.Handlers
         /// <param name="generator">The <see cref="Scp079Generator"/> instance.</param>
         /// <returns>Returns whether the event is allowed or not.</returns>
         [PluginEvent(ServerEventType.PlayerUnlockGenerator)]
-        public bool OnUnlockingGenerator(IPlayer player, Scp079Generator generator)
+        public bool OnUnlockingGenerator(PluginAPI.Core.Player player, Scp079Generator generator)
         {
-            UnlockingGeneratorEventArgs ev = new(API.Features.Player.Get(player.ReferenceHub), generator);
+            UnlockingGeneratorEventArgs ev = new(player, generator);
 
             UnlockingGenerator.InvokeSafely(ev);
 
@@ -1028,9 +1029,9 @@ namespace Exiled.Events.Handlers
         /// <param name="generator">The <see cref="Scp079Generator"/> instance.</param>
         /// <returns>Returns whether the event is allowed or not.</returns>
         [PluginEvent(ServerEventType.PlayerOpenGenerator)]
-        public bool OnOpeningGenerator(IPlayer player, Scp079Generator generator)
+        public bool OnOpeningGenerator(PluginAPI.Core.Player player, Scp079Generator generator)
         {
-            OpeningGeneratorEventArgs ev = new(API.Features.Player.Get(player.ReferenceHub), generator);
+            OpeningGeneratorEventArgs ev = new(player, generator);
 
             OpeningGenerator.InvokeSafely(ev);
 
@@ -1047,9 +1048,9 @@ namespace Exiled.Events.Handlers
         /// <param name="generator">The <see cref="Scp079Generator"/> instance.</param>
         /// <returns>Returns whether the event is allowed or not.</returns>
         [PluginEvent(ServerEventType.PlayerCloseGenerator)]
-        public bool OnClosingGenerator(IPlayer player, Scp079Generator generator)
+        public bool OnClosingGenerator(PluginAPI.Core.Player player, Scp079Generator generator)
         {
-            ClosingGeneratorEventArgs ev = new(API.Features.Player.Get(player.ReferenceHub), generator);
+            ClosingGeneratorEventArgs ev = new(player, generator);
 
             ClosingGenerator.InvokeSafely(ev);
 
@@ -1066,9 +1067,9 @@ namespace Exiled.Events.Handlers
         /// <param name="generator">The <see cref="Scp079Generator"/> instance.</param>
         /// <returns>Returns whether the event is allowed or not.</returns>
         [PluginEvent(ServerEventType.PlayerActivateGenerator)]
-        public bool OnActivatingGenerator(IPlayer player, Scp079Generator generator)
+        public bool OnActivatingGenerator(PluginAPI.Core.Player player, Scp079Generator generator)
         {
-            ActivatingGeneratorEventArgs ev = new(API.Features.Player.Get(player.ReferenceHub), generator);
+            ActivatingGeneratorEventArgs ev = new(player, generator);
 
             ActivatingGenerator.InvokeSafely(ev);
 
@@ -1085,9 +1086,9 @@ namespace Exiled.Events.Handlers
         /// <param name="generator">The <see cref="Scp079Generator"/> instance.</param>
         /// <returns>Returns whether the event is allowed or not.</returns>
         [PluginEvent(ServerEventType.PlayerDeactivatedGenerator)]
-        public bool OnStoppingGenerator(IPlayer player, Scp079Generator generator)
+        public bool OnStoppingGenerator(PluginAPI.Core.Player player, Scp079Generator generator)
         {
-            StoppingGeneratorEventArgs ev = new(API.Features.Player.Get(player.ReferenceHub), generator);
+            StoppingGeneratorEventArgs ev = new(player, generator);
 
             StoppingGenerator.InvokeSafely(ev);
 

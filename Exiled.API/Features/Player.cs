@@ -1080,7 +1080,7 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
-        /// Gets the player by identifier.
+        /// Gets the <see cref="Player"/> by identifier.
         /// </summary>
         /// <param name="args">The player's nickname, ID, steamID64 or Discord ID.</param>
         /// <returns>Returns the player found or <see langword="null"/> if not found.</returns>
@@ -1143,6 +1143,13 @@ namespace Exiled.API.Features
                 return null;
             }
         }
+
+        /// <summary>
+        /// Gets the <see cref="Player"/> from NwPluginAPI class.
+        /// </summary>
+        /// <param name="apiPlayer">The <see cref="PluginAPI.Core.Player"/> class.</param>
+        /// <returns>A <see cref="Player"/> or <see langword="null"/> if not found.</returns>
+        public static Player Get(PluginAPI.Core.Player apiPlayer) => Get(apiPlayer.ReferenceHub);
 
         /// <summary>
         /// Try-get a player given a <see cref="CommandSystem.ICommandSender"/>.
@@ -1215,6 +1222,14 @@ namespace Exiled.API.Features
         /// <param name="player">The player found or <see langword="null"/> if not found.</param>
         /// <returns>A boolean indicating whether or not a player was found.</returns>
         public static bool TryGet(string args, out Player player) => (player = Get(args)) is not null;
+
+        /// <summary>
+        /// Try-get the <see cref="Player"/> from NwPluginAPI class.
+        /// </summary>
+        /// <param name="apiPlayer">The <see cref="PluginAPI.Core.Player"/> class.</param>
+        /// <param name="player">The player found or <see langword="null"/> if not found.</param>
+        /// <returns>A boolean indicating whether or not a player was found.</returns>
+        public static bool TryGet(PluginAPI.Core.Player apiPlayer, out Player player) => (player = Get(apiPlayer)) is not null;
 
         /// <summary>
         /// Adds a player's UserId to the list of reserved slots.
@@ -2981,5 +2996,12 @@ namespace Exiled.API.Features
         /// </summary>
         /// <returns>A string containing Player-related data.</returns>
         public override string ToString() => $"{Id} ({Nickname}) [{UserId}] *{(Role is null ? "No role" : Role)}*";
+
+        /// <summary>
+        /// Converts NwPluginAPI player to EXILED player.
+        /// </summary>
+        /// <param name="player">The NwPluginAPI player.</param>
+        /// <returns>EXILED player.</returns>
+        public static implicit operator Player(PluginAPI.Core.Player player) => Get(player);
     }
 }
