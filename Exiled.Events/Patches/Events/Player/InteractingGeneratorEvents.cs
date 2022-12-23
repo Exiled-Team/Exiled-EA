@@ -27,7 +27,7 @@ namespace Exiled.Events.Patches.Events.Player
     /// Patches <see cref="Scp079Generator.ServerInteract(ReferenceHub, byte)"/>.
     /// Adds the <see cref="Player.ActivatingGenerator"/>, <see cref="Player.ClosingGenerator"/>, <see cref="Player.OpeningGenerator"/>, <see cref="Player.UnlockingGenerator"/> and <see cref="Player.StoppingGenerator"/> events.
     /// </summary>
-    [HarmonyPatch(typeof(Scp079Generator), nameof(Scp079Generator.ServerInteract))]
+    // [HarmonyPatch(typeof(Scp079Generator), nameof(Scp079Generator.ServerInteract))]
     internal static class InteractingGeneratorEvents
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
@@ -42,10 +42,10 @@ namespace Exiled.Events.Patches.Events.Player
             Label check2 = generator.DefineLabel();
             Label notAllowed = generator.DefineLabel();
             Label skip = generator.DefineLabel();
-            Label @break = newInstructions.FindLast(i => i.IsLdarg(0)).labels[0];
+            Label @break = newInstructions.FindLast(instruction => instruction.IsLdarg(0)).labels[0];
 
             int offset = 1;
-            int index = newInstructions.FindIndex(i => i.Calls(Method(typeof(Stopwatch), nameof(Stopwatch.Stop)))) + offset;
+            int index = newInstructions.FindIndex(instruction => instruction.Calls(Method(typeof(Stopwatch), nameof(Stopwatch.Stop)))) + offset;
 
             newInstructions.InsertRange(
                 index,
@@ -57,8 +57,8 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Stloc_S, player.LocalIndex),
                 });
 
-            offset = -9;
-            index = newInstructions.FindIndex(i => i.Calls(Method(typeof(Scp079Generator), nameof(Scp079Generator.ServerSetFlag)))) + offset;
+            offset = 7;
+            index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Br) + offset;
 
             // if (this.HasFlag(_flags, GeneratorFlags.Open))
             // {
@@ -91,7 +91,7 @@ namespace Exiled.Events.Patches.Events.Player
                 new[]
                 {
                     // player
-                    new(OpCodes.Ldloc_S, player.LocalIndex),
+                    new CodeInstruction(OpCodes.Ldloc_S, player.LocalIndex),
 
                     // this
                     new(OpCodes.Ldarg_0),
@@ -155,13 +155,14 @@ namespace Exiled.Events.Patches.Events.Player
                 });
 
             offset = -8;
-            index = newInstructions.FindIndex(i => i.Calls(Method(typeof(Scp079Generator), nameof(Scp079Generator.ServerGrantTicketsConditionally)))) + offset;
+            index = newInstructions.FindIndex(
+                instruction => instruction.Calls(Method(typeof(Scp079Generator), nameof(Scp079Generator.ServerGrantTicketsConditionally)))) + offset;
 
             // remove base game unlocking, we will unlock generator and grant tickets after UnlockingGeneratorEventArgs invokation and allowed check
             newInstructions.RemoveRange(index, 9);
 
             offset = -5;
-            index = newInstructions.FindIndex(i => i.Calls(Method(typeof(Scp079Generator), nameof(Scp079Generator.RpcDenied)))) + offset;
+            index = newInstructions.FindIndex(instruction => instruction.Calls(Method(typeof(Scp079Generator), nameof(Scp079Generator.RpcDenied)))) + offset;
 
             newInstructions.InsertRange(
                 index,

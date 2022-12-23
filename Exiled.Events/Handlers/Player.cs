@@ -9,15 +9,19 @@ namespace Exiled.Events.Handlers
 {
     using Exiled.Events.EventArgs.Player;
     using Extensions;
+    using MapGeneration.Distributors;
     using PlayerRoles;
     using PlayerRoles.FirstPersonControl.Thirdperson;
+    using PluginAPI.Core.Attributes;
+    using PluginAPI.Core.Interfaces;
+    using PluginAPI.Enums;
 
     using static Events;
 
     /// <summary>
     /// Player related events.
     /// </summary>
-    public static class Player
+    public class Player
     {
         /// <summary>
         /// Invoked before authenticating a <see cref="API.Features.Player"/>.
@@ -736,36 +740,6 @@ namespace Exiled.Events.Handlers
         public static void OnTriggeringTesla(TriggeringTeslaEventArgs ev) => TriggeringTesla.InvokeSafely(ev);
 
         /// <summary>
-        /// Called before a <see cref="API.Features.Player"/> unlocks a generator.
-        /// </summary>
-        /// <param name="ev">The <see cref="UnlockingGeneratorEventArgs"/> instance.</param>
-        public static void OnUnlockingGenerator(UnlockingGeneratorEventArgs ev) => UnlockingGenerator.InvokeSafely(ev);
-
-        /// <summary>
-        /// Called before a <see cref="API.Features.Player"/> opens a generator.
-        /// </summary>
-        /// <param name="ev">The <see cref="OpeningGeneratorEventArgs"/> instance.</param>
-        public static void OnOpeningGenerator(OpeningGeneratorEventArgs ev) => OpeningGenerator.InvokeSafely(ev);
-
-        /// <summary>
-        /// Called before a <see cref="API.Features.Player"/> closes a generator.
-        /// </summary>
-        /// <param name="ev">The <see cref="ClosingGeneratorEventArgs"/> instance.</param>
-        public static void OnClosingGenerator(ClosingGeneratorEventArgs ev) => ClosingGenerator.InvokeSafely(ev);
-
-        /// <summary>
-        /// Called before a <see cref="API.Features.Player"/> turns on the generator by switching lever.
-        /// </summary>
-        /// <param name="ev">The <see cref="ActivatingGeneratorEventArgs"/> instance.</param>
-        public static void OnActivatingGenerator(ActivatingGeneratorEventArgs ev) => ActivatingGenerator.InvokeSafely(ev);
-
-        /// <summary>
-        /// Called before a <see cref="API.Features.Player"/> turns off the generator by switching lever.
-        /// </summary>
-        /// <param name="ev">The <see cref="StoppingGeneratorEventArgs"/> instance.</param>
-        public static void OnStoppingGenerator(StoppingGeneratorEventArgs ev) => StoppingGenerator.InvokeSafely(ev);
-
-        /// <summary>
         /// Called before a <see cref="API.Features.Player"/> receives a status effect.
         /// </summary>
         /// <param name="ev">The <see cref="ReceivingEffectEventArgs"/> instance.</param>
@@ -967,5 +941,85 @@ namespace Exiled.Events.Handlers
         /// </summary>
         /// <param name="ev">The <see cref="ExitingEnvironmentalHazardEventArgs"/> instance. </param>
         public static void OnExitingEnvironmentalHazard(ExitingEnvironmentalHazardEventArgs ev) => ExitingEnvironmentalHazard.InvokeSafely(ev);
+
+        /// <summary>
+        /// Called before a <see cref="API.Features.Player"/> unlocks a generator.
+        /// </summary>
+        /// <param name="player">The <see cref="PluginAPI.Core.Player"/> instance.</param>
+        /// <param name="generator">The <see cref="Scp079Generator"/> instance.</param>
+        /// <returns>Returns whether the event is allowed or not.</returns>
+        [PluginEvent(ServerEventType.PlayerUnlockGenerator)]
+        public bool OnUnlockingGenerator(IPlayer player, Scp079Generator generator)
+        {
+            UnlockingGeneratorEventArgs ev = new(API.Features.Player.Get(player.ReferenceHub), generator);
+
+            UnlockingGenerator.InvokeSafely(ev);
+
+            return ev.IsAllowed;
+        }
+
+        /// <summary>
+        /// Called before a <see cref="API.Features.Player"/> opens a generator.
+        /// </summary>
+        /// <param name="player">The <see cref="PluginAPI.Core.Player"/> instance.</param>
+        /// <param name="generator">The <see cref="Scp079Generator"/> instance.</param>
+        /// <returns>Returns whether the event is allowed or not.</returns>
+        [PluginEvent(ServerEventType.PlayerOpenGenerator)]
+        public bool OnOpeningGenerator(IPlayer player, Scp079Generator generator)
+        {
+            OpeningGeneratorEventArgs ev = new(API.Features.Player.Get(player.ReferenceHub), generator);
+
+            OpeningGenerator.InvokeSafely(ev);
+
+            return ev.IsAllowed;
+        }
+
+        /// <summary>
+        /// Called before a <see cref="API.Features.Player"/> closes a generator.
+        /// </summary>
+        /// <param name="player">The <see cref="PluginAPI.Core.Player"/> instance.</param>
+        /// <param name="generator">The <see cref="Scp079Generator"/> instance.</param>
+        /// <returns>Returns whether the event is allowed or not.</returns>
+        [PluginEvent(ServerEventType.PlayerCloseGenerator)]
+        public bool OnClosingGenerator(IPlayer player, Scp079Generator generator)
+        {
+            ClosingGeneratorEventArgs ev = new(API.Features.Player.Get(player.ReferenceHub), generator);
+
+            ClosingGenerator.InvokeSafely(ev);
+
+            return ev.IsAllowed;
+        }
+
+        /// <summary>
+        /// Called before a <see cref="API.Features.Player"/> turns on the generator by switching lever.
+        /// </summary>
+        /// <param name="player">The <see cref="PluginAPI.Core.Player"/> instance.</param>
+        /// <param name="generator">The <see cref="Scp079Generator"/> instance.</param>
+        /// <returns>Returns whether the event is allowed or not.</returns>
+        [PluginEvent(ServerEventType.PlayerActivateGenerator)]
+        public bool OnActivatingGenerator(IPlayer player, Scp079Generator generator)
+        {
+            ActivatingGeneratorEventArgs ev = new(API.Features.Player.Get(player.ReferenceHub), generator);
+
+            ActivatingGenerator.InvokeSafely(ev);
+
+            return ev.IsAllowed;
+        }
+
+        /// <summary>
+        /// Called before a <see cref="API.Features.Player"/> turns off the generator by switching lever.
+        /// </summary>
+        /// <param name="player">The <see cref="PluginAPI.Core.Player"/> instance.</param>
+        /// <param name="generator">The <see cref="Scp079Generator"/> instance.</param>
+        /// <returns>Returns whether the event is allowed or not.</returns>
+        [PluginEvent(ServerEventType.PlayerDeactivatedGenerator)]
+        public bool OnStoppingGenerator(IPlayer player, Scp079Generator generator)
+        {
+            StoppingGeneratorEventArgs ev = new(API.Features.Player.Get(player.ReferenceHub), generator);
+
+            StoppingGenerator.InvokeSafely(ev);
+
+            return ev.IsAllowed;
+        }
     }
 }

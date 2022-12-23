@@ -97,6 +97,7 @@ namespace Exiled.Events
             ServerConsole.ReloadServerName();
 
             EventManager.RegisterEvents<Handlers.Warhead>(this);
+            EventManager.RegisterEvents<Handlers.Player>(this);
         }
 
         /// <inheritdoc/>
@@ -125,6 +126,7 @@ namespace Exiled.Events
             AnimatedCharacterModel.OnFootstepPlayed -= Handlers.Player.OnMakingNoise;
 
             EventManager.UnregisterEvents<Handlers.Warhead>(this);
+            EventManager.UnregisterEvents<Handlers.Player>(this);
         }
 
         /// <summary>

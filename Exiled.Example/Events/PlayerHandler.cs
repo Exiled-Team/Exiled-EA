@@ -16,7 +16,7 @@ namespace Exiled.Example.Events
     using Exiled.Events.EventArgs.Player;
     using Exiled.Events.EventArgs.Scp106;
     using Exiled.Events.EventArgs.Scp914;
-
+    using MapGeneration.Distributors;
     using MEC;
     using PlayerRoles;
     using UnityEngine;
@@ -109,7 +109,7 @@ namespace Exiled.Example.Events
             ev.Player.Broadcast(Instance.Config.JoinedBroadcast.Duration, Instance.Config.JoinedBroadcast.Content, Instance.Config.JoinedBroadcast.Type, false);
         }
 
-        /// <inheritdoc cref="Exiled.Events.Handlers.Player.OnUnlockingGenerator(UnlockingGeneratorEventArgs)"/>
+        /// <inheritdoc cref="Exiled.Events.Handlers.Player.UnlockingGenerator"/>
         public void OnUnlockingGenerator(UnlockingGeneratorEventArgs ev)
         {
             Log.Info($"{ev.Player.Nickname} is trying to unlock a generator in {ev.Player.CurrentRoom} room");
