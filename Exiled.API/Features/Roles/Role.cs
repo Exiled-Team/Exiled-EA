@@ -244,7 +244,7 @@ namespace Exiled.API.Features.Roles
             RoleTypeId.Scp106 => new Scp106Role(owner),
             RoleTypeId.Scp173 => new Scp173Role(owner),
             RoleTypeId.Scp939 => new Scp939Role(owner),
-            RoleTypeId.Spectator => new SpectatorRole(owner),
+            RoleTypeId.Spectator or RoleTypeId.Overwatch => new SpectatorRole(owner),
             RoleTypeId.None => new NoneRole(owner),
             _ => new GenericHumanRole(owner, type),
         };
