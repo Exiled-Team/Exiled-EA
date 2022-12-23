@@ -208,5 +208,10 @@ namespace Exiled.API.Enums
         /// Damage caused by <see cref="ItemType.ParticleDisruptor"/>.
         /// </summary>
         ParticleDisruptor,
+
+        /// <summary>
+        /// Damage caused by SCP-956.
+        /// </summary>
+        Scp956,
     }
 }

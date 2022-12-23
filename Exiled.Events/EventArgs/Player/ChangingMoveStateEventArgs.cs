@@ -40,6 +40,11 @@ namespace Exiled.Events.EventArgs.Player
         }
 
         /// <summary>
+        ///     Gets the player who's changing the movement state.
+        /// </summary>
+        public Player Player { get; }
+
+        /// <summary>
         ///     Gets the old state.
         /// </summary>
         public PlayerMovementState OldState { get; }
@@ -53,10 +58,5 @@ namespace Exiled.Events.EventArgs.Player
         ///     Gets or sets a value indicating whether the player can change the movement state.
         /// </summary>
         public bool IsAllowed { get; set; }
-
-        /// <summary>
-        ///     Gets the player who's changing the movement state.
-        /// </summary>
-        public Player Player { get; }
     }
 }

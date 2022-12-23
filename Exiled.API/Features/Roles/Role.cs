@@ -11,6 +11,7 @@ namespace Exiled.API.Features.Roles
     using System.Diagnostics;
 
     using Enums;
+    using Exiled.API.Features.Spawn;
     using Extensions;
     using PlayerRoles;
     using PlayerRoles.PlayableScps.Scp049.Zombies;
@@ -197,6 +198,12 @@ namespace Exiled.API.Features.Roles
         /// <param name="newRole">The new <see cref="RoleTypeId"/> to be set.</param>
         /// <param name="reason">The <see cref="SpawnReason"/> defining why the player's role was changed.</param>
         public virtual void Set(RoleTypeId newRole, SpawnReason reason = Enums.SpawnReason.ForceClass) => Owner.RoleManager.ServerSetRole(newRole, (RoleChangeReason)reason);
+
+        /// <summary>
+        /// Gets a random spawn position of this role.
+        /// </summary>
+        /// <returns>The spawn position.</returns>
+        public virtual SpawnLocation RandomSpawnLocation => Type.GetRandomSpawnPosition();
 
         /// <summary>
         /// Creates a role from <see cref="RoleTypeId"/> and <see cref="Player"/>.
