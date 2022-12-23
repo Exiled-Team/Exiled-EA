@@ -13,7 +13,7 @@ namespace Exiled.API.Features.Spawn
     /// <summary>
     /// Represents a spawn location for a <see cref="Roles.Role"/>.
     /// </summary>
-    public class SpawnPosition
+    public class SpawnLocation
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="SpawnLocation"/> class.
