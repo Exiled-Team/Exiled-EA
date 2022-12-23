@@ -227,7 +227,7 @@ namespace Exiled.API.Features.Roles
         /// Gets a random spawn position of this role.
         /// </summary>
         /// <returns>The spawn position.</returns>
-        public virtual SpawnPosition GetRandomSpawnPosition() => Type.GetRandomSpawnPosition();
+        public virtual SpawnPosition RandomSpawnPosition => Type.GetRandomSpawnPosition();
 
         /// <summary>
         /// Creates a role from <see cref="RoleTypeId"/> and <see cref="Player"/>.
