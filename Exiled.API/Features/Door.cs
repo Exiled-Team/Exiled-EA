@@ -290,6 +290,29 @@ namespace Exiled.API.Features
         public static Door Get(DoorType doorType) => List.FirstOrDefault(x => x.Type == doorType);
 
         /// <summary>
+        /// Returns the closest <see cref="Door"/> to the given <paramref name="position"/>.
+        /// </summary>
+        /// <param name="position">The <see cref="Vector3">position</see> to find the closest door to.</param>
+        /// <param name="distance">The distance between the door and the point.</param>
+        /// <returns>The door closest to the provided position.</returns>
+        public static Door GetClosest(Vector3 position, out float distance)
+        {
+            distance = 9999f;
+            Door doorToReturn = null;
+            foreach (Door door in List)
+            {
+                float doorDistance = Vector3.Distance(position, door.Position);
+                if (doorDistance < distance)
+                {
+                    doorToReturn = door;
+                    distance = doorDistance;
+                }
+            }
+
+            return doorToReturn;
+        }
+
+        /// <summary>
         /// Gets a random <see cref="Door"/>.
         /// </summary>
         /// <param name="type">Filters by <see cref="ZoneType"/>.</param>
