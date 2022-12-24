@@ -966,9 +966,7 @@ namespace Exiled.Events.Handlers
         public bool OnUnlockingGenerator(PluginAPI.Core.Player player, Scp079Generator generator)
         {
             UnlockingGeneratorEventArgs ev = new(player, generator);
-            UnlockingGenerator.InvokeSafely(ev);
-
-            if (!ev.IsAllowed)
+            if (!UnlockingGenerator.InvokeSafely(ev))
                 ev.Generator.DenyUnlockAndResetCooldown();
 
             return ev.IsAllowed;
@@ -984,9 +982,7 @@ namespace Exiled.Events.Handlers
         public bool OnOpeningGenerator(PluginAPI.Core.Player player, Scp079Generator generator)
         {
             OpeningGeneratorEventArgs ev = new(player, generator);
-            OpeningGenerator.InvokeSafely(ev);
-
-            if (!ev.IsAllowed)
+            if (!OpeningGenerator.InvokeSafely(ev))
                 ev.Generator.DenyUnlockAndResetCooldown();
 
             return ev.IsAllowed;
@@ -1002,9 +998,7 @@ namespace Exiled.Events.Handlers
         public bool OnClosingGenerator(PluginAPI.Core.Player player, Scp079Generator generator)
         {
             ClosingGeneratorEventArgs ev = new(player, generator);
-            ClosingGenerator.InvokeSafely(ev);
-
-            if (!ev.IsAllowed)
+            if (!ClosingGenerator.InvokeSafely(ev))
                 ev.Generator.DenyUnlockAndResetCooldown();
 
             return ev.IsAllowed;
@@ -1020,9 +1014,7 @@ namespace Exiled.Events.Handlers
         public bool OnActivatingGenerator(PluginAPI.Core.Player player, Scp079Generator generator)
         {
             ActivatingGeneratorEventArgs ev = new(player, generator);
-            ActivatingGenerator.InvokeSafely(ev);
-
-            if (!ev.IsAllowed)
+            if (!ActivatingGenerator.InvokeSafely(ev))
                 ev.Generator.DenyUnlockAndResetCooldown();
 
             return ev.IsAllowed;
@@ -1038,9 +1030,7 @@ namespace Exiled.Events.Handlers
         public bool OnStoppingGenerator(PluginAPI.Core.Player player, Scp079Generator generator)
         {
             StoppingGeneratorEventArgs ev = new(player, generator);
-            StoppingGenerator.InvokeSafely(ev);
-
-            if (!ev.IsAllowed)
+            if (!StoppingGenerator.InvokeSafely(ev))
                 ev.Generator.DenyUnlockAndResetCooldown();
 
             return ev.IsAllowed;
