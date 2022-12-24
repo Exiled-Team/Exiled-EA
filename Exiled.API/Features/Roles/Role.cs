@@ -90,6 +90,16 @@ namespace Exiled.API.Features.Roles
         public TimeSpan ActiveTime => TimeSpan.FromSeconds((double)Base.ActiveTime);
 
         /// <summary>
+        /// Gets a value indicating whether or not this role represents a dead role.
+        /// </summary>
+        public bool IsDead => Team is Team.Dead;
+
+        /// <summary>
+        /// Gets a value indicating whether or not this role represents a living role.
+        /// </summary>
+        public bool IsAlive => !IsDead;
+
+        /// <summary>
         /// Gets a value indicating whether or not this role is still valid. This will only ever be <see langword="false"/> if the Role is stored and accessed at a later date.
         /// </summary>
         public bool IsValid => Type == Owner.RoleManager.CurrentRole.RoleTypeId;
