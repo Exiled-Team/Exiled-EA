@@ -24,7 +24,7 @@ namespace Exiled.Events.Extensions
         /// <param name="ev">Source event.</param>
         /// <param name="arg">Event arg.</param>
         /// <exception cref="ArgumentNullException">Event or its arg is <see langword="null"/>.</exception>
-        /// <returns>Returns a value indicating whether the event is allowed to be executed or not.</returns>
+        /// <returns>Returns a value indicating whether the game code after the event is allowed to be executed or not.</returns>
         public static bool InvokeSafely<T>(this Events.CustomEventHandler<T> ev, T arg)
             where T : IExiledEvent
         {
