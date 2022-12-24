@@ -101,11 +101,6 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
-        /// Finalizes an instance of the <see cref="Player"/> class.
-        /// </summary>
-        ~Player() => HashSetPool<int>.Shared.Return(TargetGhostsHashSet);
-
-        /// <summary>
         /// Gets a <see cref="Dictionary{TKey, TValue}"/> containing all <see cref="Player"/>'s on the server.
         /// </summary>
         public static Dictionary<GameObject, Player> Dictionary { get; } = new(Server.MaxPlayerCount, new ReferenceHub.GameObjectComparer());
@@ -347,11 +342,6 @@ namespace Exiled.API.Features
         /// Gets a value indicating whether or not the player has a reserved slot.
         /// </summary>
         public bool HasReservedSlot => ReservedSlot.HasReservedSlot(UserId, out _);
-
-        /// <summary>
-        /// Gets a list of player ids who can't see the player.
-        /// </summary>
-        public HashSet<int> TargetGhostsHashSet { get; } = HashSetPool<int>.Shared.Rent();
 
         /// <summary>
         /// Gets a value indicating whether or not the player has Remote Admin access.
@@ -953,6 +943,13 @@ namespace Exiled.API.Features
         /// Gets a dictionary for storing player objects of connected but not yet verified players.
         /// </summary>
         internal static ConditionalWeakTable<ReferenceHub, Player> UnverifiedPlayers { get; } = new();
+
+        /// <summary>
+        /// Converts NwPluginAPI player to EXILED player.
+        /// </summary>
+        /// <param name="player">The NwPluginAPI player.</param>
+        /// <returns>EXILED player.</returns>
+        public static implicit operator Player(PluginAPI.Core.Player player) => Get(player);
 
         /// <summary>
         /// Gets a <see cref="Player"/> <see cref="IEnumerable{T}"/> filtered by side. Can be empty.
@@ -2996,12 +2993,5 @@ namespace Exiled.API.Features
         /// </summary>
         /// <returns>A string containing Player-related data.</returns>
         public override string ToString() => $"{Id} ({Nickname}) [{UserId}] *{(Role is null ? "No role" : Role)}*";
-
-        /// <summary>
-        /// Converts NwPluginAPI player to EXILED player.
-        /// </summary>
-        /// <param name="player">The NwPluginAPI player.</param>
-        /// <returns>EXILED player.</returns>
-        public static implicit operator Player(PluginAPI.Core.Player player) => Get(player);
     }
 }
