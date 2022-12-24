@@ -543,21 +543,13 @@ namespace Exiled.Events.Handlers
         /// Called after a <see cref="API.Features.Player"/> has joined the server.
         /// </summary>
         [PluginEvent(ServerEventType.PlayerJoined)]
-        public void OnJoined(PluginAPI.Core.Player player)
-        {
-            JoinedEventArgs ev = new(player);
-            Joined.InvokeSafely(ev);
-        }
+        public void OnJoined(PluginAPI.Core.Player player) => Joined.InvokeSafely(new(player));
 
         /// <summary>
         /// Called after a <see cref="API.Features.Player"/> has been verified.
         /// </summary>
         [PluginEvent(ServerEventType.PlayerJoined)]
-        public void OnVerified(PluginAPI.Core.Player player)
-        {
-            VerifiedEventArgs ev = new(player);
-            Verified.InvokeSafely(ev);
-        }
+        public void OnVerified(PluginAPI.Core.Player player) => Verified.InvokeSafely(new(player));
 
         /// <summary>
         /// Called after a <see cref="API.Features.Player"/> has left the server.
@@ -570,33 +562,19 @@ namespace Exiled.Events.Handlers
         /// </summary>
         /// <param name="ev">The <see cref="DestroyingEventArgs"/> instance.</param>
         [PluginEvent(ServerEventType.PlayerLeft)]
-        public static void OnDestroying(PluginAPI.Core.Player player)
-        {
-            DestroyingEventArgs ev = new(player);
-            Destroying.InvokeSafely(ev);
-        }
+        public static void OnDestroying(PluginAPI.Core.Player player) => Destroying.InvokeSafely(new(player));
 
         /// <summary>
         /// Called before hurting a player.
         /// </summary>
         [PluginEvent(ServerEventType.PlayerDamage)]
-        public bool OnHurting(PluginAPI.Core.Player player, PluginAPI.Core.Player target, PlayerStatsSystem.DamageHandlerBase damageHandler)
-        {
-            HurtingEventArgs ev = new(target, damageHandler);
-            Hurting.InvokeSafely(ev);
-            return ev.IsAllowed;
-        }
+        public bool OnHurting(PluginAPI.Core.Player player, PluginAPI.Core.Player target, PlayerStatsSystem.DamageHandlerBase damageHandler) => Hurting.InvokeSafely(new(target, damageHandler));
 
         /// <summary>
         /// Called before a <see cref="API.Features.Player"/> dies.
         /// </summary>
         [PluginEvent(ServerEventType.PlayerDeath)]
-        public bool OnDying(PluginAPI.Core.Player player, PluginAPI.Core.Player attacker, PlayerStatsSystem.DamageHandlerBase damageHandler)
-        {
-            DyingEventArgs ev = new(player, damageHandler);
-            Dying.InvokeSafely(ev);
-            return ev.IsAllowed;
-        }
+        public bool OnDying(PluginAPI.Core.Player player, PluginAPI.Core.Player attacker, PlayerStatsSystem.DamageHandlerBase damageHandler) => Dying.InvokeSafely(new (player, damageHandler));
 
         /// <summary>
         /// Called after a <see cref="API.Features.Player"/> died.
@@ -743,13 +721,8 @@ namespace Exiled.Events.Handlers
         /// Called before a <see cref="API.Features.Player"/> interacts with a door.
         /// </summary>
         [PluginEvent(ServerEventType.PlayerInteractDoor)]
-        public bool OnInteractingDoor(PluginAPI.Core.Player player, Interactables.Interobjects.DoorUtils.DoorVariant doorVariant, bool canOpen)
-        {
-            // TODO: NWAPI supports skipping permission check, so player can change door's TargetStatus even if it doesn't met the keycard permissions. EXILED should implement that too.
-            InteractingDoorEventArgs ev = new(player, doorVariant);
-            InteractingDoor.InvokeSafely(ev);
-            return ev.IsAllowed;
-        }
+        // TODO: NWAPI supports skipping permission check, so player can change door's TargetStatus even if it doesn't met the keycard permissions. EXILED should implement that too.
+        public bool OnInteractingDoor(PluginAPI.Core.Player player, Interactables.Interobjects.DoorUtils.DoorVariant doorVariant, bool canOpen) => InteractingDoor.InvokeSafely(new(player, doorVariant));
 
         /// <summary>
         /// Called before a <see cref="API.Features.Player"/> interacts with an elevator.
@@ -784,23 +757,13 @@ namespace Exiled.Events.Handlers
         /// Called before muting a user.
         /// </summary>
         [PluginEvent(ServerEventType.PlayerMuted)]
-        public bool OnIssuingMute(PluginAPI.Core.Player player, bool isIntercom)
-        {
-            IssuingMuteEventArgs ev = new(player, isIntercom);
-            IssuingMute.InvokeSafely(ev);
-            return ev.IsAllowed;
-        }
+        public bool OnIssuingMute(PluginAPI.Core.Player player, bool isIntercom) => IssuingMute.InvokeSafely(new(player, isIntercom));
 
         /// <summary>
         /// Called before unmuting a user.
         /// </summary>
         [PluginEvent(ServerEventType.PlayerUnmuted)]
-        public bool OnRevokingMute(PluginAPI.Core.Player player, bool isIntercom)
-        {
-            RevokingMuteEventArgs ev = new(player, isIntercom);
-            RevokingMute.InvokeSafely(ev);
-            return ev.IsAllowed;
-        }
+        public bool OnRevokingMute(PluginAPI.Core.Player player, bool isIntercom) => RevokingMute.InvokeSafely(new(player, isIntercom));
 
         /// <summary>
         /// Called before a user's radio battery charge is changed.
@@ -812,12 +775,7 @@ namespace Exiled.Events.Handlers
         /// Called before a user's radio preset is changed.
         /// </summary>
         [PluginEvent(ServerEventType.PlayerChangeRadioRange)]
-        public bool OnChangingRadioPreset(PluginAPI.Core.Player player, RadioItem radio, byte range)
-        {
-            ChangingRadioPresetEventArgs ev = new(player, radio.RangeLevel, (RadioMessages.RadioRangeLevel)range);
-            ChangingRadioPreset.InvokeSafely(ev);
-            return ev.IsAllowed;
-        }
+        public bool OnChangingRadioPreset(PluginAPI.Core.Player player, RadioItem radio, byte range) => ChangingRadioPreset.InvokeSafely(new(player, radio.RangeLevel, (RadioMessages.RadioRangeLevel)range));
 
         /// <summary>
         /// Called before a <see cref="API.Features.Player"/> MicroHID state is changed.
@@ -843,12 +801,7 @@ namespace Exiled.Events.Handlers
         /// Called before dropping ammo.
         /// </summary>
         [PluginEvent(ServerEventType.PlayerDropAmmo)]
-        public bool OnDroppingAmmo(PluginAPI.Core.Player player, ItemType item, int amount)
-        {
-            DroppingAmmoEventArgs ev = new(player, item.GetAmmoType(), (ushort)amount);
-            DroppingAmmo.InvokeSafely(ev);
-            return ev.IsAllowed;
-        }
+        public bool OnDroppingAmmo(PluginAPI.Core.Player player, ItemType item, int amount) => DroppingAmmo.InvokeSafely(new(player, item.GetAmmoType(), (ushort)amount));
 
         /// <summary>
         /// Called before a <see cref="API.Features.Player"/> interacts with a shooting target.
@@ -1013,7 +966,6 @@ namespace Exiled.Events.Handlers
         public bool OnUnlockingGenerator(PluginAPI.Core.Player player, Scp079Generator generator)
         {
             UnlockingGeneratorEventArgs ev = new(player, generator);
-
             UnlockingGenerator.InvokeSafely(ev);
 
             if (!ev.IsAllowed)
@@ -1032,7 +984,6 @@ namespace Exiled.Events.Handlers
         public bool OnOpeningGenerator(PluginAPI.Core.Player player, Scp079Generator generator)
         {
             OpeningGeneratorEventArgs ev = new(player, generator);
-
             OpeningGenerator.InvokeSafely(ev);
 
             if (!ev.IsAllowed)
@@ -1051,7 +1002,6 @@ namespace Exiled.Events.Handlers
         public bool OnClosingGenerator(PluginAPI.Core.Player player, Scp079Generator generator)
         {
             ClosingGeneratorEventArgs ev = new(player, generator);
-
             ClosingGenerator.InvokeSafely(ev);
 
             if (!ev.IsAllowed)
@@ -1070,7 +1020,6 @@ namespace Exiled.Events.Handlers
         public bool OnActivatingGenerator(PluginAPI.Core.Player player, Scp079Generator generator)
         {
             ActivatingGeneratorEventArgs ev = new(player, generator);
-
             ActivatingGenerator.InvokeSafely(ev);
 
             if (!ev.IsAllowed)
@@ -1089,7 +1038,6 @@ namespace Exiled.Events.Handlers
         public bool OnStoppingGenerator(PluginAPI.Core.Player player, Scp079Generator generator)
         {
             StoppingGeneratorEventArgs ev = new(player, generator);
-
             StoppingGenerator.InvokeSafely(ev);
 
             if (!ev.IsAllowed)
