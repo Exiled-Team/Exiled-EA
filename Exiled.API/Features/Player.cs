@@ -25,6 +25,7 @@ namespace Exiled.API.Features
     using InventorySystem;
     using InventorySystem.Disarming;
     using InventorySystem.Items;
+    using InventorySystem.Items.Armor;
     using InventorySystem.Items.Firearms;
     using InventorySystem.Items.Firearms.Attachments;
     using InventorySystem.Items.Firearms.BasicMessages;
@@ -762,8 +763,9 @@ namespace Exiled.API.Features
         public IEnumerable<AhpStat.AhpProcess> ActiveArtificialHealthProcesses => ((AhpStat)ReferenceHub.playerStats.StatModules[1])._activeProcesses;
 
         /// <summary>
-        /// Gets or sets the item in the player's hand, returns the default value if empty.
+        /// Gets or sets the item in the player's hand. Value will be <see langword="null"/> if the player is not holding anything.
         /// </summary>
+        /// <seealso cref="DropHeldItem"/>
         public Item CurrentItem
         {
             get => Item.Get(Inventory.CurInstance);
@@ -781,6 +783,11 @@ namespace Exiled.API.Features
                 Timing.CallDelayed(0.5f, () => Inventory.ServerSelectItem(value.Serial));
             }
         }
+
+        /// <summary>
+        /// Gets the armor that the player is currently wearing. Value will be <see langword="null"/> if the player is not wearing any armor.
+        /// </summary>
+        public Armor CurrentArmor => Inventory.TryGetBodyArmor(out BodyArmor armor) ? (Armor)Item.Get(armor) : null;
 
         /// <summary>
         /// Gets the <see cref="StaminaStat"/> class.
@@ -814,6 +821,11 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets all currently active <see cref="StatusEffectBase"> effects</see>.
         /// </summary>
+        /// <seealso cref="EnableEffect(EffectType, float, bool)"/>
+        /// <seealso cref="EnableEffect(StatusEffectBase, float, bool)"/>
+        /// <seealso cref="EnableEffect(string, float, bool)"/>
+        /// <seealso cref="EnableEffect{T}(float, bool)"/>
+        /// <seealso cref="EnableEffects(IEnumerable{EffectType}, float, bool)"/>
         public IEnumerable<StatusEffectBase> ActiveEffects => referenceHub.playerEffectsController.AllEffects.Where(effect => effect.Intensity > 0);
 
         /// <summary>
@@ -844,7 +856,7 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
-        /// Gets the global badge of the player, can be <see langword="null"/> if none.
+        /// Gets the global badge of the player. Value will be <see langword="null"/> if the player does not have a global badge.
         /// </summary>
         public Badge? GlobalBadge
         {
@@ -875,12 +887,12 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
-        /// Gets a value indicating whether or not a player is Northwood staff.
+        /// Gets a value indicating whether or not the player is Northwood staff.
         /// </summary>
         public bool IsNorthwoodStaff => ReferenceHub.serverRoles.Staff;
 
         /// <summary>
-        /// Gets a value indicating whether or not a player is a global moderator.
+        /// Gets a value indicating whether or not the player is a global moderator.
         /// </summary>
         public bool IsGlobalModerator => ReferenceHub.serverRoles.RaEverywhere;
 
