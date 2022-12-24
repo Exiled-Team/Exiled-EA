@@ -66,7 +66,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets the door's <see cref="UnityEngine.Transform"/>.
         /// </summary>
-        public Transform Transform => GameObject.transform;
+        public Transform Transform => Base.transform;
 
         /// <summary>
         /// Gets the <see cref="DoorType"/> of the door.

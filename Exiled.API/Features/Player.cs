@@ -184,6 +184,11 @@ namespace Exiled.API.Features
         public GameObject GameObject { get; private set; }
 
         /// <summary>
+        /// Gets the <see cref="ReferenceHub"/>'s <see cref="UnityEngine.Transform"/>.
+        /// </summary>
+        public Transform Transform => ReferenceHub.transform;
+
+        /// <summary>
         /// Gets a value indicating whether or not the player is viewing a hint.
         /// </summary>
         public bool HasHint { get; internal set; }
@@ -406,7 +411,7 @@ namespace Exiled.API.Features
         /// </summary>
         public Vector3 Position
         {
-            get => GameObject.transform.position;
+            get => ReferenceHub.transform.position;
             set => ReferenceHub.TryOverridePosition(value, Vector3.zero);
         }
 
@@ -416,7 +421,7 @@ namespace Exiled.API.Features
         /// <returns>Returns the direction the player is looking at.</returns>
         public Vector3 Rotation
         {
-            get => GameObject.transform.eulerAngles;
+            get => ReferenceHub.transform.eulerAngles;
             set => ReferenceHub.TryOverridePosition(Position, value - Rotation);
         }
 

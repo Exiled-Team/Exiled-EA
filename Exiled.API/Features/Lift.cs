@@ -81,7 +81,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets the lift's <see cref="UnityEngine.Transform"/>.
         /// </summary>
-        public Transform Transform => GameObject.transform;
+        public Transform Transform => Base.transform;
 
         /// <summary>
         /// Gets or sets the lift's position.
