@@ -421,7 +421,7 @@ namespace Exiled.API.Features
         /// <returns>Returns the direction the player is looking at.</returns>
         public Vector3 Rotation
         {
-            get => ReferenceHub.transform.eulerAngles;
+            get => Transform.eulerAngles;
             set => ReferenceHub.TryOverridePosition(Position, value - Rotation);
         }
 
