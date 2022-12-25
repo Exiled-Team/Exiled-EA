@@ -48,10 +48,8 @@ namespace Exiled.Events.Patches.Events.Player
             LocalBuilder ev = generator.DeclareLocal(typeof(ChangingRoleEventArgs));
             LocalBuilder player = generator.DeclareLocal(typeof(API.Features.Player));
 
-            int offset = 2;
+            int offset = -2;
             int index = newInstructions.FindIndex(instruction => instruction.Calls(Method(typeof(PlayerRoleManager), nameof(PlayerRoleManager.GetRoleBase)))) + offset;
-
-            newInstructions[index].WithLabels(continueLabel);
 
             newInstructions.InsertRange(
                 index,
@@ -61,7 +59,7 @@ namespace Exiled.Events.Patches.Events.Player
                     //
                     // if (player == null)
                     //    goto continueLabel;
-                    new CodeInstruction(OpCodes.Ldarg_0),
+                    new CodeInstruction(OpCodes.Ldarg_0).MoveLabelsFrom(newInstructions[index]),
                     new(OpCodes.Call, PropertyGetter(typeof(PlayerRoleManager), nameof(PlayerRoleManager.Hub))),
                     new(OpCodes.Call, Method(typeof(API.Features.Player), nameof(API.Features.Player.Get), new[] { typeof(ReferenceHub) })),
                     new(OpCodes.Dup),
@@ -86,7 +84,7 @@ namespace Exiled.Events.Patches.Events.Player
                     // reason
                     new(OpCodes.Ldarg_2),
 
-                    // var ev = new ChangingRoleEventArgs(Player, RoleTypeId, RoleChangeReason)
+                    // ChangingRoleEventArgs ev = new(Player, RoleTypeId, RoleChangeReason)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(ChangingRoleEventArgs))[0]),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),
@@ -148,6 +146,8 @@ namespace Exiled.Events.Patches.Events.Player
 
                     // ChangingRole.ChangeInventory(ev.Player, ev.Items, ev.Ammo, currentRole, newRole, reason);
                     new(OpCodes.Call, Method(typeof(ChangingRole), nameof(ChangeInventory))),
+
+                    new CodeInstruction(OpCodes.Nop).WithLabels(continueLabel),
                 });
 
             offset = 1;
@@ -164,10 +164,9 @@ namespace Exiled.Events.Patches.Events.Player
                     new CodeInstruction(OpCodes.Ldloc_S, player.LocalIndex),
                     new(OpCodes.Brfalse_S, continueLabel1),
 
-                    // player.Role = Role.Create(roleType, player);
+                    // player.Role = Role.Create(roleBase);
                     new CodeInstruction(OpCodes.Ldloc_S, player.LocalIndex),
-                    new(OpCodes.Dup),
-                    new(OpCodes.Ldarg_1),
+                    new(OpCodes.Ldloc_2),
                     new(OpCodes.Call, Method(typeof(Role), nameof(Role.Create))),
                     new(OpCodes.Callvirt, PropertySetter(typeof(API.Features.Player), nameof(API.Features.Player.Role))),
                 });

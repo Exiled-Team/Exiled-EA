@@ -49,7 +49,7 @@ namespace Exiled.Events.Patches.Generic
                 try
                 {
                     logMessage =
-                        $"[{DateTime.Now}] {(player == Server.Host ? "Server Console" : $"{player.Nickname} ({player.UserId}) {player.IPAddress}")}" +
+                        $"[{DateTime.Now}] {(player == Server.Host ? "Server Console" : $"{player?.Nickname} ({player?.UserId}) {player?.IPAddress}")}" +
                         $" has run the command {query}.\n";
                 }
                 catch (Exception exception)

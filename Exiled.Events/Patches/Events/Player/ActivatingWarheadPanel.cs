@@ -131,7 +131,7 @@ namespace Exiled.Events.Patches.Events.Player
                     // isAllowed
                     new(OpCodes.Ldloc_S, isAllowed.LocalIndex),
 
-                    // var ev = new ActivatingWarheadPanelEventArgs(Player, bool)
+                    // ActivatingWarheadPanelEventArgs ev = new(Player, bool)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(ActivatingWarheadPanelEventArgs))[0]),
                     new(OpCodes.Dup),
 

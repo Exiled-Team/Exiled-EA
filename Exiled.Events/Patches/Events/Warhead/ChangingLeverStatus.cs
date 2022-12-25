@@ -52,7 +52,7 @@ namespace Exiled.Events.Patches.Events.Warhead
                     // true
                     new(OpCodes.Ldc_I4_1),
 
-                    // var ev = new ChangingLeverStatusEventArgs(Player, bool, bool)
+                    // ChangingLeverStatusEventArgs ev = new(Player, bool, bool)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(ChangingLeverStatusEventArgs))[0]),
                     new(OpCodes.Dup),
 

@@ -20,7 +20,7 @@ namespace Exiled.Events.Patches.Events.Player
 
     using static HarmonyLib.AccessTools;
 
-    using Player = Exiled.API.Features.Player;
+    using Player = API.Features.Player;
 
     /// <summary>
     ///     Patches <see cref="Intercom.Update" />.
@@ -50,7 +50,7 @@ namespace Exiled.Events.Patches.Events.Player
                     // true
                     new(OpCodes.Ldc_I4_1),
 
-                    // var ev = new IntercomSpeakingEventArgs(Player, bool)
+                    // IntercomSpeakingEventArgs ev = new(Player, bool)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(IntercomSpeakingEventArgs))[0]),
                     new(OpCodes.Dup),
 

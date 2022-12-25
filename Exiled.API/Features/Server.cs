@@ -13,12 +13,11 @@ namespace Exiled.API.Features
 
     using CustomPlayerEffects;
     using GameCore;
+    using Interfaces;
     using MEC;
-
     using Mirror;
     using PlayerRoles.RoleAssign;
     using RoundRestarting;
-
     using UnityEngine;
 
     /// <summary>
@@ -27,6 +26,11 @@ namespace Exiled.API.Features
     public static class Server
     {
         private static MethodInfo sendSpawnMessage;
+
+        /// <summary>
+        /// Gets a dictionary that pairs assemblies with their associated plugins.
+        /// </summary>
+        public static Dictionary<Assembly, IPlugin<IConfig>> PluginAssemblies { get; } = new();
 
         /// <summary>
         /// Gets the player's host of the server.
@@ -101,6 +105,11 @@ namespace Exiled.API.Features
         /// Gets the actual ticks per second of the server.
         /// </summary>
         public static double Tps => Math.Round(1f / Time.smoothDeltaTime);
+
+        /// <summary>
+        /// Gets the actual frametime of the server.
+        /// </summary>
+        public static double Frametime => Math.Round(1f / Time.deltaTime);
 
         /// <summary>
         /// Gets or sets a value indicating whether or not friendly fire is enabled.

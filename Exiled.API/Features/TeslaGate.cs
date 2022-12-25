@@ -24,20 +24,25 @@ namespace Exiled.API.Features
     public class TeslaGate
     {
         /// <summary>
-        /// A <see cref="List{T}"/> of <see cref="TeslaGate"/> on the map.
+        /// A <see cref="Dictionary{TKey,TValue}"/> containing all known <see cref="BaseTeslaGate"/>s and their corresponding <see cref="TeslaGate"/>.
         /// </summary>
-        internal static readonly List<TeslaGate> TeslasValue = new(10);
+        internal static readonly Dictionary<BaseTeslaGate, TeslaGate> BaseTeslaGateToTeslaGate = new(10);
+        private Room room;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TeslaGate"/> class.
         /// </summary>
         /// <param name="baseTeslaGate">The <see cref="BaseTeslaGate"/> instance.</param>
-        internal TeslaGate(BaseTeslaGate baseTeslaGate) => Base = baseTeslaGate;
+        internal TeslaGate(BaseTeslaGate baseTeslaGate)
+        {
+            Base = baseTeslaGate;
+            BaseTeslaGateToTeslaGate.Add(baseTeslaGate, this);
+        }
 
         /// <summary>
         /// Gets a <see cref="IEnumerable{T}"/> of <see cref="TeslaGate"/> which contains all the <see cref="TeslaGate"/> instances.
         /// </summary>
-        public static IEnumerable<TeslaGate> List => TeslasValue;
+        public static IEnumerable<TeslaGate> List => BaseTeslaGateToTeslaGate.Values;
 
         /// <summary>
         /// Gets or sets a <see cref="HashSet{T}"/> of <see cref="Player"/> which contains all the players ignored by tesla gates.
@@ -82,7 +87,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets the tesla gate's <see cref="Features.Room"/> which is located in.
         /// </summary>
-        public Room Room => Map.FindParentRoom(GameObject);
+        public Room Room => room ??= Map.FindParentRoom(GameObject);
 
         /// <summary>
         /// Gets a value indicating whether or not the tesla gate's shock burst is in progess.
@@ -193,7 +198,9 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="baseTeslaGate">The <see cref="BaseTeslaGate"/> instance.</param>
         /// <returns>The corresponding <see cref="TeslaGate"/> instance.</returns>
-        public static TeslaGate Get(BaseTeslaGate baseTeslaGate) => List.FirstOrDefault(teslaGate => teslaGate.Base == baseTeslaGate);
+        public static TeslaGate Get(BaseTeslaGate baseTeslaGate) => BaseTeslaGateToTeslaGate.TryGetValue(baseTeslaGate, out TeslaGate teslagate) ?
+            teslagate :
+            new(baseTeslaGate);
 
         /// <summary>
         /// Gets a <see cref="IEnumerable{T}"/> of <see cref="TeslaGate"/> filtered based on a predicate.

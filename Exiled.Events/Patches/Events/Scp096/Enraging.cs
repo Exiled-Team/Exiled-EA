@@ -64,7 +64,7 @@ namespace Exiled.Events.Patches.Events.Scp096
                     // true
                     new(OpCodes.Ldc_I4_1),
 
-                    // var ev = EnragingEventArgs(Scp096Role, Player, float, bool)
+                    // EnragingEventArgs ev = new(Scp096Role, Player, float, bool)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(EnragingEventArgs))[0]),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),

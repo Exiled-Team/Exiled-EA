@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------
-// <copyright file="SpawnLocation.cs" company="Exiled Team">
+// <copyright file="SpawnLocationType.cs" company="Exiled Team">
 // Copyright (c) Exiled Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
@@ -8,9 +8,9 @@
 namespace Exiled.API.Enums
 {
     /// <summary>
-    /// All of the valid spawn locations.
+    /// All of the valid spawn location types.
     /// </summary>
-    public enum SpawnLocation
+    public enum SpawnLocationType
     {
         /// <summary>
         /// The inside of 012's hallway door.

@@ -180,9 +180,9 @@ namespace Exiled.CustomRoles.API.Features
                 {
                     CustomRole customRole = null;
 
-                    if (!skipReflection && Loader.PluginAssemblies.ContainsKey(assembly))
+                    if (!skipReflection && Server.PluginAssemblies.ContainsKey(assembly))
                     {
-                        IPlugin<IConfig> plugin = Loader.PluginAssemblies[assembly];
+                        IPlugin<IConfig> plugin = Server.PluginAssemblies[assembly];
 
                         foreach (PropertyInfo property in overrideClass?.GetType().GetProperties() ?? plugin.Config.GetType().GetProperties())
                         {
@@ -234,9 +234,9 @@ namespace Exiled.CustomRoles.API.Features
                 {
                     CustomRole customRole = null;
 
-                    if (!skipReflection && Loader.PluginAssemblies.ContainsKey(assembly))
+                    if (!skipReflection && Server.PluginAssemblies.ContainsKey(assembly))
                     {
-                        IPlugin<IConfig> plugin = Loader.PluginAssemblies[assembly];
+                        IPlugin<IConfig> plugin = Server.PluginAssemblies[assembly];
 
                         foreach (PropertyInfo property in overrideClass?.GetType().GetProperties() ??
                                                           plugin.Config.GetType().GetProperties())
@@ -400,10 +400,10 @@ namespace Exiled.CustomRoles.API.Features
         {
             Vector3 oldPos = player.Position;
 
-            Log.Debug($"{Name}: Adding role to {player.Nickname}.", CustomRoles.Instance.Config.Debug);
+            Log.Debug($"{Name}: Adding role to {player.Nickname}.");
 
             if (Role != RoleTypeId.None)
-                player.SetRole(Role, SpawnReason.ForceClass);
+                player.Role.Set(Role, SpawnReason.ForceClass);
 
             Timing.CallDelayed(
                 1.5f,
@@ -411,41 +411,41 @@ namespace Exiled.CustomRoles.API.Features
                 {
                     Vector3 pos = GetSpawnPosition();
 
-                    Log.Debug($"{nameof(AddRole)}: Found {pos} to spawn {player.Nickname}", CustomRoles.Instance.Config.Debug);
+                    Log.Debug($"{nameof(AddRole)}: Found {pos} to spawn {player.Nickname}");
 
                     // If the spawn pos isn't 0,0,0, We add vector3.up * 1.5 here to ensure they do not spawn inside the ground and get stuck.
                     player.Position = oldPos;
                     if (pos != Vector3.zero)
                     {
-                        Log.Debug($"{nameof(AddRole)}: Setting {player.Nickname} position..", CustomRoles.Instance.Config.Debug);
+                        Log.Debug($"{nameof(AddRole)}: Setting {player.Nickname} position..");
                         player.Position = pos + (Vector3.up * 1.5f);
                     }
 
                     if (!KeepInventoryOnSpawn)
                     {
-                        Log.Debug($"{Name}: Clearing {player.Nickname}'s inventory.", CustomRoles.Instance.Config.Debug);
+                        Log.Debug($"{Name}: Clearing {player.Nickname}'s inventory.");
                         player.ClearInventory();
                     }
 
                     foreach (string itemName in Inventory)
                     {
-                        Log.Debug($"{Name}: Adding {itemName} to inventory.", CustomRoles.Instance.Config.Debug);
+                        Log.Debug($"{Name}: Adding {itemName} to inventory.");
                         TryAddItem(player, itemName);
                     }
 
                     foreach (AmmoType ammo in Ammo.Keys)
                     {
-                        Log.Debug($"{Name}: Adding {Ammo[ammo]} {ammo} to inventory.", CustomRoles.Instance.Config.Debug);
+                        Log.Debug($"{Name}: Adding {Ammo[ammo]} {ammo} to inventory.");
                         player.SetAmmo(ammo, Ammo[ammo]);
                     }
 
-                    Log.Debug($"{Name}: Setting health values.", CustomRoles.Instance.Config.Debug);
+                    Log.Debug($"{Name}: Setting health values.");
                     player.Health = MaxHealth;
                     player.MaxHealth = MaxHealth;
                     player.Scale = Scale;
                 });
 
-            Log.Debug($"{Name}: Setting player info", CustomRoles.Instance.Config.Debug);
+            Log.Debug($"{Name}: Setting player info");
             player.CustomInfo = CustomInfo;
             player.InfoArea &= ~PlayerInfoArea.Role;
             if (CustomAbilities is not null)
@@ -467,13 +467,13 @@ namespace Exiled.CustomRoles.API.Features
         /// <param name="player">The <see cref="Player"/> to remove the role from.</param>
         public virtual void RemoveRole(Player player)
         {
-            Log.Debug($"{Name}: Removing role from {player.Nickname}", CustomRoles.Instance.Config.Debug);
+            Log.Debug($"{Name}: Removing role from {player.Nickname}");
             TrackedPlayers.Remove(player);
             player.CustomInfo = string.Empty;
             player.InfoArea |= PlayerInfoArea.Role;
             player.Scale = Vector3.one;
             if (RemovalKillsPlayer)
-                player.SetRole(RoleTypeId.Spectator);
+                player.Role.Set(RoleTypeId.Spectator);
             foreach (CustomAbility ability in CustomAbilities)
             {
                 ability.RemoveAbility(player);
@@ -595,7 +595,7 @@ namespace Exiled.CustomRoles.API.Features
                 Registered.Add(this);
                 Init();
 
-                Log.Debug($"{Name} ({Id}) has been successfully registered.", CustomRoles.Instance.Config.Debug);
+                Log.Debug($"{Name} ({Id}) has been successfully registered.");
 
                 return true;
             }
@@ -700,7 +700,7 @@ namespace Exiled.CustomRoles.API.Features
         /// </summary>
         protected virtual void SubscribeEvents()
         {
-            Log.Debug($"{Name}: Loading events.", CustomRoles.Instance.Config.Debug);
+            Log.Debug($"{Name}: Loading events.");
             Exiled.Events.Handlers.Player.ChangingRole += OnInternalChangingRole;
             Exiled.Events.Handlers.Player.Dying += OnInternalDying;
         }
@@ -713,7 +713,7 @@ namespace Exiled.CustomRoles.API.Features
             foreach (Player player in TrackedPlayers)
                 RemoveRole(player);
 
-            Log.Debug($"{Name}: Unloading events.", CustomRoles.Instance.Config.Debug);
+            Log.Debug($"{Name}: Unloading events.");
             Exiled.Events.Handlers.Player.ChangingRole -= OnInternalChangingRole;
             Exiled.Events.Handlers.Player.Dying -= OnInternalDying;
         }

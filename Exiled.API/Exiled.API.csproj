@@ -18,6 +18,7 @@
 
     <ItemGroup>
         <PackageReference Include="StyleCop.Analyzers" Version="$(StyleCopVersion)" IncludeAssets="All" PrivateAssets="All" />
+        <PackageReference Include="System.Memory" Version="4.5.5" />
         <PackageReference Include="YamlDotNet" Version="$(YamlDotNetVersion)" />
         <PackageReference Include="Lib.Harmony" Version="$(HarmonyVersion)" />
     </ItemGroup>
@@ -37,10 +38,12 @@
     </ItemGroup>
 
     <PropertyGroup Condition=" '$(OS)' == 'Windows_NT' ">
-        <PostBuildEvent>if not "$(EXILED_DEV_REFERENCES)"=="" copy /y "$(OutputPath)$(AssemblyName).dll" "$(EXILED_DEV_REFERENCES)\Plugins\dependencies\"</PostBuildEvent>
+        <PostBuildEvent>if not "$(EXILED_DEV_PLUGINAPI_REFERENCE)"=="" copy /y "$(OutputPath)$(AssemblyName).dll" "$(EXILED_DEV_PLUGINAPI_REFERENCE)\dependencies\" &amp;&amp; if not "$(EXILED_DEV_REFERENCES)"=="" copy /y "$(OutputPath)$(AssemblyName).dll" "$(EXILED_DEV_REFERENCES)\Plugins\dependencies\"</PostBuildEvent>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(OS)' == 'Unix' ">
         <PostBuildEvent>if [[ ! -z "$EXILED_DEV_REFERENCES" ]]; then cp "$(OutputPath)$(AssemblyName).dll" "$EXILED_DEV_REFERENCES/Plugins/dependencies/"; fi</PostBuildEvent>
+        <PostBuildEvent>if [[ ! -z "$EXILED_DEV_PLUGINAPI_REFERENCE" ]]; then cp "$(OutputPath)$(AssemblyName).dll" "$EXILED_DEV_PLUGINAPI_REFERENCE/dependencies/"; fi</PostBuildEvent>
     </PropertyGroup>
+
 
 </Project>

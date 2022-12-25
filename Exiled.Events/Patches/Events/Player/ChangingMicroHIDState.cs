@@ -57,7 +57,7 @@ namespace Exiled.Events.Patches.Events.Player
                 // true
                 new CodeInstruction(OpCodes.Ldc_I4_1),
 
-                // var ev = new ChangingMicroHIDStateEventArgs(Player, MicroHIDItem, HidState, HidState, bool)
+                // ChangingMicroHIDStateEventArgs ev = new(Player, MicroHIDItem, HidState, HidState, bool)
                 new CodeInstruction(OpCodes.Newobj, GetDeclaredConstructors(typeof(ChangingMicroHIDStateEventArgs))[0]),
                 new CodeInstruction(OpCodes.Dup),
                 new CodeInstruction(OpCodes.Dup),

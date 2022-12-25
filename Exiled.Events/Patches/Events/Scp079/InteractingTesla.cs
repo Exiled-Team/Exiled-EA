@@ -41,7 +41,7 @@ namespace Exiled.Events.Patches.Events.Scp079
             int offset = 2;
             int index = newInstructions.FindLastIndex(instruction => instruction.opcode == OpCodes.Brtrue_S) + offset;
 
-            // var ev = new InteractingTeslaEventArgs(Player.Get(base.Owner), teslaGate, this._cost);
+            // InteractingTeslaEventArgs ev = new(Player.Get(base.Owner), teslaGate, (float)this._cost);
             //
             // Handlers.Map.OnInteractingTesla(ev);
             //
@@ -66,7 +66,7 @@ namespace Exiled.Events.Patches.Events.Scp079
                     new(OpCodes.Ldfld, Field(typeof(Scp079TeslaAbility), nameof(Scp079TeslaAbility._cost))),
                     new(OpCodes.Conv_R4),
 
-                    // var ev = new InteractingTeslaEventArgs(Player, TeslaGate, float)
+                    // InteractingTeslaEventArgs ev = new(Player, TeslaGate, float)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(InteractingTeslaEventArgs))[0]),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),

@@ -38,7 +38,7 @@ namespace Exiled.Events.Patches.Events.Warhead
 
             Label returnLabel = generator.DefineLabel();
 
-            // var ev = new StartingEventArgs(Server.Host, true);
+            // StartingEventArgs ev = new(Server.Host, true);
             //
             // Handlers.Warhead.OnStarting(ev);
             //
@@ -54,7 +54,7 @@ namespace Exiled.Events.Patches.Events.Warhead
                     // true
                     new(OpCodes.Ldc_I4_1),
 
-                    // new StartingEventArgs(Player, bool)
+                    // StartingEventArgs ev = new(Player, bool)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(StartingEventArgs))[0]),
                     new(OpCodes.Dup),
 

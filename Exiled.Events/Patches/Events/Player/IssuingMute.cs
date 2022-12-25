@@ -52,7 +52,7 @@ namespace Exiled.Events.Patches.Events.Player
                     // true
                     new(OpCodes.Ldc_I4_1),
 
-                    // var ev = new IssuingMuteEventArgs(Player, bool, bool)
+                    // IssuingMuteEventArgs ev = new(Player, bool, bool)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(IssuingMuteEventArgs))[0]),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),

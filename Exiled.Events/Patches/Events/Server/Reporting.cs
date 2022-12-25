@@ -61,7 +61,7 @@ namespace Exiled.Events.Patches.Events.Server
                     // true
                     new(OpCodes.Ldc_I4_1),
 
-                    // var ev = new LocalReportingEventArgs(Player, Player, string, bool)
+                    // LocalReportingEventArgs ev = new(Player, Player, string, bool)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(LocalReportingEventArgs))[0]),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),
@@ -107,7 +107,7 @@ namespace Exiled.Events.Patches.Events.Server
                     // true
                     new(OpCodes.Ldc_I4_1),
 
-                    // var ev = new ReportingCheaterEventArgs(Player, Player, int, string, bool)
+                    // ReportingCheaterEventArgs ev = new(Player, Player, int, string, bool)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(ReportingCheaterEventArgs))[0]),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),

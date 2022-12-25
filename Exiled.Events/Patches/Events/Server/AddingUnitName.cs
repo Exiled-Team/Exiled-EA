@@ -43,7 +43,7 @@ namespace Exiled.Events.Patches.Events.Server
                     // true
                     new(OpCodes.Ldc_I4_1),
 
-                    // var ev = new AddingUnitNameEventArgs(UnitNamingRule, bool)
+                    // AddingUnitNameEventArgs ev = new(UnitNamingRule, bool)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(AddingUnitNameEventArgs))[0]),
                     new(OpCodes.Dup),
 

@@ -16,7 +16,6 @@ namespace Exiled.API.Extensions
     using InventorySystem;
     using InventorySystem.Items;
     using InventorySystem.Items.Firearms.Attachments;
-    using InventorySystem.Items.Firearms.Attachments.Components;
     using Structs;
 
     /// <summary>
@@ -196,12 +195,7 @@ namespace Exiled.API.Extensions
         /// </summary>
         /// <param name="items">The items to convert.</param>
         /// <returns>A new <see cref="List{T}"/> of <see cref="ItemType"/>s.</returns>
-        public static IEnumerable<ItemType> GetItemTypes(this IEnumerable<Item> items)
-        {
-            Item[] arr = items.ToArray();
-            for (int i = 0; i < arr.Length; i++)
-                yield return arr[i].Type;
-        }
+        public static IEnumerable<ItemType> GetItemTypes(this IEnumerable<Item> items) => items.Select(item => item.Type);
 
         /// <summary>
         /// Gets all <see cref="AttachmentIdentifier"/>s present on an <see cref="ItemType"/>.
@@ -211,17 +205,15 @@ namespace Exiled.API.Extensions
         /// <returns>A <see cref="IEnumerable{T}"/> of <see cref="AttachmentIdentifier"/> value which represents all the attachments present on the specified <see cref="ItemType"/>.</returns>
         public static IEnumerable<AttachmentIdentifier> GetAttachmentIdentifiers(this ItemType type, uint code)
         {
-            if ((uint)type.GetBaseCode() > code)
-                throw new ArgumentException("The attachments code can't be less than the item's base code.");
+            if (type.GetBaseCode() > code)
+                code = type.GetBaseCode();
 
-            Firearm firearm = Firearm.FirearmInstances.FirstOrDefault(item => item.Type == type);
-
-            if (firearm is null)
-                throw new ArgumentException($"Couldn't find a Firearm instance matching the ItemType value. {type}");
+            if (!Firearm.ItemTypeToFirearmInstance.TryGetValue(type, out Firearm firearm))
+                throw new ArgumentException($"Couldn't find a Firearm instance matching the ItemType value: {type}.");
 
             firearm.Base.ApplyAttachmentsCode(code, true);
 
-            return firearm.GetAttachmentIdentifiers();
+            return firearm.AttachmentIdentifiers;
         }
 
         /// <summary>
@@ -251,21 +243,18 @@ namespace Exiled.API.Extensions
         public static uint GetAttachmentsCode(this IEnumerable<AttachmentIdentifier> identifiers) => identifiers.Aggregate<AttachmentIdentifier, uint>(0, (current, identifier) => current + identifier);
 
         /// <summary>
-        /// Gets a <see cref="IEnumerable{T}"/> of <see cref="AttachmentIdentifier"/> from a specified <see cref="Firearm"/>.
-        /// </summary>
-        /// <param name="firearm">The specified <see cref="Firearm"/>.</param>
-        /// <returns>A <see cref="IEnumerable{T}"/> of <see cref="AttachmentIdentifier"/> which contains all the firearm's attachments.</returns>
-        public static IEnumerable<AttachmentIdentifier> GetAttachmentIdentifiers(this Firearm firearm)
-        {
-            foreach (Attachment attachment in firearm.Attachments.Where(att => att.IsEnabled))
-                yield return Firearm.AvailableAttachments[firearm.Type].FirstOrDefault(att => att == attachment);
-        }
-
-        /// <summary>
-        /// Gets the <see cref="BaseCode"/> of the specified <see cref="ItemType"/>.
+        /// Gets the base code of the specified <see cref="ItemType"/>.
         /// </summary>
         /// <param name="type">The <see cref="ItemType"/> to check.</param>
-        /// <returns>The corresponding <see cref="BaseCode"/>.</returns>
-        public static BaseCode GetBaseCode(this ItemType type) => !type.IsWeapon() ? 0 : Firearm.FirearmPairs[type];
+        /// <returns>The corresponding base code.</returns>
+        public static uint GetBaseCode(this ItemType type)
+        {
+            if (!type.IsWeapon())
+                return 0;
+            else if (Firearm.BaseCodesValue.TryGetValue(type, out uint baseCode))
+                return baseCode;
+            else
+                throw new KeyNotFoundException($"Basecode for weapon {type} not found! Stored BaseCodesValue:\n{Firearm.BaseCodesValue.Keys.ToString(true)}\n{Firearm.BaseCodesValue.Values.ToString(true)}");
+        }
     }
 }

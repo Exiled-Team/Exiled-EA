@@ -7,11 +7,11 @@
 
 namespace Exiled.API.Extensions
 {
-    using System;
-
     using Enums;
     using Exiled.API.Features;
+    using Exiled.API.Features.Spawn;
     using PlayerRoles;
+    using PlayerRoles.FirstPersonControl.Spawnpoints;
     using UnityEngine;
 
     using Team = PlayerRoles.Team;
@@ -96,14 +96,13 @@ namespace Exiled.API.Extensions
         /// Gets a random spawn point of a <see cref="RoleTypeId"/>.
         /// </summary>
         /// <param name="roleType">The <see cref="RoleTypeId"/> to get the spawn point from.</param>
-        /// <returns>Returns the spawn point <see cref="Vector3"/> and rotation <see cref="float"/>.</returns>
-        public static Tuple<Vector3, Vector3> GetRandomSpawnProperties(this RoleTypeId roleType)
+        /// <returns>Returns a <see cref="SpawnLocation"/> representing the spawn, or <see langword="null"/> if no spawns were found.</returns>
+        public static SpawnLocation GetRandomSpawnLocation(this RoleTypeId roleType)
         {
-            GameObject randomPosition = SpawnpointManager.GetRandomPosition(roleType);
-
-            return randomPosition is null ?
-                new Tuple<Vector3, Vector3>(Vector3.zero, Vector3.zero) :
-                new Tuple<Vector3, Vector3>(randomPosition.transform.position, randomPosition.transform.rotation.eulerAngles);
+            return !RoleSpawnpointManager.TryGetSpawnpointForRole(roleType, out ISpawnpointHandler spawnpoint) ||
+                !spawnpoint.TryGetSpawnpoint(out Vector3 position, out float horizontalRotation) ?
+                null :
+                new SpawnLocation(roleType, position, horizontalRotation);
         }
     }
 }

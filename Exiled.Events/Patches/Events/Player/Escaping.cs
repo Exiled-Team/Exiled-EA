@@ -47,7 +47,7 @@ namespace Exiled.Events.Patches.Events.Player
                     // roleTypeId
                     new(OpCodes.Ldloc_0),
 
-                    // var ev = new EscapingEventArgs(Player, RoleTypeId)
+                    // EscapingEventArgs ev = new(Player, RoleTypeId)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(EscapingEventArgs))[0]),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),

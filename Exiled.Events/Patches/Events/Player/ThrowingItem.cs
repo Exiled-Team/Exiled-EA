@@ -58,7 +58,7 @@ namespace Exiled.Events.Patches.Events.Player
                     // true
                     new(OpCodes.Ldc_I4_1),
 
-                    // var ev = new ThrowingItemEventArgs(Player, ThrowableItem, ThrowableNetworkHandler.RequestType, bool)
+                    // ThrowingItemEventArgs ev = new(Player, ThrowableItem, ThrowableNetworkHandler.RequestType, bool)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(ThrowingItemEventArgs))[0]),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),
