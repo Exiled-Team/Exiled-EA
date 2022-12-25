@@ -297,18 +297,9 @@ namespace Exiled.API.Features
         /// <returns>The door closest to the provided position.</returns>
         public static Door GetClosest(Vector3 position, out float distance)
         {
-            distance = 9999f;
-            Door doorToReturn = null;
-            foreach (Door door in List)
-            {
-                float doorDistance = Vector3.Distance(position, door.Position);
-                if (doorDistance < distance)
-                {
-                    doorToReturn = door;
-                    distance = doorDistance;
-                }
-            }
-
+            Door doorToReturn = List.OrderBy(door => Vector3.Distance(position, door.Position)).FirstOrDefault()
+    
+            distance = Vector3.Distance(position, doorToReturn.Position);  
             return doorToReturn;
         }
 
