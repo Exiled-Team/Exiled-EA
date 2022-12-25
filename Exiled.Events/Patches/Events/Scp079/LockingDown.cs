@@ -39,10 +39,10 @@ namespace Exiled.Events.Patches.Events.Scp079
 
             LocalBuilder ev = generator.DeclareLocal(typeof(LockingDownEventArgs));
 
-            int offset = 1;
-            int index = newInstructions.FindLastIndex(instruction => instruction.opcode == OpCodes.Brtrue_S) + offset;
+            int offset = 0;
+            int index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Ldc_I4_S) + offset;
 
-            // var ev = new LockingDownEventArgs(Player.Get(base.Owner), base.CurrentCamSync.CurrentCamera.Room,  (float)this._cost);
+            // LockingDownEventArgs ev = new(Player.Get(base.Owner), base.CurrentCamSync.CurrentCamera.Room, (float)this._cost);
             //
             // Handlers.Scp079.OnLockingDown(ev);
             //
@@ -68,7 +68,7 @@ namespace Exiled.Events.Patches.Events.Scp079
                     new(OpCodes.Ldfld, Field(typeof(Scp079LockdownRoomAbility), nameof(Scp079LockdownRoomAbility._cost))),
                     new(OpCodes.Conv_R4),
 
-                    // var ev = new LockingDownEventArgs(Player, RoomIdentifier, float)
+                    // LockingDownEventArgs ev = new(Player, RoomIdentifier, float)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(LockingDownEventArgs))[0]),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),

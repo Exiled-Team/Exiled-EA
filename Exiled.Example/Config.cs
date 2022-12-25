@@ -21,8 +21,10 @@ namespace Exiled.Example
     public sealed class Config : IConfig
     {
         /// <inheritdoc/>
-        [Description("Indicates whether the plugin is enabled or not")]
         public bool IsEnabled { get; set; } = true;
+
+        /// <inheritdoc />
+        public bool Debug { get; set; }
 
         /// <summary>
         /// Gets the string config.

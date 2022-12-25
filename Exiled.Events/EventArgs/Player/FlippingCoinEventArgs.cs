@@ -21,18 +21,20 @@ namespace Exiled.Events.EventArgs.Player
         /// <param name="player">
         ///     <inheritdoc cref="Player" />
         /// </param>
-        /// <param name="isTails">
-        ///     <inheritdoc cref="IsTails" />
-        /// </param>
         /// <param name="isAllowed">
         ///     <inheritdoc cref="IsAllowed" />
         /// </param>
-        public FlippingCoinEventArgs(Player player, bool isTails, bool isAllowed = true)
+        public FlippingCoinEventArgs(Player player, bool isAllowed = true)
         {
             Player = player;
-            IsTails = isTails;
+            IsTails = UnityEngine.Random.value >= 0.5f;
             IsAllowed = isAllowed;
         }
+
+        /// <summary>
+        ///     Gets the player who's flipping the coin.
+        /// </summary>
+        public Player Player { get; }
 
         /// <summary>
         ///     Gets or sets a value indicating whether or not the coin is landing on tails.
@@ -43,10 +45,5 @@ namespace Exiled.Events.EventArgs.Player
         ///     Gets or sets a value indicating whether or not the coin can be flipped.
         /// </summary>
         public bool IsAllowed { get; set; }
-
-        /// <summary>
-        ///     Gets the player who's flipping the coin.
-        /// </summary>
-        public Player Player { get; }
     }
 }

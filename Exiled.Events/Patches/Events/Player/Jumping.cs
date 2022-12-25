@@ -56,7 +56,7 @@ namespace Exiled.Events.Patches.Events.Player
                     // true
                     new(OpCodes.Ldc_I4_1),
 
-                    // var ev = new JumpingEventArgs(Player, Vector3, bool)
+                    // JumpingEventArgs ev = new(Player, Vector3, bool)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(JumpingEventArgs))[0]),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),

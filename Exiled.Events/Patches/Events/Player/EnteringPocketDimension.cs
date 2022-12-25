@@ -39,7 +39,7 @@ namespace Exiled.Events.Patches.Events.Player
             int offset = 1;
             int index = newInstructions.FindLastIndex(instruction => instruction.opcode == OpCodes.Endfinally) + offset;
 
-            // var ev = new EnteringPocketDimensionEventArgs(Player.Get(this._targetHub), Player.Get(base.Owner), true);
+            // EnteringPocketDimensionEventArgs ev = new(Player.Get(this._targetHub), Player.Get(base.Owner), true);
             //
             // Handlers.Player.OnEnteringPocketDimension(ev);
             //
@@ -62,7 +62,7 @@ namespace Exiled.Events.Patches.Events.Player
                     // true
                     new(OpCodes.Ldc_I4_1),
 
-                    // var ev = new EnteringPocketDimensionEventArgs(Player, Player, bool)
+                    // EnteringPocketDimensionEventArgs ev = new(Player, Player, bool)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(EnteringPocketDimensionEventArgs))[0]),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),

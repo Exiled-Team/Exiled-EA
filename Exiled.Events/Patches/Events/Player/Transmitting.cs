@@ -14,7 +14,7 @@ namespace Exiled.Events.Patches.Events.Player
     using Exiled.Events.EventArgs.Player;
 
     using HarmonyLib;
-
+    using Mirror;
     using NorthwoodLib.Pools;
     using PlayerRoles.Voice;
     using VoiceChat.Playbacks;
@@ -34,8 +34,9 @@ namespace Exiled.Events.Patches.Events.Player
 
             Label retLabel = generator.DefineLabel();
 
-            const int offset = 4;
-            int index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Isinst) + offset;
+            const int offset = -1;
+            int index = newInstructions.FindIndex(
+                instruction => instruction.Calls(PropertyGetter(typeof(NetworkBehaviour), nameof(NetworkBehaviour.isLocalPlayer)))) + offset;
 
             newInstructions.InsertRange(
                 index,
@@ -55,7 +56,7 @@ namespace Exiled.Events.Patches.Events.Player
                     // true
                     new(OpCodes.Ldc_I4_1),
 
-                    // var ev = new TransmittingEventArgs(Player, VoiceModuleBase, bool, bool)
+                    // TransmittingEventArgs ev = new(Player, VoiceModuleBase, bool, bool)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(TransmittingEventArgs))[0]),
                     new(OpCodes.Dup),
 

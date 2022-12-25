@@ -40,23 +40,23 @@ namespace Exiled.API.Features
         public static bool IsSpawning => RespawnManager.Singleton._curSequence == RespawnManager.RespawnSequencePhase.PlayingEntryAnimations || RespawnManager.Singleton._curSequence == RespawnManager.RespawnSequencePhase.SpawningSelectedTeam;
 
         /// <summary>
-        /// Gets or sets the amount of spawn tickets belonging to the NTF.
-        /// </summary>
-        /// <seealso cref="ChaosTickets"/>
-        public static float NtfTickets
-        {
-            get => RespawnTokensManager.Counters[0].Amount;
-            set => RespawnTokensManager.GrantTokens(SpawnableTeamType.NineTailedFox, value);
-        }
-
-        /// <summary>
         /// Gets or sets the amount of spawn tickets belonging to the Chaos Insurgency.
         /// </summary>
         /// <seealso cref="NtfTickets"/>
         public static float ChaosTickets
         {
-            get => RespawnTokensManager.Counters[1].Amount;
+            get => RespawnTokensManager.Counters[0].Amount;
             set => RespawnTokensManager.GrantTokens(SpawnableTeamType.ChaosInsurgency, value);
+        }
+
+        /// <summary>
+        /// Gets or sets the amount of spawn tickets belonging to the NTF.
+        /// </summary>
+        /// <seealso cref="ChaosTickets"/>
+        public static float NtfTickets
+        {
+            get => RespawnTokensManager.Counters[1].Amount;
+            set => RespawnTokensManager.GrantTokens(SpawnableTeamType.NineTailedFox, value);
         }
 
         /// <summary>

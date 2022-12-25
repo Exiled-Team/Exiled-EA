@@ -8,6 +8,7 @@
 namespace Exiled.Events.Patches.Events.Player
 {
     using System.Collections.Generic;
+    using System.Reflection;
     using System.Reflection.Emit;
 
     using Exiled.Events.EventArgs.Player;
@@ -16,14 +17,15 @@ namespace Exiled.Events.Patches.Events.Player
     using HarmonyLib;
 
     using NorthwoodLib.Pools;
+    using PlayerRoles.FirstPersonControl;
 
     using static HarmonyLib.AccessTools;
 
     /// <summary>
-    ///     Patches <see cref="AnimationController.UserCode_CmdChangeSpeedState" />.
+    ///     Patches <see cref="FirstPersonMovementModule.SyncMovementState" /> setter.
     ///     Adds the <see cref="Player.ChangingMoveState" /> event.
     /// </summary>
-    [HarmonyPatch(typeof(AnimationController), nameof(AnimationController.UserCode_CmdChangeSpeedState))]
+    [HarmonyPatch(typeof(FirstPersonMovementModule), nameof(FirstPersonMovementModule.SyncMovementState), MethodType.Setter)]
     internal static class ChangingMoveState
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
@@ -32,32 +34,47 @@ namespace Exiled.Events.Patches.Events.Player
 
             LocalBuilder ev = generator.DeclareLocal(typeof(ChangingMoveStateEventArgs));
 
-            Label retLabel = generator.DefineLabel();
+            Label continueLabel = generator.DefineLabel();
+            Label returnLabel = generator.DefineLabel();
+
+            const int index = 0;
+
+            newInstructions[index].WithLabels(continueLabel);
 
             newInstructions.InsertRange(
-                0,
+                index,
                 new CodeInstruction[]
                 {
-                    // Player.Get(this._hub)
+                    // Player.Get(this.Hub)
                     new(OpCodes.Ldarg_0),
-                    new(OpCodes.Ldfld, Field(typeof(AnimationController), nameof(AnimationController._hub))),
+                    new(OpCodes.Call, PropertyGetter(typeof(FirstPersonMovementModule), nameof(FirstPersonMovementModule.Hub))),
                     new(OpCodes.Call, Method(typeof(API.Features.Player), nameof(API.Features.Player.Get), new[] { typeof(ReferenceHub) })),
-                    new(OpCodes.Dup),
 
-                    // player.MoveState
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(API.Features.Player), nameof(API.Features.Player.MoveState))),
+                    // oldState
+                    new(OpCodes.Ldarg_0),
+                    new(OpCodes.Call, PropertyGetter(typeof(FirstPersonMovementModule), nameof(FirstPersonMovementModule.SyncMovementState))),
 
-                    // newState
+                    // value
                     new(OpCodes.Ldarg_1),
 
                     // true
                     new(OpCodes.Ldc_I4_1),
 
-                    // var ev = new ChangingMoveStateEventArgs(Player, PlayerMovementState, PlayerMovementState, bool)
+                    // ChangingMoveStateEventArgs ev = new(Player, PlayerMovementState, PlayerMovementState, bool)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(ChangingMoveStateEventArgs))[0]),
-                    new(OpCodes.Dup),
-                    new(OpCodes.Dup),
+                    new(OpCodes.Dup, ev.LocalIndex),
                     new(OpCodes.Stloc_S, ev.LocalIndex),
+
+                    // if (ev.OldState == ev.NewState)
+                    //    goto continueLabel;
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(ChangingMoveStateEventArgs), nameof(ChangingMoveStateEventArgs.OldState))),
+                    new(OpCodes.Ldloc_S, ev.LocalIndex),
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(ChangingMoveStateEventArgs), nameof(ChangingMoveStateEventArgs.NewState))),
+                    new(OpCodes.Beq_S, continueLabel),
+
+                    // load ev twice
+                    new(OpCodes.Ldloc_S, ev.LocalIndex),
+                    new(OpCodes.Dup),
 
                     // Player.OnChangingMoveState(ev)
                     new(OpCodes.Call, Method(typeof(Player), nameof(Player.OnChangingMoveState))),
@@ -65,15 +82,16 @@ namespace Exiled.Events.Patches.Events.Player
                     // if (!ev.IsAllowed)
                     //    return;
                     new(OpCodes.Callvirt, PropertyGetter(typeof(ChangingMoveStateEventArgs), nameof(ChangingMoveStateEventArgs.IsAllowed))),
-                    new(OpCodes.Brfalse_S, retLabel),
+                    new(OpCodes.Brfalse_S, returnLabel),
 
-                    // newState = ev.NewState
+                    // value = ev.NewState
                     new(OpCodes.Ldloc_S, ev.LocalIndex),
                     new(OpCodes.Call, PropertyGetter(typeof(ChangingMoveStateEventArgs), nameof(ChangingMoveStateEventArgs.NewState))),
                     new(OpCodes.Starg_S, 1),
                 });
 
-            newInstructions[newInstructions.Count - 1].WithLabels(retLabel);
+            // return the state
+            newInstructions[newInstructions.Count - 2].WithLabels(returnLabel);
 
             for (int z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];

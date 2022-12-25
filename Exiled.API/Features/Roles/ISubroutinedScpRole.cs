@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------
-// <copyright file="ScpRole.cs" company="Exiled Team">
+// <copyright file="ISubroutinedScpRole.cs" company="Exiled Team">
 // Copyright (c) Exiled Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
@@ -10,19 +10,10 @@ namespace Exiled.API.Features.Roles
     using PlayerRoles.PlayableScps.Subroutines;
 
     /// <summary>
-    /// Defines a role that represents an SCP class.
+    /// Defines a interface that represents a <see cref="SubroutineManagerModule"/> in player's role.
     /// </summary>
-    public abstract class ScpRole : Role
+    public interface ISubroutinedScpRole
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ScpRole"/> class.
-        /// </summary>
-        /// <param name="owner">The encapsulated <see cref="Player"/>.</param>
-        protected ScpRole(Player owner)
-            : base(owner)
-        {
-        }
-
         /// <summary>
         /// Gets the SCP <see cref="SubroutineManagerModule"/>.
         /// </summary>

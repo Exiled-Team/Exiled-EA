@@ -10,7 +10,9 @@ namespace Exiled.API.Features.Roles
     using System;
 
     using PlayerRoles;
-    using RelativePositioning;
+    using UnityEngine;
+
+    using SpectatorGameRole = PlayerRoles.Spectating.SpectatorRole;
 
     /// <summary>
     /// Defines a role that represents a spectator.
@@ -20,19 +22,25 @@ namespace Exiled.API.Features.Roles
         /// <summary>
         /// Initializes a new instance of the <see cref="SpectatorRole"/> class.
         /// </summary>
-        /// <param name="owner">The encapsulated <see cref="Player"/>.</param>
-        public SpectatorRole(Player owner)
-            : base(owner)
+        /// <param name="baseRole">The encapsulated <see cref="SpectatorGameRole"/>.</param>
+        internal SpectatorRole(SpectatorGameRole baseRole)
+            : base(baseRole)
         {
+            Internal = baseRole;
         }
 
         /// <inheritdoc/>
-        public override RoleTypeId Type { get; } = RoleTypeId.Spectator;
+        public override RoleTypeId Type => RoleTypeId.Spectator;
 
         /// <summary>
         /// Gets the <see cref="DateTime"/> at which the player died.
         /// </summary>
         public DateTime DeathTime => Round.StartedTime + ActiveTime;
+
+        /// <summary>
+        /// Gets a value indicating whether or not this role represents a player on overwatch.
+        /// </summary>
+        public bool IsOverwatch => Type is RoleTypeId.Overwatch;
 
         /// <summary>
         /// Gets the total amount of time the player has been dead.
@@ -42,12 +50,12 @@ namespace Exiled.API.Features.Roles
         /// <summary>
         /// Gets the <see cref="Player"/>'s death position.
         /// </summary>
-        public RelativePosition DeathPosition => InternalSpectatorRole.DeathPosition;
+        public Vector3 DeathPosition => Internal.DeathPosition.Position;
 
         /// <summary>
         /// Gets a value indicating whether the <see cref="Player"/> is ready to respawn or not.
         /// </summary>
-        public bool IsReadyToRespawn => InternalSpectatorRole.ReadyToRespawn;
+        public bool IsReadyToRespawn => Internal.ReadyToRespawn;
 
         /// <summary>
         /// Gets currently spectated <see cref="Player"/> by this <see cref="Player"/>. May be <see langword="null"/>.
@@ -56,15 +64,15 @@ namespace Exiled.API.Features.Roles
         {
             get
             {
-                Player spectatedPlayer = Player.Get(InternalSpectatorRole.SyncedSpectatedNetId);
+                Player spectatedPlayer = Player.Get(Internal.SyncedSpectatedNetId);
 
                 return spectatedPlayer != Owner ? spectatedPlayer : null;
             }
         }
 
         /// <summary>
-        /// Gets the game <see cref="PlayerRoles.HumanRole"/>.
+        /// Gets the game <see cref="SpectatorGameRole"/>.
         /// </summary>
-        private PlayerRoles.Spectating.SpectatorRole InternalSpectatorRole { get; }
+        private SpectatorGameRole Internal { get; }
     }
 }

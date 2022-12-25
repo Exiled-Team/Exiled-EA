@@ -60,7 +60,7 @@ namespace Exiled.Events.Patches.Events.Player
                     // damage
                     new(OpCodes.Ldloc_1),
 
-                    // var ev = new ShotEventArgs(Player, RaycastHit, IDestructible, float)
+                    // ShotEventArgs ev = new(Player, RaycastHit, IDestructible, float)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(ShotEventArgs))[0]),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),
@@ -124,7 +124,7 @@ namespace Exiled.Events.Patches.Events.Player
                         // damage
                         new(OpCodes.Ldloc, 4),
 
-                        // var ev = new ShotEventArgs(Player, RaycastHit, IDestructible, float)
+                        // ShotEventArgs ev = new(Player, RaycastHit, IDestructible, float)
                         new(OpCodes.Newobj, GetDeclaredConstructors(typeof(ShotEventArgs))[0]),
                         new(OpCodes.Dup),
                         new(OpCodes.Dup),

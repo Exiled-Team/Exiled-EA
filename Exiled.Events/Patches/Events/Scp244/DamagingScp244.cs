@@ -67,7 +67,7 @@ namespace Exiled.Events.Patches.Events.Scp244
                     // handler
                     new(OpCodes.Ldarg_2),
 
-                    // var ev = new DamagingScp244EventArgs(Scp244DeployablePickup, float, DamageHandlerBase)
+                    // DamagingScp244EventArgs ev = new(Scp244DeployablePickup, float, DamageHandlerBase)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(DamagingScp244EventArgs))[0]),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),

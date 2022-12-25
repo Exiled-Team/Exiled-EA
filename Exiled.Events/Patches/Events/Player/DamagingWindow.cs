@@ -53,7 +53,7 @@ namespace Exiled.Events.Patches.Events.Player
                     // handler
                     new(OpCodes.Ldarg_2),
 
-                    // var ev = new(player, this, damage, handler);
+                    // DamagingWindowEventArgs ev = new(player, this, damage, handler);
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(DamagingWindowEventArgs))[0]),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),

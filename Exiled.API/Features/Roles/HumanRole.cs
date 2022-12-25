@@ -7,6 +7,7 @@
 
 namespace Exiled.API.Features.Roles
 {
+    using PlayerRoles;
     using Respawning;
 
     using HumanGameRole = PlayerRoles.HumanRole;
@@ -14,17 +15,20 @@ namespace Exiled.API.Features.Roles
     /// <summary>
     /// Defines a role that represents a human class.
     /// </summary>
-    public abstract class HumanRole : Role
+    public class HumanRole : FpcRole
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="HumanRole"/> class.
         /// </summary>
-        /// <param name="owner">The encapsulated <see cref="Player"/>.</param>
-        protected HumanRole(Player owner)
-            : base(owner)
+        /// <param name="baseRole">the base <see cref="HumanGameRole"/>.</param>
+        internal HumanRole(HumanGameRole baseRole)
+            : base(baseRole)
         {
-            Internal = Base as HumanGameRole;
+            Internal = baseRole;
         }
+
+        /// <inheritdoc/>
+        public override RoleTypeId Type => Internal.RoleTypeId;
 
         /// <summary>
         /// Gets or sets the <see cref="SpawnableTeamType"/>.
@@ -60,7 +64,7 @@ namespace Exiled.API.Features.Roles
         protected HumanGameRole Internal { get; }
 
         /// <summary>
-        /// Gets the <see cref="HumanRole"/> armor efficacy based on a specific <see cref="HitboxType"/>.
+        /// Gets the <see cref="HumanRole"/> armor efficacy based on a specific <see cref="HitboxType"/> and the armor the <see cref="Role.Owner"/> is wearing.
         /// </summary>
         /// <param name="hitbox">The <see cref="HitboxType"/>.</param>
         /// <returns>The armor efficacy.</returns>

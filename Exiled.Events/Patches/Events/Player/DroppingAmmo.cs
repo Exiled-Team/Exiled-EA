@@ -52,7 +52,7 @@ namespace Exiled.Events.Patches.Events.Player
                     // true
                     new(OpCodes.Ldc_I4_1),
 
-                    // var ev = DroppingAmmoEventArgs(Player, AmmoType, ushort, bool)
+                    // DroppingAmmoEventArgs ev = new(Player, AmmoType, ushort, bool)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(DroppingAmmoEventArgs))[0]),
                     new(OpCodes.Dup),
 

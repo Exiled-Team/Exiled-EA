@@ -41,7 +41,7 @@ namespace Exiled.Events.Patches.Events.Map
                     // true
                     new(OpCodes.Ldc_I4_1),
 
-                    // var ev = new DecontaminatingEventArgs(bool)
+                    // DecontaminatingEventArgs ev = new(bool)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(DecontaminatingEventArgs))[0]),
                     new(OpCodes.Dup),
 

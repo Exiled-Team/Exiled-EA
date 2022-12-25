@@ -7,9 +7,11 @@
 
 namespace Exiled.Events.Patches.Events.Player
 {
+#pragma warning disable SA1313
     using System;
 
     using API.Features;
+    using CommandSystem;
     using Exiled.Events.EventArgs.Player;
 
     using HarmonyLib;
@@ -20,13 +22,13 @@ namespace Exiled.Events.Patches.Events.Player
     using Log = API.Features.Log;
 
     /// <summary>
-    ///     Patches <see cref="BanPlayer.KickUser(ReferenceHub, ReferenceHub, string)" />.
+    ///     Patches <see cref="BanPlayer.KickUser(ReferenceHub, ICommandSender , string)" />.
     ///     Adds the <see cref="Handlers.Player.Kicking" /> event.
     /// </summary>
-    [HarmonyPatch(typeof(BanPlayer), nameof(BanPlayer.KickUser), typeof(ReferenceHub), typeof(ReferenceHub), typeof(string))]
+    [HarmonyPatch(typeof(BanPlayer), nameof(BanPlayer.KickUser), typeof(ReferenceHub), typeof(ICommandSender), typeof(string))]
     internal static class Kicking
     {
-        private static bool Prefix(ReferenceHub target, ReferenceHub issuer, string reason)
+        private static bool Prefix(ReferenceHub target, ICommandSender issuer, string reason, ref bool __result)
         {
             try
             {
@@ -37,21 +39,33 @@ namespace Exiled.Events.Patches.Events.Player
                 Handlers.Player.OnKicking(ev);
 
                 if (!ev.IsAllowed)
+                {
+                    __result = false;
                     return false;
+                }
 
                 reason = ev.Reason;
                 message = ev.FullMessage;
 
-                if (!EventManager.ExecuteEvent(ServerEventType.PlayerKicked, target, issuer, reason))
+                if (!EventManager.ExecuteEvent(ServerEventType.PlayerKicked, new object[]
+                {
+                    target,
+                    issuer,
+                    reason,
+                }))
+                {
+                    __result = false;
                     return false;
+                }
 
                 ServerConsole.Disconnect(target.gameObject, message);
-                return true;
+
+                __result = true;
+                return false;
             }
             catch (Exception exception)
             {
                 Log.Error($"Exiled.Events.Patches.Events.Player.Kicking: {exception}\n{exception.StackTrace}");
-
                 return true;
             }
         }
