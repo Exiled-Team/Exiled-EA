@@ -205,16 +205,8 @@ namespace Exiled.API.Features
                     room = FindParentRoom(role.Camera.GameObject);
             }
 
-            if (room is null)
-            {
-                // Then try for objects that aren't children, like players and pickups.
-                room = Room.Get(objectInRoom.transform.position);
-
-                // Always default to surface transform, since it's static.
-                // The current index of the 'Outside' room is the last one
-                if (rooms.Count() != 0)
-                    return rooms.FirstOrDefault(r => r.gameObject.name == "Outside");
-            }
+            // Then try for objects that aren't children, like players and pickups.
+            room ??= Room.Get(objectInRoom.transform.position);
 
             return room;
         }
