@@ -55,6 +55,6 @@ namespace Exiled.API.Features.Core
 
         /// <inheritdoc cref="Cast{T}(out T)"/>
         public bool Is<T>(out T param)
-            where T : class => Cast<T>(out param);
+            where T : class => Cast(out param);
     }
 }
