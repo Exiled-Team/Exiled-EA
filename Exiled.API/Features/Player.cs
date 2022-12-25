@@ -411,7 +411,7 @@ namespace Exiled.API.Features
         /// </summary>
         public Vector3 Position
         {
-            get => ReferenceHub.transform.position;
+            get => Transform.position;
             set => ReferenceHub.TryOverridePosition(value, Vector3.zero);
         }
 
