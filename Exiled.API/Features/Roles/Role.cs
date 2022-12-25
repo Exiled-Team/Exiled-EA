@@ -10,6 +10,7 @@ namespace Exiled.API.Features.Roles
     using System;
 
     using Enums;
+    using Exiled.API.Features.Core;
     using Extensions;
     using PlayerRoles;
     using PlayerRoles.FirstPersonControl;
@@ -18,7 +19,7 @@ namespace Exiled.API.Features.Roles
     /// <summary>
     /// Defines the class for role-related classes.
     /// </summary>
-    public abstract class Role
+    public abstract class Role : TypeCastObject<Role>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Role"/> class.
@@ -133,13 +134,7 @@ namespace Exiled.API.Features.Roles
         /// <param name="left">The role.</param>
         /// <param name="right">The other role.</param>
         /// <returns><see langword="true"/> if the values are equal.</returns>
-        public static bool operator ==(Role left, Role right)
-        {
-            if (left is null)
-                return right is null;
-
-            return left.Equals(right);
-        }
+        public static bool operator ==(Role left, Role right) => left is null ? right is null : left.Equals(right);
 
         /// <summary>
         /// Returns whether or not the two roles are different.
@@ -180,28 +175,6 @@ namespace Exiled.API.Features.Roles
         /// <param name="role">The <see cref="Role"/>.</param>
         /// <returns><see langword="true"/> if the values are not equal.</returns>
         public static bool operator !=(RoleTypeId type, Role role) => role != type;
-
-        /// <summary>
-        /// Casts the role to the specified role type.
-        /// </summary>
-        /// <typeparam name="T">The type of the class.</typeparam>
-        /// <returns>The casted class, if possible.</returns>
-        public T As<T>()
-            where T : Role => this as T;
-
-        /// <summary>
-        /// Safely casts the role to the specified role type.
-        /// </summary>
-        /// <typeparam name="T">The type of the class.</typeparam>
-        /// <param name="role">The casted class, if possible.</param>
-        /// <returns><see langword="true"/> if the cast was successful; otherwise, <see langword="false"/>.</returns>
-        public bool Is<T>(out T role)
-            where T : Role
-        {
-            role = this is T type ? type : null;
-
-            return role is not null;
-        }
 
         /// <inheritdoc/>
         public override bool Equals(object obj) => base.Equals(obj);
