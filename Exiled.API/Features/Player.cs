@@ -17,6 +17,7 @@ namespace Exiled.API.Features
     using CustomPlayerEffects;
     using DamageHandlers;
     using Enums;
+    using Exiled.API.Features.Core.Interfaces;
     using Extensions;
     using Footprinting;
     using global::Scp914;
@@ -64,7 +65,7 @@ namespace Exiled.API.Features
     /// <summary>
     /// Represents the in-game player, by encapsulating a <see cref="global::ReferenceHub"/>.
     /// </summary>
-    public class Player
+    public class Player : IEntity
     {
 #pragma warning disable SA1401
         /// <summary>
@@ -74,7 +75,7 @@ namespace Exiled.API.Features
 #pragma warning restore SA1401
 
         private readonly IReadOnlyCollection<Item> readOnlyItems;
-        private readonly HashSet<EActor> components = new();
+        private readonly HashSet<EActor> componentsInChildren = new();
 
         private ReferenceHub referenceHub;
         private CustomHealthStat healthStat;
@@ -125,6 +126,9 @@ namespace Exiled.API.Features
         /// </summary>
         public static Dictionary<int, Player> IdsCache { get; } = new(20);
 
+        /// <inheritdoc/>
+        public IReadOnlyCollection<EActor> ComponentsInChildren => componentsInChildren;
+
         /// <summary>
         /// Gets or sets a <see cref="Dictionary{TKey, TValue}"/> containing cached <see cref="RoleTypeId"/> and their FF multiplier. This is for non-unique roles.
         /// </summary>
@@ -161,11 +165,6 @@ namespace Exiled.API.Features
                     value.playerStats._dictionarizedTypes.Add(typeof(HealthStat), healthStat);
             }
         }
-
-        /// <summary>
-        /// Gets a <see cref="IReadOnlyCollection{T}"/> of <see cref="EActor"/> containing all the player's components.
-        /// </summary>
-        public IReadOnlyCollection<EActor> Components => components;
 
         /// <summary>
         /// Gets the <see cref="PlayerRoleManager"/>.
@@ -2820,149 +2819,6 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
-        /// Teleports player to a random object of a specific type.
-        /// </summary>
-        /// <typeparam name="T">Object for teleport.</typeparam>
-        public void RandomTeleport<T>() => RandomTeleport(typeof(T));
-
-        /// <summary>
-        /// Adds a component to the player.
-        /// </summary>
-        /// <typeparam name="T">The <typeparamref name="T"/> <see cref="EActor"/> to be added.</typeparam>
-        /// <returns>The added <see cref="EActor"/> component.</returns>
-        public T AddComponent<T>()
-            where T : EActor
-        {
-            T component = EObject.CreateDefaultSubobject<T>(GameObject);
-
-            if (component is null)
-                return null;
-
-            components.Add(component);
-            return component;
-        }
-
-        /// <summary>
-        /// Adds a component to the player.
-        /// </summary>
-        /// <param name="type">The <see cref="Type"/> of the <see cref="EActor"/> to be added.</param>
-        /// <returns>The added <see cref="EActor"/> component.</returns>
-        public EActor AddComponent(Type type)
-        {
-            EActor component = EObject.CreateDefaultSubobject(type, GameObject).Cast<EActor>();
-
-            if (component is null)
-                return null;
-
-            components.Add(component);
-            return component;
-        }
-
-        /// <summary>
-        /// Adds a component to the player.
-        /// </summary>
-        /// <typeparam name="T">The <typeparamref name="T"/> cast <see cref="EActor"/> type.</typeparam>
-        /// <param name="type">The <see cref="Type"/> of the <see cref="EActor"/> to be added.</param>
-        /// <returns>The added <see cref="EActor"/> component.</returns>
-        public T AddComponent<T>(Type type)
-            where T : EActor
-        {
-            T component = EObject.CreateDefaultSubobject<T>(type, GameObject);
-            if (component is null)
-                return null;
-
-            components.Add(component);
-            return component;
-        }
-
-        /// <summary>
-        /// Gets a component to the player.
-        /// </summary>
-        /// <typeparam name="T">The <typeparamref name="T"/> <see cref="EActor"/> to look for.</typeparam>
-        /// <returns>The <see cref="EActor"/> component.</returns>
-        public T GetComponent<T>()
-            where T : EActor => components.FirstOrDefault(comp => typeof(T) == comp.GetType()).Cast<T>();
-
-        /// <summary>
-        /// Gets a component from the player.
-        /// </summary>
-        /// <typeparam name="T">The cast <typeparamref name="T"/> <see cref="EActor"/>.</typeparam>
-        /// <param name="type">The <see cref="Type"/> of the <see cref="EActor"/> to look for.</param>
-        /// <returns>The <see cref="EActor"/> component.</returns>
-        public T GetComponent<T>(Type type)
-            where T : EActor => components.FirstOrDefault(comp => type == comp.GetType()).Cast<T>();
-
-        /// <summary>
-        /// Gets a component from the player.
-        /// </summary>
-        /// <param name="type">The <see cref="Type"/> of the <see cref="EActor"/> to look for.</param>
-        /// <returns>The <see cref="EActor"/> component.</returns>
-        public EActor GetComponent(Type type) => components.FirstOrDefault(comp => type == comp.GetType());
-
-        /// <summary>
-        /// Tries to get a component from the player.
-        /// </summary>
-        /// <typeparam name="T">The <typeparamref name="T"/> <see cref="EActor"/> to look for.</typeparam>
-        /// <param name="component">The <typeparamref name="T"/> <see cref="EActor"/>.</param>
-        /// <returns><see langword="true"/> if the component was found; otherwise, <see langword="false"/>.</returns>
-        public bool TryGetComponent<T>(out T component)
-            where T : EActor
-        {
-            component = GetComponent<T>();
-
-            return component is not null;
-        }
-
-        /// <summary>
-        /// Tries to get a component from the player.
-        /// </summary>
-        /// <param name="type">The <see cref="Type"/> of the <see cref="EActor"/> to get.</param>
-        /// <param name="component">The found component.</param>
-        /// <returns><see langword="true"/> if the component was found; otherwise, <see langword="false"/>.</returns>
-        public bool TryGetComponent(Type type, out EActor component)
-        {
-            component = GetComponent(type);
-
-            return component is not null;
-        }
-
-        /// <summary>
-        /// Tries to get a component from the player.
-        /// </summary>
-        /// <typeparam name="T">The cast <typeparamref name="T"/> <see cref="EActor"/>.</typeparam>
-        /// <param name="type">The <see cref="Type"/> of the <see cref="EActor"/> to get.</param>
-        /// <param name="component">The found component.</param>
-        /// <returns><see langword="true"/> if the component was found; otherwise, <see langword="false"/>.</returns>
-        public bool TryGetComponent<T>(Type type, out T component)
-            where T : EActor
-        {
-            component = GetComponent<T>(type);
-
-            return component is not null;
-        }
-
-        /// <summary>
-        /// Checks if the player has an active component.
-        /// </summary>
-        /// <typeparam name="T">The <see cref="EActor"/> to look for.</typeparam>
-        /// <param name="depthInheritance">A value indicating whether or not subclasses should be considered.</param>
-        /// <returns><see langword="true"/> if the component was found; otherwise, <see langword="false"/>.</returns>
-        public bool HasComponent<T>(bool depthInheritance = false)
-            where T : EActor => depthInheritance
-            ? components.Any(comp => typeof(T).IsSubclassOf(comp.GetType()))
-            : components.Any(comp => typeof(T) == comp.GetType());
-
-        /// <summary>
-        /// Checks if the player has an active component.
-        /// </summary>
-        /// <param name="type">The <see cref="EActor"/> to look for.</param>
-        /// <param name="depthInheritance">A value indicating whether or not subclasses should be considered.</param>
-        /// <returns><see langword="true"/> if the component was found; otherwise, <see langword="false"/>.</returns>
-        public bool HasComponent(Type type, bool depthInheritance = false) => depthInheritance
-            ? components.Any(comp => type.IsSubclassOf(comp.GetType()))
-            : components.Any(comp => type == comp.GetType());
-
-        /// <summary>
         /// Teleports the player to a random object.
         /// </summary>
         /// <param name="types">The list of object types to choose from.</param>
@@ -2975,6 +2831,96 @@ namespace Exiled.API.Features
 
             RandomTeleport(array[Random.Range(0, array.Length)]);
         }
+
+        /// <summary>
+        /// Teleports player to a random object of a specific type.
+        /// </summary>
+        /// <typeparam name="T">Object for teleport.</typeparam>
+        public void RandomTeleport<T>() => RandomTeleport(typeof(T));
+
+        /// <inheritdoc/>
+        public T AddComponent<T>(string name = "")
+            where T : EActor
+        {
+            T component = EObject.CreateDefaultSubobject<T>(GameObject);
+
+            if (component is null)
+                return null;
+
+            componentsInChildren.Add(component);
+            return component;
+        }
+
+        /// <inheritdoc/>
+        public EActor AddComponent(Type type, string name = "")
+        {
+            EActor component = EObject.CreateDefaultSubobject(type, GameObject).Cast<EActor>();
+
+            if (component is null)
+                return null;
+
+            componentsInChildren.Add(component);
+            return component;
+        }
+
+        /// <inheritdoc/>
+        public T AddComponent<T>(Type type, string name = "")
+            where T : EActor
+        {
+            T component = EObject.CreateDefaultSubobject<T>(type, GameObject);
+            if (component is null)
+                return null;
+
+            componentsInChildren.Add(component);
+            return component;
+        }
+
+        /// <inheritdoc/>
+        public T GetComponent<T>()
+            where T : EActor => componentsInChildren.FirstOrDefault(comp => typeof(T) == comp.GetType()).Cast<T>();
+
+        /// <inheritdoc/>
+        public T GetComponent<T>(Type type)
+            where T : EActor => componentsInChildren.FirstOrDefault(comp => type == comp.GetType()).Cast<T>();
+
+        /// <inheritdoc/>
+        public EActor GetComponent(Type type) => componentsInChildren.FirstOrDefault(comp => type == comp.GetType());
+
+        /// <inheritdoc/>
+        public bool TryGetComponent<T>(out T component)
+            where T : EActor
+        {
+            component = GetComponent<T>();
+
+            return component is not null;
+        }
+
+        /// <inheritdoc/>
+        public bool TryGetComponent(Type type, out EActor component)
+        {
+            component = GetComponent(type);
+
+            return component is not null;
+        }
+
+        /// <inheritdoc/>
+        public bool TryGetComponent<T>(Type type, out T component)
+            where T : EActor
+        {
+            component = GetComponent<T>(type);
+
+            return component is not null;
+        }
+
+        /// <inheritdoc/>
+        public bool HasComponent<T>(bool depthInheritance = false) => depthInheritance
+            ? componentsInChildren.Any(comp => typeof(T).IsSubclassOf(comp.GetType()))
+            : componentsInChildren.Any(comp => typeof(T) == comp.GetType());
+
+        /// <inheritdoc/>
+        public bool HasComponent(Type type, bool depthInheritance = false) => depthInheritance
+            ? componentsInChildren.Any(comp => type.IsSubclassOf(comp.GetType()))
+            : componentsInChildren.Any(comp => type == comp.GetType());
 
         /// <summary>
         /// Converts the player in a human-readable format.
