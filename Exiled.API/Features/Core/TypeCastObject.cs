@@ -50,11 +50,11 @@ namespace Exiled.API.Features.Core
         }
 
         /// <inheritdoc cref="Cast{T}"/>
-        public T As<T>()
-            where T : class => Cast<T>();
+        public TObject As<TObject>()
+            where TObject : class => Cast<TObject>();
 
         /// <inheritdoc cref="Cast{T}(out T)"/>
-        public bool Is<T>(out T param)
-            where T : class => Cast(out param);
+        public bool Is<TObject>(out TObject param)
+            where TObject : class => Cast(out param);
     }
 }
