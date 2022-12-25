@@ -490,22 +490,6 @@ namespace Exiled.API.Features
         public string IPAddress => ReferenceHub.networkIdentity.connectionToClient.address;
 
         /// <summary>
-        /// Gets or sets a value indicating whether or not the player has No-clip enabled.
-        /// </summary>
-        /// <returns><see cref="bool"/> indicating status.</returns>
-        public bool IsNoClipEnabled
-        {
-            get => FpcNoclip.IsPermitted(ReferenceHub);
-            set
-            {
-                if (value && !IsNoClipEnabled)
-                    FpcNoclip.PermitPlayer(ReferenceHub);
-                else if (!value && IsNoClipEnabled)
-                    FpcNoclip.UnpermitPlayer(ReferenceHub);
-            }
-        }
-
-        /// <summary>
         /// Gets the player's command sender instance.
         /// </summary>
         public PlayerCommandSender Sender => ReferenceHub.queryProcessor._sender;
