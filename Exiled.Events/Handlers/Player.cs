@@ -8,6 +8,7 @@
 namespace Exiled.Events.Handlers
 {
     using API.Extensions;
+    using API.Features;
     using Exiled.Events.EventArgs.Player;
     using Extensions;
     using Interactables.Interobjects.DoorUtils;
@@ -861,8 +862,9 @@ namespace Exiled.Events.Handlers
         /// <summary>
         /// Called before a <see cref="API.Features.Player"/> damage a window.
         /// </summary>
-        /// <param name="ev">The <see cref="DamagingWindowEventArgs"/> instance.</param>
-        public static void OnPlayerDamageWindow(DamagingWindowEventArgs ev) => PlayerDamageWindow.InvokeSafely(ev);
+        [PluginEvent(ServerEventType.PlayerDamagedWindow)]
+        public static void OnPlayerDamageWindow(PluginAPI.Core.Player player, BreakableWindow window, PlayerStatsSystem.DamageHandlerBase handler, float damageAmount) =>
+            PlayerDamageWindow.InvokeSafely(new DamagingWindowEventArgs(window, damageAmount, handler));
 
         /// <summary>
         ///  Called before KillPlayer is called.
@@ -1037,13 +1039,13 @@ namespace Exiled.Events.Handlers
         /// <summary>
         /// Called before hurting a player.
         /// </summary>
-        /// <param name="player"><inheritdoc cref="HurtingEventArgs.Attacker"/></param>
-        /// <param name="target"><inheritdoc cref="HurtingEventArgs.Player"/></param>
+        /// <param name="target"><inheritdoc cref="HurtingEventArgs.Attacker"/></param>
+        /// <param name="attacker"><inheritdoc cref="HurtingEventArgs.Player"/></param>
         /// <param name="damageHandler"><inheritdoc cref="HurtingEventArgs.DamageHandler"/></param>
         /// <returns><inheritdoc cref="HurtingEventArgs.IsAllowed"/></returns>
         [PluginEvent(ServerEventType.PlayerDamage)]
-        public bool OnHurting(PluginAPI.Core.Player player, PluginAPI.Core.Player target, PlayerStatsSystem.DamageHandlerBase damageHandler)
-            => Hurting.InvokeSafely(new(target, damageHandler));
+        public bool OnHurting(PluginAPI.Core.Player target, PluginAPI.Core.Player attacker, PlayerStatsSystem.DamageHandlerBase damageHandler) =>
+            Hurting.InvokeSafely(new(target, damageHandler));
 
         /// <summary>
         /// Called before a <see cref="API.Features.Player"/> dies.
@@ -1061,14 +1063,36 @@ namespace Exiled.Events.Handlers
         /// </summary>
         /// <param name="player"><inheritdoc cref="JoinedEventArgs.Player"/></param>
         [PluginEvent(ServerEventType.PlayerJoined)]
-        public void OnJoined(PluginAPI.Core.Player player) => Joined.InvokeSafely(new(player));
+        public void OnJoined(PluginAPI.Core.Player player)
+        {
+            API.Features.Player exiledPlayer = new(player.ReferenceHub);
+            API.Features.Player.UnverifiedPlayers.Add(player.ReferenceHub, exiledPlayer);
+
+            Joined.InvokeSafely(new(player));
+        }
 
         /// <summary>
         /// Called after a <see cref="API.Features.Player"/> has been verified.
         /// </summary>
         /// <param name="player"><inheritdoc cref="VerifiedEventArgs.Player"/></param>
         [PluginEvent(ServerEventType.PlayerJoined)]
-        public void OnVerified(PluginAPI.Core.Player player) => Verified.InvokeSafely(new(player));
+        public void OnVerified(PluginAPI.Core.Player player)
+        {
+            if (!API.Features.Player.UnverifiedPlayers.TryGetValue(player.ReferenceHub, out API.Features.Player exiledPlayer))
+            {
+                Log.Error($"Player {player.Nickname} is not verified. This error should never appear.");
+                return;
+            }
+
+            API.Features.Player.Dictionary.Add(player.ReferenceHub.gameObject, exiledPlayer);
+
+            exiledPlayer.IsVerified = true;
+            exiledPlayer.RawUserId = exiledPlayer.UserId.GetRawUserId();
+
+            Log.SendRaw($"Player {exiledPlayer.Nickname} ({exiledPlayer.UserId}) ({exiledPlayer.Id}) connected with the IP: {exiledPlayer.IPAddress}", System.ConsoleColor.Green);
+
+            Verified.InvokeSafely(new(exiledPlayer));
+        }
 
         /// <summary>
         /// Called before destroying a <see cref="API.Features.Player"/>.
