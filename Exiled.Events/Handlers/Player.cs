@@ -889,7 +889,7 @@ namespace Exiled.Events.Handlers
         /// Called before pre-authenticating a <see cref="API.Features.Player"/>.
         /// </summary>
         [PluginEvent(ServerEventType.PlayerPreauth)]
-        public bool OnPreAuthenticating(string userId, string ipAddress, string expiration, CentralAuthPreauthFlags centralFlags, string region, byte[] signature, LiteNetLib.ConnectionRequest connectionRequest, int readerStartPosition) =>
+        public bool OnPreAuthenticating(string userId, string ipAddress, long expiration, CentralAuthPreauthFlags centralFlags, string region, byte[] signature, LiteNetLib.ConnectionRequest connectionRequest, int readerStartPosition) =>
             PreAuthenticating.InvokeSafely(new PreAuthenticatingEventArgs(userId, connectionRequest, readerStartPosition, centralFlags, region));
 
         /// <summary>
