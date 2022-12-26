@@ -2402,7 +2402,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Plays the Hume Shield break sound effect from the player.
         /// </summary>
-        /// <remarks>This will only function if the player's <see cref="Role.IsHumeShieldedRole"/> is <see langword="true"/>.</remarks>
+        /// <remarks>This will only function if the player's <see cref="FpcRole.IsHumeShieldedRole"/> is <see langword="true"/>.</remarks>
         public void PlayShieldBreakSound()
         {
             PlayerRoles.PlayableScps.HumeShield.DynamicHumeShieldController.ShieldBreakMessage message = new();
