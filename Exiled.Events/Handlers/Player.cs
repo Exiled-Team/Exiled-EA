@@ -458,13 +458,6 @@ namespace Exiled.Events.Handlers
         public static event CustomEventHandler<ExitingEnvironmentalHazardEventArgs> ExitingEnvironmentalHazard;
 
         /// <summary>
-        /// Called before pre-authenticating a <see cref="API.Features.Player"/>.
-        /// </summary>
-        [PluginEvent(ServerEventType.PlayerPreauth)]
-        public bool OnPreAuthenticating(string userId, string ipAddress, string expiration, CentralAuthPreauthFlags centralFlags, string region, byte[] signature, LiteNetLib.ConnectionRequest connectionRequest, int readerStartPosition) =>
-            PreAuthenticating.InvokeSafely(new PreAuthenticatingEventArgs(userId, connectionRequest, readerStartPosition, centralFlags, region));
-
-        /// <summary>
         /// Called before reserved slot is resolved for a <see cref="API.Features.Player"/>.
         /// </summary>
         /// <param name="ev">The <see cref="ReservedSlotsCheckEventArgs"/> instance.</param>
@@ -860,13 +853,6 @@ namespace Exiled.Events.Handlers
         public static void OnSearchPickupRequest(SearchingPickupEventArgs ev) => SearchingPickup.InvokeSafely(ev);
 
         /// <summary>
-        /// Called before a <see cref="API.Features.Player"/> damage a window.
-        /// </summary>
-        [PluginEvent(ServerEventType.PlayerDamagedWindow)]
-        public static void OnPlayerDamageWindow(PluginAPI.Core.Player player, BreakableWindow window, PlayerStatsSystem.DamageHandlerBase handler, float damageAmount) =>
-            PlayerDamageWindow.InvokeSafely(new DamagingWindowEventArgs(window, damageAmount, handler));
-
-        /// <summary>
         ///  Called before KillPlayer is called.
         /// </summary>
         /// <param name="ev">The <see cref="KillingPlayerEventArgs"/> event handler. </param>
@@ -898,6 +884,20 @@ namespace Exiled.Events.Handlers
         /// </summary>
         /// <param name="ev">The <see cref="ExitingEnvironmentalHazardEventArgs"/> instance. </param>
         public static void OnExitingEnvironmentalHazard(ExitingEnvironmentalHazardEventArgs ev) => ExitingEnvironmentalHazard.InvokeSafely(ev);
+
+        /// <summary>
+        /// Called before pre-authenticating a <see cref="API.Features.Player"/>.
+        /// </summary>
+        [PluginEvent(ServerEventType.PlayerPreauth)]
+        public bool OnPreAuthenticating(string userId, string ipAddress, string expiration, CentralAuthPreauthFlags centralFlags, string region, byte[] signature, LiteNetLib.ConnectionRequest connectionRequest, int readerStartPosition) =>
+            PreAuthenticating.InvokeSafely(new PreAuthenticatingEventArgs(userId, connectionRequest, readerStartPosition, centralFlags, region));
+
+        /// <summary>
+        /// Called before a <see cref="API.Features.Player"/> damage a window.
+        /// </summary>
+        [PluginEvent(ServerEventType.PlayerDamagedWindow)]
+        public static void OnPlayerDamageWindow(PluginAPI.Core.Player player, BreakableWindow window, PlayerStatsSystem.DamageHandlerBase handler, float damageAmount) =>
+            PlayerDamageWindow.InvokeSafely(new DamagingWindowEventArgs(window, damageAmount, handler));
 
         /// <summary>
         /// Called before a <see cref="API.Features.Player"/> unlocks a generator.
