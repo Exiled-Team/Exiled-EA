@@ -17,7 +17,6 @@ namespace Exiled.Events.Handlers
     using PlayerRoles;
     using PlayerRoles.FirstPersonControl.Thirdperson;
     using PluginAPI.Core.Attributes;
-    using PluginAPI.Core.Interfaces;
     using PluginAPI.Enums;
 
     using static Events;
