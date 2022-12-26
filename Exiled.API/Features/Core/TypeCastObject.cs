@@ -7,6 +7,8 @@
 
 namespace Exiled.API.Features.Core
 {
+#pragma warning disable CS0419 // Ambiguous reference in cref attribute
+
     /// <summary>
     /// The interface which allows defined objects to be cast to each other.
     /// </summary>
@@ -17,7 +19,7 @@ namespace Exiled.API.Features.Core
         /// <summary>
         /// Initializes a new instance of the <see cref="TypeCastObject{T1}"/> class.
         /// </summary>
-        public TypeCastObject()
+        protected TypeCastObject()
         {
         }
 
@@ -46,5 +48,13 @@ namespace Exiled.API.Features.Core
             param = cast;
             return true;
         }
+
+        /// <inheritdoc cref="Cast{T}"/>
+        public TObject As<TObject>()
+            where TObject : class => Cast<TObject>();
+
+        /// <inheritdoc cref="Cast{T}(out T)"/>
+        public bool Is<TObject>(out TObject param)
+            where TObject : class => Cast(out param);
     }
 }
