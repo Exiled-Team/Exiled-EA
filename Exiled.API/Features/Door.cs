@@ -172,7 +172,12 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets a nametag of a door.
         /// </summary>
-        public string Nametag => Base.TryGetComponent(out DoorNametagExtension name) ? name.GetName : null;
+        public DoorNametagExtension Nametag => Base.GetComponent<DoorNametagExtension>();
+
+        /// <summary>
+        /// Gets the name of this door.
+        /// </summary>
+        public string Name => Nametag is null ? GameObject.name.GetBefore(' ') : Nametag.GetName.RemoveBracketsOnEndOfName();
 
         /// <summary>
         /// Gets or sets the required permissions to open the door.
@@ -524,7 +529,7 @@ namespace Exiled.API.Features
                 };
             }
 
-            return Nametag.RemoveBracketsOnEndOfName() switch
+            return Name.RemoveBracketsOnEndOfName() switch
             {
                 // Doors contains the DoorNameTagExtension component
                 "CHECKPOINT_LCZ_A" => DoorType.CheckpointLczA,
