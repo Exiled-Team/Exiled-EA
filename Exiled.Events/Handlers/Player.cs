@@ -461,8 +461,9 @@ namespace Exiled.Events.Handlers
         /// <summary>
         /// Called before pre-authenticating a <see cref="API.Features.Player"/>.
         /// </summary>
-        /// <param name="ev">The <see cref="PreAuthenticatingEventArgs"/> instance.</param>
-        public static void OnPreAuthenticating(PreAuthenticatingEventArgs ev) => PreAuthenticating.InvokeSafely(ev);
+        [PluginEvent(ServerEventType.PlayerPreauth)]
+        public bool OnPreAuthenticating(string userId, string ipAddress, string expiration, CentralAuthPreauthFlags centralFlags, string region, byte[] signature, LiteNetLib.ConnectionRequest connectionRequest, int readerStartPosition) =>
+            PreAuthenticating.InvokeSafely(new PreAuthenticatingEventArgs(userId, connectionRequest, readerStartPosition, centralFlags, region));
 
         /// <summary>
         /// Called before reserved slot is resolved for a <see cref="API.Features.Player"/>.

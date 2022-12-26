@@ -37,7 +37,7 @@ namespace Exiled.Events.EventArgs.Player
         /// <param name="country">
         ///     <inheritdoc cref="Country" />
         /// </param>
-        public PreAuthenticatingEventArgs(string userId, ConnectionRequest request, int readerStartPosition, byte flags, string country)
+        public PreAuthenticatingEventArgs(string userId, ConnectionRequest request, int readerStartPosition, CentralAuthPreauthFlags flags, string country)
         {
             UserId = userId;
             Request = request;
@@ -59,7 +59,7 @@ namespace Exiled.Events.EventArgs.Player
         /// <summary>
         ///     Gets the flags.
         /// </summary>
-        public byte Flags { get; }
+        public CentralAuthPreauthFlags Flags { get; }
 
         /// <summary>
         ///     Gets the player's country.
