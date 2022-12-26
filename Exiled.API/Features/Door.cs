@@ -66,7 +66,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets the door's <see cref="UnityEngine.Transform"/>.
         /// </summary>
-        public Transform Transform => GameObject.transform;
+        public Transform Transform => Base.transform;
 
         /// <summary>
         /// Gets the <see cref="DoorType"/> of the door.
@@ -288,6 +288,20 @@ namespace Exiled.API.Features
         /// <param name="doorType">The <see cref="DoorType"/> to search for.</param>
         /// <returns>The <see cref="Door"/> with the given <see cref="DoorType"/> or <see langword="null"/> if not found.</returns>
         public static Door Get(DoorType doorType) => List.FirstOrDefault(x => x.Type == doorType);
+
+        /// <summary>
+        /// Returns the closest <see cref="Door"/> to the given <paramref name="position"/>.
+        /// </summary>
+        /// <param name="position">The <see cref="Vector3">position</see> to find the closest door to.</param>
+        /// <param name="distance">The distance between the door and the point.</param>
+        /// <returns>The door closest to the provided position.</returns>
+        public static Door GetClosest(Vector3 position, out float distance)
+        {
+            Door doorToReturn = List.OrderBy(door => Vector3.Distance(position, door.Position)).FirstOrDefault();
+
+            distance = Vector3.Distance(position, doorToReturn.Position);
+            return doorToReturn;
+        }
 
         /// <summary>
         /// Gets a random <see cref="Door"/>.
