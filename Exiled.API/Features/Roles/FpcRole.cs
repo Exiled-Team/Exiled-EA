@@ -9,6 +9,8 @@ namespace Exiled.API.Features.Roles
 {
     using PlayerRoles;
     using PlayerRoles.FirstPersonControl;
+    using PlayerRoles.PlayableScps.HumeShield;
+    using PlayerStatsSystem;
 
     /// <summary>
     /// Defines a role that represents an fpc class.
@@ -108,5 +110,18 @@ namespace Exiled.API.Features.Roles
         /// Gets a value indicating whether or not the <see cref="Player"/> is in darkness.
         /// </summary>
         public bool IsInDarkness => FirstPersonController.InDarkness;
+
+        /// <summary>
+        /// Gets a value indicating whether or not this role is protected by a hume shield.
+        /// </summary>
+        public bool IsHumeShieldedRole => Base is IHumeShieldedRole;
+
+        /// <summary>
+        /// Gets a value indicating the role's maximum Hume Shield. This will always be <c>0</c> if <see cref="IsHumeShieldedRole"/> is <see langword="false"/>.
+        /// </summary>
+        public float MaxHumeShield
+        {
+            get => !IsHumeShieldedRole ? 0f : (Base as IHumeShieldedRole).HumeShieldModule.HsMax;
+        }
     }
 }
