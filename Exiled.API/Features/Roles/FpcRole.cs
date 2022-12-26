@@ -9,6 +9,7 @@ namespace Exiled.API.Features.Roles
 {
     using PlayerRoles;
     using PlayerRoles.FirstPersonControl;
+    using PlayerStatsSystem;
 
     /// <summary>
     /// Defines a role that represents an fpc class.
@@ -108,5 +109,15 @@ namespace Exiled.API.Features.Roles
         /// Gets a value indicating whether or not the <see cref="Player"/> is in darkness.
         /// </summary>
         public bool IsInDarkness => FirstPersonController.InDarkness;
+
+        /// <summary>
+        /// Gets or sets a value indicating whether or not the player has noclip enabled.
+        /// </summary>
+        /// <returns><see cref="bool"/> indicating status.</returns>
+        public bool IsNoclipEnabled
+        {
+            get => Owner.ReferenceHub.playerStats.GetModule<AdminFlagsStat>().HasFlag(AdminFlags.Noclip);
+            set => Owner.ReferenceHub.playerStats.GetModule<AdminFlagsStat>().SetFlag(AdminFlags.Noclip, value);
+        }
     }
 }
