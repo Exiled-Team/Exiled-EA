@@ -56,7 +56,7 @@ namespace Exiled.Events.Patches.Generic
             ListPool<CodeInstruction>.Shared.Return(newInstructions);
         }
 
-        private void HandleGhostMode(ReferenceHub hubReceiver, ReferenceHub hubTarget, ref bool isInvisible)
+        private static void HandleGhostMode(ReferenceHub hubReceiver, ReferenceHub hubTarget, ref bool isInvisible)
         {
             // If the player is already invisible, return
             if (isInvisible)
