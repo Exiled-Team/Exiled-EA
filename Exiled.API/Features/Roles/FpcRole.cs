@@ -122,6 +122,13 @@ namespace Exiled.API.Features.Roles
         public float MaxHumeShield
         {
             get => !IsHumeShieldedRole ? 0f : (Base as IHumeShieldedRole).HumeShieldModule.HsMax;
+        /// Gets or sets a value indicating whether or not the player has noclip enabled.
+        /// </summary>
+        /// <returns><see cref="bool"/> indicating status.</returns>
+        public bool IsNoclipEnabled
+        {
+            get => Owner.ReferenceHub.playerStats.GetModule<AdminFlagsStat>().HasFlag(AdminFlags.Noclip);
+            set => Owner.ReferenceHub.playerStats.GetModule<AdminFlagsStat>().SetFlag(AdminFlags.Noclip, value);
         }
     }
 }
