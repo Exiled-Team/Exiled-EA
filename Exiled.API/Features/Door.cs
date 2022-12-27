@@ -177,7 +177,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets the name of this door.
         /// </summary>
-        public string Name => Nametag is null ? GameObject.name.GetBefore(' ') : Nametag.GetName.RemoveBracketsOnEndOfName();
+        public string Name => Nametag == null ? GameObject.name.GetBefore(' ') : Nametag.GetName.RemoveBracketsOnEndOfName();
 
         /// <summary>
         /// Gets or sets the required permissions to open the door.
