@@ -43,7 +43,7 @@ namespace Exiled.API.Features.DamageHandlers
             customCassieAnnouncement = cassieAnnouncement;
 
             if (customCassieAnnouncement is not null)
-                customCassieAnnouncement.Announcement = customCassieAnnouncement.Announcement ?? $"{player.Nickname} killed by {attacker.Nickname} utilizing {damageType}";
+                customCassieAnnouncement.Announcement ??= $"{player.Nickname} killed by {attacker.Nickname} utilizing {damageType}";
 
             Attacker = attacker.Footprint;
             AllowSelfDamage = true;
