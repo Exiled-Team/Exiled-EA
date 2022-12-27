@@ -104,7 +104,7 @@ namespace Exiled.API.Features.Roles
                 if (!SubroutineModule.TryGetSubroutine(out Scp079TierManager ability))
                     return;
 
-                ability.TotalExp = ability.AbsoluteThresholds[Mathf.Clamp(value - 1, 0, ability.AbsoluteThresholds.Length - 1)];
+                Experience = value <= 1 ? 0 : ability.AbsoluteThresholds[Mathf.Clamp(value - 2, 0, ability.AbsoluteThresholds.Length - 1)];
             }
         }
 
