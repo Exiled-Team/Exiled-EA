@@ -184,7 +184,11 @@ namespace Exiled.API.Features.Roles
         /// </summary>
         /// <param name="newRole">The new <see cref="RoleTypeId"/> to be set.</param>
         /// <param name="reason">The <see cref="SpawnReason"/> defining why the player's role was changed.</param>
-        public virtual void Set(RoleTypeId newRole, SpawnReason reason = Enums.SpawnReason.ForceClass) => Owner.RoleManager.ServerSetRole(newRole, (RoleChangeReason)reason);
+        public virtual void Set(RoleTypeId newRole, SpawnReason reason = Enums.SpawnReason.ForceClass)
+        {
+            Owner.MaxHealth = default;
+            Owner.RoleManager.ServerSetRole(newRole, (RoleChangeReason)reason);
+        }
 
         /// <summary>
         /// Creates a role from <see cref="RoleTypeId"/> and <see cref="Player"/>.
