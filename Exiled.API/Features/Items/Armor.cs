@@ -89,7 +89,7 @@ namespace Exiled.API.Features.Items
                 if (value is <= 101 and >= 0)
                     Base.HelmetEfficacy = value;
                 else
-                    throw new ArgumentOutOfRangeException(nameof(HelmetEfficacy), "You can only set the efficacy value of armor to a value between 0 and 100.");
+                    throw new ArgumentOutOfRangeException(nameof(HelmetEfficacy), "Value of armor efficacy must be between 0 and 100.");
             }
         }
 
@@ -105,7 +105,7 @@ namespace Exiled.API.Features.Items
                 if (value is <= 101 and >= 0)
                     Base.VestEfficacy = value;
                 else
-                    throw new ArgumentOutOfRangeException(nameof(VestEfficacy), "You can only set the efficacy value of armor to a value between 0 and 100.");
+                    throw new ArgumentOutOfRangeException(nameof(VestEfficacy), "Value of armor efficacy must be between 0 and 100.");
             }
         }
 
