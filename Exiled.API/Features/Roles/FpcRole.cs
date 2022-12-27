@@ -119,7 +119,6 @@ namespace Exiled.API.Features.Roles
         /// <summary>
         /// Gets a value indicating the role's maximum Hume Shield. This will always be <c>0</c> if <see cref="IsHumeShieldedRole"/> is <see langword="false"/>.
         /// </summary>
-        public float MaxHumeShield => !IsHumeShieldedRole ? 0f : (Base as IHumeShieldedRole).HumeShieldModule.HsMax;
 
         /// <summary>
         /// Gets or sets a value indicating whether or not the player has noclip enabled.
