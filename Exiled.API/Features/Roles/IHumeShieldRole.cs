@@ -10,6 +10,6 @@ namespace Exiled.API.Features.Roles
         /// <summary>
         /// Gets a reference to the role's <see cref="HumeShieldModuleBase"/>.
         /// </summary>
-        public HumeShieldModuleBase HumeShieldBase { get; }
+        HumeShieldModuleBase HumeShieldBase { get; }
     }
 }
