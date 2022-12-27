@@ -151,7 +151,8 @@ namespace Exiled.Events.Patches.Events.Player
                 });
 
             offset = 1;
-            index = newInstructions.FindIndex(instruction => instruction.Calls(Method(typeof(GameObjectPools.PoolObject), nameof(GameObjectPools.PoolObject.SpawnPoolObject)))) + offset;
+            index = newInstructions.FindIndex(
+                instruction => instruction.Calls(Method(typeof(GameObjectPools.PoolObject), nameof(GameObjectPools.PoolObject.SpawnPoolObject)))) + offset;
 
             newInstructions[index].WithLabels(continueLabel1);
 
@@ -183,6 +184,8 @@ namespace Exiled.Events.Patches.Events.Player
         {
             if (newRole is RoleTypeId.Scp173)
                 Scp173Role.TurnedPlayers.Remove(player);
+
+            player.MaxHealth = default;
         }
 
         private static void ChangeInventory(API.Features.Player player, List<ItemType> items, Dictionary<ItemType, ushort> ammo, RoleTypeId prevRole, RoleTypeId newRole, RoleChangeReason reason)
