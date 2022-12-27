@@ -50,10 +50,7 @@ namespace Exiled.API.Features.Roles
         /// <summary>
         /// Gets the SCP-049-2 attack damage.
         /// </summary>
-        public float AttackDamage
-        {
-            get => SubroutineModule.TryGetSubroutine(out ZombieAttackAbility ability) ? ability.DamageAmount : 0;
-        }
+        public float AttackDamage => SubroutineModule.TryGetSubroutine(out ZombieAttackAbility ability) ? ability.DamageAmount : 0;
 
         /// <summary>
         /// Gets or sets a value indicating the amount of time to simulate SCP-049-2's Bloodlust ability.
@@ -73,12 +70,12 @@ namespace Exiled.API.Features.Roles
         /// <summary>
         /// Gets a value indicating whether or not SCP-049-2 is currently pursuing a target (Bloodlust ability).
         /// </summary>
-        public bool BloodlustActive => SubroutineModule.TryGetSubroutine(out ZombieBloodlustAbility ability) ? ability.LookingAtTarget : false;
+        public bool BloodlustActive => SubroutineModule.TryGetSubroutine(out ZombieBloodlustAbility ability) && ability.LookingAtTarget;
 
         /// <summary>
         /// Gets a value indicating whether or not SCP-049-2 is consuming a ragdoll.
         /// </summary>
-        public bool IsConsuming => SubroutineModule.TryGetSubroutine(out ZombieConsumeAbility ability) ? ability.IsInProgress : false;
+        public bool IsConsuming => SubroutineModule.TryGetSubroutine(out ZombieConsumeAbility ability) && ability.IsInProgress;
 
         /// <summary>
         /// Gets the <see cref="Ragdoll"/> that SCP-049-2 is currently consuming. Will be <see langword="null"/> if <see cref="IsConsuming"/> is <see langword="false"/>.

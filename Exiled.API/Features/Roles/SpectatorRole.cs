@@ -38,11 +38,6 @@ namespace Exiled.API.Features.Roles
         public DateTime DeathTime => Round.StartedTime + ActiveTime;
 
         /// <summary>
-        /// Gets a value indicating whether or not this role represents a player on overwatch.
-        /// </summary>
-        public bool IsOverwatch => Type is RoleTypeId.Overwatch;
-
-        /// <summary>
         /// Gets the total amount of time the player has been dead.
         /// </summary>
         public TimeSpan DeadTime => DateTime.UtcNow - DeathTime;

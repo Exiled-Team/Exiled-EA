@@ -26,6 +26,7 @@ namespace Exiled.API.Features
     using InventorySystem;
     using InventorySystem.Disarming;
     using InventorySystem.Items;
+    using InventorySystem.Items.Armor;
     using InventorySystem.Items.Firearms;
     using InventorySystem.Items.Firearms.Attachments;
     using InventorySystem.Items.Firearms.BasicMessages;
@@ -102,11 +103,6 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
-        /// Finalizes an instance of the <see cref="Player"/> class.
-        /// </summary>
-        ~Player() => HashSetPool<int>.Shared.Return(TargetGhostsHashSet);
-
-        /// <summary>
         /// Gets a <see cref="Dictionary{TKey, TValue}"/> containing all <see cref="Player"/>'s on the server.
         /// </summary>
         public static Dictionary<GameObject, Player> Dictionary { get; } = new(Server.MaxPlayerCount, new ReferenceHub.GameObjectComparer());
@@ -180,6 +176,11 @@ namespace Exiled.API.Features
         /// Gets the encapsulated <see cref="UnityEngine.GameObject"/>.
         /// </summary>
         public GameObject GameObject { get; private set; }
+
+        /// <summary>
+        /// Gets the <see cref="ReferenceHub"/>'s <see cref="UnityEngine.Transform"/>.
+        /// </summary>
+        public Transform Transform => ReferenceHub.transform;
 
         /// <summary>
         /// Gets a value indicating whether or not the player is viewing a hint.
@@ -348,11 +349,6 @@ namespace Exiled.API.Features
         public bool HasReservedSlot => ReservedSlot.HasReservedSlot(UserId, out _);
 
         /// <summary>
-        /// Gets a list of player ids who can't see the player.
-        /// </summary>
-        public HashSet<int> TargetGhostsHashSet { get; } = HashSetPool<int>.Shared.Rent();
-
-        /// <summary>
         /// Gets a value indicating whether or not the player has Remote Admin access.
         /// </summary>
         public bool RemoteAdminAccess => ReferenceHub.serverRoles.RemoteAdmin;
@@ -402,9 +398,11 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets or sets the player's position.
         /// </summary>
+        /// <seealso cref="Teleport(Vector3)"/>
+        /// <seealso cref="Teleport(object)"/>
         public Vector3 Position
         {
-            get => GameObject.transform.position;
+            get => Transform.position;
             set => ReferenceHub.TryOverridePosition(value, Vector3.zero);
         }
 
@@ -414,7 +412,7 @@ namespace Exiled.API.Features
         /// <returns>Returns the direction the player is looking at.</returns>
         public Vector3 Rotation
         {
-            get => GameObject.transform.eulerAngles;
+            get => Transform.eulerAngles;
             set => ReferenceHub.TryOverridePosition(Position, value - Rotation);
         }
 
@@ -517,7 +515,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets a value indicating whether or not the player is dead.
         /// </summary>
-        public bool IsDead => Role?.Team is Team.Dead;
+        public bool IsDead => Role?.IsDead ?? false;
 
         /// <summary>
         /// Gets a value indicating whether or not the player's <see cref="RoleTypeId"/> is any NTF rank.
@@ -760,8 +758,9 @@ namespace Exiled.API.Features
         public HumeShieldStat HumeShieldStat => (HumeShieldStat)ReferenceHub.playerStats.StatModules[4];
 
         /// <summary>
-        /// Gets or sets the item in the player's hand, returns the default value if empty.
+        /// Gets or sets the item in the player's hand. Value will be <see langword="null"/> if the player is not holding anything.
         /// </summary>
+        /// <seealso cref="DropHeldItem"/>
         public Item CurrentItem
         {
             get => Item.Get(Inventory.CurInstance);
@@ -779,6 +778,11 @@ namespace Exiled.API.Features
                 Timing.CallDelayed(0.5f, () => Inventory.ServerSelectItem(value.Serial));
             }
         }
+
+        /// <summary>
+        /// Gets the armor that the player is currently wearing. Value will be <see langword="null"/> if the player is not wearing any armor.
+        /// </summary>
+        public Armor CurrentArmor => Inventory.TryGetBodyArmor(out BodyArmor armor) ? (Armor)Item.Get(armor) : null;
 
         /// <summary>
         /// Gets the <see cref="StaminaStat"/> class.
@@ -822,6 +826,11 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets all currently active <see cref="StatusEffectBase"> effects</see>.
         /// </summary>
+        /// <seealso cref="EnableEffect(EffectType, float, bool)"/>
+        /// <seealso cref="EnableEffect(StatusEffectBase, float, bool)"/>
+        /// <seealso cref="EnableEffect(string, float, bool)"/>
+        /// <seealso cref="EnableEffect{T}(float, bool)"/>
+        /// <seealso cref="EnableEffects(IEnumerable{EffectType}, float, bool)"/>
         public IEnumerable<StatusEffectBase> ActiveEffects => referenceHub.playerEffectsController.AllEffects.Where(effect => effect.Intensity > 0);
 
         /// <summary>
@@ -852,7 +861,7 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
-        /// Gets the global badge of the player, can be <see langword="null"/> if none.
+        /// Gets the global badge of the player. Value will be <see langword="null"/> if the player does not have a global badge.
         /// </summary>
         public Badge? GlobalBadge
         {
@@ -883,12 +892,12 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
-        /// Gets a value indicating whether or not a player is Northwood staff.
+        /// Gets a value indicating whether or not the player is Northwood staff.
         /// </summary>
         public bool IsNorthwoodStaff => ReferenceHub.serverRoles.Staff;
 
         /// <summary>
-        /// Gets a value indicating whether or not a player is a global moderator.
+        /// Gets a value indicating whether or not the player is a global moderator.
         /// </summary>
         public bool IsGlobalModerator => ReferenceHub.serverRoles.RaEverywhere;
 
@@ -2754,6 +2763,12 @@ namespace Exiled.API.Features
                     break;
                 case Player player:
                     Teleport(player.Position);
+                    break;
+                case Role role:
+                    if (role.Owner is not null)
+                        Teleport(role.Owner.Position);
+                    else
+                        Log.Warn($"{nameof(Teleport)}: {Assembly.GetCallingAssembly().GetName().Name}: Invalid role teleport (role is missing Owner).");
                     break;
                 case Pickup pickup:
                     Teleport(pickup.Position + Vector3.up);

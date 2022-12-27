@@ -17,6 +17,6 @@ namespace Exiled.API.Features.Roles
         /// <summary>
         /// Gets the SCP <see cref="SubroutineManagerModule"/>.
         /// </summary>
-        public abstract SubroutineManagerModule SubroutineModule { get; }
+        SubroutineManagerModule SubroutineModule { get; }
     }
 }
