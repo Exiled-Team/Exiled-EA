@@ -132,10 +132,7 @@ namespace Exiled.API.Features.Items
         /// <summary>
         /// Gets how much worse <see cref="RoleTypeId.ClassD"/> and <see cref="RoleTypeId.Scientist"/>s are affected by wearing this armor.
         /// </summary>
-        public float CivilianDownsideMultiplier
-        {
-            get => Base.CivilianClassDownsidesMultiplier;
-        }
+        public float CivilianDownsideMultiplier => Base.CivilianClassDownsidesMultiplier;
 
         /// <summary>
         /// Gets or sets the ammo limit of the wearer when using this armor.
@@ -143,7 +140,6 @@ namespace Exiled.API.Features.Items
         public IEnumerable<ArmorAmmoLimit> AmmoLimits
         {
             get => Base.AmmoLimits.Select(limit => (ArmorAmmoLimit)limit);
-
             set => Base.AmmoLimits = value.Select(limit => (BodyArmor.ArmorAmmoLimit)limit).ToArray();
         }
 
