@@ -738,9 +738,24 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
+        /// Gets or sets the player's Hume Shield.
+        /// </summary>
+        /// <remarks>This value can bypass the role's hume shield maximum. However, this value will only be visible to the end-player as Hume Shield if <see cref="FpcRole.IsHumeShieldedRole"/> is <see langword="true"/>. Otherwise, the game will treat the player as though they have the amount of Hume Shield specified, even though they cannot see it.</remarks>
+        public float HumeShield
+        {
+            get => HumeShieldStat.CurValue;
+            set => HumeShieldStat.CurValue = value;
+        }
+
+        /// <summary>
         /// Gets a <see cref="IEnumerable{T}"/> of all active Artificial Health processes on the player.
         /// </summary>
         public IEnumerable<AhpStat.AhpProcess> ActiveArtificialHealthProcesses => ((AhpStat)ReferenceHub.playerStats.StatModules[1])._activeProcesses;
+
+        /// <summary>
+        /// Gets the player's <see cref="PlayerStatsSystem.HumeShieldStat"/>.
+        /// </summary>
+        public HumeShieldStat HumeShieldStat => (HumeShieldStat)ReferenceHub.playerStats.StatModules[4];
 
         /// <summary>
         /// Gets or sets the item in the player's hand. Value will be <see langword="null"/> if the player is not holding anything.
@@ -772,7 +787,17 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets the <see cref="StaminaStat"/> class.
         /// </summary>
-        public StaminaStat Stamina => (StaminaStat)ReferenceHub.playerStats.StatModules[2];
+        public StaminaStat StaminaStat => (StaminaStat)ReferenceHub.playerStats.StatModules[2];
+
+        /// <summary>
+        /// Gets or sets the amount of stamina the player has.
+        /// </summary>
+        /// <remarks>This will always be a value between <c>0-1</c>, <c>0</c> representing no stamina and <c>1</c> representing maximum stamina.</remarks>
+        public float Stamina
+        {
+            get => StaminaStat.CurValue;
+            set => StaminaStat.CurValue = value;
+        }
 
         /// <summary>
         /// Gets a value indicating whether or not the staff bypass is enabled.
@@ -1712,7 +1737,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Resets the <see cref="Player"/>'s stamina.
         /// </summary>
-        public void ResetStamina() => Stamina.CurValue = Stamina.MaxValue;
+        public void ResetStamina() => Stamina = StaminaStat.MaxValue;
 
         /// <summary>
         /// Hurts the player.
@@ -2382,6 +2407,13 @@ namespace Exiled.API.Features
             result = default;
             return false;
         }
+
+        /// <summary>
+        /// Plays the Hume Shield break sound effect from the player.
+        /// </summary>
+        /// <remarks>This will only function if the player's <see cref="FpcRole.IsHumeShieldedRole"/> is <see langword="true"/>.</remarks>
+        public void PlayShieldBreakSound()
+        => new PlayerRoles.PlayableScps.HumeShield.DynamicHumeShieldController.ShieldBreakMessage() { Target = ReferenceHub }.SendToAuthenticated();
 
         /// <summary>
         /// Gets a <see cref="StatBase"/> module from the player's <see cref="PlayerStats"/> component.

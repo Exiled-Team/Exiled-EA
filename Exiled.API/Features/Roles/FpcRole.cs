@@ -12,6 +12,7 @@ namespace Exiled.API.Features.Roles
     using NorthwoodLib.Pools;
     using PlayerRoles;
     using PlayerRoles.FirstPersonControl;
+    using PlayerRoles.PlayableScps.HumeShield;
     using PlayerStatsSystem;
 
     /// <summary>
@@ -118,6 +119,11 @@ namespace Exiled.API.Features.Roles
         /// Gets a value indicating whether or not the <see cref="Player"/> is in darkness.
         /// </summary>
         public bool IsInDarkness => FirstPersonController.InDarkness;
+
+        /// <summary>
+        /// Gets a value indicating whether or not this role is protected by a hume shield.
+        /// </summary>
+        public bool IsHumeShieldedRole => this is IHumeShieldRole;
 
         /// <summary>
         /// Gets or sets a value indicating whether or not the player has noclip enabled.

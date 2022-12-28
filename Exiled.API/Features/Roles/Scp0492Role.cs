@@ -8,6 +8,7 @@
 namespace Exiled.API.Features.Roles
 {
     using PlayerRoles;
+    using PlayerRoles.PlayableScps.HumeShield;
     using PlayerRoles.PlayableScps.Scp049;
     using PlayerRoles.PlayableScps.Scp049.Zombies;
     using PlayerRoles.PlayableScps.Subroutines;
@@ -15,7 +16,7 @@ namespace Exiled.API.Features.Roles
     /// <summary>
     /// Defines a role that represents SCP-049-2.
     /// </summary>
-    public class Scp0492Role : FpcRole, ISubroutinedScpRole
+    public class Scp0492Role : FpcRole, ISubroutinedScpRole, IHumeShieldRole
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Scp0492Role"/> class.
@@ -25,6 +26,7 @@ namespace Exiled.API.Features.Roles
             : base(baseRole)
         {
             SubroutineModule = baseRole.SubroutineModule;
+            HumeShieldBase = baseRole.HumeShieldModule;
         }
 
         /// <inheritdoc/>
@@ -32,6 +34,9 @@ namespace Exiled.API.Features.Roles
 
         /// <inheritdoc/>
         public SubroutineManagerModule SubroutineModule { get; }
+
+        /// <inheritdoc/>
+        public HumeShieldModuleBase HumeShieldBase { get; }
 
         /// <summary>
         /// Gets or sets the amount of times this SCP-049-2 has been resurrected.
