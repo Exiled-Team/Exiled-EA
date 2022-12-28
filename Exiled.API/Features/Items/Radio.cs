@@ -55,7 +55,7 @@ namespace Exiled.API.Features.Items
         public RadioRange Range
         {
             get => (RadioRange)Base._rangeId;
-            set => Base._rangeId = (byte)value;
+            set => value is RadioRange.Disabled ? Base._rangeId = (byte)value : IsEnable = false;
         }
 
         /// <summary>
@@ -80,9 +80,13 @@ namespace Exiled.API.Features.Items
         }
 
         /// <summary>
-        /// Turns off the radio.
+        /// Gets or sets a value indicating whether turns the radio Active or not.
         /// </summary>
-        public void Disable() => Base._enabled = false;
+        public bool IsEnable
+        {
+            get => Base._enabled;
+            set => Base._enabled = value;
+        }
 
         /// <summary>
         /// Clones current <see cref="Radio"/> object.
