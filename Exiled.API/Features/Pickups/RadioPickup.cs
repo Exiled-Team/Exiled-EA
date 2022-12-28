@@ -43,7 +43,7 @@ namespace Exiled.API.Features.Pickups
         /// <summary>
         /// Gets or sets the Radio Energy.
         /// </summary>
-        public float Energy
+        public float BatteryLevel
         {
             get => Base.SavedBattery;
             set => Base.SavedBattery = value;
@@ -61,7 +61,7 @@ namespace Exiled.API.Features.Pickups
         /// <summary>
         /// Gets or sets a value indicating whether the radio is active.
         /// </summary>
-        public bool IsActive
+        public bool IsEnable
         {
             get => Base.SavedEnabled;
             set => Base.SavedEnabled = value;
@@ -71,6 +71,6 @@ namespace Exiled.API.Features.Pickups
         /// Returns the RadioPickup in a human readable format.
         /// </summary>
         /// <returns>A string containing RadioPickup related data.</returns>
-        public override string ToString() => $"{Type} ({Serial}) [{Weight}] *{Scale}* |{Energy}| -{Range}- /{IsActive}/";
+        public override string ToString() => $"{Type} ({Serial}) [{Weight}] *{Scale}* |{BatteryLevel}| -{Range}- /{IsEnable}/";
     }
 }
