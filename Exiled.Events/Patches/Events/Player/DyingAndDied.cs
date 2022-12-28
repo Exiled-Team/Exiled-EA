@@ -38,6 +38,7 @@ namespace Exiled.Events.Patches.Events.Player
             LocalBuilder player = generator.DeclareLocal(typeof(Player));
             LocalBuilder oldRole = generator.DeclareLocal(typeof(RoleTypeId));
 
+            /*
             newInstructions.InsertRange(
                 0,
                 new CodeInstruction[]
@@ -70,6 +71,7 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Callvirt, PropertyGetter(typeof(Role), nameof(Role.Type))),
                     new(OpCodes.Stloc, oldRole.LocalIndex),
                 });
+            */
 
             newInstructions.InsertRange(
                 newInstructions.Count - 1,

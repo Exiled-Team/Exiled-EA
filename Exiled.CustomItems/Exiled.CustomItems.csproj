@@ -31,6 +31,7 @@
         <Reference Include="CommandSystem.Core" HintPath="$(BETA_EXILED_REFERENCES)\CommandSystem.Core.dll" Private="false"/>
         <Reference Include="Mirror" HintPath="$(BETA_EXILED_REFERENCES)\Mirror.dll" Private="false"/>
         <Reference Include="NorthwoodLib" HintPath="$(BETA_EXILED_REFERENCES)\NorthwoodLib.dll" Private="false"/>
+        <Reference Include="PluginAPI" HintPath="$(BETA_EXILED_REFERENCES)\PluginAPI.dll" Private="false" />
         <Reference Include="UnityEngine" HintPath="$(BETA_EXILED_REFERENCES)\UnityEngine.dll" Private="false"/>
         <Reference Include="UnityEngine.AudioModule" HintPath="$(BETA_EXILED_REFERENCES)\UnityEngine.AudioModule.dll" Private="false"/>
         <Reference Include="UnityEngine.AnimationModule" HintPath="$(BETA_EXILED_REFERENCES)\UnityEngine.AnimationModule.dll" Private="false"/>

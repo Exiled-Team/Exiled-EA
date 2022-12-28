@@ -8,42 +8,44 @@
 namespace Exiled.Events.EventArgs.Player
 {
     using System;
-
     using Interfaces;
-
     using LiteNetLib;
     using LiteNetLib.Utils;
+    using PluginAPI.Events;
 
     /// <summary>
     ///     Contains all information before pre-authenticating a player.
     /// </summary>
     public class PreAuthenticatingEventArgs : IExiledEvent
     {
+        private PreauthCancellationData _cachedPreauthData = PreauthCancellationData.Accept();
+
+        /// <summary>
+        /// Cached <see cref="CachedPreauthData"/> that is returned back to the NwPluginAPI.
+        /// </summary>
+        internal PreauthCancellationData CachedPreauthData
+        {
+            get => _cachedPreauthData;
+            set
+            {
+                _cachedPreauthData = value;
+                IsAllowed = false;
+            }
+        }
+
         /// <summary>
         ///     Initializes a new instance of the <see cref="PreAuthenticatingEventArgs" /> class.
         /// </summary>
-        /// <param name="userId">
-        ///     <inheritdoc cref="UserId" />
-        /// </param>
-        /// <param name="request">
-        ///     <inheritdoc cref="Request" />
-        /// </param>
-        /// <param name="readerStartPosition">
-        ///     <inheritdoc cref="ReaderStartPosition" />
-        /// </param>
-        /// <param name="flags">
-        ///     <inheritdoc cref="Flags" />
-        /// </param>
-        /// <param name="country">
-        ///     <inheritdoc cref="Country" />
-        /// </param>
-        public PreAuthenticatingEventArgs(string userId, ConnectionRequest request, int readerStartPosition, byte flags, string country)
+        public PreAuthenticatingEventArgs(string userId, string ipAddress, long expiration, CentralAuthPreauthFlags flags, string country, byte[] signature, ConnectionRequest request, int readerStartPosition)
         {
             UserId = userId;
-            Request = request;
-            ReaderStartPosition = readerStartPosition;
+            IpAddress = ipAddress;
+            Expiration = expiration;
             Flags = flags;
             Country = country;
+            Signature = signature;
+            Request = request;
+            ReaderStartPosition = readerStartPosition;
         }
 
         /// <summary>
@@ -52,19 +54,34 @@ namespace Exiled.Events.EventArgs.Player
         public string UserId { get; }
 
         /// <summary>
-        ///     Gets the reader starting position for reading the preauth.
+        ///     Gets the player's IP address.
         /// </summary>
-        public int ReaderStartPosition { get; }
+        public string IpAddress { get; }
+
+        /// <summary>
+        ///     Gets the request's expiration.
+        /// </summary>
+        public long Expiration { get; }
 
         /// <summary>
         ///     Gets the flags.
         /// </summary>
-        public byte Flags { get; }
+        public CentralAuthPreauthFlags Flags { get; }
 
         /// <summary>
         ///     Gets the player's country.
         /// </summary>
         public string Country { get; }
+
+        /// <summary>
+        ///     Gets the request's signature.
+        /// </summary>
+        public byte[] Signature { get; }
+
+        /// <summary>
+        ///     Gets the reader starting position for reading the preauth.
+        /// </summary>
+        public int ReaderStartPosition { get; }
 
         /// <summary>
         ///     Gets the connection request.
@@ -76,6 +93,25 @@ namespace Exiled.Events.EventArgs.Player
         /// </summary>
         public bool IsAllowed { get; private set; } = true;
 
+        public void Delay(byte seconds, bool isForced) =>
+            CachedPreauthData = PreauthCancellationData.RejectDelay(seconds, isForced);
+
+        public void Redirect(ushort port, bool isForced) =>
+            CachedPreauthData = PreauthCancellationData.RejectRedirect(port, isForced);
+
+        public void RejectBanned(string banReason, DateTime expiration, bool isForced) =>
+            CachedPreauthData = PreauthCancellationData.RejectBanned(banReason, expiration, isForced);
+
+        public void RejectBanned(string banReason, long expiration, bool isForced) =>
+            CachedPreauthData = PreauthCancellationData.RejectBanned(banReason, expiration, isForced);
+
+        public void Reject(string customReason, bool isForced) =>
+            CachedPreauthData = PreauthCancellationData.Reject(customReason, isForced);
+
+        public void Reject(RejectionReason reason, bool isForced) =>
+            CachedPreauthData = PreauthCancellationData.Reject(reason, isForced);
+
+        /*
         /// <summary>
         ///     Delays the connection.
         /// </summary>
@@ -191,5 +227,6 @@ namespace Exiled.Events.EventArgs.Player
         ///     terminated by the plugin itself.
         /// </summary>
         public void Disallow() => IsAllowed = false;
+        */
     }
 }
