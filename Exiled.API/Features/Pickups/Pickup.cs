@@ -38,6 +38,11 @@ namespace Exiled.API.Features.Pickups
     public class Pickup
     {
         /// <summary>
+        /// The minimum pickup time of any item.
+        /// </summary>
+        public const float MinimumPickupTime = 0.245f;
+
+        /// <summary>
         /// A dictionary of all <see cref="ItemBase"/>'s that have been converted into <see cref="Items.Item"/>.
         /// </summary>
         internal static readonly Dictionary<ItemPickupBase, Pickup> BaseToPickup = new();
@@ -143,6 +148,16 @@ namespace Exiled.API.Features.Pickups
                 Base.Info.Weight = value;
                 Info = Base.Info;
             }
+        }
+
+        /// <summary>
+        /// Gets or sets the amount of time it takes to pick up this item, based on <see cref="Weight"/>.
+        /// </summary>
+        /// <remarks>Note: Changing this value will change the item's <see cref="Weight"/>.</remarks>
+        public float PickupTime
+        {
+            get => MinimumPickupTime + (0.175f * Weight);
+            set => Weight = 0.245f - (0.175f / value);
         }
 
         /// <summary>
@@ -307,6 +322,20 @@ namespace Exiled.API.Features.Pickups
             };
 
             return cloneableItem;
+        }
+
+        /// <summary>
+        /// Returns the amount of time it will take for the provided <paramref name="player"/> to pick up this item, based on <see cref="Weight"/> and active status effects.
+        /// </summary>
+        /// <param name="player">The player to check search time.</param>
+        /// <exception cref="System.ArgumentNullException">player cannot be null.</exception>
+        /// <returns>The amount of time it will take for the provided <paramref name="player"/> to pick up this item.</returns>
+        public float PickupTime(Player player)
+        {
+            if (player is null)
+                throw new System.ArgumentNullException(nameof(player));
+
+            return Base.SearchTimeForPlayer(player.ReferenceHub);
         }
 
         /// <summary>
