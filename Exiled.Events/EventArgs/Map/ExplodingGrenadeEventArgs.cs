@@ -23,7 +23,7 @@ namespace Exiled.Events.EventArgs.Map
     /// <summary>
     ///     Contains all information before a grenade explodes.
     /// </summary>
-    public class ExplodingGrenadeEventArgs : IPlayerEvent, IDeniableEvent, IProjectileEvent
+    public class ExplodingGrenadeEventArgs : IPlayerEvent, IDeniableEvent
     {
         /// <summary>
         ///     Initializes a new instance of the <see cref="ExplodingGrenadeEventArgs" /> class.
@@ -40,7 +40,7 @@ namespace Exiled.Events.EventArgs.Map
         public ExplodingGrenadeEventArgs(Player thrower, EffectGrenade grenade, Collider[] targets)
         {
             Player = thrower ?? Server.Host;
-            Projectile = (Projectile)Pickup.Get(grenade);
+            Projectile = (EffectGrenadeProjectile)Pickup.Get(grenade);
             Position = Projectile.Position;
             TargetsToAffect = ListPool<Player>.Shared.Rent();
 
@@ -69,7 +69,7 @@ namespace Exiled.Events.EventArgs.Map
         public ExplodingGrenadeEventArgs(Player thrower, Vector3 position, EffectGrenade grenade, Collider[] targets)
         {
             Player = thrower ?? Server.Host;
-            Projectile = (Projectile)Pickup.Get(grenade);
+            Projectile = (EffectGrenadeProjectile)Pickup.Get(grenade);
             Position = position;
             TargetsToAffect = ListPool<Player>.Shared.Rent();
             foreach (Collider collider in targets)
@@ -101,7 +101,7 @@ namespace Exiled.Events.EventArgs.Map
         public ExplodingGrenadeEventArgs(Player thrower, EffectGrenade grenade, List<Player> players)
         {
             Player = thrower ?? Server.Host;
-            Projectile = (Projectile)Pickup.Get(grenade);
+            Projectile = (EffectGrenadeProjectile)Pickup.Get(grenade);
             Position = Projectile.Position;
             TargetsToAffect = ListPool<Player>.Shared.Rent(players);
         }
@@ -127,7 +127,7 @@ namespace Exiled.Events.EventArgs.Map
         /// <summary>
         /// Gets the grenade that is exploding.
         /// </summary>
-        public Projectile Projectile { get; }
+        public EffectGrenadeProjectile Projectile { get; }
 
         /// <summary>
         ///     Gets or sets a value indicating whether or not the grenade can be thrown.
