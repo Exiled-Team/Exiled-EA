@@ -38,8 +38,6 @@ namespace Exiled.Events.Handlers.Internal
         {
             MultiAdminFeatures.CallEvent(MultiAdminFeatures.EventType.ROUND_END);
 
-            Scp173.TurnedPlayers.Clear();
-            Scp096.TurnedPlayers.Clear();
             TeslaGate.IgnoredPlayers.Clear();
             TeslaGate.IgnoredRoles.Clear();
             TeslaGate.IgnoredTeams.Clear();

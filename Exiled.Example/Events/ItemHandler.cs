@@ -18,7 +18,7 @@ namespace Exiled.Example.Events
     internal sealed class ItemHandler
     {
         /// <inheritdoc cref="Exiled.Events.Handlers.Item.OnChangingAmmo(ChangingAmmoEventArgs)"/>
-        public void OnChangingDurability(ChangingAmmoEventArgs ev)
+        public void OnChangingAmmo(ChangingAmmoEventArgs ev)
         {
             Log.Info($"Durability of {ev.Firearm.Type} ({ev.OldAmmo}) is changing. New durability: {ev.NewAmmo}");
         }

@@ -87,29 +87,29 @@ namespace Exiled.Events.Patches.Events.Item
                     new(OpCodes.Ldc_I4_1),
 
                     // ChangingDurabilityEventArgs ev = new(Player, ItemBase, byte, byte, bool)
-                    new(OpCodes.Newobj, GetDeclaredConstructors(typeof(ChangingDurabilityEventArgs))[0]),
+                    new(OpCodes.Newobj, GetDeclaredConstructors(typeof(ChangingAmmoEventArgs))[0]),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),
                     new(OpCodes.Stloc_S, ev.LocalIndex),
 
-                    // Item.OnChangingDurability(ev)
+                    // Item.ChangingAmmoEventArgs(ev)
                     new(OpCodes.Call, Method(typeof(Item), nameof(Item.OnChangingAmmo))),
 
                     // if (ev.Firearm == null)
                     //   goto cdc;
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(ChangingDurabilityEventArgs), nameof(ChangingDurabilityEventArgs.Firearm))),
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(ChangingAmmoEventArgs), nameof(ChangingAmmoEventArgs.Firearm))),
                     new(OpCodes.Brfalse_S, cdc),
                     new(OpCodes.Ldloc_S, ev.LocalIndex),
 
                     // if (!ev.IsAllowed)
                     //   goto jmp;
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(ChangingDurabilityEventArgs), nameof(ChangingDurabilityEventArgs.IsAllowed))),
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(ChangingAmmoEventArgs), nameof(ChangingAmmoEventArgs.IsAllowed))),
                     new(OpCodes.Brfalse_S, jmp),
 
                     // ev.NewDurability
                     // goto jcc;
                     new(OpCodes.Ldloc_S, ev.LocalIndex),
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(ChangingDurabilityEventArgs), nameof(ChangingDurabilityEventArgs.NewDurability))),
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(ChangingAmmoEventArgs), nameof(ChangingAmmoEventArgs.NewAmmo))),
                     new(OpCodes.Br_S, jcc),
 
                     // this._status.Ammo
