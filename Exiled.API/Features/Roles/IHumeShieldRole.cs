@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------
-// <copyright file="ISubroutinedScpRole.cs" company="Exiled Team">
+// <copyright file="IHumeShieldRole.cs" company="Exiled Team">
 // Copyright (c) Exiled Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
@@ -7,16 +7,16 @@
 
 namespace Exiled.API.Features.Roles
 {
-    using PlayerRoles.PlayableScps.Subroutines;
+    using PlayerRoles.PlayableScps.HumeShield;
 
     /// <summary>
-    /// Defines a interface that represents a <see cref="SubroutineManagerModule"/> in player's role.
+    /// Represents a role that supports a hume shield.
     /// </summary>
-    public interface ISubroutinedScpRole
+    public interface IHumeShieldRole
     {
         /// <summary>
-        /// Gets the SCP <see cref="SubroutineManagerModule"/>.
+        /// Gets a reference to the role's <see cref="HumeShieldModuleBase"/>.
         /// </summary>
-        SubroutineManagerModule SubroutineModule { get; }
+        HumeShieldModuleBase HumeShieldModule { get; }
     }
 }

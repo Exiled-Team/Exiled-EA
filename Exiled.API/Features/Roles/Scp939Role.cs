@@ -10,6 +10,7 @@ namespace Exiled.API.Features.Roles
     using System.Collections.Generic;
 
     using PlayerRoles;
+    using PlayerRoles.PlayableScps.HumeShield;
     using PlayerRoles.PlayableScps.Scp173;
     using PlayerRoles.PlayableScps.Scp939;
     using PlayerRoles.PlayableScps.Scp939.Mimicry;
@@ -20,7 +21,7 @@ namespace Exiled.API.Features.Roles
     /// <summary>
     /// Defines a role that represents SCP-939.
     /// </summary>
-    public class Scp939Role : FpcRole, ISubroutinedScpRole
+    public class Scp939Role : FpcRole, ISubroutinedScpRole, IHumeShieldRole
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Scp939Role"/> class.
@@ -30,6 +31,7 @@ namespace Exiled.API.Features.Roles
             : base(baseRole)
         {
             SubroutineModule = baseRole.SubroutineModule;
+            HumeShieldModule = baseRole.HumeShieldModule;
         }
 
         /// <inheritdoc/>
@@ -37,6 +39,9 @@ namespace Exiled.API.Features.Roles
 
         /// <inheritdoc/>
         public SubroutineManagerModule SubroutineModule { get; }
+
+        /// <inheritdoc/>
+        public HumeShieldModuleBase HumeShieldModule { get; }
 
         /// <summary>
         /// Gets or sets the amount of time before SCP-939 can attack again.
