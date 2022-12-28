@@ -40,7 +40,7 @@ namespace Exiled.API.Features.Pickups.Projectiles
         public new TimeGrenade Base { get; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the grenade have already explode.
+        /// Gets or sets a value indicating whether the grenade has already exploded.
         /// </summary>
         public bool IsAlreadyDetonated
         {

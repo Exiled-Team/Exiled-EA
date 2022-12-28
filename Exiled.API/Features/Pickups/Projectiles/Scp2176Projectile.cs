@@ -12,7 +12,7 @@ namespace Exiled.API.Features.Pickups.Projectiles
     using BaseScp2176Projectile = InventorySystem.Items.ThrowableProjectiles.Scp2176Projectile;
 
     /// <summary>
-    /// A wrapper class for Scp2176Projectile.
+    /// A wrapper class for an SCP-2176 Projectile.
     /// </summary>
     public class Scp2176Projectile : EffectGrenadeProjectile
     {
@@ -32,12 +32,12 @@ namespace Exiled.API.Features.Pickups.Projectiles
         public new BaseScp2176Projectile Base { get; }
 
         /// <summary>
-        /// Gets a value indicating whether know if the item has being Shatered.
+        /// Gets a value indicating whether or not SCP-2176 has shattered.
         /// </summary>
         public bool IsAlreadyTriggered => Base._hasTriggered;
 
         /// <summary>
-        /// Gets or sets a value indicating whether the next time of when the Pickup going to collisioning something it's make sound.
+        /// Gets or sets a value indicating whether SCP-2176's next collision will make the dropped sound effect.
         /// </summary>
         public bool DropSound
         {

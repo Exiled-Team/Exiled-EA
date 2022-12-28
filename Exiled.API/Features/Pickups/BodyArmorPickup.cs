@@ -10,7 +10,7 @@ namespace Exiled.API.Features.Pickups
     using BaseBodyArmor = InventorySystem.Items.Armor.BodyArmorPickup;
 
     /// <summary>
-    /// A wrapper class for BodyArmor.
+    /// A wrapper class for a Body Armor pickup.
     /// </summary>
     public class BodyArmorPickup : Pickup
     {

@@ -12,7 +12,7 @@ namespace Exiled.API.Features.Pickups
     using BaseRadio = InventorySystem.Items.Radio.RadioPickup;
 
     /// <summary>
-    /// A wrapper class for Radio.
+    /// A wrapper class for a Radio pickup.
     /// </summary>
     public class RadioPickup : Pickup
     {

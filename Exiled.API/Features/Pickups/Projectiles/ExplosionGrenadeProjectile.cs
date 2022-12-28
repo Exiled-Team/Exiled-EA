@@ -34,7 +34,7 @@ namespace Exiled.API.Features.Pickups.Projectiles
         public new ExplosionGrenade Base { get; }
 
         /// <summary>
-        /// Gets or sets the maximum raduis of the ExplosionGrenade can affected.
+        /// Gets or sets the maximum radius of the ExplosionGrenade.
         /// </summary>
         public float MaxRadius
         {

@@ -90,6 +90,11 @@ namespace Exiled.API.Features.Pickups
         public GameObject GameObject => Base.gameObject;
 
         /// <summary>
+        /// Gets the <see cref="UnityEngine.Transform"/> of the Pickup.
+        /// </summary>
+        public Transform Transform => Base.transform;
+
+        /// <summary>
         /// Gets the current <see cref="Room"/> the Pickup is in.
         /// </summary>
         public Room Room => Map.FindParentRoom(GameObject);

@@ -32,7 +32,7 @@ namespace Exiled.API.Features.Pickups.Projectiles
         public new BaseScp018Projectile Base { get; }
 
         /// <summary>
-        /// Gets a value indicating whether the damage going to be done on the teamate of the guys who trow it.
+        /// Gets a value indicating whether or not SCP-018 can injure teammates.
         /// </summary>
         public bool IgnoreFriendlyFire => Base.IgnoreFriendlyFire;
 
@@ -46,7 +46,7 @@ namespace Exiled.API.Features.Pickups.Projectiles
         }
 
         /// <summary>
-        /// Gets the damage when the ball hit something.
+        /// Gets the current damage of SCP-018.
         /// </summary>
         public float Damage => Base.CurrentDamage;
 
