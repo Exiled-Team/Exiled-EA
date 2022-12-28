@@ -40,9 +40,7 @@ namespace Exiled.Events.Patches.Events.Map
             // The return label
             Label retLabel = generator.DefineLabel();
 
-            newInstructions.InsertRange(
-                0,
-                new CodeInstruction[]
+            newInstructions.InsertRange(0, new CodeInstruction[]
                 {
                     // Player.Get(PreviousOwner.Hub)
                     new(OpCodes.Ldarg_0),

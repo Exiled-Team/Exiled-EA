@@ -10,22 +10,19 @@ namespace Exiled.API.Features.Items
     using System.Collections.Generic;
     using System.Linq;
 
-    using Extensions;
+    using Exiled.API.Features.Pickups;
     using InventorySystem.Items;
     using InventorySystem.Items.Armor;
-    using InventorySystem.Items.Firearms;
     using InventorySystem.Items.Firearms.Ammo;
     using InventorySystem.Items.Flashlight;
     using InventorySystem.Items.Keycards;
     using InventorySystem.Items.MicroHID;
-    using InventorySystem.Items.Pickups;
     using InventorySystem.Items.Radio;
     using InventorySystem.Items.ThrowableProjectiles;
     using InventorySystem.Items.Usables;
+    using InventorySystem.Items.Usables.Scp1576;
     using InventorySystem.Items.Usables.Scp244;
     using InventorySystem.Items.Usables.Scp330;
-    using Mirror;
-    using Structs;
     using UnityEngine;
 
     using Object = UnityEngine.Object;
@@ -41,24 +38,19 @@ namespace Exiled.API.Features.Items
         internal static readonly Dictionary<ItemBase, Item> BaseToItem = new();
 
         /// <summary>
-        /// A dictionary of all <see cref="Serial"/>s that have been assigned to an item.
-        /// </summary>
-        internal static readonly Dictionary<ushort, Item> SerialToItem = new();
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="Item"/> class.
         /// </summary>
         /// <param name="itemBase">The <see cref="ItemBase"/> to encapsulate.</param>
         public Item(ItemBase itemBase)
         {
             Base = itemBase;
-            Type = itemBase.ItemTypeId;
-            Serial = Base.OwnerInventory.UserInventory.Items.FirstOrDefault(i => i.Value == Base).Key;
+            BaseToItem.Add(itemBase, this);
 
-            if (Serial == 0)
+            if (Serial is 0 && itemBase.Owner != null)
             {
                 ushort serial = ItemSerialGenerator.GenerateNext();
                 Serial = serial;
+                itemBase.OnAdded(null);
 #if DEBUG
                 Log.Debug($"{nameof(Item)}.ctor: Generating new serial number. Serial should now be: {serial}. // {Serial}");
 #endif
@@ -66,7 +58,6 @@ namespace Exiled.API.Features.Items
 #if DEBUG
             Log.Debug($"{nameof(Item)}.ctor: New item created with Serial: {Serial}");
 #endif
-            BaseToItem.Add(itemBase, this);
         }
 
         /// <summary>
@@ -79,6 +70,11 @@ namespace Exiled.API.Features.Items
         }
 
         /// <summary>
+        /// Gets a list of all <see cref="Item"/>'s on the server.
+        /// </summary>
+        public static IEnumerable<Item> List => BaseToItem.Values;
+
+        /// <summary>
         /// Gets or sets the unique serial number for the item.
         /// </summary>
         public ushort Serial
@@ -86,6 +82,11 @@ namespace Exiled.API.Features.Items
             get => Base.ItemSerial;
             set => Base.ItemSerial = value;
         }
+
+        /// <summary>
+        /// Gets a value indicating whether if the item are in an inventory.
+        /// </summary>
+        public bool IsInInventory => Owner != Server.Host && Owner.HasItem(this);
 
         /// <summary>
         /// Gets or sets the scale for the item.
@@ -100,7 +101,7 @@ namespace Exiled.API.Features.Items
         /// <summary>
         /// Gets the <see cref="ItemType"/> of the item.
         /// </summary>
-        public ItemType Type { get; internal set; }
+        public ItemType Type => Base.ItemTypeId;
 
         /// <summary>
         /// Gets the <see cref="ItemCategory"/> of the item.
@@ -108,54 +109,19 @@ namespace Exiled.API.Features.Items
         public ItemCategory Category => Base.Category;
 
         /// <summary>
-        /// Gets the Weight of the item.
+        /// Gets the <see cref="ItemTierFlags"/> of the item.
+        /// </summary>
+        public ItemTierFlags TierFlags => Base.TierFlags;
+
+        /// <summary>
+        /// Gets the weight of the item.
         /// </summary>
         public float Weight => Base.Weight;
 
         /// <summary>
-        /// Gets a value indicating whether or not this item is ammunition.
-        /// </summary>
-        public bool IsAmmo => Type.IsAmmo();
-
-        /// <summary>
-        /// Gets a value indicating whether or not this item is armor.
-        /// </summary>
-        public bool IsArmor => Type.IsArmor();
-
-        /// <summary>
-        /// Gets a value indicating whether or not this item is a keycard.
-        /// </summary>
-        public bool IsKeycard => Type.IsKeycard();
-
-        /// <summary>
-        /// Gets a value indicating whether or not this item is a medical item.
-        /// </summary>
-        public bool IsMedical => Type.IsMedical();
-
-        /// <summary>
-        /// Gets a value indicating whether or not this item is an SCP item.
-        /// </summary>
-        public bool IsScp => Type.IsScp();
-
-        /// <summary>
-        /// Gets a value indicating whether or not this item is a throwable item.
-        /// </summary>
-        public bool IsThrowable => Type.IsThrowable();
-
-        /// <summary>
-        /// Gets a value indicating whether or not this item is a utility item.
-        /// </summary>
-        public bool IsUtility => Type.IsUtility();
-
-        /// <summary>
-        /// Gets a value indicating whether or not this item is a weapon.
-        /// </summary>
-        public bool IsWeapon => Type.IsWeapon();
-
-        /// <summary>
         /// Gets the <see cref="Player"/> who owns the item.
         /// </summary>
-        public Player Owner => Player.Get(Base.Owner);
+        public Player Owner => Player.Get(Base.Owner) ?? Server.Host;
 
         /// <summary>
         /// Gets an existing <see cref="Item"/> or creates a new instance of one.
@@ -178,6 +144,7 @@ namespace Exiled.API.Features.Items
                 {
                     Scp330Bag scp330Bag => new Scp330(scp330Bag),
                     Scp244Item scp244Item => new Scp244(scp244Item),
+                    Scp1576Item scp1576 => new Scp1576(scp1576),
                     _ => new Usable(usable),
                 },
                 RadioItem radio => new Radio(radio),
@@ -189,11 +156,19 @@ namespace Exiled.API.Features.Items
                 {
                     FlashbangGrenade => new FlashGrenade(throwable),
                     ExplosionGrenade => new ExplosiveGrenade(throwable),
+                    Scp2176Projectile => new Scp2176(throwable),
                     _ => new Throwable(throwable),
                 },
                 _ => new Item(itemBase),
             };
         }
+
+        /// <summary>
+        /// Gets the Item belonging to the specified serial.
+        /// </summary>
+        /// <param name="serial">The Item serial.</param>
+        /// <returns>Returns the Item found or <see langword="null"/> if not found.</returns>
+        public static Item Get(ushort serial) => List.FirstOrDefault(x => x.Serial == serial);
 
         /// <summary>
         /// Creates a new <see cref="Item"/> with the proper inherited subclass.
@@ -246,7 +221,7 @@ namespace Exiled.API.Features.Items
         /// Gives this item to a <see cref="Player"/>.
         /// </summary>
         /// <param name="player">The <see cref="Player"/> to give the item to.</param>
-        public void Give(Player player) => player.AddItem(Base);
+        public void Give(Player player) => player.AddItem(Base, this);
 
         /// <summary>
         /// Destroy this item.
@@ -254,115 +229,52 @@ namespace Exiled.API.Features.Items
         public void Destroy() => Owner.RemoveItem(this);
 
         /// <summary>
-        /// Spawns the item on the map.
+        /// Creates the <see cref="Pickup"/> that based on this <see cref="Item"/>.
         /// </summary>
         /// <param name="position">The location to spawn the item.</param>
         /// <param name="rotation">The rotation of the item.</param>
-        /// <param name="identifiers">The attachments to be added.</param>
-        /// <returns>The <see cref="Pickup"/> created by spawning this item.</returns>
-        public virtual Pickup Spawn(Vector3 position, Quaternion rotation = default, IEnumerable<AttachmentIdentifier> identifiers = null)
+        /// <param name="spawn">Whether the <see cref="Pickup"/> should be initially spawned.</param>
+        /// <returns>The created <see cref="Pickup"/>.</returns>
+        public virtual Pickup CreatePickup(Vector3 position, Quaternion rotation = default, bool spawn = true)
         {
-            ItemPickupBase ipb = Object.Instantiate(Base.PickupDropModel, position, rotation);
+            Pickup pickup = Pickup.Get(Object.Instantiate(Base.PickupDropModel, position, rotation));
 
-            ipb.Info = new PickupSyncInfo(Type, position, rotation, Weight, Serial);
-            ipb.NetworkInfo = ipb.Info;
-
-            if (ipb is FirearmPickup firearmPickup)
-            {
-                if (this is Firearm firearm)
-                {
-                    if (identifiers is not null)
-                        firearm.AddAttachment(identifiers);
-
-                    firearmPickup.Status = new FirearmStatus(firearm.Ammo, FirearmStatusFlags.MagazineInserted, firearmPickup.Status.Attachments);
-                }
-                else
-                {
-                    byte ammo = Base switch
-                    {
-                        AutomaticFirearm auto => auto._baseMaxAmmo,
-                        Shotgun shotgun => shotgun._ammoCapacity,
-                        Revolver revolver => revolver.AmmoManagerModule.MaxAmmo,
-                        _ => 0,
-                    };
-                    uint code = identifiers is not null ? firearmPickup.Info.ItemId.GetBaseCode() + identifiers.GetAttachmentsCode() : firearmPickup.Status.Attachments;
-                    firearmPickup.Status = new FirearmStatus(ammo, FirearmStatusFlags.MagazineInserted, code);
-                }
-
-                firearmPickup.NetworkStatus = firearmPickup.Status;
-            }
-
-            NetworkServer.Spawn(ipb.gameObject);
-
-            ipb.InfoReceived(default, Base.PickupDropModel.NetworkInfo);
-
-            Pickup pickup = Pickup.Get(ipb);
+            pickup.Info = new(Type, position, rotation, Weight, ItemSerialGenerator.GenerateNext());
             pickup.Scale = Scale;
 
+            if (spawn)
+                pickup.Spawn();
             return pickup;
         }
-
-        /// <summary>
-        /// Spawns the item on the map.
-        /// </summary>
-        /// <param name="position">The location to spawn the item.</param>
-        /// <param name="rotation">The rotation of the item.</param>
-        /// <returns>The <see cref="Pickup"/> created by spawning this item.</returns>
-        public virtual Pickup Spawn(Vector3 position, Quaternion rotation = default)
-        {
-            ItemPickupBase ipb = Object.Instantiate(Base.PickupDropModel, position, rotation);
-
-            ipb.Info = new PickupSyncInfo(Type, position, rotation, Weight, Serial);
-            ipb.NetworkInfo = ipb.Info;
-
-            if (ipb is FirearmPickup firearmPickup)
-            {
-                if (this is Firearm firearm)
-                {
-                    firearmPickup.Status = new FirearmStatus(firearm.Ammo, FirearmStatusFlags.MagazineInserted, firearmPickup.Status.Attachments);
-                }
-                else
-                {
-                    byte ammo = Base switch
-                    {
-                        AutomaticFirearm auto => auto._baseMaxAmmo,
-                        Shotgun shotgun => shotgun._ammoCapacity,
-                        Revolver => 6,
-                        _ => 0,
-                    };
-                    firearmPickup.Status = new FirearmStatus(ammo, FirearmStatusFlags.MagazineInserted, firearmPickup.Status.Attachments);
-                }
-
-                firearmPickup.NetworkStatus = firearmPickup.Status;
-            }
-
-            NetworkServer.Spawn(ipb.gameObject);
-
-            ipb.InfoReceived(default, Base.PickupDropModel.NetworkInfo);
-
-            Pickup pickup = Pickup.Get(ipb);
-            pickup.Scale = Scale;
-
-            return pickup;
-        }
-
-        /// <summary>
-        /// Spawns the item on the map.
-        /// </summary>
-        /// <param name="position">The location to spawn the item.</param>
-        /// <returns>The <see cref="Pickup"/> created by spawning this item.</returns>
-        public virtual Pickup Spawn(Vector3 position) => Spawn(position, default);
-
-        /// <summary>
-        /// Returns the Item in a human readable format.
-        /// </summary>
-        /// <returns>A string containing Item-related data.</returns>
-        public override string ToString() => $"{Type} ({Serial}) [{Weight}] *{Scale}*";
 
         /// <summary>
         /// Clones the current item with a different serial.
         /// </summary>
         /// <returns> Cloned item object. </returns>
-        public virtual Item Clone() => Create(Type);
+        public virtual Item Clone()
+        {
+            Item generatedItem = Create(Type);
+            return generatedItem;
+        }
+
+        /// <summary>
+        /// Returns the Item in a human readable format.
+        /// </summary>
+        /// <returns>A string containing Item-related data.</returns>
+        public override string ToString() => $"{Type} ({Serial}) [{Weight}] *{Scale}* ={Owner}=";
+
+        /// <summary>
+        /// Change the owner of the <see cref="Item"/>.
+        /// </summary>
+        /// <param name="oldOwner">old <see cref="Item"/> owner.</param>
+        /// <param name="newOwner">new <see cref="Item"/> owner.</param>
+        internal virtual void ChangeOwner(Player oldOwner, Player newOwner)
+        {
+            Base.OnRemoved(null);
+
+            Base.Owner = newOwner.ReferenceHub;
+
+            Base.OnAdded(null);
+        }
     }
 }

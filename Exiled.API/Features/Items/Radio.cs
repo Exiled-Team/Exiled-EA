@@ -54,7 +54,7 @@ namespace Exiled.API.Features.Items
         /// </summary>
         public RadioRange Range
         {
-            get => (RadioRange)Base.RangeLevel;
+            get => (RadioRange)Base._rangeId;
             set => Base._rangeId = (byte)value;
         }
 
@@ -85,28 +85,39 @@ namespace Exiled.API.Features.Items
         public void Disable() => Base._enabled = false;
 
         /// <summary>
+        /// Clones current <see cref="Radio"/> object.
+        /// </summary>
+        /// <returns> New <see cref="Radio"/> object. </returns>
+        public override Item Clone()
+        {
+            Radio radio = new()
+            {
+                BatteryLevel = BatteryLevel,
+                Range = Range,
+                RangeSettings = RangeSettings,
+            };
+
+            return radio;
+        }
+
+        /// <summary>
         /// Returns the Radio in a human readable format.
         /// </summary>
         /// <returns>A string containing Radio-related data.</returns>
         public override string ToString() => $"{Type} ({Serial}) [{Weight}] *{Scale}* |{Range}| -{BatteryLevel}-";
 
         /// <summary>
-        /// Clones current <see cref="Radio"/> object.
+        /// <inheritdoc/>
         /// </summary>
-        /// <returns> New <see cref="Radio"/> object. </returns>
-        public override Item Clone()
+        /// <param name="oldOwner">old <see cref="Item"/> owner.</param>
+        /// <param name="newOwner">new <see cref="Item"/> owner.</param>
+        internal override void ChangeOwner(Player oldOwner, Player newOwner)
         {
-            Radio radio = new();
+            Base.Owner = newOwner.ReferenceHub;
 
-            Timing.CallDelayed(
-                1f,
-                () =>
-                {
-                    radio.BatteryLevel = BatteryLevel;
-                    radio.Range = Range;
-                    radio.RangeSettings = RangeSettings;
-                });
-            return radio;
+            // Base._radio = newOwner.ReferenceHub.GetComponent<global::Radio>();
+            if (newOwner != Server.Host)
+                Base._rangeId = Base._rangeId;
         }
     }
 }

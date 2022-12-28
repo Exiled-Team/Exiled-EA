@@ -53,20 +53,22 @@ namespace Exiled.API.Features.Items
         }
 
         /// <summary>
-        /// Returns the Flashlight in a human readable format.
-        /// </summary>
-        /// <returns>A string containing Flashlight-related data.</returns>
-        public override string ToString() => $"{Type} ({Serial}) [{Weight}] *{Scale}* |{Active}|";
-
-        /// <summary>
         /// Clones current <see cref="Flashlight"/> object.
         /// </summary>
         /// <returns> New <see cref="Flashlight"/> object. </returns>
         public override Item Clone()
         {
-            Flashlight cloneableItem = new();
-            cloneableItem.Active = Active;
+            Flashlight cloneableItem = new()
+            {
+                Active = Active,
+            };
             return cloneableItem;
         }
+
+        /// <summary>
+        /// Returns the Flashlight in a human readable format.
+        /// </summary>
+        /// <returns>A string containing Flashlight-related data.</returns>
+        public override string ToString() => $"{Type} ({Serial}) [{Weight}] *{Scale}* |{Active}|";
     }
 }

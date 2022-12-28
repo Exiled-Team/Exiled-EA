@@ -7,15 +7,14 @@
 
 namespace Exiled.Events.EventArgs.Map
 {
-    using API.Features.Items;
-    using Interfaces;
-
+    using Exiled.API.Features.Pickups;
+    using Exiled.Events.EventArgs.Interfaces;
     using InventorySystem.Items.Pickups;
 
     /// <summary>
     ///     Contains all information before the server spawns an item.
     /// </summary>
-    public class SpawningItemEventArgs : IPickupEvent, IDeniableEvent
+    public class SpawningItemEventArgs : IDeniableEvent
     {
         /// <summary>
         ///     Initializes a new instance of the <see cref="SpawningItemEventArgs" /> class.
@@ -28,12 +27,6 @@ namespace Exiled.Events.EventArgs.Map
         /// </param>
         public SpawningItemEventArgs(ItemPickupBase pickupBase, bool isAllowed = true)
         {
-            if (pickupBase.Info.Serial > 0)
-            {
-                pickupBase.Info.Serial = 0;
-                pickupBase.NetworkInfo = pickupBase.Info;
-            }
-
             Pickup = Pickup.Get(pickupBase);
             IsAllowed = isAllowed;
         }

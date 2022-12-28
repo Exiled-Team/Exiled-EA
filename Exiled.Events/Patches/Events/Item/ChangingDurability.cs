@@ -25,7 +25,7 @@ namespace Exiled.Events.Patches.Events.Item
 
     /// <summary>
     ///     Patches <see cref="Firearm.Status" />.
-    ///     Adds the <see cref="Item.ChangingDurability" /> event.
+    ///     Adds the <see cref="Item.ChangingAmmo" /> event.
     /// </summary>
     [HarmonyPatch(typeof(Firearm), nameof(Firearm.Status), MethodType.Setter)]
     internal static class ChangingDurability
@@ -37,8 +37,8 @@ namespace Exiled.Events.Patches.Events.Item
             const int offset = 2;
             int index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Brfalse_S) + offset;
 
-            LocalBuilder ev = generator.DeclareLocal(typeof(ChangingDurabilityEventArgs));
-            LocalBuilder durability = generator.DeclareLocal(typeof(byte));
+            LocalBuilder ev = generator.DeclareLocal(typeof(ChangingAmmoEventArgs));
+            LocalBuilder ammo = generator.DeclareLocal(typeof(byte));
 
             Label cdc = generator.DefineLabel();
             Label jmp = generator.DefineLabel();
@@ -93,7 +93,7 @@ namespace Exiled.Events.Patches.Events.Item
                     new(OpCodes.Stloc_S, ev.LocalIndex),
 
                     // Item.OnChangingDurability(ev)
-                    new(OpCodes.Call, Method(typeof(Item), nameof(Item.OnChangingDurability))),
+                    new(OpCodes.Call, Method(typeof(Item), nameof(Item.OnChangingAmmo))),
 
                     // if (ev.Firearm == null)
                     //   goto cdc;
@@ -117,9 +117,9 @@ namespace Exiled.Events.Patches.Events.Item
                     new(OpCodes.Ldfld, Field(typeof(Firearm), nameof(Firearm._status))),
                     new(OpCodes.Ldfld, Field(typeof(FirearmStatus), nameof(FirearmStatus.Ammo))),
 
-                    // durability = (...)
-                    new CodeInstruction(OpCodes.Stloc_S, durability.LocalIndex).WithLabels(jcc),
-                    new(OpCodes.Ldloc_S, durability.LocalIndex),
+                    // ammo = (...)
+                    new CodeInstruction(OpCodes.Stloc_S, ammo.LocalIndex).WithLabels(jcc),
+                    new(OpCodes.Ldloc_S, ammo.LocalIndex),
 
                     // value.Flags
                     new(OpCodes.Ldarg_1),

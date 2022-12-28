@@ -7,11 +7,13 @@
 
 namespace Exiled.Events.EventArgs.Item
 {
-    using API.Features;
-    using API.Features.Items;
+    using Exiled.API.Features;
+    using Exiled.API.Features.Pickups;
+    using Exiled.Events.EventArgs.Interfaces;
+
     using Interactables.Interobjects.DoorUtils;
-    using Interfaces;
-    using InventorySystem.Items.Keycards;
+
+    using BaseKeycardPickup = InventorySystem.Items.Keycards.KeycardPickup;
 
     /// <summary>
     /// Contains all information before a keycard interacts with a door.
@@ -25,7 +27,7 @@ namespace Exiled.Events.EventArgs.Item
         /// <param name="player"><inheritdoc cref="Player"/></param>
         /// <param name="door"><inheritdoc cref="Door"/></param>
         /// <param name="isAllowed"><inheritdoc cref="IsAllowed"/></param>
-        public KeycardInteractingEventArgs(KeycardPickup pickup, Player player, DoorVariant door, bool isAllowed = true)
+        public KeycardInteractingEventArgs(BaseKeycardPickup pickup, Player player, DoorVariant door, bool isAllowed = true)
         {
             Pickup = Pickup.Get(pickup);
             Player = player;

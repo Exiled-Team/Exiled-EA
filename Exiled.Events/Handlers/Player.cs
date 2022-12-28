@@ -19,6 +19,7 @@ namespace Exiled.Events.Handlers
     using PluginAPI.Core.Attributes;
     using PluginAPI.Enums;
     using PluginAPI.Events;
+
     using static Events;
 
     /// <summary>
@@ -142,9 +143,14 @@ namespace Exiled.Events.Handlers
         public static event CustomEventHandler<ChangingRoleEventArgs> ChangingRole;
 
         /// <summary>
-        /// Invoked before throwing an <see cref="API.Features.Items.Item"/>.
+        /// Invoked afer throwing an <see cref="API.Features.Items.Throwable"/>.
         /// </summary>
-        public static event CustomEventHandler<ThrowingItemEventArgs> ThrowingItem;
+        public static event CustomEventHandler<ThrownItemEventArgs> ThrownItem;
+
+        /// <summary>
+        /// Invoked before receving a throwing request an <see cref="API.Features.Items.Throwable"/>.
+        /// </summary>
+        public static event CustomEventHandler<ThrowingRequestEventArgs> ThrowingRequest;
 
         /// <summary>
         /// Invoked before dropping an <see cref="API.Features.Items.Item"/>.
@@ -155,16 +161,6 @@ namespace Exiled.Events.Handlers
         /// Invoked before dropping a null <see cref="API.Features.Items.Item"/>.
         /// </summary>
         public static event CustomEventHandler<DroppingNothingEventArgs> DroppingNothing;
-
-        /// <summary>
-        /// Invoked before picking up ammo.
-        /// </summary>
-        public static event CustomEventHandler<PickingUpAmmoEventArgs> PickingUpAmmo;
-
-        /// <summary>
-        /// Invoked before picking up armor.
-        /// </summary>
-        public static event CustomEventHandler<PickingUpArmorEventArgs> PickingUpArmor;
 
         /// <summary>
         /// Invoked before picking up an <see cref="API.Features.Items.Item"/>.
@@ -557,8 +553,14 @@ namespace Exiled.Events.Handlers
         /// <summary>
         /// Called before throwing a grenade.
         /// </summary>
-        /// <param name="ev">The <see cref="ThrowingItemEventArgs"/> instance.</param>
-        public static void OnThrowingItem(ThrowingItemEventArgs ev) => ThrowingItem.InvokeSafely(ev);
+        /// <param name="ev">The <see cref="ThrownItemEventArgs"/> instance.</param>
+        public static void OnThrowingItem(ThrownItemEventArgs ev) => ThrownItem.InvokeSafely(ev);
+
+        /// <summary>
+        /// Called before receving a throwing request.
+        /// </summary>
+        /// <param name="ev">The <see cref="ThrowingRequestEventArgs"/> instance.</param>
+        public static void OnThrowingRequest(ThrowingRequestEventArgs ev) => ThrowingRequest.InvokeSafely(ev);
 
         /// <summary>
         /// Called before dropping an item.
@@ -571,18 +573,6 @@ namespace Exiled.Events.Handlers
         /// </summary>
         /// <param name="ev">The <see cref="DroppingNothingEventArgs"/> instance.</param>
         public static void OnDroppingNothing(DroppingNothingEventArgs ev) => DroppingNothing.InvokeSafely(ev);
-
-        /// <summary>
-        /// Called before a <see cref="API.Features.Player"/> picks up ammo.
-        /// </summary>
-        /// <param name="ev">The <see cref="PickingUpAmmoEventArgs"/> instance.</param>
-        public static void OnPickingUpAmmo(PickingUpAmmoEventArgs ev) => PickingUpAmmo.InvokeSafely(ev);
-
-        /// <summary>
-        /// Called before a <see cref="API.Features.Player"/> picks up armor.
-        /// </summary>
-        /// <param name="ev">The <see cref="PickingUpArmorEventArgs"/> instance.</param>
-        public static void OnPickingUpArmor(PickingUpArmorEventArgs ev) => PickingUpArmor.InvokeSafely(ev);
 
         /// <summary>
         /// Called before a <see cref="API.Features.Player"/> picks up an item.

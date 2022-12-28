@@ -19,6 +19,9 @@ namespace Exiled.API.Features
     using InventorySystem.Items.Firearms.BasicMessages;
     using InventorySystem.Items.Pickups;
     using Items;
+    using Exiled.API.Features.Pickups;
+    using Exiled.API.Features.Toys;
+
     using LightContainmentZoneDecontamination;
     using MapGeneration;
     using MapGeneration.Distributors;
@@ -27,7 +30,6 @@ namespace Exiled.API.Features
     using PlayerRoles.PlayableScps.Scp173;
     using PlayerRoles.PlayableScps.Scp939;
     using RelativePositioning;
-    using Toys;
     using UnityEngine;
     using Utils.Networking;
 
@@ -125,25 +127,6 @@ namespace Exiled.API.Features
         public static ReadOnlyCollection<Locker> Lockers => ReadOnlyLockersValue;
 
         /// <summary>
-        /// gets all <see cref="Pickup"/>s on the map.
-        /// </summary>
-        public static ReadOnlyCollection<Pickup> Pickups
-        {
-            get
-            {
-                List<Pickup> pickups = new();
-
-                foreach (ItemPickupBase itemPickupBase in Object.FindObjectsOfType<ItemPickupBase>())
-                {
-                    if (Pickup.Get(itemPickupBase) is Pickup pickup)
-                        pickups.Add(pickup);
-                }
-
-                return pickups.AsReadOnly();
-            }
-        }
-
-        /// <summary>
         /// Gets all <see cref="Ragdoll"/> objects.
         /// </summary>
         public static ReadOnlyCollection<Ragdoll> Ragdolls => ReadOnlyRagdollsValue;
@@ -204,6 +187,12 @@ namespace Exiled.API.Features
                 if (ply.Role.Is(out Scp079Role role))
                     room = FindParentRoom(role.Camera.GameObject);
             }
+
+            if (room != null)
+                return room;
+
+            // Try to get room using NW methods
+            room = Room.Get(objectInRoom.transform.position);
 
             if (room is null)
             {
@@ -312,8 +301,9 @@ namespace Exiled.API.Features
         /// <returns><see cref="Pickup"/> object.</returns>
         public static Pickup GetRandomPickup(ItemType type = ItemType.None)
         {
-            List<Pickup> pickups = (type != ItemType.None ? Pickups.Where(p => p.Type == type) : Pickups).ToList();
-
+            List<Pickup> pickups = (type != ItemType.None
+                ? Pickup.List.Where(p => p.Type == type)
+                : Pickup.List).ToList();
             return pickups[Random.Range(0, pickups.Count)];
         }
 
@@ -399,6 +389,8 @@ namespace Exiled.API.Features
             Camera.Camera079ToCamera.Clear();
             Window.BreakableWindowToWindow.Clear();
             TeslaGate.BaseTeslaGateToTeslaGate.Clear();
+            Pickup.BaseToPickup.Clear();
+            Item.BaseToItem.Clear();
             TeleportsValue.Clear();
             LockersValue.Clear();
             RagdollsValue.Clear();
