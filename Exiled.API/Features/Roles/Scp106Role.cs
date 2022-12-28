@@ -27,7 +27,7 @@ namespace Exiled.API.Features.Roles
             : base(baseRole)
         {
             SubroutineModule = baseRole.SubroutineModule;
-            HumeShieldBase = baseRole.HumeShieldModule;
+            HumeShieldModule = baseRole.HumeShieldModule;
             Internal = baseRole;
         }
 
@@ -37,13 +37,10 @@ namespace Exiled.API.Features.Roles
         /// <inheritdoc/>
         public SubroutineManagerModule SubroutineModule { get; }
 
-        /// <inheritdoc/>
-        public HumeShieldModuleBase HumeShieldBase { get; }
-
         /// <summary>
         /// Gets the <see cref="HumeShieldModuleBase"/>.
         /// </summary>
-        public HumeShieldModuleBase HumeShieldModule => Internal.HumeShieldModule;
+        public HumeShieldModuleBase HumeShieldModule { get; }
 
         /// <summary>
         /// Gets or sets SCP-106's Vigor.

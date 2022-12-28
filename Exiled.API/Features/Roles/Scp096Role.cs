@@ -32,7 +32,7 @@ namespace Exiled.API.Features.Roles
             : base(baseRole)
         {
             SubroutineModule = baseRole.SubroutineModule;
-            HumeShieldBase = baseRole.HumeShieldModule;
+            HumeShieldModule = baseRole.HumeShieldModule;
             Internal = baseRole;
         }
 
@@ -48,7 +48,7 @@ namespace Exiled.API.Features.Roles
         public SubroutineManagerModule SubroutineModule { get; }
 
         /// <inheritdoc/>
-        public HumeShieldModuleBase HumeShieldBase { get; }
+        public HumeShieldModuleBase HumeShieldModule { get; }
 
         /// <summary>
         /// Gets a value indicating SCP-096's ability state.

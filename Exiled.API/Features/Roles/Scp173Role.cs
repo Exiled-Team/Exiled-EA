@@ -33,7 +33,7 @@ namespace Exiled.API.Features.Roles
             : base(baseRole)
         {
             SubroutineModule = baseRole.SubroutineModule;
-            HumeShieldBase = baseRole.HumeShieldModule;
+            HumeShieldModule = baseRole.HumeShieldModule;
             MovementModule = FirstPersonController.FpcModule as Scp173MovementModule;
         }
 
@@ -49,7 +49,7 @@ namespace Exiled.API.Features.Roles
         public SubroutineManagerModule SubroutineModule { get; }
 
         /// <inheritdoc/>
-        public HumeShieldModuleBase HumeShieldBase { get; }
+        public HumeShieldModuleBase HumeShieldModule { get; }
 
         /// <summary>
         /// Gets a value indicating whether or not SCP-173 is currently being viewed by one or more players.

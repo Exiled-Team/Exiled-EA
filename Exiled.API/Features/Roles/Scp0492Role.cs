@@ -26,7 +26,7 @@ namespace Exiled.API.Features.Roles
             : base(baseRole)
         {
             SubroutineModule = baseRole.SubroutineModule;
-            HumeShieldBase = baseRole.HumeShieldModule;
+            HumeShieldModule = baseRole.HumeShieldModule;
         }
 
         /// <inheritdoc/>
@@ -36,7 +36,7 @@ namespace Exiled.API.Features.Roles
         public SubroutineManagerModule SubroutineModule { get; }
 
         /// <inheritdoc/>
-        public HumeShieldModuleBase HumeShieldBase { get; }
+        public HumeShieldModuleBase HumeShieldModule { get; }
 
         /// <summary>
         /// Gets or sets the amount of times this SCP-049-2 has been resurrected.
