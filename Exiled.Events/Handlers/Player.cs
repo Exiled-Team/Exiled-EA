@@ -18,7 +18,7 @@ namespace Exiled.Events.Handlers
     using PlayerRoles.FirstPersonControl.Thirdperson;
     using PluginAPI.Core.Attributes;
     using PluginAPI.Enums;
-
+    using PluginAPI.Events;
     using static Events;
 
     /// <summary>
@@ -889,8 +889,13 @@ namespace Exiled.Events.Handlers
         /// Called before pre-authenticating a <see cref="API.Features.Player"/>.
         /// </summary>
         [PluginEvent(ServerEventType.PlayerPreauth)]
-        public bool OnPreAuthenticating(string userId, string ipAddress, long expiration, CentralAuthPreauthFlags centralFlags, string region, byte[] signature, LiteNetLib.ConnectionRequest connectionRequest, int readerStartPosition) =>
-            PreAuthenticating.InvokeSafely(new PreAuthenticatingEventArgs(userId, connectionRequest, readerStartPosition, centralFlags, region));
+        public PreauthCancellationData OnPreAuthenticating(string userId, string ipAddress, long expiration, CentralAuthPreauthFlags flags, string country, byte[] signature, LiteNetLib.ConnectionRequest request, int readerStartPosition)
+        {
+            PreAuthenticatingEventArgs ev = new(userId, ipAddress, expiration, flags, country, signature, request, readerStartPosition);
+            PreAuthenticating.InvokeSafely(ev);
+
+            return ev.CachedPreauthData;
+        }
 
         /// <summary>
         /// Called before a <see cref="API.Features.Player"/> damage a window.
