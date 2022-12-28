@@ -7,19 +7,13 @@
 
 namespace Exiled.API.Features.Items
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
-
     using InventorySystem.Items.Usables;
     using InventorySystem.Items.Usables.Scp1576;
 
     /// <summary>
     /// A wrapper class for <see cref="Scp1576Item"/>.
     /// </summary>
-    internal class Scp1576 : Usable
+    public class Scp1576 : Usable
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Scp1576"/> class.
