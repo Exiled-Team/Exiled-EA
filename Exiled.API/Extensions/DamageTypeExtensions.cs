@@ -8,7 +8,6 @@
 namespace Exiled.API.Extensions
 {
     using System.Collections.Generic;
-    using System.Collections.ObjectModel;
 
     using Enums;
     using Features;
