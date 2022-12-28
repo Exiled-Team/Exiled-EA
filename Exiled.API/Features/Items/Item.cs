@@ -25,6 +25,7 @@ namespace Exiled.API.Features.Items
     using InventorySystem.Items.Usables.Scp330;
     using UnityEngine;
 
+    using BaseConsumable = InventorySystem.Items.Usables.Consumable;
     using Object = UnityEngine.Object;
 
     /// <summary>
@@ -114,9 +115,44 @@ namespace Exiled.API.Features.Items
         public ItemTierFlags TierFlags => Base.TierFlags;
 
         /// <summary>
-        /// Gets the weight of the item.
+        /// Gets the Weight of the item.
         /// </summary>
         public float Weight => Base.Weight;
+
+        /// <summary>
+        /// Gets a value indicating whether or not this item is ammunition.
+        /// </summary>
+        public bool IsAmmo => this is Ammo;
+
+        /// <summary>
+        /// Gets a value indicating whether or not this item is armor.
+        /// </summary>
+        public bool IsArmor => this is Armor;
+
+        /// <summary>
+        /// Gets a value indicating whether or not this item is a keycard.
+        /// </summary>
+        public bool IsKeycard => this is Keycard;
+
+        /// <summary>
+        /// Gets a value indicating whether or not this item will be destroy when being used.
+        /// </summary>
+        public bool IsConsumable => this is Consumable;
+
+        /// <summary>
+        /// Gets a value indicating whether or not this item is a throwable item.
+        /// </summary>
+        public bool IsThrowable => this is Throwable;
+
+        /// <summary>
+        /// Gets a value indicating whether or not this item can be used by player.
+        /// </summary>
+        public bool IsUsable => this is Usable;
+
+        /// <summary>
+        /// Gets a value indicating whether or not this item is a weapon.
+        /// </summary>
+        public bool IsWeapon => this is Firearm;
 
         /// <summary>
         /// Gets the <see cref="Player"/> who owns the item.
@@ -145,6 +181,7 @@ namespace Exiled.API.Features.Items
                     Scp330Bag scp330Bag => new Scp330(scp330Bag),
                     Scp244Item scp244Item => new Scp244(scp244Item),
                     Scp1576Item scp1576 => new Scp1576(scp1576),
+                    BaseConsumable consumable => new Consumable(consumable),
                     _ => new Usable(usable),
                 },
                 RadioItem radio => new Radio(radio),
