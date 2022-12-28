@@ -69,7 +69,7 @@ namespace Exiled.Events.Patches.Fixes
                     // this._scpDamageMultiplier = explosiveGrenade.ScpMultiplier
                     new(OpCodes.Ldarg_0),
                     new(OpCodes.Ldloc_S, explosiveGrenade.LocalIndex),
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(ExplosiveGrenade), nameof(ExplosiveGrenade.ScpMultiplier))),
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(ExplosiveGrenade), nameof(ExplosiveGrenade.ScpDamageMultiplier))),
                     new(OpCodes.Stfld, Field(typeof(ExplosionGrenade), nameof(ExplosionGrenade._scpDamageMultiplier))),
 
                     // this._maxRadius = explosiveGrenade.MaxRadius

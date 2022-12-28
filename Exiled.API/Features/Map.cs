@@ -14,14 +14,12 @@ namespace Exiled.API.Features
 
     using Enums;
     using Exiled.API.Extensions;
+    using Exiled.API.Features.Pickups;
     using Exiled.API.Features.Roles;
+    using Exiled.API.Features.Toys;
     using Hazards;
     using InventorySystem.Items.Firearms.BasicMessages;
-    using InventorySystem.Items.Pickups;
     using Items;
-    using Exiled.API.Features.Pickups;
-    using Exiled.API.Features.Toys;
-
     using LightContainmentZoneDecontamination;
     using MapGeneration;
     using MapGeneration.Distributors;
@@ -67,8 +65,6 @@ namespace Exiled.API.Features
         private static readonly ReadOnlyCollection<Locker> ReadOnlyLockersValue = LockersValue.AsReadOnly();
         private static readonly ReadOnlyCollection<Ragdoll> ReadOnlyRagdollsValue = RagdollsValue.AsReadOnly();
         private static readonly ReadOnlyCollection<AdminToy> ReadOnlyToysValue = ToysValue.AsReadOnly();
-
-        private static readonly RaycastHit[] CachedFindParentRoomRaycast = new RaycastHit[1];
 
         private static TantrumEnvironmentalHazard tantrumPrefab;
         private static Scp939AmnesticCloudInstance amnesticCloudPrefab;

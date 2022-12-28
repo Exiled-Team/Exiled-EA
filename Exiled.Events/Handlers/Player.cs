@@ -21,11 +21,17 @@ namespace Exiled.Events.Handlers
     using PluginAPI.Events;
 
     using static Events;
+#pragma warning disable SA1615//TODO
+#pragma warning disable SA1611
+#pragma warning disable SA1204
+#pragma warning disable IDE0079
+#pragma warning disable IDE0060
 
     /// <summary>
     /// Player related events.
     /// </summary>
     public class Player
+#pragma warning restore IDE0079 // Retirer la suppression inutile
     {
         /// <summary>
         /// Invoked before authenticating a <see cref="API.Features.Player"/>.

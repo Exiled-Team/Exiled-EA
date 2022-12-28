@@ -7,12 +7,15 @@
 
 namespace Exiled.API.Features.Items
 {
-    using Enums;
-    using Exiled.API.Features.Pickups;
-    using Exiled.API.Features.Pickups.Projectiles;
+    using System.Collections.Generic;
 
-    using InventorySystem.Items;
+    using Enums;
+
+    using Footprinting;
+
     using InventorySystem.Items.ThrowableProjectiles;
+
+    using Mirror;
 
     using UnityEngine;
 
@@ -30,7 +33,11 @@ namespace Exiled.API.Features.Items
         public FlashGrenade(ThrowableItem itemBase)
             : base(itemBase)
         {
-            Projectile = (FlashbangProjectile)((Throwable)this).Projectile;
+            FlashbangGrenade grenade = (FlashbangGrenade)Base.Projectile;
+            BlindCurve = grenade._blindingOverDistance;
+            SurfaceDistanceIntensifier = grenade._surfaceZoneDistanceIntensifier;
+            DeafenCurve = grenade._deafenDurationOverDistance;
+            FuseTime = grenade._fuseTime;
         }
 
         /// <summary>
@@ -44,72 +51,48 @@ namespace Exiled.API.Features.Items
         }
 
         /// <summary>
-        /// Gets a <see cref="FlashbangProjectile"/> to change grenade properties.
+        /// Gets or sets the <see cref="AnimationCurve"/> for determining how long the <see cref="EffectType.Blinded"/> effect will last.
         /// </summary>
-        public new FlashbangProjectile Projectile { get; }
+        public AnimationCurve BlindCurve { get; set; }
 
         /// <summary>
-        /// Gets or sets the minimum duration of player can take the effect.
+        /// Gets or sets the multiplier for damage against <see cref="Side.Scp"/> players.
         /// </summary>
-        public float MinimalDurationEffect
-        {
-            get => Projectile.MinimalDurationEffect;
-            set => Projectile.MinimalDurationEffect = value;
-        }
+        public float SurfaceDistanceIntensifier { get; set; }
 
         /// <summary>
-        /// Gets or sets the additional duration of the <see cref="EffectType.Blinded"/> effect.
+        /// Gets or sets the <see cref="AnimationCurve"/> for determining how long the <see cref="EffectType.Deafened"/> effect will last.
         /// </summary>
-        public float AdditionalBlindedEffect
-        {
-            get => Projectile.AdditionalBlindedEffect;
-            set => Projectile.AdditionalBlindedEffect = value;
-        }
-
-        /// <summary>
-        /// Gets or sets the how mush the flash grenade going to be intensified when explode at <see cref="RoomType.Surface"/>.
-        /// </summary>
-        public float SurfaceDistanceIntensifier
-        {
-            get => Projectile.SurfaceDistanceIntensifier;
-            set => Projectile.SurfaceDistanceIntensifier = value;
-        }
+        public AnimationCurve DeafenCurve { get; set; }
 
         /// <summary>
         /// Gets or sets how long the fuse will last.
         /// </summary>
-        public float FuseTime
-        {
-            get => Projectile.FuseTime;
-            set => Projectile.FuseTime = value;
-        }
+        public float FuseTime { get; set; }
+
+        /// <summary>
+        /// Gets or sets all the currently known <see cref="EffectGrenade"/>:<see cref="Throwable"/> items.
+        /// </summary>
+        internal static Dictionary<FlashbangGrenade, FlashGrenade> GrenadeToItem { get; set; } = new();
 
         /// <summary>
         /// Spawns an active grenade on the map at the specified location.
         /// </summary>
         /// <param name="position">The location to spawn the grenade.</param>
         /// <param name="owner">Optional: The <see cref="Player"/> owner of the grenade.</param>
-        /// <returns>Spawned <see cref="FlashbangProjectile">grenade</see>.</returns>
-        public FlashbangProjectile SpawnActive(Vector3 position, Player owner = null)
+        public void SpawnActive(Vector3 position, Player owner = null)
         {
 #if DEBUG
             Log.Debug($"Spawning active grenade: {FuseTime}");
 #endif
-            FlashbangProjectile grenade = (FlashbangProjectile)Pickup.Get(Object.Instantiate(Projectile.Base, position, Quaternion.identity));
-
-            grenade.Serial = ItemSerialGenerator.GenerateNext();
-
-            grenade.MinimalDurationEffect = MinimalDurationEffect;
-            grenade.AdditionalBlindedEffect = AdditionalBlindedEffect;
-            grenade.SurfaceDistanceIntensifier = SurfaceDistanceIntensifier;
-            grenade.FuseTime = FuseTime;
-
-            grenade.PreviousOwner = owner ?? Server.Host;
-
-            grenade.Spawn();
-            grenade.Base.ServerActivate();
-
-            return grenade;
+            FlashbangGrenade grenade = (FlashbangGrenade)Object.Instantiate(Base.Projectile, position, Quaternion.identity);
+            grenade.PreviousOwner = new Footprint(owner is not null ? owner.ReferenceHub : Server.Host.ReferenceHub);
+            grenade._blindingOverDistance = BlindCurve;
+            grenade._surfaceZoneDistanceIntensifier = SurfaceDistanceIntensifier;
+            grenade._deafenDurationOverDistance = DeafenCurve;
+            grenade._fuseTime = FuseTime;
+            NetworkServer.Spawn(grenade.gameObject);
+            grenade.ServerActivate();
         }
 
         /// <summary>
@@ -120,12 +103,10 @@ namespace Exiled.API.Features.Items
         {
             FlashGrenade cloneableItem = new()
             {
-                MinimalDurationEffect = MinimalDurationEffect,
-                AdditionalBlindedEffect = AdditionalBlindedEffect,
+                BlindCurve = BlindCurve,
                 SurfaceDistanceIntensifier = SurfaceDistanceIntensifier,
+                DeafenCurve = DeafenCurve,
                 FuseTime = FuseTime,
-                Repickable = Repickable,
-                PinPullTime = PinPullTime,
             };
 
             return cloneableItem;
