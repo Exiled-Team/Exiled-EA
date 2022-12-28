@@ -10,6 +10,7 @@ namespace Exiled.API.Features.Items
     using System.Collections.Generic;
     using System.Linq;
 
+    using Exiled.API.Features.Core;
     using Exiled.API.Features.Pickups;
     using InventorySystem.Items;
     using InventorySystem.Items.Armor;
@@ -31,7 +32,7 @@ namespace Exiled.API.Features.Items
     /// <summary>
     /// A wrapper class for <see cref="ItemBase"/>.
     /// </summary>
-    public class Item
+    public class Item : TypeCastObject<Item>
     {
         /// <summary>
         /// A dictionary of all <see cref="ItemBase"/>'s that have been converted into <see cref="Item"/>.

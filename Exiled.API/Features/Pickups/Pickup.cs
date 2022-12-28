@@ -10,6 +10,7 @@ namespace Exiled.API.Features.Pickups
     using System.Collections.Generic;
     using System.Linq;
 
+    using Exiled.API.Features.Core;
     using Exiled.API.Features.Pickups.Projectiles;
     using InventorySystem;
     using InventorySystem.Items;
@@ -33,7 +34,7 @@ namespace Exiled.API.Features.Pickups
     /// <summary>
     /// A wrapper class for <see cref="ItemPickupBase"/>.
     /// </summary>
-    public class Pickup
+    public class Pickup : TypeCastObject<Pickup>
     {
         /// <summary>
         /// A dictionary of all <see cref="ItemBase"/>'s that have been converted into <see cref="Items.Item"/>.
