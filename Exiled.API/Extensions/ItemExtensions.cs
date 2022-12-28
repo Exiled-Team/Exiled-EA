@@ -177,11 +177,11 @@ namespace Exiled.API.Extensions
         };
 
         /// <summary>
-        /// Converts a valid grenade <see cref="ItemType"/> into an <see cref="ProjectileType"/>.
+        /// Converts a valid projectile <see cref="ItemType"/> into an <see cref="ProjectileType"/>.
         /// </summary>
         /// <param name="type">The <see cref="ItemType"/> to convert.</param>
-        /// <returns>The grenade type of the given item type.</returns>
-        public static ProjectileType GetGrenadeType(this ItemType type) => type switch
+        /// <returns>The projectile type of the given item type, or <see cref="ProjectileType.None"/> if the provided item type is not a projectile.</returns>
+        public static ProjectileType GetProjectileType(this ItemType type) => type switch
         {
             ItemType.GrenadeFlash => ProjectileType.Flashbang,
             ItemType.GrenadeHE => ProjectileType.FragGrenade,

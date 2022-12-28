@@ -45,7 +45,7 @@ namespace Exiled.API.Features.Pickups.Projectiles
         /// <summary>
         /// Gets the <see cref="Enums.ProjectileType"/> of the item.
         /// </summary>
-        public ProjectileType ProjectileType => Type.GetGrenadeType();
+        public ProjectileType ProjectileType => Type.GetProjectileType();
 
         /// <summary>
         /// Returns the ProjectilePickup in a human readable format.

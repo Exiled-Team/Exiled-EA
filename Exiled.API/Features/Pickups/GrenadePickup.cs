@@ -7,10 +7,12 @@
 
 namespace Exiled.API.Features.Pickups
 {
+    using Exiled.API.Enums;
+    using Exiled.API.Extensions;
     using InventorySystem.Items.ThrowableProjectiles;
 
     /// <summary>
-    /// A wrapper class for GrenadePickup(granade pickup, before turning into a grenade).
+    /// A wrapper class for a grenade pickup.
     /// </summary>
     public class GrenadePickup : Pickup
     {
@@ -33,6 +35,11 @@ namespace Exiled.API.Features.Pickups
         {
             Base = (TimedGrenadePickup)((Pickup)this).Base;
         }
+
+        /// <summary>
+        /// Gets the <see cref="Enums.ProjectileType"/> of the item.
+        /// </summary>
+        public ProjectileType ProjectileType => Type.GetProjectileType();
 
         /// <summary>
         /// Gets the <see cref="TimedGrenadePickup"/> that this class is encapsulating.

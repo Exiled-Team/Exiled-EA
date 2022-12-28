@@ -12,7 +12,7 @@ namespace Exiled.API.Features.Pickups
     using BaseFirearm = InventorySystem.Items.Firearms.FirearmPickup;
 
     /// <summary>
-    /// A wrapper class for Firearm.
+    /// A wrapper class for a Firearm pickup.
     /// </summary>
     public class FirearmPickup : Pickup
     {

@@ -10,13 +10,14 @@ namespace Exiled.API.Enums
     using Extensions;
 
     /// <summary>
-    /// The unique type of grenade.
+    /// Projectile types.
     /// </summary>
     /// <seealso cref="ItemExtensions.GetItemType(ProjectileType)"/>
+    /// <seealso cref="ItemExtensions.GetProjectileType(ItemType)"/>
     public enum ProjectileType
     {
         /// <summary>
-        /// Not Projectile.
+        /// Not a projectile.
         /// </summary>
         None,
 

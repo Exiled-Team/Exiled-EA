@@ -14,7 +14,7 @@ namespace Exiled.API.Features.Pickups
     using UnityEngine;
 
     /// <summary>
-    /// A wrapper class for SCP-244.
+    /// A wrapper class for a SCP-244 pickup.
     /// </summary>
     public class Scp244Pickup : Pickup
     {
