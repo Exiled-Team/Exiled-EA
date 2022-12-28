@@ -8,6 +8,7 @@
 namespace Exiled.API.Features.Roles
 {
     using PlayerRoles;
+    using PlayerRoles.PlayableScps.HumeShield;
     using PlayerRoles.PlayableScps.Scp049;
     using PlayerRoles.PlayableScps.Subroutines;
 
@@ -16,7 +17,7 @@ namespace Exiled.API.Features.Roles
     /// <summary>
     /// Defines a role that represents SCP-049.
     /// </summary>
-    public class Scp049Role : FpcRole, ISubroutinedScpRole
+    public class Scp049Role : FpcRole, ISubroutinedScpRole, IHumeShieldRole
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Scp049Role"/> class.
@@ -26,6 +27,7 @@ namespace Exiled.API.Features.Roles
             : base(baseRole)
         {
             SubroutineModule = baseRole.SubroutineModule;
+            HumeShieldModule = baseRole.HumeShieldModule;
         }
 
         /// <inheritdoc/>
@@ -33,6 +35,9 @@ namespace Exiled.API.Features.Roles
 
         /// <inheritdoc/>
         public SubroutineManagerModule SubroutineModule { get; }
+
+        /// <inheritdoc/>
+        public HumeShieldModuleBase HumeShieldModule { get; }
 
         /// <summary>
         /// Gets a value indicating whether or not SCP-049 is currently recalling a player.

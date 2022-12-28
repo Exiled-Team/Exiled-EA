@@ -232,6 +232,15 @@ namespace Exiled.API.Features
         public void DenyUnlock() => Base.RpcDenied();
 
         /// <summary>
+        /// Denies the unlock and resets the interaction cooldown.
+        /// </summary>
+        public void DenyUnlockAndResetCooldown()
+        {
+            InteractionCooldown = UnlockCooldown;
+            DenyUnlock();
+        }
+
+        /// <summary>
         /// Sets the specified <see cref="KeycardPermissions"/> flag.
         /// </summary>
         /// <param name="flag">The flag to set.</param>

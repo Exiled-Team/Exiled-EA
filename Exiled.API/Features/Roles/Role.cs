@@ -11,7 +11,10 @@ namespace Exiled.API.Features.Roles
     using System.Diagnostics;
 
     using Enums;
+
+    using Exiled.API.Features.Core;
     using Exiled.API.Features.Spawn;
+
     using Extensions;
     using PlayerRoles;
     using PlayerRoles.PlayableScps.Scp049.Zombies;
@@ -30,7 +33,7 @@ namespace Exiled.API.Features.Roles
     /// <summary>
     /// Defines the class for role-related classes.
     /// </summary>
-    public abstract class Role
+    public abstract class Role : TypeCastObject<Role>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Role"/> class.
@@ -38,14 +41,10 @@ namespace Exiled.API.Features.Roles
         /// <param name="baseRole">the base <see cref="PlayerRoleBase"/>.</param>
         protected Role(PlayerRoleBase baseRole)
         {
-            if (!baseRole.TryGetOwner(out ReferenceHub hub) || !Player.TryGet(hub, out Player player))
-            {
-                Log.Error($"Unknown player {new StackTrace()}");
-                return;
-            }
+            if (baseRole.TryGetOwner(out ReferenceHub hub))
+                Owner = Player.Get(hub);
 
             Base = baseRole;
-            Owner = player;
         }
 
         /// <summary>
@@ -94,6 +93,16 @@ namespace Exiled.API.Features.Roles
         public TimeSpan ActiveTime => TimeSpan.FromSeconds((double)Base.ActiveTime);
 
         /// <summary>
+        /// Gets a value indicating whether or not this role represents a dead role.
+        /// </summary>
+        public bool IsDead => Team is Team.Dead;
+
+        /// <summary>
+        /// Gets a value indicating whether or not this role represents a living role.
+        /// </summary>
+        public bool IsAlive => !IsDead;
+
+        /// <summary>
         /// Gets a value indicating whether or not this role is still valid. This will only ever be <see langword="false"/> if the Role is stored and accessed at a later date.
         /// </summary>
         public bool IsValid => Type == Owner.RoleManager.CurrentRole.RoleTypeId;
@@ -116,13 +125,7 @@ namespace Exiled.API.Features.Roles
         /// <param name="left">The role.</param>
         /// <param name="right">The other role.</param>
         /// <returns><see langword="true"/> if the values are equal.</returns>
-        public static bool operator ==(Role left, Role right)
-        {
-            if (left is null)
-                return right is null;
-
-            return left.Equals(right);
-        }
+        public static bool operator ==(Role left, Role right) => left is null ? right is null : left.Equals(right);
 
         /// <summary>
         /// Returns whether or not the two roles are different.
@@ -164,28 +167,6 @@ namespace Exiled.API.Features.Roles
         /// <returns><see langword="true"/> if the values are not equal.</returns>
         public static bool operator !=(RoleTypeId type, Role role) => role != type;
 
-        /// <summary>
-        /// Casts the role to the specified role type.
-        /// </summary>
-        /// <typeparam name="T">The type of the class.</typeparam>
-        /// <returns>The casted class, if possible.</returns>
-        public T As<T>()
-            where T : Role => this as T;
-
-        /// <summary>
-        /// Safely casts the role to the specified role type.
-        /// </summary>
-        /// <typeparam name="T">The type of the class.</typeparam>
-        /// <param name="role">The casted class, if possible.</param>
-        /// <returns><see langword="true"/> if the cast was successful; otherwise, <see langword="false"/>.</returns>
-        public bool Is<T>(out T role)
-            where T : Role
-        {
-            role = this is T type ? type : null;
-
-            return role is not null;
-        }
-
         /// <inheritdoc/>
         public override bool Equals(object obj) => base.Equals(obj);
 
@@ -203,7 +184,8 @@ namespace Exiled.API.Features.Roles
         /// </summary>
         /// <param name="newRole">The new <see cref="RoleTypeId"/> to be set.</param>
         /// <param name="reason">The <see cref="SpawnReason"/> defining why the player's role was changed.</param>
-        public virtual void Set(RoleTypeId newRole, SpawnReason reason = Enums.SpawnReason.ForceClass) => Owner.RoleManager.ServerSetRole(newRole, (RoleChangeReason)reason);
+        public virtual void Set(RoleTypeId newRole, SpawnReason reason = Enums.SpawnReason.ForceClass)
+            => Owner.RoleManager.ServerSetRole(newRole, (RoleChangeReason)reason);
 
         /// <summary>
         /// Creates a role from <see cref="RoleTypeId"/> and <see cref="Player"/>.

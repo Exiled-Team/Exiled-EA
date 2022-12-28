@@ -42,7 +42,7 @@ namespace Exiled.Events.Handlers
         /// <summary>
         ///     Invoked before detonating the warhead.
         /// </summary>
-        public static event CustomEventHandler Detonating;
+        public static event CustomEventHandler<DetonatingEventArgs> Detonating;
 
         /// <summary>
         ///     Called before stopping the warhead.
@@ -70,7 +70,15 @@ namespace Exiled.Events.Handlers
         /// <summary>
         ///     Called before detonating the warhead.
         /// </summary>
+        /// <returns>Returns whether the event is allowed or not.</returns>
         [PluginEvent(ServerEventType.WarheadDetonation)]
-        public void OnDetonating() => Detonating.InvokeSafely();
+        public bool OnDetonating()
+        {
+            DetonatingEventArgs ev = new();
+
+            Detonating.InvokeSafely(ev);
+
+            return ev.IsAllowed;
+        }
     }
 }

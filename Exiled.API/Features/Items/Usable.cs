@@ -88,5 +88,17 @@ namespace Exiled.API.Features.Items
             get => Base.RemainingCooldown;
             set => Base.RemainingCooldown = value;
         }
+
+        /// <summary>
+        /// Uses the item.
+        /// </summary>
+        /// <exception cref="System.InvalidOperationException">The <see cref="Item.Owner"/> of the item cannot be <see langword="null"/>.</exception>
+        public virtual void Use()
+        {
+            if (Owner is null)
+                throw new System.InvalidOperationException("The Owner of the item cannot be null.");
+
+            Owner.UseItem(this);
+        }
     }
 }
