@@ -23,7 +23,7 @@ namespace Exiled.Events.Patches.Events.Player
 
     /// <summary>
     ///     Patches the <see cref="ArmorSearchCompletor.Complete" /> method to add the
-    ///     <see cref="Handlers.Player.PickingUpArmor" /> event.
+    ///     <see cref="Handlers.Player.PickingUpItem" /> event.
     /// </summary>
     [HarmonyPatch(typeof(ArmorSearchCompletor), nameof(ArmorSearchCompletor.Complete))]
     internal static class PickingUpArmor
@@ -53,15 +53,15 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Ldc_I4_1),
 
                     // PickingUpArmorEventArgs ev = new(Player, ItemPickupBase, bool)
-                    new(OpCodes.Newobj, GetDeclaredConstructors(typeof(PickingUpArmorEventArgs))[0]),
+                    new(OpCodes.Newobj, GetDeclaredConstructors(typeof(PickingUpItemEventArgs))[0]),
                     new(OpCodes.Dup),
 
                     // Handlers.Player.OnPickingUpArmor(ev)
-                    new(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnPickingUpArmor))),
+                    new(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnPickingUpItem))),
 
                     // if (!ev.IsAllowed)
                     //    return;
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(PickingUpArmorEventArgs), nameof(PickingUpArmorEventArgs.IsAllowed))),
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(PickingUpItemEventArgs), nameof(PickingUpItemEventArgs.IsAllowed))),
                     new(OpCodes.Brfalse, returnLabel),
                 });
 

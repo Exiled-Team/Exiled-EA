@@ -5,13 +5,12 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-namespace Exiled.Events.Patches.Events.Scp244
+namespace Exiled.Events.Patches.Events.Player
 {
     using System.Collections.Generic;
     using System.Reflection.Emit;
 
-    using Exiled.Events.EventArgs.Scp244;
-    using Handlers;
+    using Exiled.Events.EventArgs.Player;
 
     using HarmonyLib;
 
@@ -52,15 +51,15 @@ namespace Exiled.Events.Patches.Events.Scp244
                     new(OpCodes.Ldloc_0),
 
                     // PickingUpScp244EventArgs ev = new(Player, Scp244DeployablePickup)
-                    new(OpCodes.Newobj, GetDeclaredConstructors(typeof(PickingUpScp244EventArgs))[0]),
+                    new(OpCodes.Newobj, GetDeclaredConstructors(typeof(PickingUpItemEventArgs))[0]),
                     new(OpCodes.Dup),
 
                     // Scp244.OnPickingUpScp244(ev)
-                    new(OpCodes.Call, Method(typeof(Scp244), nameof(Scp244.OnPickingUpScp244))),
+                    new(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.PickingUpItem))),
 
                     // if (!ev.IsAllowed)
                     //    return;
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(PickingUpScp244EventArgs), nameof(PickingUpScp244EventArgs.IsAllowed))),
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(PickingUpItemEventArgs), nameof(PickingUpItemEventArgs.IsAllowed))),
                     new(OpCodes.Brfalse_S, returnLabel),
                 });
 
