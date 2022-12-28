@@ -55,7 +55,7 @@ namespace Exiled.API.Features.Items
         public RadioRange Range
         {
             get => (RadioRange)Base._rangeId;
-            set => value is RadioRange.Disabled ? Base._rangeId = (byte)value : IsEnable = false;
+            set => Base._rangeId = (byte)value;
         }
 
         /// <summary>
