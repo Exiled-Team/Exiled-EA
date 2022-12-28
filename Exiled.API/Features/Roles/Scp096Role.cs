@@ -11,6 +11,7 @@ namespace Exiled.API.Features.Roles
     using System.Linq;
 
     using PlayerRoles;
+    using PlayerRoles.PlayableScps.HumeShield;
     using PlayerRoles.PlayableScps.Scp096;
     using PlayerRoles.PlayableScps.Subroutines;
 
@@ -19,7 +20,7 @@ namespace Exiled.API.Features.Roles
     /// <summary>
     /// Defines a role that represents SCP-096.
     /// </summary>
-    public class Scp096Role : FpcRole, ISubroutinedScpRole
+    public class Scp096Role : FpcRole, ISubroutinedScpRole, IHumeShieldRole
     {
         private readonly IReadOnlyCollection<Player> emptyList = new List<Player>().AsReadOnly();
 
@@ -31,6 +32,7 @@ namespace Exiled.API.Features.Roles
             : base(baseRole)
         {
             SubroutineModule = baseRole.SubroutineModule;
+            HumeShieldModule = baseRole.HumeShieldModule;
             Internal = baseRole;
         }
 
@@ -44,6 +46,9 @@ namespace Exiled.API.Features.Roles
 
         /// <inheritdoc/>
         public SubroutineManagerModule SubroutineModule { get; }
+
+        /// <inheritdoc/>
+        public HumeShieldModuleBase HumeShieldModule { get; }
 
         /// <summary>
         /// Gets a value indicating SCP-096's ability state.

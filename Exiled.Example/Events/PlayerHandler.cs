@@ -99,7 +99,7 @@ namespace Exiled.Example.Events
             Log.Info($"{ev.Player.Nickname} is changing the knob setting of SCP-914 to {ev.KnobSetting}");
         }
 
-        /// <inheritdoc cref="Exiled.Events.Handlers.Player.OnJoined(JoinedEventArgs)"/>
+        /// <inheritdoc cref="Exiled.Events.Handlers.Player.Joined"/>
         public void OnVerified(VerifiedEventArgs ev)
         {
             if (!Instance.Config.JoinedBroadcast.Show)
@@ -115,13 +115,13 @@ namespace Exiled.Example.Events
             Log.Info($"{ev.Player.Nickname} is trying to unlock a generator in {ev.Player.CurrentRoom} room");
         }
 
-        /// <inheritdoc cref="Exiled.Events.Handlers.Player.OnDestroying(DestroyingEventArgs)"/>
+        /// <inheritdoc cref="Exiled.Events.Handlers.Player.Destroying"/>
         public void OnDestroying(DestroyingEventArgs ev)
         {
             Log.Info($"{ev.Player.Nickname} ({ev.Player.Role}) is leaving the server!");
         }
 
-        /// <inheritdoc cref="Exiled.Events.Handlers.Player.OnDying(DyingEventArgs)"/>
+        /// <inheritdoc cref="Exiled.Events.Handlers.Player.Dying"/>
         public void OnDying(DyingEventArgs ev)
         {
             Log.Info($"{ev.Player.Nickname} ({ev.Player.Role}) is getting killed by {ev.Attacker.Nickname} ({ev.Attacker.Role})!");
@@ -212,7 +212,7 @@ namespace Exiled.Example.Events
             Log.Info($"{ev.Player.Nickname} is trying to escape! Their new role will be {ev.NewRole}");
         }
 
-        /// <inheritdoc cref="Exiled.Events.Handlers.Player.OnHurting(HurtingEventArgs)"/>
+        /// <inheritdoc cref="Exiled.Events.Handlers.Player.Hurting"/>
         public void OnHurting(HurtingEventArgs ev)
         {
             Log.Info($"{ev.Player} is being hurt by {ev.DamageHandler.Type}");

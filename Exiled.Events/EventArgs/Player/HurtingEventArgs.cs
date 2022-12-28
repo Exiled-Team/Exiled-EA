@@ -38,6 +38,11 @@ namespace Exiled.Events.EventArgs.Player
         }
 
         /// <summary>
+        ///     Gets the target player, who is going to be hurt.
+        /// </summary>
+        public Player Player { get; }
+
+        /// <summary>
         ///     Gets or sets the amount of inflicted damage.
         /// </summary>
         public float Amount
@@ -45,11 +50,6 @@ namespace Exiled.Events.EventArgs.Player
             get => DamageHandler.Damage;
             set => DamageHandler.Damage = value;
         }
-
-        /// <summary>
-        ///     Gets the target player, who is going to be hurt.
-        /// </summary>
-        public Player Player { get; }
 
         /// <summary>
         ///     Gets or sets the <see cref="CustomDamageHandler" /> for the event.

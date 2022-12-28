@@ -7,8 +7,13 @@
 
 namespace Exiled.API.Features.Roles
 {
+    using System.Collections.Generic;
+
+    using NorthwoodLib.Pools;
     using PlayerRoles;
     using PlayerRoles.FirstPersonControl;
+    using PlayerRoles.PlayableScps.HumeShield;
+    using PlayerStatsSystem;
 
     /// <summary>
     /// Defines a role that represents an fpc class.
@@ -24,6 +29,11 @@ namespace Exiled.API.Features.Roles
         {
             FirstPersonController = baseRole;
         }
+
+        /// <summary>
+        /// Finalizes an instance of the <see cref="FpcRole"/> class.
+        /// </summary>
+        ~FpcRole() => HashSetPool<Player>.Shared.Return(IsInvisibleFor);
 
         /// <summary>
         /// Gets the <see cref="FirstPersonController"/>.
@@ -74,11 +84,12 @@ namespace Exiled.API.Features.Roles
         /// <summary>
         /// Gets or sets a value indicating whether or not the player is invisible.
         /// </summary>
-        public bool IsInvisible
-        {
-            get => FirstPersonController.FpcModule.Motor.IsInvisible;
-            set => FirstPersonController.FpcModule.Motor.IsInvisible = true;
-        }
+        public bool IsInvisible { get; set; }
+
+        /// <summary>
+        /// Gets a list of players who can't see the player.
+        /// </summary>
+        public HashSet<Player> IsInvisibleFor { get; } = HashSetPool<Player>.Shared.Rent();
 
         /// <summary>
         /// Gets or sets the player's current <see cref="PlayerMovementState"/>.
@@ -108,5 +119,20 @@ namespace Exiled.API.Features.Roles
         /// Gets a value indicating whether or not the <see cref="Player"/> is in darkness.
         /// </summary>
         public bool IsInDarkness => FirstPersonController.InDarkness;
+
+        /// <summary>
+        /// Gets a value indicating whether or not this role is protected by a hume shield.
+        /// </summary>
+        public bool IsHumeShieldedRole => this is IHumeShieldRole;
+
+        /// <summary>
+        /// Gets or sets a value indicating whether or not the player has noclip enabled.
+        /// </summary>
+        /// <returns><see cref="bool"/> indicating status.</returns>
+        public bool IsNoclipEnabled
+        {
+            get => Owner.ReferenceHub.playerStats.GetModule<AdminFlagsStat>().HasFlag(AdminFlags.Noclip);
+            set => Owner.ReferenceHub.playerStats.GetModule<AdminFlagsStat>().SetFlag(AdminFlags.Noclip, value);
+        }
     }
 }

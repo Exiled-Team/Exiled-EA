@@ -17,7 +17,7 @@ namespace Exiled.API.Features.Roles
     /// <summary>
     /// Defines a role that represents SCP-106.
     /// </summary>
-    public class Scp106Role : FpcRole, ISubroutinedScpRole
+    public class Scp106Role : FpcRole, ISubroutinedScpRole, IHumeShieldRole
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Scp106Role"/> class.
@@ -27,6 +27,7 @@ namespace Exiled.API.Features.Roles
             : base(baseRole)
         {
             SubroutineModule = baseRole.SubroutineModule;
+            HumeShieldModule = baseRole.HumeShieldModule;
             Internal = baseRole;
         }
 
@@ -39,7 +40,7 @@ namespace Exiled.API.Features.Roles
         /// <summary>
         /// Gets the <see cref="HumeShieldModuleBase"/>.
         /// </summary>
-        public HumeShieldModuleBase HumeShieldModule => Internal.HumeShieldModule;
+        public HumeShieldModuleBase HumeShieldModule { get; }
 
         /// <summary>
         /// Gets or sets SCP-106's Vigor.
