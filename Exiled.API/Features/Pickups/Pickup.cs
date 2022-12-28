@@ -38,11 +38,6 @@ namespace Exiled.API.Features.Pickups
     public class Pickup
     {
         /// <summary>
-        /// The minimum pickup time of any item.
-        /// </summary>
-        public const float MinimumPickupTime = 0.245f;
-
-        /// <summary>
         /// A dictionary of all <see cref="ItemBase"/>'s that have been converted into <see cref="Items.Item"/>.
         /// </summary>
         internal static readonly Dictionary<ItemPickupBase, Pickup> BaseToPickup = new();
@@ -156,8 +151,8 @@ namespace Exiled.API.Features.Pickups
         /// <remarks>Note: Changing this value will change the item's <see cref="Weight"/>.</remarks>
         public float PickupTime
         {
-            get => MinimumPickupTime + (0.175f * Weight);
-            set => Weight = MinimumPickupTime - (0.175f / value);
+            get => ItemPickupBase.MinimalPickupTime + (ItemPickupBase.WeightToTime * Weight);
+            set => Weight = ItemPickupBase.MinimalPickupTime - (ItemPickupBase.WeightToTime / value);
         }
 
         /// <summary>
