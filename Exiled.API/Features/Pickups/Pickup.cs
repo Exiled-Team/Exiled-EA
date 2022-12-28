@@ -157,7 +157,7 @@ namespace Exiled.API.Features.Pickups
         public float PickupTime
         {
             get => MinimumPickupTime + (0.175f * Weight);
-            set => Weight = 0.245f - (0.175f / value);
+            set => Weight = MinimumPickupTime - (0.175f / value);
         }
 
         /// <summary>
@@ -330,7 +330,7 @@ namespace Exiled.API.Features.Pickups
         /// <param name="player">The player to check search time.</param>
         /// <exception cref="System.ArgumentNullException">player cannot be null.</exception>
         /// <returns>The amount of time it will take for the provided <paramref name="player"/> to pick up this item.</returns>
-        public float PickupTime(Player player)
+        public float PickupTimeForPlayer(Player player)
         {
             if (player is null)
                 throw new System.ArgumentNullException(nameof(player));
