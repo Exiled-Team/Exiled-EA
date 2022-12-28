@@ -53,7 +53,7 @@ namespace Exiled.CustomItems.Patches
                 index,
                 new[]
                 {
-                    new(OpCodes.Call,  Method(typeof(Item), nameof(Item.Get))),
+                    new(OpCodes.Call,  Method(typeof(Item), nameof(Item.Get), new[] { typeof(ItemBase), })),
                     new(OpCodes.Dup),
                     new(OpCodes.Stloc_S, item.LocalIndex),
                     new(OpCodes.Brfalse_S, continueLabel),

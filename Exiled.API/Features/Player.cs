@@ -1616,7 +1616,6 @@ namespace Exiled.API.Features
         /// Drops an item from the player's inventory.
         /// </summary>
         /// <param name="item">The item to be dropped.</param>
-
         /// <returns>dropped <see cref="Pickup"/>.</returns>
         public Pickup DropItem(Item item) => Pickup.Get(Inventory.ServerDropItem(item.Serial));
 

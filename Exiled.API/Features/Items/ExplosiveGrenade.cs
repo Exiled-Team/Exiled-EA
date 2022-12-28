@@ -7,13 +7,13 @@
 
 namespace Exiled.API.Features.Items
 {
+    using System.Collections.Generic;
+
     using Enums;
     using Exiled.API.Features.Pickups;
     using Exiled.API.Features.Pickups.Projectiles;
-
     using InventorySystem.Items;
     using InventorySystem.Items.ThrowableProjectiles;
-
     using UnityEngine;
 
     using Object = UnityEngine.Object;
@@ -102,6 +102,11 @@ namespace Exiled.API.Features.Items
             get => Projectile.FuseTime;
             set => Projectile.FuseTime = value;
         }
+
+        /// <summary>
+        /// Gets or sets all the currently known <see cref="EffectGrenade"/>:<see cref="Throwable"/> items.
+        /// </summary>
+        internal static Dictionary<ExplosionGrenade, ExplosiveGrenade> GrenadeToItem { get; set; } = new();
 
         /// <summary>
         /// Spawns an active grenade on the map at the specified location.

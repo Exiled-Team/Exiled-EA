@@ -59,7 +59,7 @@ namespace Exiled.Events.Patches.Fixes
                     // if (item == null)
                     //    goto skipLabel;
                     new(OpCodes.Ldarg_0),
-                    new(OpCodes.Call, Method(typeof(Item), nameof(Item.Get))),
+                    new(OpCodes.Call, Method(typeof(Item), nameof(Item.Get), new[] { typeof(InventorySystem.Items.ItemBase), })),
                     new(OpCodes.Dup),
                     new(OpCodes.Stloc_S, item.LocalIndex),
                     new(OpCodes.Brfalse, skipLabel),
