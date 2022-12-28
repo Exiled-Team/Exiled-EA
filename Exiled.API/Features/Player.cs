@@ -740,7 +740,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets or sets the player's Hume Shield.
         /// </summary>
-        /// <remarks>This value can bypass <see cref="FpcRole.MaxHumeShield"/>. However, this value will only be visible to the end-player as Hume Shield if <see cref="FpcRole.IsHumeShieldedRole"/> is <see langword="true"/>. Otherwise, the game will treat the player as though they have the amount of Hume Shield specified, even though they cannot see it.</remarks>
+        /// <remarks>This value can bypass the role's hume shield maximum. However, this value will only be visible to the end-player as Hume Shield if <see cref="FpcRole.IsHumeShieldedRole"/> is <see langword="true"/>. Otherwise, the game will treat the player as though they have the amount of Hume Shield specified, even though they cannot see it.</remarks>
         public float HumeShield
         {
             get => HumeShieldStat.CurValue;

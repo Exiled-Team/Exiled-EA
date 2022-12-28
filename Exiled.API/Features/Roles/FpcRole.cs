@@ -126,10 +126,6 @@ namespace Exiled.API.Features.Roles
         public bool IsHumeShieldedRole => this is IHumeShieldRole;
 
         /// <summary>
-        /// Gets a value indicating the role's maximum Hume Shield. This will always be <c>0</c> if <see cref="IsHumeShieldedRole"/> is <see langword="false"/>.
-        /// </summary>
-
-        /// <summary>
         /// Gets or sets a value indicating whether or not the player has noclip enabled.
         /// </summary>
         /// <returns><see cref="bool"/> indicating status.</returns>
