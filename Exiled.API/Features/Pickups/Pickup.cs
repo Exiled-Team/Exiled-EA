@@ -328,14 +328,23 @@ namespace Exiled.API.Features.Pickups
         /// <param name="rotation">The rotation to spawn the <see cref="Pickup"/>.</param>
         /// <param name="previousOwner">An optional previous owner of the item.</param>
         /// <returns>The <see cref="Pickup"/>. See documentation of <see cref="Create(ItemType)"/> for more information on casting.</returns>
-        public static Pickup CreateAndSpawn(ItemType type, Vector3 position, Quaternion rotation, Player previousOwner = null)
+        public static Pickup CreateAndSpawn(ItemType type, Vector3 position, Quaternion rotation, Player previousOwner = null) => Spawn(Create(type), position, rotation, previousOwner);
+
+        /// <summary>
+        /// Spawns a <see cref="Pickup"/>.
+        /// </summary>
+        /// <param name="pickup">The <see cref="Pickup"/> too spawn.</param>
+        /// <param name="position">The position to spawn the <see cref="Pickup"/> at.</param>
+        /// <param name="rotation">The rotation to spawn the <see cref="Pickup"/>.</param>
+        /// <param name="previousOwner">An optional previous owner of the item.</param>
+        /// <returns>The <see cref="Pickup"/>. See documentation of <see cref="Create(ItemType)"/> for more information on casting.</returns>
+        public static Pickup Spawn(Pickup pickup, Vector3 position, Quaternion rotation, Player previousOwner = null)
         {
-            Pickup p = Create(type);
-            p.Position = position;
-            p.Rotation = rotation;
-            p.PreviousOwner = previousOwner;
-            p.Spawn();
-            return p;
+            pickup.Position = position;
+            pickup.Rotation = rotation;
+            pickup.PreviousOwner = previousOwner;
+            pickup.Spawn();
+            return pickup;
         }
 
         /// <summary>
@@ -392,7 +401,7 @@ namespace Exiled.API.Features.Pickups
         /// <summary>
         /// Unspawns pickup on server.
         /// </summary>
-        /// <seealso cref="Spawn"/>
+        /// <seealso cref="Spawn()"/>
         /// <seealso cref="Destroy"/>
         public void UnSpawn()
         {
