@@ -44,6 +44,6 @@ namespace Exiled.API.Features.Items
         /// <summary>
         /// Gets the <see cref="BaseConsumable"/> that this class is encapsulating.
         /// </summary>
-        public new UsableItem Base { get; }
+        public new BaseConsumable Base { get; }
     }
 }

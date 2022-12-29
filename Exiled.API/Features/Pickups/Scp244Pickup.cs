@@ -10,7 +10,7 @@ namespace Exiled.API.Features.Pickups
     using Exiled.API.Features.DamageHandlers;
 
     using InventorySystem.Items.Usables.Scp244;
-
+    using System;
     using UnityEngine;
 
     /// <summary>
@@ -42,6 +42,11 @@ namespace Exiled.API.Features.Pickups
         /// Gets the <see cref="Scp244DeployablePickup"/> that this class is encapsulating.
         /// </summary>
         public new Scp244DeployablePickup Base { get; }
+
+        /// <summary>
+        /// Gets the amount of time this Scp244 has been on the ground.
+        /// </summary>
+        public TimeSpan Lifetime => Base._lifeTime.Elapsed;
 
         /// <summary>
         /// Gets the speed of <see cref="Scp244Pickup"/>'s too grow.
@@ -80,6 +85,11 @@ namespace Exiled.API.Features.Pickups
         /// Gets a value indicating whether or not this Scp244 is breakable.
         /// </summary>
         public bool IsBreakable => Base.State is Scp244State.Idle or Scp244State.Active;
+
+        /// <summary>
+        /// Gets a value indicating whether or not this Scp244 is broken.
+        /// </summary>
+        public bool IsBroken => Base.State is Scp244State.Destroyed;
 
         /// <summary>
         /// Gets or sets the <see cref="Scp244State"/>.
