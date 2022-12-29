@@ -45,5 +45,10 @@ namespace Exiled.API.Features.Pickups
         /// Gets the <see cref="TimedGrenadePickup"/> that this class is encapsulating.
         /// </summary>
         public new TimedGrenadePickup Base { get; }
+
+        /// <summary>
+        /// Trigger the grenade to make it Explode.
+        /// </summary>
+        public void Explode() => Base._replaceNextFrame = true;
     }
 }
