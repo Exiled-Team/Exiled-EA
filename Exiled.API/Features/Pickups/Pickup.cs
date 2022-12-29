@@ -284,6 +284,20 @@ namespace Exiled.API.Features.Pickups
         }
 
         /// <summary>
+        /// Gets all <see cref="Pickup"/> with the given <see cref="ItemType"/>.
+        /// </summary>
+        /// <param name="type">The <see cref="ItemType"/> to look for.</param>
+        /// <returns>A <see cref="IEnumerable{T}"/> of <see cref="Pickup"/>.</returns>
+        public static IEnumerable<Pickup> Get(ItemType type) => List.Where(x => x.Type == type);
+
+        /// <summary>
+        /// Gets the <see cref="Pickup"/> with the given <see cref="Serial"/>.
+        /// </summary>
+        /// <param name="serial"> The serial of the Pickup you search.</param>
+        /// <returns>return the Pickup with Serial choose.</returns>
+        public static Pickup Get(ushort serial) => List.SingleOrDefault(x => x.Serial == serial);
+
+        /// <summary>
         /// Creates and returns a new <see cref="Pickup"/> with the proper inherited subclass.
         /// <para>
         /// Based on the <paramref name="type"/>, the returned <see cref="Pickup"/> can be casted into a subclass to gain more control over the object.
@@ -346,13 +360,6 @@ namespace Exiled.API.Features.Pickups
             pickup.Spawn();
             return pickup;
         }
-
-        /// <summary>
-        /// Gets all <see cref="Pickup"/> with the given <see cref="ItemType"/>.
-        /// </summary>
-        /// <param name="type">The <see cref="ItemType"/> to look for.</param>
-        /// <returns>A <see cref="IEnumerable{T}"/> of <see cref="Pickup"/>.</returns>
-        public static IEnumerable<Pickup> Get(ItemType type) => List.Where(x => x.Type == type);
 
         /// <summary>
         /// Clones current <see cref="Pickup"/> object.
