@@ -179,10 +179,7 @@ namespace Exiled.API.Features
         public static Room FindParentRoom(GameObject objectInRoom)
         {
             if (objectInRoom == null)
-                return null;
-
-            // Avoid errors by forcing Map.Rooms to populate when this is called.
-            IEnumerable<Room> rooms = Room.List;
+                return default;
 
             Room room = null;
 
@@ -205,18 +202,8 @@ namespace Exiled.API.Features
                     room = FindParentRoom(role.Camera.GameObject);
             }
 
-            if (room is null)
-            {
-                // Then try for objects that aren't children, like players and pickups.
-                room = Room.Get(objectInRoom.transform.position);
-
-                // Always default to surface transform, since it's static.
-                // The current index of the 'Outside' room is the last one
-                if (rooms.Count() != 0)
-                    return rooms.FirstOrDefault(r => r.gameObject.name == "Outside");
-            }
-
-            return room;
+            // Finally, try for objects that aren't children, like players and pickups.
+            return room ?? Room.Get(objectInRoom.transform.position) ?? default;
         }
 
         /// <summary>
