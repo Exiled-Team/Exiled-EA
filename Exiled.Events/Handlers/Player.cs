@@ -1102,7 +1102,7 @@ namespace Exiled.Events.Handlers
             API.Features.Player exiledPlayer = new(player.ReferenceHub);
             API.Features.Player.UnverifiedPlayers.Add(player.ReferenceHub, exiledPlayer);
 
-            Joined.InvokeSafely(new(player));
+            Joined.InvokeSafely(new(exiledPlayer));
         }
 
         /// <summary>
