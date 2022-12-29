@@ -1102,7 +1102,7 @@ namespace Exiled.Events.Handlers
             API.Features.Player exiledPlayer = new(player.ReferenceHub);
             API.Features.Player.UnverifiedPlayers.Add(player.ReferenceHub, exiledPlayer);
 
-            Joined.InvokeSafely(new(player));
+            Joined.InvokeSafely(new(exiledPlayer));
         }
 
         /// <summary>
@@ -1133,6 +1133,12 @@ namespace Exiled.Events.Handlers
         /// </summary>
         /// <param name="player"><inheritdoc cref="DestroyingEventArgs.Player"/></param>
         [PluginEvent(ServerEventType.PlayerLeft)]
-        public void OnDestroying(PluginAPI.Core.Player player) => Destroying.InvokeSafely(new(player));
+        public void OnDestroying(PluginAPI.Core.Player player)
+        {
+            API.Features.Player exiledPlayer = player;
+
+            if (exiledPlayer is not null)
+                Destroying.InvokeSafely(new(exiledPlayer));
+        }
     }
 }

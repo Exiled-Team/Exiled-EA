@@ -32,7 +32,9 @@ namespace Exiled.Events.Patches.Events.Player
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Shared.Rent(instructions);
 
-            LocalBuilder exiledPlayerLocal = generator.DeclareLocal(typeof(Player));
+            Label returnLabel = generator.DefineLabel();
+
+            LocalBuilder player = generator.DeclareLocal(typeof(Player));
 
             // --------- Player check ---------
             // The check is a check that this is a player, if it isn't a player, then we simply call return
@@ -40,8 +42,6 @@ namespace Exiled.Events.Patches.Events.Player
             int offset = 3;
             int index = newInstructions.FindIndex(
                 instruction => instruction.Calls(Method(typeof(ReferenceHub), nameof(ReferenceHub.TryGetHubNetID)))) + offset;
-
-            Label returnLabel = generator.DefineLabel();
 
             newInstructions.InsertRange(
                 index,
@@ -52,21 +52,20 @@ namespace Exiled.Events.Patches.Events.Player
                     new CodeInstruction(OpCodes.Ldloc_1).MoveLabelsFrom(newInstructions[index]),
                     new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
                     new(OpCodes.Dup),
-                    new(OpCodes.Stloc_S, exiledPlayerLocal.LocalIndex),
+                    new(OpCodes.Stloc_S, player.LocalIndex),
                     new(OpCodes.Brfalse, returnLabel),
                 });
 
             // ----------- FailingEscapePocketDimension-------------
-            offset = 2;
-            index = newInstructions.FindLastIndex(
-                instruction => instruction.LoadsField(Field(typeof(PocketDimensionTeleport), nameof(PocketDimensionTeleport.DebugBool)))) + offset;
+            offset = 0;
+            index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Ldc_I4_S) + offset;
 
             newInstructions.InsertRange(
                 index,
                 new[]
                 {
-                    // exiledPlayerLocal
-                    new CodeInstruction(OpCodes.Ldloc_S, exiledPlayerLocal.LocalIndex).MoveLabelsFrom(newInstructions[index]),
+                    // player
+                    new CodeInstruction(OpCodes.Ldloc_S, player.LocalIndex),
 
                     // this
                     new(OpCodes.Ldarg_0),

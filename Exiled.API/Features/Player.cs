@@ -155,10 +155,7 @@ namespace Exiled.API.Features
                 Inventory = value.inventory;
                 CameraTransform = value.PlayerCameraReference;
 
-                value.playerStats.StatModules[0] = healthStat = new CustomHealthStat { Hub = value };
-
-                if (!value.playerStats._dictionarizedTypes.ContainsKey(typeof(HealthStat)))
-                    value.playerStats._dictionarizedTypes.Add(typeof(HealthStat), healthStat);
+                value.playerStats._dictionarizedTypes[typeof(HealthStat)] = value.playerStats.StatModules[0] = healthStat = new CustomHealthStat { Hub = value };
             }
         }
 

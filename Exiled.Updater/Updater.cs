@@ -293,7 +293,7 @@ namespace Exiled.Updater
                         FileName = installerPath,
                         UseShellExecute = false,
                         CreateNoWindow = true,
-                        Arguments = $"--exit --target-version {newVersion.Release.TagName} --appdata \"{Paths.AppData}\"",
+                        Arguments = $"--exit --target-version {newVersion.Release.TagName} --appdata \"{Paths.AppData}\" --exiled \"{Path.Combine(Paths.Exiled, "..")}\"",
                         RedirectStandardOutput = true,
                         RedirectStandardError = true,
                         StandardErrorEncoding = ProcessEncoding,
