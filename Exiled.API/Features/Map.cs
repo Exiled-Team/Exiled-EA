@@ -181,10 +181,7 @@ namespace Exiled.API.Features
             if (objectInRoom == null)
                 return null;
 
-            // Avoid errors by forcing Map.Rooms to populate when this is called.
-            IEnumerable<Room> rooms = Room.List;
-
-            Room room = null;
+            Room room = default;
 
             const string playerTag = "Player";
 
