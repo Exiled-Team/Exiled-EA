@@ -93,8 +93,8 @@ namespace Exiled.Example
             Exiled.Events.Handlers.Player.ReloadingWeapon += playerHandler.OnReloading;
             Exiled.Events.Handlers.Player.ReceivingEffect += playerHandler.OnReceivingEffect;
 
-            Exiled.Events.Handlers.Warhead.Stopping += warheadHandler.OnStopping;
-            Exiled.Events.Handlers.Warhead.Starting += warheadHandler.OnStarting;
+            Exiled.Events.Handlers.Warhead.StoppingWarhead += warheadHandler.OnStoppingWarhead;
+            Exiled.Events.Handlers.Warhead.StartingWarhead += warheadHandler.OnStartingWarhead;
 
             Exiled.Events.Handlers.Scp106.Teleporting += playerHandler.OnTeleporting;
 
