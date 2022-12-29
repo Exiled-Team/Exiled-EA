@@ -11,6 +11,7 @@ Usage:
 Options:
   -p, --path <path> (REQUIRED)         Path to the folder with the SL server [default: YourWorkingFolder]
   --appdata <appdata> (REQUIRED)       Forces the folder to be the AppData folder (useful for containers when pterodactyl runs as root) [default: YourAppDataPath]
+  --exiled <exiled> (REQUIRED)         Indicates the Exiled root folder [default: YourAppDataPath]
   --pre-releases                       Includes pre-releases [default: False]
   --target-version <target-version>    Target version for installation
   --github--token <github--token>      Uses a token for auth in case the rate limit is exceeded (no permissions required)
@@ -63,7 +64,7 @@ Installation complete
 - ##### Installation in a specific folder, specific version and specific appdata folder
 
 ```
-irebbok@iRebbok:~$ ./Exiled.Installer-Linux -p /home/irebbok/scpsl/dedi --appdata /home/irebbok/scpsl --target-version 2.0.8
+irebbok@iRebbok:~$ ./Exiled.Installer-Linux -p /home/irebbok/scpsl/dedi --appdata /home/irebbok/scpsl --exiled /home/irebbok/scpsl --target-version 2.0.8
 Exiled.Installer-Linux-3.1.0.0
 AppData folder: /home/irebbok/scpsl
 Receiving releases...

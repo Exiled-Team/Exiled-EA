@@ -21,6 +21,8 @@ namespace Exiled.Events.EventArgs.Player
     /// </summary>
     public class ChangingRoleEventArgs : IPlayerEvent, IDeniableEvent
     {
+        private RoleTypeId newRole;
+
         /// <summary>
         ///     Initializes a new instance of the <see cref="ChangingRoleEventArgs" /> class.
         /// </summary>
@@ -37,15 +39,6 @@ namespace Exiled.Events.EventArgs.Player
         {
             Player = player;
             NewRole = newRole;
-
-            if (StartingInventories.DefinedInventories.ContainsKey(newRole))
-            {
-                foreach (ItemType itemType in StartingInventories.DefinedInventories[newRole].Items)
-                    Items.Add(itemType);
-                foreach (KeyValuePair<ItemType, ushort> ammoPair in StartingInventories.DefinedInventories[newRole].Ammo)
-                    Ammo.Add(ammoPair.Key, ammoPair.Value);
-            }
-
             Reason = (SpawnReason)reason;
         }
 
@@ -57,7 +50,26 @@ namespace Exiled.Events.EventArgs.Player
         /// <summary>
         ///     Gets or sets the new player's role.
         /// </summary>
-        public RoleTypeId NewRole { get; set; }
+        public RoleTypeId NewRole
+        {
+            get => newRole;
+            set
+            {
+                if (StartingInventories.DefinedInventories.ContainsKey(value))
+                {
+                    Items.Clear();
+                    Ammo.Clear();
+
+                    foreach (ItemType itemType in StartingInventories.DefinedInventories[value].Items)
+                        Items.Add(itemType);
+
+                    foreach (KeyValuePair<ItemType, ushort> ammoPair in StartingInventories.DefinedInventories[value].Ammo)
+                        Ammo.Add(ammoPair.Key, ammoPair.Value);
+                }
+
+                newRole = value;
+            }
+        }
 
         /// <summary>
         ///     Gets base items that the player will receive.
