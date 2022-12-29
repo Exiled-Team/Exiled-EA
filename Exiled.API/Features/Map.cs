@@ -203,8 +203,7 @@ namespace Exiled.API.Features
             }
 
             // Finally, try for objects that aren't children, like players and pickups.
-            room ??= Room.Get(objectInRoom.transform.position);
-            return room ?? default;
+            return room ?? Room.Get(objectInRoom.transform.position) ?? default;
         }
 
         /// <summary>
