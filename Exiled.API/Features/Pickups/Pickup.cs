@@ -192,7 +192,7 @@ namespace Exiled.API.Features.Pickups
         public Player PreviousOwner
         {
             get => Player.Get(Base.PreviousOwner.Hub);
-            set => Base.PreviousOwner = value.Footprint;
+            set => _ = value is null ? (Base.PreviousOwner = Server.Host.Footprint) : (Base.PreviousOwner = value.Footprint);
         }
 
         /// <summary>
@@ -313,6 +313,24 @@ namespace Exiled.API.Features.Pickups
             ItemType.SCP330 => new Scp330Pickup(),
             _ => new Pickup(type),
         };
+
+        /// <summary>
+        /// Creates and spawns a <see cref="Pickup"/>.
+        /// </summary>
+        /// <param name="type">The <see cref="ItemType"/> of the pickup.</param>
+        /// <param name="position">The position to spawn the <see cref="Pickup"/> at.</param>
+        /// <param name="rotation">The rotation to spawn the <see cref="Pickup"/>.</param>
+        /// <param name="previousOwner">An optional previous owner of the item.</param>
+        /// <returns>The <see cref="Pickup"/>. See documentation of <see cref="Create(ItemType)"/> for more information on casting.</returns>
+        public static Pickup CreateAndSpawn(ItemType type, Vector3 position, Quaternion rotation, Player previousOwner = null)
+        {
+            Pickup p = Create(type);
+            p.Position = position;
+            p.Rotation = rotation;
+            p.PreviousOwner = previousOwner;
+            p.Spawn();
+            return p;
+        }
 
         /// <summary>
         /// Gets all <see cref="Pickup"/> with the given <see cref="ItemType"/>.
