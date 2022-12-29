@@ -33,6 +33,11 @@ namespace Exiled.Installer
         ///     Absolute path that is routed to AppData.
         /// </summary>
         Absolute,
+
+        /// <summary>
+        ///     Exiled path that is routed to exiled root path.
+        /// </summary>
+        Exiled,
     }
 
     internal static class Program
@@ -171,10 +176,7 @@ namespace Exiled.Installer
 
         private static string FormatAsset(ReleaseAsset a) => $"ID: {a.Id} | NAME: {a.Name} | SIZE: {a.Size} | URL: {a.Url} | DownloadURL: {a.BrowserDownloadUrl}";
 
-        private static void ResolvePath(CommandSettings args, string filePath, out string path)
-        {
-            path = Path.Combine(args.AppData.FullName, filePath);
-        }
+        private static void ResolvePath(string filePath, string folderPath, out string path) => path = Path.Combine(folderPath, filePath);
 
         private static void ProcessTarEntry(CommandSettings args, TarInputStream tarInputStream, TarEntry entry)
         {
@@ -198,7 +200,11 @@ namespace Exiled.Installer
                 switch (ResolveEntry(entry))
                 {
                     case PathResolution.Absolute:
-                        ResolvePath(args, entry.Name, out string path);
+                        ResolvePath(entry.Name, args.AppData.FullName, out string path);
+                        ExtractEntry(tarInputStream, entry, path);
+                        break;
+                    case PathResolution.Exiled:
+                        ResolvePath(entry.Name, args.Exiled.FullName, out path);
                         ExtractEntry(tarInputStream, entry, path);
                         break;
                     default:
