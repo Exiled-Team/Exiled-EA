@@ -185,6 +185,15 @@ namespace Exiled.API.Features
         public bool HasHint { get; internal set; }
 
         /// <summary>
+        /// Gets or sets a value indicating whether or not the player is ready to use NoClip.
+        /// </summary>
+        public bool IsNoClipReady
+        {
+            get => ReferenceHub.serverRoles._noclipReady;
+            set => ReferenceHub.serverRoles._noclipReady = value;
+        }
+
+        /// <summary>
         /// Gets the <see cref="ReferenceHub"/>'s <see cref="VoiceModule"/>, can be null.
         /// </summary>
         public VoiceModuleBase VoiceModule => RoleManager.CurrentRole is IVoiceRole voiceRole ? voiceRole.VoiceModule : null;
