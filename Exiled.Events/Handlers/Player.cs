@@ -1137,7 +1137,7 @@ namespace Exiled.Events.Handlers
         {
             API.Features.Player exiledPlayer = player;
 
-            if (exiledPlayer != null)
+            if (exiledPlayer is not null)
                 Destroying.InvokeSafely(new(exiledPlayer));
         }
     }
