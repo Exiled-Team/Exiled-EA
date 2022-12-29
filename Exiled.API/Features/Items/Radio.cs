@@ -9,7 +9,6 @@ namespace Exiled.API.Features.Items
 {
     using Enums;
     using InventorySystem.Items.Radio;
-    using MEC;
     using Structs;
 
     /// <summary>
@@ -41,7 +40,7 @@ namespace Exiled.API.Features.Items
         public new RadioItem Base { get; }
 
         /// <summary>
-        /// Gets or sets the percentage of the radio's battery.
+        /// Gets or sets the percentage of the radio's battery, between <c>0-100</c>.
         /// </summary>
         public byte BatteryLevel
         {
@@ -86,6 +85,21 @@ namespace Exiled.API.Features.Items
         {
             get => Base._enabled;
             set => Base._enabled = value;
+        }
+
+        /// <summary>
+        /// Sets the <see cref="RadioRangeSettings"/> of the given <paramref name="range"/>.
+        /// </summary>
+        /// <param name="range">The <see cref="RadioRange"/> to modify.</param>
+        /// <param name="settings">The new settings of the specified range.</param>
+        public void SetRangeSettings(RadioRange range, RadioRangeSettings settings)
+        {
+            Base.Ranges[(int)range] = new RadioRangeMode
+            {
+                MaximumRange = settings.MaxRange,
+                MinuteCostWhenIdle = settings.IdleUsage,
+                MinuteCostWhenTalking = settings.TalkingUsage,
+            };
         }
 
         /// <summary>

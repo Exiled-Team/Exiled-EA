@@ -54,8 +54,8 @@ namespace Exiled.API.Features.Pickups
         /// </summary>
         public RadioRange Range
         {
-            get => (RadioRange)Base.SavedRange;
-            set => Base.SavedRange = (byte)value;
+            get => (RadioRange)Base.NetworkSavedRange;
+            set => Base.NetworkSavedRange = (byte)value;
         }
 
         /// <summary>
@@ -63,8 +63,8 @@ namespace Exiled.API.Features.Pickups
         /// </summary>
         public bool IsEnable
         {
-            get => Base.SavedEnabled;
-            set => Base.SavedEnabled = value;
+            get => Base.NetworkSavedEnabled;
+            set => Base.NetworkSavedEnabled = value;
         }
 
         /// <summary>

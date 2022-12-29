@@ -57,7 +57,7 @@ namespace Exiled.API.Features.Pickups
         /// </summary>
         public ushort Ammo
         {
-            get => Base.SavedAmmo;
+            get => Base.NetworkSavedAmmo;
             set => Base.NetworkSavedAmmo = value;
         }
 
