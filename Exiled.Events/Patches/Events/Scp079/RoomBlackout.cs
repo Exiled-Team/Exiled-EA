@@ -36,9 +36,9 @@ namespace Exiled.Events.Patches.Events.Scp079
 
             LocalBuilder ev = generator.DeclareLocal(typeof(RoomBlackoutEventArgs));
 
-            int offset = 1;
+            int offset = -1;
             int index = newInstructions.FindIndex(
-                instruction => instruction.LoadsField(Field(typeof(Scp079BlackoutRoomAbility), nameof(Scp079BlackoutRoomAbility._syncZone)))) + offset;
+                instruction => instruction.Calls(PropertyGetter(typeof(Scp079AbilityBase), nameof(Scp079AbilityBase.LostSignalHandler)))) + offset;
             newInstructions.RemoveRange(index, 5);
 
             // this._syncPos = ev.Position;
@@ -46,34 +46,39 @@ namespace Exiled.Events.Patches.Events.Scp079
                 index,
                 new CodeInstruction[]
                 {
-                    // referenceHub
+                    // this.Owner
                     new(OpCodes.Ldarg_0),
                     new(OpCodes.Call, Field(typeof(ScpStandardSubroutine<Scp079Role>), nameof(ScpStandardSubroutine<Scp079Role>.Owner))),
 
-                    // this._syncZone
+                    // this._roomController.Room
                     new(OpCodes.Ldarg_0),
-                    new(OpCodes.Ldfld, Field(typeof(Scp079BlackoutZoneAbility), nameof(Scp079BlackoutZoneAbility._syncZone))),
+                    new(OpCodes.Ldfld, Field(typeof(Scp079BlackoutRoomAbility), nameof(Scp079BlackoutRoomAbility._roomController))),
+                    new(OpCodes.Call, PropertyGetter(typeof(FlickerableLightController), nameof(FlickerableLightController.Room))),
 
                     // this._cost
                     new(OpCodes.Ldarg_0),
-                    new(OpCodes.Ldfld, Field(typeof(Scp079BlackoutZoneAbility), nameof(Scp079BlackoutZoneAbility._cost))),
+                    new(OpCodes.Call, Field(typeof(Scp079BlackoutRoomAbility), nameof(Scp079BlackoutRoomAbility._cost))),
 
-                    // this.ErrorCode
+                    // this._blackoutDuration
                     new(OpCodes.Ldarg_0),
-                    new(OpCodes.Call, PropertyGetter(typeof(Scp079BlackoutZoneAbility), nameof(Scp079BlackoutZoneAbility.ErrorCode))),
+                    new(OpCodes.Ldfld, Field(typeof(Scp079BlackoutRoomAbility), nameof(Scp079BlackoutRoomAbility._blackoutDuration))),
+
+                    // this._cooldown
+                    new(OpCodes.Ldarg_0),
+                    new(OpCodes.Ldfld, Field(typeof(Scp079BlackoutRoomAbility), nameof(Scp079BlackoutRoomAbility._cooldown))),
 
                     // true
                     new(OpCodes.Ldc_I4_1),
 
-                    // ZoneBlackoutEventArgs ev = new(referenceHub, this._syncZone, this._cost, this.ErrorCode, true);
-                    new(OpCodes.Newobj, GetDeclaredConstructors(typeof(ZoneBlackoutEventArgs))[0]),
+                    // ZoneBlackoutEventArgs ev = new(Player player, this._roomController.Room, this._cost, this._blackoutDuration, this._cooldown, true);
+                    new(OpCodes.Newobj, GetDeclaredConstructors(typeof(RoomBlackoutEventArgs))[0]),
                     new(OpCodes.Dup),
 
                     // Scp079.OnZoneBlackout(ev);
-                    new(OpCodes.Call, Method(typeof(Handlers.Scp079), nameof(Handlers.Scp079.OnZoneBlackout))),
+                    new(OpCodes.Call, Method(typeof(Handlers.Scp079), nameof(Handlers.Scp079.OnRoomBlackout))),
 
                     // if(!ev.IsAllowed) return;
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(ZoneBlackoutEventArgs), nameof(ZoneBlackoutEventArgs.IsAllowed))),
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(RoomBlackoutEventArgs), nameof(RoomBlackoutEventArgs.IsAllowed))),
                     new(OpCodes.Brfalse, returnLabel),
                 });
 

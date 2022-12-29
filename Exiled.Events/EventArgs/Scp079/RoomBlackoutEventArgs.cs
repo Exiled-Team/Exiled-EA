@@ -8,9 +8,11 @@
 namespace Exiled.Events.EventArgs.Scp079
 {
     using Exiled.API.Features;
+    using Exiled.API.Features.Roles;
     using Exiled.Events.EventArgs.Interfaces;
 
     using MapGeneration;
+    using PlayerRoles.PlayableScps.Scp079;
 
     /// <summary>
     ///     Contains all information before SCP-079 blacks out the lights in a room.
@@ -32,15 +34,19 @@ namespace Exiled.Events.EventArgs.Scp079
         /// <param name="auxiliaryPowerCost">
         ///     <inheritdoc cref="AuxiliaryPowerCost" />
         /// </param>
+        /// <param name="cooldown">
+        ///     <inheritdoc cref="Cooldown" />
+        /// </param>
         /// <param name="isAllowed">
         ///     <inheritdoc cref="IsAllowed" />
         /// </param>
-        public RoomBlackoutEventArgs(Player player, RoomIdentifier roomIdentifier, float auxiliaryPowerCost, float blackoutduration, bool isAllowed)
+        public RoomBlackoutEventArgs(Player player, RoomIdentifier roomIdentifier, float auxiliaryPowerCost, float blackoutduration, float cooldown, bool isAllowed)
         {
             Player = player;
             Room = Room.Get(roomIdentifier);
             AuxiliaryPowerCost = auxiliaryPowerCost;
             BlackoutDuration = blackoutduration;
+            Cooldown = cooldown;
             IsAllowed = isAllowed;
         }
 
@@ -63,6 +69,11 @@ namespace Exiled.Events.EventArgs.Scp079
         ///     Gets or sets the amount of auxiliary power required to black out the room.
         /// </summary>
         public float AuxiliaryPowerCost { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the time of the Cooldown to player to make an other zone blackout.
+        /// </summary>
+        public float Cooldown { get; set; }
 
         /// <summary>
         ///     Gets or sets a value indicating whether or not SCP-079 can black out the room.

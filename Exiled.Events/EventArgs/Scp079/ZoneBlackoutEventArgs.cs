@@ -17,7 +17,7 @@ namespace Exiled.Events.EventArgs.Scp079
     using PlayerRoles.PlayableScps.Scp079;
 
     /// <summary>
-    ///     Contains all information before SCP-079 blacks out the lights in a zone.
+    ///     Contains all information before SCP-079 lockdowns a room.
     /// </summary>
     public class ZoneBlackoutEventArgs : IPlayerEvent, IDeniableEvent
     {
@@ -42,7 +42,7 @@ namespace Exiled.Events.EventArgs.Scp079
         /// <param name="scp079HudTranslation">
         ///     <inheritdoc cref="Scp079HudTranslation" />
         /// </param>
-        public ZoneBlackoutEventArgs(Player player, FacilityZone zone, float auxiliaryPowerCost, float blackoutduration,float cooldown, Scp079HudTranslation scp079HudTranslation)
+        public ZoneBlackoutEventArgs(Player player, FacilityZone zone, float auxiliaryPowerCost, float blackoutduration, float cooldown, Scp079HudTranslation scp079HudTranslation)
         {
             Player = player;
             Zone = zone.GetZone();
@@ -59,32 +59,32 @@ namespace Exiled.Events.EventArgs.Scp079
         public Player Player { get; }
 
         /// <summary>
-        ///     Gets the zone that is being blacked out.
+        ///     Gets the <see cref="RoomIdentifier" /> of the room that will be locked down.
         /// </summary>
         public ZoneType Zone { get; }
 
         /// <summary>
-        ///     Gets the <see cref="PlayerRoles.PlayableScps.Scp079.Scp079HudTranslation" /> that prevented SCP-079 to blackout the zone, or <see cref="PlayerRoles.PlayableScps.Scp079.Scp079HudTranslation.Zoom"/> if the action is successful.
+        ///     Gets the <see cref="PlayerRoles.PlayableScps.Scp079.Scp079HudTranslation" /> send back to player.
         /// </summary>
         public Scp079HudTranslation Scp079HudTranslation { get; }
 
         /// <summary>
-        ///     Gets or sets the amount of auxiliary power required to black out the zone.
+        ///     Gets or sets the amount of auxiliary power required to lockdown a room.
         /// </summary>
         public float AuxiliaryPowerCost { get; set; }
 
         /// <summary>
-        ///     Gets or sets the duration of the blackout.
+        ///     Gets or sets the time of the blackout.
         /// </summary>
         public float BlackoutDuration { get; set; }
 
         /// <summary>
-        ///     Gets or sets the cooldown duration before SCP-079 can blackout another zone.
+        ///     Gets or sets the time of the Cooldown to player to make an other zone blackout.
         /// </summary>
         public float Cooldown { get; set; }
 
         /// <summary>
-        ///     Gets or sets a value indicating whether or not SCP-079 can black out the zone.
+        ///     Gets or sets a value indicating whether or not SCP-079 can lockdown a room.
         /// </summary>
         public bool IsAllowed { get; set; }
     }
