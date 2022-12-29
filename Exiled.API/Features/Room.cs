@@ -59,12 +59,12 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets the <see cref="ZoneType"/> in which the room is located.
         /// </summary>
-        public ZoneType Zone { get; private set; }
+        public ZoneType Zone { get; private set; } = ZoneType.Unspecified;
 
         /// <summary>
         /// Gets the <see cref="RoomType"/>.
         /// </summary>
-        public RoomType Type { get; private set; }
+        public RoomType Type { get; private set; } = RoomType.Unknown;
 
         /// <summary>
         /// Gets a reference to the room's <see cref="RoomIdentifier"/>.
@@ -84,12 +84,12 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets a <see cref="IEnumerable{T}"/> of <see cref="Door"/> in the <see cref="Room"/>.
         /// </summary>
-        public IEnumerable<Door> Doors { get; private set; }
+        public IEnumerable<Door> Doors { get; private set; } = Enumerable.Empty<Door>();
 
         /// <summary>
         /// Gets a <see cref="IEnumerable{T}"/> of <see cref="Scp079Speaker"/> in the <see cref="Room"/>.
         /// </summary>
-        public IEnumerable<Scp079Speaker> Speaker { get; private set; }
+        public IEnumerable<Scp079Speaker> Speaker { get; private set; } = Enumerable.Empty<Scp079Speaker>();
 
         /// <summary>
         /// Gets a <see cref="IEnumerable{T}"/> of <see cref="Pickup"/> in the <see cref="Room"/>.
@@ -142,7 +142,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets a <see cref="IEnumerable{T}"/> of <see cref="Camera"/> in the <see cref="Room"/>.
         /// </summary>
-        public IEnumerable<Camera> Cameras { get; private set; }
+        public IEnumerable<Camera> Cameras { get; private set; } = Enumerable.Empty<Camera>();
 
         /// <summary>
         /// Gets or sets a value indicating whether or not the lights in this room are currently flickered on.
@@ -388,6 +388,7 @@ namespace Exiled.API.Features
             Type = FindType(gameObject);
 
             Identifier = gameObject.GetComponent<RoomIdentifier>();
+            FlickerableLightController = gameObject.GetComponent<FlickerableLightController>();
 
             Doors = DoorVariant.DoorsByRoom.ContainsKey(Identifier) ? DoorVariant.DoorsByRoom[Identifier].Select(x => Door.Get(x, this)).ToList() : new();
             Cameras = Camera.List.Where(x => x.Base.Room == Identifier).ToList();
@@ -395,11 +396,6 @@ namespace Exiled.API.Features
 
             if (Type is RoomType.HczTesla)
                 TeslaGate = TeslaGate.List.Single(x => this == x.Room);
-
-            if (gameObject.TryGetComponent(out FlickerableLightController flickerableLightController))
-                flickerableLightController = gameObject.AddComponent<FlickerableLightController>();
-
-            FlickerableLightController = flickerableLightController;
         }
     }
 }
