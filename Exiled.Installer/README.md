@@ -34,6 +34,7 @@ Additional Arguments:
 PS E:\SteamLibrary\steamapps\common\SCP Secret Laboratory Dedicated Server> .\Exiled.Installer-Win --pre-releases
 Exiled.Installer-Win-3.1.0.0
 AppData folder: YourAppDataPath
+Exiled folder: YourAppDataPath
 Receiving releases...
 Prereleases included - True
 Target release version - 2.1.4
@@ -67,6 +68,7 @@ Installation complete
 irebbok@iRebbok:~$ ./Exiled.Installer-Linux -p /home/irebbok/scpsl/dedi --appdata /home/irebbok/scpsl --exiled /home/irebbok/scpsl --target-version 2.0.8
 Exiled.Installer-Linux-3.1.0.0
 AppData folder: /home/irebbok/scpsl
+Exiled folder: /home/irebbok/scpsl
 Receiving releases...
 Prereleases included - False
 Target release version - 2.0.8
