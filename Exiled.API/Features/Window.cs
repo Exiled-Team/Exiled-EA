@@ -79,16 +79,6 @@ namespace Exiled.API.Features
             set => GameObject.transform.position = value;
         }
 
-        /*
-        /// <summary>
-        /// Gets a value indicating whether or not this window represents the window in front of SCP-079's recontainment button.
-        /// </summary>
-        public bool Is079Trigger
-        {
-            get => Recontainer.ActivatorWindow == this;
-        }
-        */
-
         /// <summary>
         /// Gets a value indicating whether or not this window is breakable.
         /// </summary>
