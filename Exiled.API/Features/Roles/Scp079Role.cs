@@ -233,6 +233,19 @@ namespace Exiled.API.Features.Roles
         }
 
         /// <summary>
+        /// Grants SCP-079 experience.
+        /// </summary>
+        /// <param name="amount">The amount to grant.</param>
+        /// <param name="reason">The reason to grant experience.</param>
+        public void AddExperience(int amount, Scp079HudTranslation reason = Scp079HudTranslation.ExpGainAdminCommand)
+        {
+            if (!SubroutineModule.TryGetSubroutine(out Scp079TierManager ability))
+                return;
+
+            ability.ServerGrantExperience(amount, reason);
+        }
+
+        /// <summary>
         /// Locks the provided <paramref name="door"/>.
         /// </summary>
         /// <param name="door">The door to lock.</param>
