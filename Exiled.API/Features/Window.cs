@@ -174,24 +174,18 @@ namespace Exiled.API.Features
         /// <returns>A string containing Window-related data.</returns>
         public override string ToString() => $"{Type} ({Health}) [{IsBroken}] *{DisableScpDamage}*";
 
-        private GlassType GetGlassType()
+        private GlassType GetGlassType() => Room?.Type switch
         {
-            if (Recontainer.Base._activatorGlass == Base)
-                return GlassType.Scp079Trigger;
-
-            return Room?.Type switch
-            {
-                RoomType.Lcz330 => GlassType.Scp330,
-                RoomType.LczGlassBox => GlassType.GR18,
-                RoomType.LczPlants => GlassType.Plants,
-                RoomType.Hcz049 => GlassType.Scp049,
-                RoomType.Hcz079 => GlassType.Scp079,
-                RoomType.HczHid => GlassType.MicroHid,
-                RoomType.HczTestRoom => GlassType.TestRoom,
-                RoomType.HczEzCheckpointA => GlassType.HczEzCheckpointA,
-                RoomType.HczEzCheckpointB => GlassType.HczEzCheckpointB,
-                _ => GlassType.Unknown,
-            };
-        }
+            RoomType.Lcz330 => GlassType.Scp330,
+            RoomType.LczGlassBox => GlassType.GR18,
+            RoomType.LczPlants => GlassType.Plants,
+            RoomType.Hcz049 => _ = Recontainer.Base._activatorGlass == Base ? GlassType.Scp049 : GlassType.Scp079Trigger,
+            RoomType.Hcz079 => GlassType.Scp079,
+            RoomType.HczHid => GlassType.MicroHid,
+            RoomType.HczTestRoom => GlassType.TestRoom,
+            RoomType.HczEzCheckpointA => GlassType.HczEzCheckpointA,
+            RoomType.HczEzCheckpointB => GlassType.HczEzCheckpointB,
+            _ => GlassType.Unknown,
+        };
     }
 }
