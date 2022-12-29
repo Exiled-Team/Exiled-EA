@@ -80,6 +80,7 @@ namespace Exiled.Installer
                 }
 
                 Console.WriteLine(Resources.Program_MainSafe_AppData_folder___0_, args.AppData.FullName);
+                Console.WriteLine(Resources.Program_MainSafe_Exiled_folder___0_, args.Exiled.FullName);
 
                 if (args.GitHubToken is not null)
                 {
@@ -251,6 +252,7 @@ namespace Exiled.Installer
         {
             static PathResolution TryParse(string s)
             {
+                Console.WriteLine(s);
                 // We'll get UNDEFINED if it cannot be determined
                 Enum.TryParse(s, true, out PathResolution result);
                 return result;
