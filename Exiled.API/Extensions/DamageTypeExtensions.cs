@@ -85,6 +85,7 @@ namespace Exiled.API.Extensions
             { ItemType.GunShotgun, DamageType.Shotgun },
             { ItemType.GunAK, DamageType.AK },
             { ItemType.GunCOM15, DamageType.Com15 },
+            { ItemType.GunCom45, DamageType.Com15 },
             { ItemType.GunCOM18, DamageType.Com18 },
             { ItemType.GunFSP9, DamageType.Fsp9 },
             { ItemType.GunE11SR, DamageType.E11Sr },
@@ -172,9 +173,7 @@ namespace Exiled.API.Extensions
                 case Scp956DamageHandler:
                     return DamageType.Scp956;
                 case FirearmDamageHandler firearmDamageHandler:
-                    {
-                        return ItemConversion.ContainsKey(firearmDamageHandler.WeaponType) ? ItemConversion[firearmDamageHandler.WeaponType] : DamageType.Firearm;
-                    }
+                    return ItemConversion.ContainsKey(firearmDamageHandler.WeaponType) ? ItemConversion[firearmDamageHandler.WeaponType] : DamageType.Firearm;
 
                 case ScpDamageHandler scpDamageHandler:
                     {
