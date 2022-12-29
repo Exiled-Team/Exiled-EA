@@ -179,9 +179,9 @@ namespace Exiled.API.Features
         public static Room FindParentRoom(GameObject objectInRoom)
         {
             if (objectInRoom == null)
-                return null;
+                return default;
 
-            Room room = default;
+            Room room = null;
 
             const string playerTag = "Player";
 
@@ -203,7 +203,8 @@ namespace Exiled.API.Features
             }
 
             // Then try for objects that aren't children, like players and pickups.
-            return room ?? Room.Get(objectInRoom.transform.position);
+            room ??= Room.Get(objectInRoom.transform.position);
+            return room ?? default;
         }
 
         /// <summary>
