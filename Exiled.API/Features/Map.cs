@@ -202,7 +202,7 @@ namespace Exiled.API.Features
                     room = FindParentRoom(role.Camera.GameObject);
             }
 
-            // Then try for objects that aren't children, like players and pickups.
+            // Finally, try for objects that aren't children, like players and pickups.
             return room ?? Room.Get(objectInRoom.transform.position);
         }
 
