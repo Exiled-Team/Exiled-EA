@@ -61,6 +61,14 @@ namespace Exiled.Events.Patches.Events.Scp079
                     new(OpCodes.Ldarg_0),
                     new(OpCodes.Call, PropertyGetter(typeof(Scp079BlackoutZoneAbility), nameof(Scp079BlackoutZoneAbility.ErrorCode))),
 
+                    // this._duration
+                    new(OpCodes.Ldarg_0),
+                    new(OpCodes.Ldfld, Field(typeof(Scp079BlackoutZoneAbility), nameof(Scp079BlackoutZoneAbility._duration))),
+
+                    // this._cooldown
+                    new(OpCodes.Ldarg_0),
+                    new(OpCodes.Ldfld, Field(typeof(Scp079BlackoutZoneAbility), nameof(Scp079BlackoutZoneAbility._cooldown))),
+
                     // true
                     new(OpCodes.Ldc_I4_1),
 
@@ -75,6 +83,38 @@ namespace Exiled.Events.Patches.Events.Scp079
                     new(OpCodes.Callvirt, PropertyGetter(typeof(ZoneBlackoutEventArgs), nameof(ZoneBlackoutEventArgs.IsAllowed))),
                     new(OpCodes.Brfalse, returnLabel),
                 });
+
+            // Replace "this._duration" with "ev.BlackoutDuration"
+            offset = 0;
+            index = newInstructions.FindLastIndex(
+            instruction => instruction.LoadsField(Field(typeof(Scp079BlackoutZoneAbility), nameof(Scp079BlackoutZoneAbility._duration)))) + offset;
+
+            newInstructions.RemoveRange(index, 1);
+
+            newInstructions.InsertRange(
+               index,
+               new CodeInstruction[]
+               {
+                    // ev.AuxiliaryPowerCost
+                    new(OpCodes.Ldloc, ev.LocalIndex),
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(ZoneBlackoutEventArgs), nameof(ZoneBlackoutEventArgs.BlackoutDuration))),
+               });
+
+            // Replace "this._cooldown" with "ev.Cooldown"
+            offset = 0;
+            index = newInstructions.FindLastIndex(
+            instruction => instruction.LoadsField(Field(typeof(Scp079BlackoutZoneAbility), nameof(Scp079BlackoutZoneAbility._cooldown)))) + offset;
+
+            newInstructions.RemoveRange(index, 1);
+
+            newInstructions.InsertRange(
+               index,
+               new CodeInstruction[]
+               {
+                    // ev.AuxiliaryPowerCost
+                    new(OpCodes.Ldloc, ev.LocalIndex),
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(ZoneBlackoutEventArgs), nameof(ZoneBlackoutEventArgs.Cooldown))),
+               });
 
             // Replace "(float)this._cost" with "ev.AuxiliaryPowerCost"
             offset = 0;
