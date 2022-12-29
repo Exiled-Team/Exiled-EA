@@ -132,6 +132,8 @@ namespace Exiled.Events.Patches.Events.Server
 
                         Server.OnEndingRound(endingRoundEventArgs);
 
+                        roundSummary._roundEnded = endingRoundEventArgs.IsRoundEnded && endingRoundEventArgs.IsAllowed;
+
                         if (roundSummary._roundEnded)
                         {
                             EventManager.ExecuteEvent(ServerEventType.RoundEnd, Array.Empty<object>());
