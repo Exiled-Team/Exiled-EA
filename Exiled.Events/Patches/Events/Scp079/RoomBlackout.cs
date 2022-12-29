@@ -48,7 +48,7 @@ namespace Exiled.Events.Patches.Events.Scp079
                 {
                     // this.Owner
                     new(OpCodes.Ldarg_0),
-                    new(OpCodes.Call, Field(typeof(ScpStandardSubroutine<Scp079Role>), nameof(ScpStandardSubroutine<Scp079Role>.Owner))),
+                    new(OpCodes.Call, PropertyGetter(typeof(ScpStandardSubroutine<Scp079Role>), nameof(ScpStandardSubroutine<Scp079Role>.Owner))),
 
                     // this._roomController.Room
                     new(OpCodes.Ldarg_0),
@@ -57,7 +57,7 @@ namespace Exiled.Events.Patches.Events.Scp079
 
                     // this._cost
                     new(OpCodes.Ldarg_0),
-                    new(OpCodes.Call, Field(typeof(Scp079BlackoutRoomAbility), nameof(Scp079BlackoutRoomAbility._cost))),
+                    new(OpCodes.Ldfld, Field(typeof(Scp079BlackoutRoomAbility), nameof(Scp079BlackoutRoomAbility._cost))),
 
                     // this._blackoutDuration
                     new(OpCodes.Ldarg_0),
@@ -69,7 +69,7 @@ namespace Exiled.Events.Patches.Events.Scp079
 
                     // this.LostSignalHandler.Lost
                     new(OpCodes.Ldarg_0),
-                    new(OpCodes.Call, Method(typeof(Scp079AbilityBase), nameof(Scp079AbilityBase.LostSignalHandler))),
+                    new(OpCodes.Call, PropertyGetter(typeof(Scp079AbilityBase), nameof(Scp079AbilityBase.LostSignalHandler))),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(Scp079LostSignalHandler), nameof(Scp079LostSignalHandler.Lost))),
 
                     // ZoneBlackoutEventArgs ev = new(Player player, this._roomController.Room, this._cost, this._blackoutDuration, this._cooldown, this.LostSignalHandler.Lost);

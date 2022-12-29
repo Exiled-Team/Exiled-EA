@@ -10,11 +10,11 @@ namespace Exiled.Events.Patches.Events.Scp079
     using System.Collections.Generic;
     using System.Reflection.Emit;
 
+    using Exiled.API.Features;
     using Exiled.Events.EventArgs.Scp079;
 
     using HarmonyLib;
     using NorthwoodLib.Pools;
-    using PlayerRoles.PlayableScps.Scp079;
     using PlayerRoles.PlayableScps.Scp079.Pinging;
     using PlayerRoles.PlayableScps.Subroutines;
     using RelativePositioning;
@@ -45,8 +45,8 @@ namespace Exiled.Events.Patches.Events.Scp079
                 index,
                 new CodeInstruction[]
                 {
-                    // referenceHub
-                    new(OpCodes.Ldloca_S, 0),
+                    // this.Owner
+                    new(OpCodes.Ldloc_S, 0),
 
                     // reader.ReadRelativePosition()
                     new(OpCodes.Ldarg_1),
@@ -63,7 +63,7 @@ namespace Exiled.Events.Patches.Events.Scp079
                     // true
                     new(OpCodes.Ldc_I4_1),
 
-                    // Scp079PingingEventArgs ev = new(referenceHub, reader.ReadRelativePosition(), this._cost, this._syncProcessorIndex, true);
+                    // Scp079PingingEventArgs ev = new(this.Owner, reader.ReadRelativePosition(), this._cost, this._syncProcessorIndex, true);
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(PingingEventArgs))[0]),
                     new(OpCodes.Dup),
 
@@ -112,6 +112,8 @@ namespace Exiled.Events.Patches.Events.Scp079
                });
 
             newInstructions[newInstructions.Count - 1].WithLabels(returnLabel);
+            for (int z = 0; z < newInstructions.Count; z++)
+                Log.Debug($"{newInstructions[z].opcode} | {newInstructions[z].operand}");
 
             for (int z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
