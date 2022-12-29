@@ -55,9 +55,9 @@ namespace Exiled.API.Extensions
                 RoomType.Hcz096 or RoomType.Hcz106 or RoomType.Hcz939;
 
         /// <summary>
-        /// Need doc.
+        /// Converts the provided <see cref="FacilityZone"/> into the corresponding <see cref="ZoneType"/>.
         /// </summary>
-        /// <param name="facility">Need Documentation.</param>
+        /// <param name="facility">The <see cref="FacilityZone"/> to convert.</param>
         /// <returns>ZoneType.</returns>
         public static ZoneType GetZone(this FacilityZone facility) => facility switch
         {
@@ -70,9 +70,9 @@ namespace Exiled.API.Extensions
         };
 
         /// <summary>
-        /// Need doc.
+        /// Converts the provided <see cref="ZoneType"/> into the corresponding <see cref="FacilityZone"/>.
         /// </summary>
-        /// <param name="facility">Need Documentation.</param>
+        /// <param name="facility">The <see cref="ZoneType"/> to convert.</param>
         /// <returns>FacilityZone.</returns>
         public static FacilityZone GetZone(this ZoneType facility) => facility switch
         {

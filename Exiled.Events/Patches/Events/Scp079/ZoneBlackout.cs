@@ -23,7 +23,7 @@ namespace Exiled.Events.Patches.Events.Scp079
 
     /// <summary>
     ///     Patches <see cref="Scp079BlackoutZoneAbility.ServerProcessCmd" />.
-    ///     Adds the <see cref="ZoneBlackoutEventArgs" /> event for  SCP-079.
+    ///     Adds the <see cref="ZoneBlackoutEventArgs" /> event for SCP-079.
     /// </summary>
     [HarmonyPatch(typeof(Scp079BlackoutZoneAbility), nameof(Scp079BlackoutZoneAbility.ServerProcessCmd))]
     internal static class ZoneBlackout

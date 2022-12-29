@@ -23,7 +23,7 @@ namespace Exiled.Events.Patches.Events.Scp079
 
     /// <summary>
     ///     Patches <see cref="Scp079BlackoutRoomAbility.ServerProcessCmd" />.
-    ///     Adds the <see cref="RoomBlackoutEventArgs" /> event for  SCP-079.
+    ///     Adds the <see cref="RoomBlackoutEventArgs" /> event for SCP-079.
     /// </summary>
     [HarmonyPatch(typeof(Scp079BlackoutRoomAbility), nameof(Scp079BlackoutRoomAbility.ServerProcessCmd))]
     internal static class RoomBlackout

@@ -8,14 +8,12 @@
 namespace Exiled.Events.EventArgs.Scp079
 {
     using Exiled.API.Features;
-    using Exiled.API.Features.Roles;
     using Exiled.Events.EventArgs.Interfaces;
 
     using MapGeneration;
-    using PlayerRoles.PlayableScps.Scp079;
 
     /// <summary>
-    ///     Contains all information before SCP-079 lockdowns a room.
+    ///     Contains all information before SCP-079 blacks out the lights in a room.
     /// </summary>
     public class RoomBlackoutEventArgs : IPlayerEvent, IRoomEvent, IDeniableEvent
     {
@@ -52,22 +50,22 @@ namespace Exiled.Events.EventArgs.Scp079
         public Player Player { get; }
 
         /// <summary>
-        ///     Gets the <see cref="RoomIdentifier" /> of the room that will be locked down.
+        ///     Gets the room that will be locked down.
         /// </summary>
         public Room Room { get; }
 
         /// <summary>
-        ///     Gets or sets the time of the blackout.
+        ///     Gets or sets the duration of the blackout.
         /// </summary>
         public float BlackoutDuration { get; set; }
 
         /// <summary>
-        ///     Gets or sets the amount of auxiliary power required to lockdown a room.
+        ///     Gets or sets the amount of auxiliary power required to black out the room.
         /// </summary>
         public float AuxiliaryPowerCost { get; set; }
 
         /// <summary>
-        ///     Gets or sets a value indicating whether or not SCP-079 can lockdown a room.
+        ///     Gets or sets a value indicating whether or not SCP-079 can black out the room.
         /// </summary>
         public bool IsAllowed { get; set; }
     }

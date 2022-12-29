@@ -17,7 +17,7 @@ namespace Exiled.Events.EventArgs.Scp079
     using PlayerRoles.PlayableScps.Scp079;
 
     /// <summary>
-    ///     Contains all information before SCP-079 lockdowns a room.
+    ///     Contains all information before SCP-079 blacks out the lights in a zone.
     /// </summary>
     public class ZoneBlackoutEventArgs : IPlayerEvent, IDeniableEvent
     {
@@ -59,32 +59,32 @@ namespace Exiled.Events.EventArgs.Scp079
         public Player Player { get; }
 
         /// <summary>
-        ///     Gets the <see cref="RoomIdentifier" /> of the room that will be locked down.
+        ///     Gets the zone that is being blacked out.
         /// </summary>
         public ZoneType Zone { get; }
 
         /// <summary>
-        ///     Gets the <see cref="PlayerRoles.PlayableScps.Scp079.Scp079HudTranslation" /> send back to player.
+        ///     Gets the <see cref="PlayerRoles.PlayableScps.Scp079.Scp079HudTranslation" /> that prevented SCP-079 to blackout the zone, or <see cref="PlayerRoles.PlayableScps.Scp079.Scp079HudTranslation.Zoom"/> if the action is successful.
         /// </summary>
         public Scp079HudTranslation Scp079HudTranslation { get; }
 
         /// <summary>
-        ///     Gets or sets the amount of auxiliary power required to lockdown a room.
+        ///     Gets or sets the amount of auxiliary power required to black out the zone.
         /// </summary>
         public float AuxiliaryPowerCost { get; set; }
 
         /// <summary>
-        ///     Gets or sets the time of the blackout.
+        ///     Gets or sets the duration of the blackout.
         /// </summary>
         public float BlackoutDuration { get; set; }
 
         /// <summary>
-        ///     Gets or sets the time of the Cooldown to player to make an other zone blackout.
+        ///     Gets or sets the cooldown duration before SCP-079 can blackout another zone.
         /// </summary>
         public float Cooldown { get; set; }
 
         /// <summary>
-        ///     Gets or sets a value indicating whether or not SCP-079 can lockdown a room.
+        ///     Gets or sets a value indicating whether or not SCP-079 can black out the zone.
         /// </summary>
         public bool IsAllowed { get; set; }
     }

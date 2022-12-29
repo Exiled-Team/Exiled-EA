@@ -13,9 +13,9 @@ namespace Exiled.Events.EventArgs.Scp079
     using UnityEngine;
 
     /// <summary>
-    ///     Contains all information before SCP-079 gains a level.
+    ///     Contains all information before SCP-079 pings a location.
     /// </summary>
-    public class PingingEventArgs : IPlayerEvent, IDeniableEvent
+    public class PingingEventArgs : IPlayerEvent, IRoomEvent, IDeniableEvent
     {
         /// <summary>
         ///     Initializes a new instance of the <see cref="PingingEventArgs" /> class.
@@ -39,8 +39,9 @@ namespace Exiled.Events.EventArgs.Scp079
         {
             Player = Player.Get(hub);
             Position = position;
+            Room = Room.Get(position);
             AuxiliaryPowerCost = powerCost;
-            Type = (Scp079Ping)proccesorindex;
+            Type = (PingType)proccesorindex;
             IsAllowed = isAllowed;
         }
 
@@ -50,19 +51,24 @@ namespace Exiled.Events.EventArgs.Scp079
         public bool IsAllowed { get; set; }
 
         /// <summary>
-        ///     Gets or sets the amount of auxiliary power required to trigger a door through SCP-079.
+        ///     Gets or sets the amount of auxiliary power required for SCP-079 to ping.
         /// </summary>
         public float AuxiliaryPowerCost { get; set; }
 
         /// <summary>
-        ///     Gets or sets a value indicating the position of the ping.
+        ///     Gets or sets a value indicating the type of ping.
         /// </summary>
-        public Scp079Ping Type { get; set; }
+        public PingType Type { get; set; }
 
         /// <summary>
         ///     Gets or sets a value indicating the position of the ping.
         /// </summary>
         public Vector3 Position { get; set; }
+
+        /// <summary>
+        /// Gets the room that the ping is located in.
+        /// </summary>
+        public Room Room { get; }
 
         /// <summary>
         ///     Gets the player who's controlling SCP-079.

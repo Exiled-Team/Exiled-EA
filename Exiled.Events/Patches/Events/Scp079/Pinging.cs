@@ -23,7 +23,7 @@ namespace Exiled.Events.Patches.Events.Scp079
 
     /// <summary>
     ///     Patches <see cref="Scp079PingAbility.ServerProcessCmd" />.
-    ///     Adds the <see cref="PingingEventArgs" /> event for  SCP-079.
+    ///     Adds the <see cref="PingingEventArgs" /> event for SCP-079.
     /// </summary>
     [HarmonyPatch(typeof(Scp079PingAbility), nameof(Scp079PingAbility.ServerProcessCmd))]
     internal static class Pinging

@@ -15,7 +15,7 @@ namespace Exiled.Events.EventArgs.Interfaces
     public interface IRoomEvent : IExiledEvent
     {
         /// <summary>
-        ///     Gets the <see cref="API.Features.Room" /> triggering the event.
+        ///     Gets the <see cref="API.Features.Room" /> that is apart of the event.
         /// </summary>
         public Room Room { get; }
     }
