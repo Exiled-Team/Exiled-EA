@@ -28,20 +28,22 @@ namespace Exiled.Events.EventArgs.Scp079
         /// <param name="roomIdentifier">
         ///     <inheritdoc cref="Room" />
         /// </param>
+        /// <param name="blackoutduration">
+        ///     <inheritdoc cref="BlackoutDuration" />
+        /// </param>
         /// <param name="auxiliaryPowerCost">
         ///     <inheritdoc cref="AuxiliaryPowerCost" />
         /// </param>
-        /// <param name="scp079HudTranslation">
-        ///     <inheritdoc cref="Scp079HudTranslation" />
+        /// <param name="isAllowed">
+        ///     <inheritdoc cref="IsAllowed" />
         /// </param>
-
-        public RoomBlackoutEventArgs(Player player, RoomIdentifier roomIdentifier, float auxiliaryPowerCost, Scp079HudTranslation scp079HudTranslation)
+        public RoomBlackoutEventArgs(Player player, RoomIdentifier roomIdentifier, float auxiliaryPowerCost, float blackoutduration, bool isAllowed)
         {
             Player = player;
             Room = Room.Get(roomIdentifier);
             AuxiliaryPowerCost = auxiliaryPowerCost;
-            Scp079HudTranslation = scp079HudTranslation;
-            IsAllowed = scp079HudTranslation is Scp079HudTranslation.Zoom;
+            BlackoutDuration = blackoutduration;
+            IsAllowed = isAllowed;
         }
 
         /// <summary>
@@ -55,9 +57,9 @@ namespace Exiled.Events.EventArgs.Scp079
         public Room Room { get; }
 
         /// <summary>
-        ///     Gets or sets the <see cref="PlayerRoles.PlayableScps.Scp079.Scp079HudTranslation" /> send back to player.
+        ///     Gets or sets the time of the blackout.
         /// </summary>
-        public Scp079HudTranslation Scp079HudTranslation { get; set; }
+        public float BlackoutDuration { get; set; }
 
         /// <summary>
         ///     Gets or sets the amount of auxiliary power required to lockdown a room.
