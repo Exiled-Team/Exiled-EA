@@ -17,7 +17,7 @@ namespace Exiled.Events.EventArgs.Scp079
     /// <summary>
     ///     Contains all information before SCP-079 lockdowns a room.
     /// </summary>
-    public class RoomBlackoutEventArgs : IPlayerEvent, IDeniableEvent
+    public class RoomBlackoutEventArgs : IPlayerEvent, IRoomEvent, IDeniableEvent
     {
         /// <summary>
         ///     Initializes a new instance of the <see cref="RoomBlackoutEventArgs" /> class.
