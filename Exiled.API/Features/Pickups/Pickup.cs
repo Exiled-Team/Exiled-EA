@@ -134,6 +134,7 @@ namespace Exiled.API.Features.Pickups
         /// <summary>
         /// Gets or sets the weight of the item.
         /// </summary>
+        /// <seealso cref="PickupTime"/>
         public float Weight
         {
             get => Info.Weight;
@@ -147,7 +148,9 @@ namespace Exiled.API.Features.Pickups
         /// <summary>
         /// Gets or sets the amount of time it takes to pick up this item, based on <see cref="Weight"/>.
         /// </summary>
-        /// <remarks>Note: Changing this value will change the item's <see cref="Weight"/>.</remarks>
+        /// <remarks>Notes: Changing this value will change the item's <see cref="Weight"/>. This does not account for status effects such as <see cref="Enums.EffectType.Hypothermia"/>; see <see cref="PickupTimeForPlayer(Player)"/> to account for status effects.</remarks>
+        /// <seealso cref="Weight"/>
+        /// <seealso cref="PickupTimeForPlayer(Player)"/>
         public float PickupTime
         {
             get => ItemPickupBase.MinimalPickupTime + (ItemPickupBase.WeightToTime * Weight);
@@ -189,6 +192,7 @@ namespace Exiled.API.Features.Pickups
         /// <summary>
         /// Gets or sets the previous owner of this item.
         /// </summary>
+        /// <seealso cref="CreateAndSpawn(ItemType, Vector3, Quaternion, Player)"/>
         public Player PreviousOwner
         {
             get => Player.Get(Base.PreviousOwner.Hub);
@@ -211,6 +215,7 @@ namespace Exiled.API.Features.Pickups
         /// <summary>
         /// Gets or sets the pickup position.
         /// </summary>
+        /// <seealso cref="CreateAndSpawn(ItemType, Vector3, Quaternion, Player)"/>
         public Vector3 Position
         {
             get => Base.Rb.position;
@@ -224,6 +229,7 @@ namespace Exiled.API.Features.Pickups
         /// <summary>
         /// Gets or sets the pickup rotation.
         /// </summary>
+        /// <seealso cref="CreateAndSpawn(ItemType, Vector3, Quaternion, Player)"/>
         public Quaternion Rotation
         {
             get => Base.Rb.rotation;
@@ -361,6 +367,7 @@ namespace Exiled.API.Features.Pickups
         /// <param name="player">The player to check search time.</param>
         /// <exception cref="System.ArgumentNullException">player cannot be null.</exception>
         /// <returns>The amount of time it will take for the provided <paramref name="player"/> to pick up this item.</returns>
+        /// <seealso cref="PickupTime"/>
         public float PickupTimeForPlayer(Player player)
         {
             if (player is null)
@@ -372,6 +379,7 @@ namespace Exiled.API.Features.Pickups
         /// <summary>
         /// Spawns pickup on server.
         /// </summary>
+        /// <seealso cref="UnSpawn"/>
         public void Spawn()
         {
             if (!IsSpawned)
@@ -384,6 +392,8 @@ namespace Exiled.API.Features.Pickups
         /// <summary>
         /// Unspawns pickup on server.
         /// </summary>
+        /// <seealso cref="Spawn"/>
+        /// <seealso cref="Destroy"/>
         public void UnSpawn()
         {
             if (IsSpawned)
@@ -396,6 +406,7 @@ namespace Exiled.API.Features.Pickups
         /// <summary>
         /// Destroys the pickup.
         /// </summary>
+        /// <seealso cref="UnSpawn"/>
         public void Destroy() => Base.DestroySelf();
 
         /// <summary>
