@@ -337,7 +337,7 @@ namespace Exiled.API.Features.Pickups
         /// <param name="position">The position to spawn the <see cref="Pickup"/> at.</param>
         /// <param name="rotation">The rotation to spawn the <see cref="Pickup"/>.</param>
         /// <param name="previousOwner">An optional previous owner of the item.</param>
-        /// <returns>The <see cref="Pickup"/>. See documentation of <see cref="Create(ItemType)"/> for more information on casting.</returns>
+        /// <returns>The <see cref="Pickup"/> Spawn.</returns>
         public static Pickup Spawn(Pickup pickup, Vector3 position, Quaternion rotation, Player previousOwner = null)
         {
             pickup.Position = position;
