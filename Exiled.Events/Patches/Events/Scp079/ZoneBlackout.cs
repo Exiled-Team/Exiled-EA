@@ -74,12 +74,14 @@ namespace Exiled.Events.Patches.Events.Scp079
 
                     // ZoneBlackoutEventArgs ev = new(referenceHub, this._syncZone, this._cost, this._duration, this._cooldown, this.ErrorCode, true);
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(ZoneBlackoutEventArgs))[0]),
-                    new(OpCodes.Dup),
+                    new(OpCodes.Stloc_S, ev.LocalIndex),
 
                     // Scp079.OnZoneBlackout(ev);
+                    new(OpCodes.Ldloc, ev.LocalIndex),
                     new(OpCodes.Call, Method(typeof(Handlers.Scp079), nameof(Handlers.Scp079.OnZoneBlackout))),
 
                     // if(!ev.IsAllowed) return;
+                    new(OpCodes.Ldloc, ev.LocalIndex),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(ZoneBlackoutEventArgs), nameof(ZoneBlackoutEventArgs.IsAllowed))),
                     new(OpCodes.Brfalse, returnLabel),
                 });

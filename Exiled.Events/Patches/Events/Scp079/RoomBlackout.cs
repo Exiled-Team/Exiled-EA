@@ -74,12 +74,14 @@ namespace Exiled.Events.Patches.Events.Scp079
 
                     // ZoneBlackoutEventArgs ev = new(Player player, this._roomController.Room, this._cost, this._blackoutDuration, this._cooldown, this.LostSignalHandler.Lost);
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(RoomBlackoutEventArgs))[0]),
-                    new(OpCodes.Dup),
+                    new(OpCodes.Stloc_S, ev.LocalIndex),
 
                     // Scp079.OnRoomBlackout(ev);
+                    new(OpCodes.Ldloc, ev.LocalIndex),
                     new(OpCodes.Call, Method(typeof(Handlers.Scp079), nameof(Handlers.Scp079.OnRoomBlackout))),
 
                     // if(!ev.IsAllowed) return;
+                    new(OpCodes.Ldloc, ev.LocalIndex),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(RoomBlackoutEventArgs), nameof(RoomBlackoutEventArgs.IsAllowed))),
                     new(OpCodes.Brfalse, returnLabel),
                 });

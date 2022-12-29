@@ -65,12 +65,14 @@ namespace Exiled.Events.Patches.Events.Scp079
 
                     // Scp079PingingEventArgs ev = new(this.Owner, reader.ReadRelativePosition(), this._cost, this._syncProcessorIndex, true);
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(PingingEventArgs))[0]),
-                    new(OpCodes.Dup),
+                    new(OpCodes.Stloc_S, ev.LocalIndex),
 
                     // Scp079.Scp079Pinging(ev);
+                    new(OpCodes.Ldloc, ev.LocalIndex),
                     new(OpCodes.Call, Method(typeof(Handlers.Scp079), nameof(Handlers.Scp079.OnPinging))),
 
                     // if(!ev.IsAllowed) return;
+                    new(OpCodes.Ldloc, ev.LocalIndex),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(PingingEventArgs), nameof(PingingEventArgs.IsAllowed))),
                     new(OpCodes.Brfalse, returnLabel),
 
