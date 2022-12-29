@@ -33,21 +33,13 @@ namespace Exiled.Installer
         ///     Absolute path that is routed to AppData.
         /// </summary>
         Absolute,
-
-        /// <summary>
-        ///     The path that goes through the path of the game passing through the subfolders.
-        /// </summary>
-        Game,
     }
 
     internal static class Program
     {
         private const long RepoID = 231269519;
         private const string ExiledAssetName = "exiled.tar.gz";
-        internal const string TargetFileName = "Assembly-CSharp.dll";
 
-        private static readonly string[] TargetSubfolders = { "SCPSL_Data", "Managed" };
-        private static readonly string LinkedSubfolders = string.Join(Path.DirectorySeparatorChar.ToString(), TargetSubfolders);
         private static readonly Version VersionLimit = new("2.0.0");
         private static readonly uint SecondsWaitForDownload = 480;
 
@@ -83,12 +75,6 @@ namespace Exiled.Installer
                 }
 
                 Console.WriteLine(Resources.Program_MainSafe_AppData_folder___0_, args.AppData.FullName);
-
-                if (!ValidateServerPath(args.Path.FullName, out string? targetFilePath))
-                {
-                    Console.WriteLine(Resources.Program_MainSafe_Couldn_t_find___0___in___1__, TargetFileName, targetFilePath);
-                    throw new FileNotFoundException("Check the validation of the path parameter");
-                }
 
                 if (args.GitHubToken is not null)
                 {
@@ -140,7 +126,7 @@ namespace Exiled.Installer
                 while ((entry = tarInputStream.GetNextEntry()) is not null)
                 {
                     entry.Name = entry.Name.Replace('/', Path.DirectorySeparatorChar);
-                    ProcessTarEntry(args, targetFilePath, tarInputStream, entry);
+                    ProcessTarEntry(args, tarInputStream, entry);
                 }
 
                 Console.WriteLine(Resources.Program_MainSafe_Installation_complete);
@@ -190,15 +176,14 @@ namespace Exiled.Installer
             path = Path.Combine(args.AppData.FullName, filePath);
         }
 
-        private static void ProcessTarEntry(CommandSettings args, string targetFilePath, TarInputStream tarInputStream, TarEntry entry)
+        private static void ProcessTarEntry(CommandSettings args, TarInputStream tarInputStream, TarEntry entry)
         {
             if (entry.IsDirectory)
             {
                 TarEntry[] entries = entry.GetDirectoryEntries();
+
                 for (int z = 0; z < entries.Length; z++)
-                {
-                    ProcessTarEntry(args, targetFilePath, tarInputStream, entries[z]);
-                }
+                    ProcessTarEntry(args, tarInputStream, entries[z]);
             }
             else
             {
@@ -215,9 +200,6 @@ namespace Exiled.Installer
                     case PathResolution.Absolute:
                         ResolvePath(args, entry.Name, out string path);
                         ExtractEntry(tarInputStream, entry, path);
-                        break;
-                    case PathResolution.Game:
-                        ExtractEntry(tarInputStream, entry, targetFilePath);
                         break;
                     default:
                         Console.WriteLine(Resources.Program_ProcessTarEntry_Couldn_t_resolve_path_for___0____update_installer, entry.Name);
@@ -247,12 +229,6 @@ namespace Exiled.Installer
             {
                 fs?.Dispose();
             }
-        }
-
-        internal static bool ValidateServerPath(string serverPath, out string targetFilePath)
-        {
-            targetFilePath = Path.Combine(serverPath, LinkedSubfolders, TargetFileName);
-            return File.Exists(targetFilePath);
         }
 
         private static void EnsureDirExists(string pathToDir)

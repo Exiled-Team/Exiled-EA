@@ -1,2 +1,2 @@
 EXILED\:ABSOLUTE
-Assembly-CSharp.dll:GAME
+SCP Secret Laboratory\:ABSOLUTE
