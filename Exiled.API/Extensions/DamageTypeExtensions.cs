@@ -8,7 +8,6 @@
 namespace Exiled.API.Extensions
 {
     using System.Collections.Generic;
-    using System.Collections.ObjectModel;
 
     using Enums;
     using Features;
@@ -20,22 +19,7 @@ namespace Exiled.API.Extensions
     /// </summary>
     public static class DamageTypeExtensions
     {
-        /// <summary>
-        /// Gets conversion information between <see cref="DeathTranslation.Id"/>s and <see cref="DamageType"/>s.
-        /// </summary>
-        public static ReadOnlyDictionary<byte, DamageType> TranslationIdConversion { get; } = new(TranslationIdConversionInternal);
-
-        /// <summary>
-        /// Gets conversion information between <see cref="DeathTranslation"/>s and <see cref="DamageType"/>s.
-        /// </summary>
-        public static ReadOnlyDictionary<DeathTranslation, DamageType> TranslationConversion { get; } = new(TranslationConversionInternal);
-
-        /// <summary>
-        /// Gets conversion information between <see cref="ItemType"/>s and <see cref="DamageType"/>s.
-        /// </summary>
-        public static ReadOnlyDictionary<ItemType, DamageType> ItemConversion { get; } = new(ItemConversionInternal);
-
-        private static Dictionary<byte, DamageType> TranslationIdConversionInternal { get; } = new()
+        private static readonly Dictionary<byte, DamageType> TranslationIdConversionInternal = new()
         {
             { DeathTranslations.Asphyxiated.Id, DamageType.Asphyxiation },
             { DeathTranslations.Bleeding.Id, DamageType.Bleeding },
@@ -64,7 +48,7 @@ namespace Exiled.API.Extensions
             { DeathTranslations.Hypothermia.Id, DamageType.Hypothermia },
         };
 
-        private static Dictionary<DeathTranslation, DamageType> TranslationConversionInternal { get; } = new()
+        private static readonly Dictionary<DeathTranslation, DamageType> TranslationConversionInternal = new()
         {
             { DeathTranslations.Asphyxiated, DamageType.Asphyxiation },
             { DeathTranslations.Bleeding, DamageType.Bleeding },
@@ -93,7 +77,7 @@ namespace Exiled.API.Extensions
             { DeathTranslations.Hypothermia, DamageType.Hypothermia },
         };
 
-        private static Dictionary<ItemType, DamageType> ItemConversionInternal { get; } = new()
+        private static readonly Dictionary<ItemType, DamageType> ItemConversionInternal = new()
         {
             { ItemType.GunCrossvec, DamageType.Crossvec },
             { ItemType.GunLogicer, DamageType.Logicer },
@@ -107,6 +91,21 @@ namespace Exiled.API.Extensions
             { ItemType.MicroHID, DamageType.MicroHid },
             { ItemType.ParticleDisruptor, DamageType.ParticleDisruptor },
         };
+
+        /// <summary>
+        /// Gets conversion information between <see cref="DeathTranslation.Id"/>s and <see cref="DamageType"/>s.
+        /// </summary>
+        public static IReadOnlyDictionary<byte, DamageType> TranslationIdConversion => TranslationIdConversionInternal;
+
+        /// <summary>
+        /// Gets conversion information between <see cref="DeathTranslation"/>s and <see cref="DamageType"/>s.
+        /// </summary>
+        public static IReadOnlyDictionary<DeathTranslation, DamageType> TranslationConversion => TranslationConversionInternal;
+
+        /// <summary>
+        /// Gets conversion information between <see cref="ItemType"/>s and <see cref="DamageType"/>s.
+        /// </summary>
+        public static IReadOnlyDictionary<ItemType, DamageType> ItemConversion => ItemConversionInternal;
 
         /// <summary>
         /// Check if a <see cref="DamageType">damage type</see> is caused by weapon.
