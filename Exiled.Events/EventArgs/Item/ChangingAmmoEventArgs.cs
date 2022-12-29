@@ -26,10 +26,7 @@ namespace Exiled.Events.EventArgs.Item
         /// <param name="isAllowed"><inheritdoc cref="IsAllowed"/></param>
         public ChangingAmmoEventArgs(Player player, InventorySystem.Items.ItemBase firearm, byte oldAmmo, byte newAmmo, bool isAllowed = true)
         {
-            if (firearm is not InventorySystem.Items.Firearms.Firearm firearmBase)
-                return;
-
-            Item item = Item.Get(firearmBase);
+            Item item = Item.Get(firearm);
             if (item is not Firearm firearmItem)
                 return;
 

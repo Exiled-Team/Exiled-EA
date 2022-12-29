@@ -1,5 +1,5 @@
-// -----------------------------------------------------------------------
-// <copyright file="ChangingDurability.cs" company="Exiled Team">
+﻿// -----------------------------------------------------------------------
+// <copyright file="ChangingAmmo.cs" company="Exiled Team">
 // Copyright (c) Exiled Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
@@ -28,7 +28,7 @@ namespace Exiled.Events.Patches.Events.Item
     ///     Adds the <see cref="Item.ChangingAmmo" /> event.
     /// </summary>
     [HarmonyPatch(typeof(Firearm), nameof(Firearm.Status), MethodType.Setter)]
-    internal static class ChangingDurability
+    internal static class ChangingAmmo
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
