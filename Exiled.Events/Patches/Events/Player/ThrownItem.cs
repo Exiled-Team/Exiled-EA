@@ -42,12 +42,21 @@ namespace Exiled.Events.Patches.Events.Player
 
             newInstructions.InsertRange(index, new[]
             {
+                // API.Features.Player.Get(this.Owner)
                 new CodeInstruction(OpCodes.Ldarg_0),
                 new(OpCodes.Callvirt, PropertyGetter(typeof(ThrowableItem), nameof(ThrowableItem.Owner))),
                 new(OpCodes.Call, Method(typeof(API.Features.Player), nameof(API.Features.Player.Get), new[] { typeof(ReferenceHub) })),
+
+                // this
                 new(OpCodes.Ldarg_0),
+
+                // thrownProjectile
                 new(OpCodes.Ldloc_0),
+
+                // ThrownItemEventArgs ev = new(Player.Get(this.Owner), this, thrownProjectile);
                 new(OpCodes.Newobj, GetDeclaredConstructors(typeof(ThrownItemEventArgs))[0]),
+
+                // Handlers.Player.OnThrowingItem(ev);
                 new(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnThrowingItem))),
             });
 
