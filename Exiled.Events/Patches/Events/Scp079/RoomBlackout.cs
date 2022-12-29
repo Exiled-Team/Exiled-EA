@@ -67,14 +67,16 @@ namespace Exiled.Events.Patches.Events.Scp079
                     new(OpCodes.Ldarg_0),
                     new(OpCodes.Ldfld, Field(typeof(Scp079BlackoutRoomAbility), nameof(Scp079BlackoutRoomAbility._cooldown))),
 
-                    // true
-                    new(OpCodes.Ldc_I4_1),
+                    // this.LostSignalHandler.Lost
+                    new(OpCodes.Ldarg_0),
+                    new(OpCodes.Call, Method(typeof(Scp079AbilityBase), nameof(Scp079AbilityBase.LostSignalHandler))),
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(Scp079LostSignalHandler), nameof(Scp079LostSignalHandler.Lost))),
 
-                    // ZoneBlackoutEventArgs ev = new(Player player, this._roomController.Room, this._cost, this._blackoutDuration, this._cooldown, true);
+                    // ZoneBlackoutEventArgs ev = new(Player player, this._roomController.Room, this._cost, this._blackoutDuration, this._cooldown, this.LostSignalHandler.Lost);
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(RoomBlackoutEventArgs))[0]),
                     new(OpCodes.Dup),
 
-                    // Scp079.OnZoneBlackout(ev);
+                    // Scp079.OnRoomBlackout(ev);
                     new(OpCodes.Call, Method(typeof(Handlers.Scp079), nameof(Handlers.Scp079.OnRoomBlackout))),
 
                     // if(!ev.IsAllowed) return;
@@ -83,9 +85,41 @@ namespace Exiled.Events.Patches.Events.Scp079
                 });
 
             // Replace "(float)this._cost" with "ev.AuxiliaryPowerCost"
-            offset = 0;
+            offset = -1;
             index = newInstructions.FindLastIndex(
-            instruction => instruction.LoadsField(Field(typeof(Scp079PingAbility), nameof(Scp079PingAbility._cost)))) + offset;
+            instruction => instruction.LoadsField(Field(typeof(Scp079BlackoutRoomAbility), nameof(Scp079BlackoutRoomAbility._cost)))) + offset;
+
+            newInstructions.RemoveRange(index, 2);
+
+            newInstructions.InsertRange(
+               index,
+               new CodeInstruction[]
+               {
+                    // ev.AuxiliaryPowerCost
+                    new(OpCodes.Ldloc, ev.LocalIndex),
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(RoomBlackoutEventArgs), nameof(RoomBlackoutEventArgs.AuxiliaryPowerCost))),
+               });
+
+            // Replace "this._blackoutDuration" with "ev.BlackoutDuration"
+            offset = -1;
+            index = newInstructions.FindLastIndex(
+            instruction => instruction.LoadsField(Field(typeof(Scp079BlackoutRoomAbility), nameof(Scp079BlackoutRoomAbility._blackoutDuration)))) + offset;
+
+            newInstructions.RemoveRange(index, 2);
+
+            newInstructions.InsertRange(
+               index,
+               new CodeInstruction[]
+               {
+                    // ev.AuxiliaryPowerCost
+                    new(OpCodes.Ldloc, ev.LocalIndex),
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(RoomBlackoutEventArgs), nameof(RoomBlackoutEventArgs.BlackoutDuration))),
+               });
+
+            // Replace "(double)this._cooldown" with "ev.Cooldown"
+            offset = -1;
+            index = newInstructions.FindLastIndex(
+            instruction => instruction.LoadsField(Field(typeof(Scp079BlackoutRoomAbility), nameof(Scp079BlackoutRoomAbility._cooldown)))) + offset;
 
             newInstructions.RemoveRange(index, 1);
 
@@ -95,7 +129,7 @@ namespace Exiled.Events.Patches.Events.Scp079
                {
                     // ev.AuxiliaryPowerCost
                     new(OpCodes.Ldloc, ev.LocalIndex),
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(PingingEventArgs), nameof(PingingEventArgs.AuxiliaryPowerCost))),
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(RoomBlackoutEventArgs), nameof(RoomBlackoutEventArgs.Cooldown))),
                });
 
             newInstructions[newInstructions.Count - 1].WithLabels(returnLabel);

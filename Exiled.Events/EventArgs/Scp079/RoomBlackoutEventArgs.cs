@@ -73,7 +73,7 @@ namespace Exiled.Events.EventArgs.Scp079
         /// <summary>
         ///     Gets or sets the time of the Cooldown to player to make an other zone blackout.
         /// </summary>
-        public float Cooldown { get; set; }
+        public double Cooldown { get; set; }
 
         /// <summary>
         ///     Gets or sets a value indicating whether or not SCP-079 can black out the room.
