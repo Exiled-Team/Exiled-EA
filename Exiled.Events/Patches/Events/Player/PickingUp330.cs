@@ -54,7 +54,10 @@ namespace Exiled.Events.Patches.Events.Player
                     // pickup
                     new(OpCodes.Ldarg_1),
 
-                    // PickingUpScp330EventArgs ev = new(Player.Get(ply), pickup);
+                    // true
+                    new(OpCodes.Ldc_I4_1),
+
+                    // PickingUpItemEventArgs ev = new(Player.Get(ply), pickup, true);
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(PickingUpItemEventArgs))[0]),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),

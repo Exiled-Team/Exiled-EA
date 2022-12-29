@@ -50,12 +50,15 @@ namespace Exiled.Events.Patches.Events.Player
                     // scp244DeployablePickup
                     new(OpCodes.Ldloc_0),
 
-                    // PickingUpScp244EventArgs ev = new(Player, Scp244DeployablePickup)
+                    // true
+                    new(OpCodes.Ldc_I4_1),
+
+                    // PickingUpScp244EventArgs ev = new(Player, Scp244DeployablePickup, true)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(PickingUpItemEventArgs))[0]),
                     new(OpCodes.Dup),
 
-                    // Scp244.OnPickingUpScp244(ev)
-                    new(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.PickingUpItem))),
+                    // Handlers.Player.OnPickingUpItem(ev)
+                    new(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnPickingUpItem))),
 
                     // if (!ev.IsAllowed)
                     //    return;

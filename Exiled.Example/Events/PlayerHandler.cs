@@ -16,7 +16,6 @@ namespace Exiled.Example.Events
     using Exiled.Events.EventArgs.Player;
     using Exiled.Events.EventArgs.Scp106;
     using Exiled.Events.EventArgs.Scp914;
-    using MapGeneration.Distributors;
     using MEC;
     using PlayerRoles;
     using UnityEngine;
@@ -127,7 +126,7 @@ namespace Exiled.Example.Events
             Log.Info($"{ev.Player.Nickname} ({ev.Player.Role}) is getting killed by {ev.Attacker.Nickname} ({ev.Attacker.Role})!");
         }
 
-        /// <inheritdoc cref="Exiled.Events.Handlers.Player.PreAuthenticating(PreAuthenticatingEventArgs)"/>
+        /// <inheritdoc cref="Exiled.Events.Handlers.Player.PreAuthenticating"/>
         public void OnPreAuthenticating(PreAuthenticatingEventArgs ev)
         {
             Log.Info($"{ev.UserId} is pre-authenticating from {ev.Country} ({ev.Request.RemoteEndPoint}) with flags {ev.Flags}!");
