@@ -10,12 +10,14 @@ namespace Exiled.Events.Handlers
     using API.Extensions;
     using API.Features;
     using Exiled.Events.EventArgs.Player;
+    using Exiled.Events.EventArgs.Scp079;
     using Extensions;
     using Interactables.Interobjects.DoorUtils;
     using InventorySystem.Items.Radio;
     using MapGeneration.Distributors;
     using PlayerRoles;
     using PlayerRoles.FirstPersonControl.Thirdperson;
+    using PlayerStatsSystem;
     using PluginAPI.Core.Attributes;
     using PluginAPI.Enums;
     using PluginAPI.Events;
@@ -1066,8 +1068,13 @@ namespace Exiled.Events.Handlers
         /// <param name="damageHandler"><inheritdoc cref="HurtingEventArgs.DamageHandler"/></param>
         /// <returns><inheritdoc cref="HurtingEventArgs.IsAllowed"/></returns>
         [PluginEvent(ServerEventType.PlayerDamage)]
-        public bool OnHurting(PluginAPI.Core.Player target, PluginAPI.Core.Player attacker, PlayerStatsSystem.DamageHandlerBase damageHandler) =>
-            Hurting.InvokeSafely(new(target, damageHandler));
+        public bool OnHurting(PluginAPI.Core.Player target, PluginAPI.Core.Player attacker, DamageHandlerBase damageHandler)
+        {
+            if (damageHandler is RecontainmentDamageHandler && target.Role == RoleTypeId.Scp079)
+                Scp079.OnRecontained(new RecontainedEventArgs(target));
+
+            return Hurting.InvokeSafely(new(target, damageHandler));
+        }
 
         /// <summary>
         /// Called before a <see cref="API.Features.Player"/> dies.
