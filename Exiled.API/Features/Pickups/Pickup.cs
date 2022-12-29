@@ -278,10 +278,28 @@ namespace Exiled.API.Features.Pickups
         }
 
         /// <summary>
-        /// creates.
+        /// Creates and returns a new <see cref="Pickup"/> with the proper inherited subclass.
+        /// <para>
+        /// Based on the <paramref name="type"/>, the returned <see cref="Pickup"/> can be casted into a subclass to gain more control over the object.
+        /// <br />- All valid ammo should be casted to the <see cref="AmmoPickup"/> class.
+        /// <br />- All valid firearms (not including the Micro HID) should be casted to the <see cref="FirearmPickup"/> class.
+        /// <br />- All valid keycards should be casted to the <see cref="KeycardPickup"/> class.
+        /// <br />- All valid armor should be casted to the <see cref="BodyArmorPickup"/> class.
+        /// <br />- All grenades and throwables (SCP-018 and SCP-2176) should be casted to the <see cref="GrenadePickup"/> class.
+        /// </para>
+        /// <para>
+        /// <br />The following have their own respective classes:
+        /// <br />- Radios can be casted to <see cref="RadioPickup"/>.
+        /// <br />- The Micro HID can be casted to <see cref="MicroHIDPickup"/>.
+        /// <br />- SCP-244 A and B variants can be casted to <see cref="Scp244Pickup"/>.
+        /// <br />- SCP-330 can be casted to <see cref="Scp330Pickup"/>.
+        /// </para>
+        /// <para>
+        /// Items that are not listed above do not have a subclass, and can only use the base <see cref="Pickup"/> class.
+        /// </para>
         /// </summary>
         /// <param name="type">The <see cref="ItemType"/> of the pickup.</param>
-        /// <returns>pickup.</returns>
+        /// <returns>The created <see cref="Pickup"/>.</returns>
         public static Pickup Create(ItemType type) => type switch
         {
             ItemType.SCP244a or ItemType.SCP244b => new Scp244Pickup(type),
