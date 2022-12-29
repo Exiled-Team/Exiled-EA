@@ -184,9 +184,8 @@ namespace Exiled.Events.Patches.Events.Player
         {
             if (newRole is RoleTypeId.Scp173)
                 Scp173Role.TurnedPlayers.Remove(player);
-            Log.Error(player.MaxHealth);
 
-            // player.MaxHealth = default;
+            player.MaxHealth = default;
         }
 
         private static void ChangeInventory(API.Features.Player player, List<ItemType> items, Dictionary<ItemType, ushort> ammo, RoleTypeId prevRole, RoleTypeId newRole, RoleChangeReason reason)
