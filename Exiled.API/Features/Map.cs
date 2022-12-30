@@ -176,6 +176,7 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="objectInRoom">The <see cref="GameObject"/> inside the room.</param>
         /// <returns>The <see cref="Room"/> that the <see cref="GameObject"/> is located inside.</returns>
+        /// <seealso cref="Room.Get(Vector3)"/>
         public static Room FindParentRoom(GameObject objectInRoom)
         {
             if (objectInRoom == null)
