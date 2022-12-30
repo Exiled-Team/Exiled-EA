@@ -49,7 +49,7 @@ namespace Exiled.API.Features.Pickups.Projectiles
         public ProjectileType ProjectileType => Type.GetProjectileType();
 
         /// <summary>
-        /// Creates and returns a new <see cref="Pickup"/> with the proper inherited subclass.
+        /// Creates and returns a new <see cref="Projectile"/> with the proper inherited subclass.
         /// <para>
         /// Based on the <paramref name="projectiletype"/>, the returned <see cref="Projectile"/> can be casted into a subclass to gain more control over the object.
         /// <br />The following have their own respective classes:
@@ -59,17 +59,17 @@ namespace Exiled.API.Features.Pickups.Projectiles
         /// <br />- Scp2176 can be casted to <see cref="Scp2176Projectile"/>.
         /// </para>
         /// <para>
-        /// Items that are not listed will cause an Exception.
+        /// Projectile that are not listed will cause an Exception.
         /// </para>
         /// </summary>
         /// <param name="projectiletype">The <see cref="ProjectileType"/> of the pickup.</param>
         /// <returns>The created <see cref="Pickup"/>.</returns>
         public static Projectile Create(ProjectileType projectiletype) => projectiletype switch
         {
-            ProjectileType.FragGrenade => new ExplosionGrenadeProjectile(),
-            ProjectileType.Flashbang => new FlashbangProjectile(),
             ProjectileType.Scp018 => new Scp018Projectile(),
+            ProjectileType.Flashbang => new FlashbangProjectile(),
             ProjectileType.Scp2176 => new Scp2176Projectile(),
+            ProjectileType.FragGrenade => new ExplosionGrenadeProjectile(ItemType.GrenadeHE),
             _ => throw new System.Exception($"ProjectilType does not contain a valid value :{projectiletype}"),
         };
 
