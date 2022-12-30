@@ -62,6 +62,13 @@ namespace Exiled.API.Features
         public static void Debug(string message)
         {
             Assembly callingAssembly = Assembly.GetCallingAssembly();
+#if DEBUG
+            if (callingAssembly.GetName().Name is "Exiled.API")
+            {
+                Send($"[{callingAssembly.GetName().Name}] {message}", Discord.LogLevel.Debug, ConsoleColor.Green);
+                return;
+            }
+#endif
             if (!KnownDebugValues.ContainsKey(callingAssembly))
             {
                 if (!Server.PluginAssemblies.ContainsKey(callingAssembly))
@@ -69,13 +76,9 @@ namespace Exiled.API.Features
                 else
                     KnownDebugValues.Add(callingAssembly, Server.PluginAssemblies[callingAssembly].Config.Debug);
             }
-#if DEBUG
-            if (KnownDebugValues[callingAssembly] || callingAssembly.GetName().Name is "Exiled.API")
-                Send($"[{callingAssembly.GetName().Name}] {message}", Discord.LogLevel.Debug, ConsoleColor.Green);
-#else
+
             if (KnownDebugValues[callingAssembly])
                 Send($"[{callingAssembly.GetName().Name}] {message}", Discord.LogLevel.Debug, ConsoleColor.Green);
-#endif
         }
 
         /// <summary>
