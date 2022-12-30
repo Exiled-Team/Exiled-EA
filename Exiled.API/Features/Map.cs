@@ -80,7 +80,7 @@ namespace Exiled.API.Features
                 {
                     Scp173GameRole scp173Role = RoleTypeId.Scp173.GetRoleBase() as Scp173GameRole;
 
-                    if (scp173Role.SubroutineModule.TryGetComponent(out Scp173TantrumAbility scp173TantrumAbility))
+                    if (scp173Role.SubroutineModule.TryGetSubroutine(out Scp173TantrumAbility scp173TantrumAbility))
                         tantrumPrefab = scp173TantrumAbility._tantrumPrefab;
                 }
 
@@ -99,7 +99,7 @@ namespace Exiled.API.Features
                 {
                     Scp939GameRole scp939Role = RoleTypeId.Scp939.GetRoleBase() as Scp939GameRole;
 
-                    if (scp939Role.SubroutineModule.TryGetComponent(out Scp939AmnesticCloudAbility ability))
+                    if (scp939Role.SubroutineModule.TryGetSubroutine(out Scp939AmnesticCloudAbility ability))
                         amnesticCloudPrefab = ability._instancePrefab;
                 }
 
@@ -304,38 +304,23 @@ namespace Exiled.API.Features
         /// Places a Tantrum (SCP-173's ability) in the indicated position.
         /// </summary>
         /// <param name="position">The position where you want to spawn the Tantrum.</param>
+        /// <param name="isActive">Whether or not the tantrum will apply the <see cref="EffectType.Stained"/> effect.</param>
+        /// <remarks>If <paramref name="isActive"/> is <see langword="true"/>, the tantrum is moved slightly up from its original position. Otherwise, the collision will not be detected and the slowness will not work.</remarks>
         /// <returns>The tantrum's <see cref="GameObject"/>.</returns>
-        public static GameObject PlaceTantrum(Vector3 position)
+        public static GameObject PlaceTantrum(Vector3 position, bool isActive = true)
         {
             TantrumEnvironmentalHazard tantrum = Object.Instantiate(TantrumPrefab);
 
-            tantrum.gameObject.transform.position = position;
-            tantrum.SynchronizedPosition = new RelativePosition(position);
+            if (!isActive)
+                tantrum.SynchronizedPosition = new RelativePosition(position);
+            else
+                tantrum.SynchronizedPosition = new RelativePosition(position + (Vector3.up * 0.25f));
+
+            tantrum._destroyed = !isActive;
 
             NetworkServer.Spawn(tantrum.gameObject);
 
             return tantrum.gameObject;
-        }
-
-        /// <summary>
-        /// Spawns an amnestic cloud on the map.
-        /// </summary>
-        /// <param name="position">The position to spawn the amnestic cloud.</param>
-        /// <param name="owner">The owner of the cloud, optional.</param>
-        /// <returns>The cloud's <see cref="GameObject"/>.</returns>
-        public static GameObject PlaceAmnesticCloud(Vector3 position, Player owner = null)
-        {
-            Scp939AmnesticCloudInstance cloud = Object.Instantiate(AmnesticCloudPrefab);
-
-            cloud.gameObject.transform.position = position;
-            cloud.Network_syncPos = new RelativePosition(position);
-
-            if (owner is not null)
-                cloud.ServerSetup(owner.ReferenceHub);
-
-            NetworkServer.Spawn(cloud.gameObject);
-
-            return cloud.gameObject;
         }
 
         /// <summary>
