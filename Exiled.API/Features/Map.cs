@@ -318,27 +318,6 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
-        /// Spawns an amnestic cloud on the map.
-        /// </summary>
-        /// <param name="position">The position to spawn the amnestic cloud.</param>
-        /// <param name="owner">The owner of the cloud, optional.</param>
-        /// <returns>The cloud's <see cref="GameObject"/>.</returns>
-        public static GameObject PlaceAmnesticCloud(Vector3 position, Player owner = null)
-        {
-            Scp939AmnesticCloudInstance cloud = Object.Instantiate(AmnesticCloudPrefab);
-
-            cloud.gameObject.transform.position = position;
-            cloud.Network_syncPos = new RelativePosition(position);
-
-            if (owner is not null)
-                cloud.ServerSetup(owner.ReferenceHub);
-
-            NetworkServer.Spawn(cloud.gameObject);
-
-            return cloud.gameObject;
-        }
-
-        /// <summary>
         /// Places a blood decal.
         /// </summary>
         /// <param name="position">The position of the blood decal.</param>
