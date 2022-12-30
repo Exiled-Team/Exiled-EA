@@ -107,7 +107,8 @@ namespace Exiled.API.Features.Pickups
             set
             {
                 Base.Info.Serial = value;
-                Base.NetworkInfo = Base.Info;
+                if (IsSpawned)
+                    Base.NetworkInfo = Base.Info;
             }
         }
 
