@@ -104,11 +104,6 @@ namespace Exiled.API.Features.Items
         }
 
         /// <summary>
-        /// Gets or sets all the currently known <see cref="EffectGrenade"/>:<see cref="Throwable"/> items.
-        /// </summary>
-        internal static Dictionary<ExplosionGrenade, ExplosiveGrenade> GrenadeToItem { get; set; } = new();
-
-        /// <summary>
         /// Spawns an active grenade on the map at the specified location.
         /// </summary>
         /// <param name="position">The location to spawn the grenade.</param>
