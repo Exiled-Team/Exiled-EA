@@ -12,7 +12,7 @@ namespace Exiled.API.Features.Roles
     using OverwatchGameRole = PlayerRoles.Spectating.OverwatchRole;
 
     /// <summary>
-    /// Defines a role that represents a overwatch.
+    /// Defines a role that represents a player with overwatch enabled.
     /// </summary>
     public class OverwatchRole : SpectatorRole
     {

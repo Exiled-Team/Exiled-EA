@@ -45,7 +45,7 @@ namespace Exiled.API.Features.Items
         public Scp1576Playback PlaybackTemplate => Base.PlaybackTemplate;
 
         /// <summary>
-        /// .
+        /// Forcefully stops the transmission of SCP-1576.
         /// </summary>
         public void StopTransmitting() => Base.ServerStopTransmitting();
     }
