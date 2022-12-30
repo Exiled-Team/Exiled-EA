@@ -73,7 +73,7 @@ namespace Exiled.API.Features
             if (KnownDebugValues[callingAssembly] || callingAssembly.GetName().Name is "Exiled.API")
                 Send($"[{callingAssembly.GetName().Name}] {message}", Discord.LogLevel.Debug, ConsoleColor.Green);
 #else
-            if (knownDebugValues[callingAssembly])
+            if (KnownDebugValues[callingAssembly])
                 Send($"[{callingAssembly.GetName().Name}] {message}", Discord.LogLevel.Debug, ConsoleColor.Green);
 #endif
         }
