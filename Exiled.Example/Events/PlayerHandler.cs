@@ -16,7 +16,6 @@ namespace Exiled.Example.Events
     using Exiled.Events.EventArgs.Player;
     using Exiled.Events.EventArgs.Scp106;
     using Exiled.Events.EventArgs.Scp914;
-    using MapGeneration.Distributors;
     using MEC;
     using PlayerRoles;
     using UnityEngine;

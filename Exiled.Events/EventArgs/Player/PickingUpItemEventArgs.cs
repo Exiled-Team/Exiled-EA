@@ -7,9 +7,9 @@
 
 namespace Exiled.Events.EventArgs.Player
 {
-    using API.Features;
-    using API.Features.Items;
-    using Interfaces;
+    using Exiled.API.Features;
+    using Exiled.API.Features.Pickups;
+    using Exiled.Events.EventArgs.Interfaces;
 
     using InventorySystem.Items.Pickups;
 

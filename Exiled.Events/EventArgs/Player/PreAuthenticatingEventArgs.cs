@@ -13,6 +13,13 @@ namespace Exiled.Events.EventArgs.Player
     using LiteNetLib;
     using PluginAPI.Events;
 
+#pragma warning disable SA1600 //TODO:
+#pragma warning disable SA1309
+#pragma warning disable SA1623
+#pragma warning disable SA1201
+#pragma warning disable SA1611
+#pragma warning disable CS1591
+
     /// <summary>
     ///     Contains all information before pre-authenticating a player.
     /// </summary>

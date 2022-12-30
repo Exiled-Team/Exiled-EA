@@ -157,20 +157,15 @@ namespace Exiled.API.Features.Items
         /// Clones current <see cref="Armor"/> object.
         /// </summary>
         /// <returns> New <see cref="Armor"/> object. </returns>
-        public override Item Clone()
+        public override Item Clone() => new Armor(Type)
         {
-            Armor cloneableItem = new(Type)
-            {
-                Weight = Weight,
-                StaminaUseMultiplier = StaminaUseMultiplier,
-                RemoveExcessOnDrop = RemoveExcessOnDrop,
-                CategoryLimits = CategoryLimits,
-                AmmoLimits = AmmoLimits,
-                VestEfficacy = VestEfficacy,
-                HelmetEfficacy = HelmetEfficacy,
-            };
-
-            return cloneableItem;
-        }
+            Weight = Weight,
+            StaminaUseMultiplier = StaminaUseMultiplier,
+            RemoveExcessOnDrop = RemoveExcessOnDrop,
+            CategoryLimits = CategoryLimits,
+            AmmoLimits = AmmoLimits,
+            VestEfficacy = VestEfficacy,
+            HelmetEfficacy = HelmetEfficacy,
+        };
     }
 }

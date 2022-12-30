@@ -14,10 +14,11 @@ namespace Exiled.API.Features
 
     using Enums;
     using Exiled.API.Extensions;
+    using Exiled.API.Features.Pickups;
     using Exiled.API.Features.Roles;
+    using Exiled.API.Features.Toys;
     using Hazards;
     using InventorySystem.Items.Firearms.BasicMessages;
-    using InventorySystem.Items.Pickups;
     using Items;
     using LightContainmentZoneDecontamination;
     using MapGeneration;
@@ -27,7 +28,6 @@ namespace Exiled.API.Features
     using PlayerRoles.PlayableScps.Scp173;
     using PlayerRoles.PlayableScps.Scp939;
     using RelativePositioning;
-    using Toys;
     using UnityEngine;
     using Utils.Networking;
 
@@ -65,8 +65,6 @@ namespace Exiled.API.Features
         private static readonly ReadOnlyCollection<Locker> ReadOnlyLockersValue = LockersValue.AsReadOnly();
         private static readonly ReadOnlyCollection<Ragdoll> ReadOnlyRagdollsValue = RagdollsValue.AsReadOnly();
         private static readonly ReadOnlyCollection<AdminToy> ReadOnlyToysValue = ToysValue.AsReadOnly();
-
-        private static readonly RaycastHit[] CachedFindParentRoomRaycast = new RaycastHit[1];
 
         private static TantrumEnvironmentalHazard tantrumPrefab;
         private static Scp939AmnesticCloudInstance amnesticCloudPrefab;
@@ -123,25 +121,6 @@ namespace Exiled.API.Features
         /// Gets all <see cref="Locker"/> objects.
         /// </summary>
         public static ReadOnlyCollection<Locker> Lockers => ReadOnlyLockersValue;
-
-        /// <summary>
-        /// gets all <see cref="Pickup"/>s on the map.
-        /// </summary>
-        public static ReadOnlyCollection<Pickup> Pickups
-        {
-            get
-            {
-                List<Pickup> pickups = new();
-
-                foreach (ItemPickupBase itemPickupBase in Object.FindObjectsOfType<ItemPickupBase>())
-                {
-                    if (Pickup.Get(itemPickupBase) is Pickup pickup)
-                        pickups.Add(pickup);
-                }
-
-                return pickups.AsReadOnly();
-            }
-        }
 
         /// <summary>
         /// Gets all <see cref="Ragdoll"/> objects.
@@ -300,8 +279,7 @@ namespace Exiled.API.Features
         /// <returns><see cref="Pickup"/> object.</returns>
         public static Pickup GetRandomPickup(ItemType type = ItemType.None)
         {
-            List<Pickup> pickups = (type != ItemType.None ? Pickups.Where(p => p.Type == type) : Pickups).ToList();
-
+            List<Pickup> pickups = (type != ItemType.None ? Pickup.List.Where(p => p.Type == type) : Pickup.List).ToList();
             return pickups[Random.Range(0, pickups.Count)];
         }
 
@@ -387,6 +365,8 @@ namespace Exiled.API.Features
             Camera.Camera079ToCamera.Clear();
             Window.BreakableWindowToWindow.Clear();
             TeslaGate.BaseTeslaGateToTeslaGate.Clear();
+            Pickup.BaseToPickup.Clear();
+            Item.BaseToItem.Clear();
             TeleportsValue.Clear();
             LockersValue.Clear();
             RagdollsValue.Clear();

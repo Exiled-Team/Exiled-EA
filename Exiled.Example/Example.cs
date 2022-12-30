@@ -105,11 +105,11 @@ namespace Exiled.Example
             Exiled.Events.Handlers.Map.ExplodingGrenade += mapHandler.OnExplodingGrenade;
             Exiled.Events.Handlers.Map.GeneratorActivated += mapHandler.OnGeneratorActivated;
 
-            Exiled.Events.Handlers.Item.ChangingDurability += itemHandler.OnChangingDurability;
+            Exiled.Events.Handlers.Item.ChangingAmmo += itemHandler.OnChangingAmmo;
             Exiled.Events.Handlers.Item.ChangingAttachments += itemHandler.OnChangingAttachments;
             Exiled.Events.Handlers.Item.ReceivingPreference += itemHandler.OnReceivingPreference;
 
-            Exiled.Events.Handlers.Scp914.UpgradingItem += scp914Handler.OnUpgradingItem;
+            Exiled.Events.Handlers.Scp914.UpgradingPickup += scp914Handler.OnUpgradingItem;
 
             Exiled.Events.Handlers.Scp096.AddingTarget += scp096Handler.OnAddingTarget;
         }
@@ -145,11 +145,11 @@ namespace Exiled.Example
             Exiled.Events.Handlers.Map.ExplodingGrenade -= mapHandler.OnExplodingGrenade;
             Exiled.Events.Handlers.Map.GeneratorActivated -= mapHandler.OnGeneratorActivated;
 
-            Exiled.Events.Handlers.Item.ChangingDurability -= itemHandler.OnChangingDurability;
+            Exiled.Events.Handlers.Item.ChangingAmmo -= itemHandler.OnChangingAmmo;
             Exiled.Events.Handlers.Item.ChangingAttachments -= itemHandler.OnChangingAttachments;
             Exiled.Events.Handlers.Item.ReceivingPreference -= itemHandler.OnReceivingPreference;
 
-            Exiled.Events.Handlers.Scp914.UpgradingItem -= scp914Handler.OnUpgradingItem;
+            Exiled.Events.Handlers.Scp914.UpgradingPickup -= scp914Handler.OnUpgradingItem;
 
             Exiled.Events.Handlers.Scp096.AddingTarget -= scp096Handler.OnAddingTarget;
 
