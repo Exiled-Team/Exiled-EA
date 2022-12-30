@@ -41,7 +41,11 @@ namespace Exiled.API.Features
         /// Initializes a new instance of the <see cref="Ragdoll"/> class.
         /// </summary>
         /// <param name="ragdoll">The encapsulated <see cref="BasicRagdoll"/>.</param>
-        internal Ragdoll(BasicRagdoll ragdoll) => Base = ragdoll;
+        internal Ragdoll(BasicRagdoll ragdoll)
+        {
+            Base = ragdoll;
+            BasicRagdollToRagdoll.Add(ragdoll, this);
+        }
 
         /// <summary>
         /// Gets a <see cref="IEnumerable{T}"/> of <see cref="Ragdoll"/> which contains all the <see cref="Ragdoll"/> instances.
