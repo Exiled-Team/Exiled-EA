@@ -467,6 +467,12 @@ namespace Exiled.Events.Handlers
         public static void OnReservedSlot(ReservedSlotsCheckEventArgs ev) => ReservedSlot.InvokeSafely(ev);
 
         /// <summary>
+        /// Called before reserved slot is resolved for a <see cref="API.Features.Player"/>.
+        /// </summary>
+        /// <param name="ev">The <see cref="ReservedSlotsCheckEventArgs"/> instance.</param>
+        public static void OnReservedSlot(ReservedSlotsCheckEventArgs ev) => ReservedSlot.InvokeSafely(ev);
+
+        /// <summary>
         /// Called before kicking a <see cref="API.Features.Player"/> from the server.
         /// </summary>
         /// <param name="ev">The <see cref="KickingEventArgs"/> instance.</param>
