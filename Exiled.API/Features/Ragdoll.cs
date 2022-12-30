@@ -15,6 +15,8 @@ namespace Exiled.API.Features
 
     using Enums;
     using Exiled.API.Extensions;
+    using Interactables.Interobjects.DoorUtils;
+    using MapGeneration;
     using Mirror;
     using PlayerRoles;
     using PlayerRoles.PlayableScps.Scp049.Zombies;
@@ -31,10 +33,20 @@ namespace Exiled.API.Features
     public class Ragdoll
     {
         /// <summary>
+        /// A <see cref="Dictionary{TKey,TValue}"/> containing all known <see cref="BasicRagdoll"/>s and their corresponding <see cref="Ragdoll"/>.
+        /// </summary>
+        internal static readonly Dictionary<BasicRagdoll, Ragdoll> BasicRagdollToRagdoll = new(250);
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="Ragdoll"/> class.
         /// </summary>
         /// <param name="ragdoll">The encapsulated <see cref="BasicRagdoll"/>.</param>
         internal Ragdoll(BasicRagdoll ragdoll) => Base = ragdoll;
+
+        /// <summary>
+        /// Gets a <see cref="IEnumerable{T}"/> of <see cref="Ragdoll"/> which contains all the <see cref="Ragdoll"/> instances.
+        /// </summary>
+        public static IEnumerable<Ragdoll> List => BasicRagdollToRagdoll.Values;
 
         /// <summary>
         /// Gets or sets the <see cref="BasicRagdoll"/>s clean up time.
@@ -236,11 +248,11 @@ namespace Exiled.API.Features
 
             ragdoll.NetworkInfo = networkInfo;
 
-            Ragdoll doll = new Ragdoll(ragdoll);
-            doll.Position = networkInfo.StartPosition;
-            doll.Rotation = networkInfo.StartRotation;
-
-            Map.RagdollsValue.Add(doll);
+            Ragdoll doll = new(ragdoll)
+            {
+                Position = networkInfo.StartPosition,
+                Rotation = networkInfo.StartRotation,
+            };
 
             return doll;
         }
@@ -311,30 +323,28 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="ragdoll">The <see cref="BasicRagdoll"/> to get.</param>
         /// <returns>A <see cref="Ragdoll"/> or <see langword="null"/> if not found.</returns>
-        public static Ragdoll Get(BasicRagdoll ragdoll) => Map.Ragdolls.FirstOrDefault(rd => rd.Base == ragdoll);
+        public static Ragdoll Get(BasicRagdoll ragdoll) => BasicRagdollToRagdoll.ContainsKey(ragdoll)
+            ? BasicRagdollToRagdoll[ragdoll]
+            : new Ragdoll(ragdoll);
 
         /// <summary>
         /// Gets the <see cref="IEnumerable{T}"/> of <see cref="Ragdoll"/> belonging to the <see cref="Player"/>, if any.
         /// </summary>
         /// <param name="player">The <see cref="Player"/> to get.</param>
         /// <returns>A <see cref="IEnumerable{T}"/> of <see cref="Ragdoll"/>.</returns>
-        public static IEnumerable<Ragdoll> Get(Player player) => Map.Ragdolls.Where(rd => rd.Owner == player);
+        public static IEnumerable<Ragdoll> Get(Player player) => Ragdoll.List.Where(rd => rd.Owner == player);
 
         /// <summary>
         /// Gets the <see cref="IEnumerable{T}"/> of <see cref="Ragdoll"/> belonging to the <see cref="IEnumerable{T}"/> of <see cref="Player"/>, if any.
         /// </summary>
         /// <param name="players">The <see cref="Player"/>s to get.</param>
         /// <returns>A <see cref="IEnumerable{T}"/> of <see cref="Ragdoll"/>.</returns>
-        public static IEnumerable<Ragdoll> Get(IEnumerable<Player> players) => players.SelectMany(pl => Map.Ragdolls.Where(rd => rd.Owner == pl));
+        public static IEnumerable<Ragdoll> Get(IEnumerable<Player> players) => players.SelectMany(pl => Ragdoll.List.Where(rd => rd.Owner == pl));
 
         /// <summary>
         /// Deletes the ragdoll.
         /// </summary>
-        public void Delete()
-        {
-            Object.Destroy(GameObject);
-            Map.RagdollsValue.Remove(this);
-        }
+        public void Delete() => Object.Destroy(GameObject);
 
         /// <summary>
         /// Spawns the ragdoll.

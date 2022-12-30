@@ -18,6 +18,7 @@ namespace Exiled.Events
     using HarmonyLib;
     using PlayerRoles;
     using PlayerRoles.FirstPersonControl.Thirdperson;
+    using PlayerRoles.Ragdolls;
     using PluginAPI.Events;
     using UnityEngine.SceneManagement;
 
@@ -93,6 +94,9 @@ namespace Exiled.Events
             InventorySystem.InventoryExtensions.OnItemAdded += Handlers.Player.OnItemAdded;
 
             AnimatedCharacterModel.OnFootstepPlayed += Handlers.Player.OnMakingNoise;
+
+            RagdollManager.OnRagdollSpawned += Handlers.Internal.RagdollList.OnSpawnedRagdoll;
+            RagdollManager.OnRagdollRemoved += Handlers.Internal.RagdollList.OnRemovedRagdoll;
 
             ServerConsole.ReloadServerName();
 

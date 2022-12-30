@@ -2836,7 +2836,7 @@ namespace Exiled.API.Features
                 nameof(TeslaGate) => TeslaGate.List.ElementAt(Random.Range(0, TeslaGate.BaseTeslaGateToTeslaGate.Count)),
                 nameof(Player) => Dictionary.Values.ElementAt(Random.Range(0, Dictionary.Count)),
                 nameof(Pickup) => Pickup.BaseToPickup.ElementAt(Random.Range(0, Pickup.BaseToPickup.Count)).Value,
-                nameof(Ragdoll) => Map.RagdollsValue[Random.Range(0, Map.RagdollsValue.Count)],
+                nameof(Ragdoll) => Ragdoll.List.ElementAt(Random.Range(0, Ragdoll.BasicRagdollToRagdoll.Count)),
                 nameof(Locker) => Map.GetRandomLocker(),
                 nameof(Generator) => Generator.List.ElementAt(Random.Range(0, Generator.Scp079GeneratorToGenerator.Count)),
                 nameof(Window) => Window.List.ElementAt(Random.Range(0, Window.BreakableWindowToWindow.Count)),
