@@ -105,12 +105,6 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Callvirt, PropertyGetter(typeof(SpawningRagdollEventArgs), nameof(SpawningRagdollEventArgs.Info))),
                 });
 
-            index = newInstructions.FindLastIndex(instruction => instruction.opcode == OpCodes.Ldnull);
-
-            List<Label> labels = newInstructions[index].ExtractLabels();
-
-            newInstructions.RemoveRange(index, 2);
-
             newInstructions[newInstructions.Count - 1].WithLabels(ret);
 
             for (int z = 0; z < newInstructions.Count; z++)
