@@ -16,7 +16,9 @@ namespace Exiled.Events
     using API.Features;
     using EventArgs.Interfaces;
     using HarmonyLib;
+    using PlayerRoles;
     using PlayerRoles.FirstPersonControl.Thirdperson;
+    using PluginAPI.Events;
     using UnityEngine.SceneManagement;
 
     /// <summary>
@@ -86,11 +88,16 @@ namespace Exiled.Events
 
             CharacterClassManager.OnRoundStarted += Handlers.Server.OnRoundStarted;
 
+            PlayerRoleManager.OnRoleChanged += Handlers.Player.OnSpawned;
+
             InventorySystem.InventoryExtensions.OnItemAdded += Handlers.Player.OnItemAdded;
 
             AnimatedCharacterModel.OnFootstepPlayed += Handlers.Player.OnMakingNoise;
 
             ServerConsole.ReloadServerName();
+
+            EventManager.RegisterEvents<Handlers.Warhead>(this);
+            EventManager.RegisterEvents<Handlers.Player>(this);
         }
 
         /// <inheritdoc/>
@@ -112,9 +119,14 @@ namespace Exiled.Events
 
             CharacterClassManager.OnRoundStarted -= Handlers.Server.OnRoundStarted;
 
+            PlayerRoleManager.OnRoleChanged -= Handlers.Player.OnSpawned;
+
             InventorySystem.InventoryExtensions.OnItemAdded -= Handlers.Player.OnItemAdded;
 
             AnimatedCharacterModel.OnFootstepPlayed -= Handlers.Player.OnMakingNoise;
+
+            EventManager.UnregisterEvents<Handlers.Warhead>(this);
+            EventManager.UnregisterEvents<Handlers.Player>(this);
         }
 
         /// <summary>

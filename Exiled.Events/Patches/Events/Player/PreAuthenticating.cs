@@ -4,11 +4,7 @@
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
-
-using System;
-using GameCore;
-using Mirror.LiteNetLib4Mirror;
-
+/*
 namespace Exiled.Events.Patches.Events.Player
 {
     using System.Collections.Generic;
@@ -41,7 +37,6 @@ namespace Exiled.Events.Patches.Events.Player
             int index = newInstructions.FindLastIndex(
                 instruction => instruction.Calls(Method(typeof(ConnectionRequest), nameof(ConnectionRequest.Accept)))) + offset;
 
-
             object returnLabel = newInstructions.FindLast(instruction => instruction.opcode == OpCodes.Br_S).operand;
 
             newInstructions.InsertRange(
@@ -50,23 +45,30 @@ namespace Exiled.Events.Patches.Events.Player
                 {
                     // userid
                     new CodeInstruction(OpCodes.Ldloc_S, 10).MoveLabelsFrom(newInstructions[index]),
+
                     // Request
                     new(OpCodes.Ldarg_1),
+
                     // Request.Data.Position
                     new(OpCodes.Dup),
                     new(OpCodes.Ldfld, Field(typeof(ConnectionRequest), nameof(ConnectionRequest.Data))),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(NetDataReader), nameof(NetDataReader.Position))),
+
                     // b3 (flags)
                     new(OpCodes.Ldloc_S, 12),
+
                     // text2 (country)
                     new(OpCodes.Ldloc_S, 13),
 
-                    //public PreAuthenticatingEventArgs(string userId, ConnectionRequest request, int readerStartPosition, byte flags, string country)
+                    // new PreAuthenticatingEventArgs(string userId, ConnectionRequest request, int readerStartPosition, byte flags, string country)
                     new CodeInstruction(OpCodes.Newobj, GetDeclaredConstructors(typeof(PreAuthenticatingEventArgs))[0]),
                     new(OpCodes.Dup),
 
                     // Handlers.Player.OnPreAuthenticating(ev)
                     new(OpCodes.Call, Method(typeof(Player), nameof(Player.OnPreAuthenticating))),
+
+                    // if (!ev.IsAllowed)
+                    //    return;
                     new(OpCodes.Callvirt, PropertyGetter(typeof(PreAuthenticatingEventArgs), nameof(PreAuthenticatingEventArgs.IsAllowed))),
                     new(OpCodes.Brfalse_S, returnLabel),
                 });
@@ -76,6 +78,6 @@ namespace Exiled.Events.Patches.Events.Player
 
             ListPool<CodeInstruction>.Shared.Return(newInstructions);
         }
-
     }
 }
+*/

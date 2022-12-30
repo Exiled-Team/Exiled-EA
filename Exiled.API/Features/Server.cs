@@ -107,6 +107,11 @@ namespace Exiled.API.Features
         public static double Tps => Math.Round(1f / Time.smoothDeltaTime);
 
         /// <summary>
+        /// Gets the actual frametime of the server.
+        /// </summary>
+        public static double Frametime => Math.Round(1f / Time.deltaTime);
+
+        /// <summary>
         /// Gets or sets a value indicating whether or not friendly fire is enabled.
         /// </summary>
         /// <seealso cref="Player.IsFriendlyFireEnabled"/>

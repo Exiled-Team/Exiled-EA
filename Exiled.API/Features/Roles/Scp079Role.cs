@@ -14,34 +14,39 @@ namespace Exiled.API.Features.Roles
     using PlayerRoles.PlayableScps.Scp079;
     using PlayerRoles.PlayableScps.Subroutines;
 
+    using Mathf = UnityEngine.Mathf;
     using Scp079GameRole = PlayerRoles.PlayableScps.Scp079.Scp079Role;
 
     /// <summary>
     /// Defines a role that represents SCP-079.
     /// </summary>
-    public class Scp079Role : ScpRole
+    public class Scp079Role : Role, ISubroutinedScpRole
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Scp079Role"/> class.
         /// </summary>
-        /// <param name="owner">The encapsulated <see cref="Player"/>.</param>
-        public Scp079Role(Player owner)
-            : base(owner)
+        /// <param name="baseRole">the base <see cref="Scp079GameRole"/>.</param>
+        internal Scp079Role(Scp079GameRole baseRole)
+            : base(baseRole)
         {
-            Internal = Base as Scp079GameRole;
-            SubroutineModule = Internal.SubroutineModule;
+            SubroutineModule = baseRole.SubroutineModule;
+            Internal = baseRole;
         }
 
         /// <inheritdoc/>
         public override RoleTypeId Type { get; } = RoleTypeId.Scp079;
 
         /// <inheritdoc/>
-        public override SubroutineManagerModule SubroutineModule { get; }
+        public SubroutineManagerModule SubroutineModule { get; }
 
         /// <summary>
-        /// Gets the camera SCP-079 is currently controlling.
+        /// Gets or sets the camera SCP-079 is currently controlling.
         /// </summary>
-        public Camera Camera => Camera.Get(Internal.CurrentCamera);
+        public Camera Camera
+        {
+            get => Camera.Get(Internal.CurrentCamera);
+            set => Internal._curCamSync.CurrentCamera = value.Base;
+        }
 
         /// <summary>
         /// Gets the speaker SCP-079 is currently using. Can be <see langword="null"/>.
@@ -103,7 +108,7 @@ namespace Exiled.API.Features.Roles
                 if (!SubroutineModule.TryGetSubroutine(out Scp079TierManager ability))
                     return;
 
-                ability.AccessTierIndex = value - 1;
+                Experience = value <= 1 ? 0 : ability.AbsoluteThresholds[Mathf.Clamp(value - 2, 0, ability.AbsoluteThresholds.Length - 1)];
             }
         }
 
@@ -194,6 +199,11 @@ namespace Exiled.API.Features.Roles
         }
 
         /// <summary>
+        /// Gets a value indicating whether or not SCP-079's signal is lost due to SCP-2176.
+        /// </summary>
+        public bool IsLost => SubroutineModule.TryGetSubroutine(out Scp079LostSignalHandler ability) && ability.Lost;
+
+        /// <summary>
         /// Gets SCP-079's energy regeneration speed.
         /// </summary>
         public float EnergyRegenerationSpeed => SubroutineModule.TryGetSubroutine(out Scp079AuxManager ability) ? ability.RegenSpeed : 0;
@@ -210,6 +220,29 @@ namespace Exiled.API.Features.Roles
         {
             if (SubroutineModule.TryGetSubroutine(out Scp079DoorLockChanger ability))
                 ability.ServerUnlockAll();
+        }
+
+        /// <summary>
+        /// Forces SCP-079's signal to be lost for the specified amount of time.
+        /// </summary>
+        /// <param name="duration">Time to lose SCP-079's signal.</param>
+        public void LoseSignal(float duration)
+        {
+            if (SubroutineModule.TryGetSubroutine(out Scp079LostSignalHandler ability))
+                ability.ServerLoseSignal(duration);
+        }
+
+        /// <summary>
+        /// Grants SCP-079 experience.
+        /// </summary>
+        /// <param name="amount">The amount to grant.</param>
+        /// <param name="reason">The reason to grant experience.</param>
+        public void AddExperience(int amount, Scp079HudTranslation reason = Scp079HudTranslation.ExpGainAdminCommand)
+        {
+            if (!SubroutineModule.TryGetSubroutine(out Scp079TierManager ability))
+                return;
+
+            ability.ServerGrantExperience(amount, reason);
         }
 
         /// <summary>

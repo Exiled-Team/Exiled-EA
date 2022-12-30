@@ -8,6 +8,7 @@
 namespace Exiled.API.Features.Roles
 {
     using PlayerRoles;
+    using PlayerRoles.PlayableScps.HumeShield;
     using PlayerRoles.PlayableScps.Scp049;
     using PlayerRoles.PlayableScps.Scp049.Zombies;
     using PlayerRoles.PlayableScps.Subroutines;
@@ -15,23 +16,27 @@ namespace Exiled.API.Features.Roles
     /// <summary>
     /// Defines a role that represents SCP-049-2.
     /// </summary>
-    public class Scp0492Role : ScpRole
+    public class Scp0492Role : FpcRole, ISubroutinedScpRole, IHumeShieldRole
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Scp0492Role"/> class.
         /// </summary>
-        /// <param name="owner">The encapsulated <see cref="Player"/>.</param>
-        public Scp0492Role(Player owner)
-            : base(owner)
+        /// <param name="baseRole">the base <see cref="ZombieRole"/>.</param>
+        internal Scp0492Role(ZombieRole baseRole)
+            : base(baseRole)
         {
-            SubroutineModule = (Base as ZombieRole).SubroutineModule;
+            SubroutineModule = baseRole.SubroutineModule;
+            HumeShieldModule = baseRole.HumeShieldModule;
         }
 
         /// <inheritdoc/>
         public override RoleTypeId Type { get; } = RoleTypeId.Scp0492;
 
         /// <inheritdoc/>
-        public override SubroutineManagerModule SubroutineModule { get; }
+        public SubroutineManagerModule SubroutineModule { get; }
+
+        /// <inheritdoc/>
+        public HumeShieldModuleBase HumeShieldModule { get; }
 
         /// <summary>
         /// Gets or sets the amount of times this SCP-049-2 has been resurrected.
@@ -45,10 +50,7 @@ namespace Exiled.API.Features.Roles
         /// <summary>
         /// Gets the SCP-049-2 attack damage.
         /// </summary>
-        public float AttackDamage
-        {
-            get => SubroutineModule.TryGetSubroutine(out ZombieAttackAbility ability) ? ability.DamageAmount : 0;
-        }
+        public float AttackDamage => SubroutineModule.TryGetSubroutine(out ZombieAttackAbility ability) ? ability.DamageAmount : 0;
 
         /// <summary>
         /// Gets or sets a value indicating the amount of time to simulate SCP-049-2's Bloodlust ability.
@@ -68,12 +70,12 @@ namespace Exiled.API.Features.Roles
         /// <summary>
         /// Gets a value indicating whether or not SCP-049-2 is currently pursuing a target (Bloodlust ability).
         /// </summary>
-        public bool BloodlustActive => SubroutineModule.TryGetSubroutine(out ZombieBloodlustAbility ability) ? ability.LookingAtTarget : false;
+        public bool BloodlustActive => SubroutineModule.TryGetSubroutine(out ZombieBloodlustAbility ability) && ability.LookingAtTarget;
 
         /// <summary>
         /// Gets a value indicating whether or not SCP-049-2 is consuming a ragdoll.
         /// </summary>
-        public bool IsConsuming => SubroutineModule.TryGetSubroutine(out ZombieConsumeAbility ability) ? ability.IsInProgress : false;
+        public bool IsConsuming => SubroutineModule.TryGetSubroutine(out ZombieConsumeAbility ability) && ability.IsInProgress;
 
         /// <summary>
         /// Gets the <see cref="Ragdoll"/> that SCP-049-2 is currently consuming. Will be <see langword="null"/> if <see cref="IsConsuming"/> is <see langword="false"/>.

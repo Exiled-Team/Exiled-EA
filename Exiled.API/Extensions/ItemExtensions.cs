@@ -247,6 +247,14 @@ namespace Exiled.API.Extensions
         /// </summary>
         /// <param name="type">The <see cref="ItemType"/> to check.</param>
         /// <returns>The corresponding base code.</returns>
-        public static uint GetBaseCode(this ItemType type) => !type.IsWeapon() ? 0 : Firearm.BaseCodesValue[type];
+        public static uint GetBaseCode(this ItemType type)
+        {
+            if (!type.IsWeapon())
+                return 0;
+            else if (Firearm.BaseCodesValue.TryGetValue(type, out uint baseCode))
+                return baseCode;
+            else
+                throw new KeyNotFoundException($"Basecode for weapon {type} not found! Stored BaseCodesValue:\n{Firearm.BaseCodesValue.Keys.ToString(true)}\n{Firearm.BaseCodesValue.Values.ToString(true)}");
+        }
     }
 }

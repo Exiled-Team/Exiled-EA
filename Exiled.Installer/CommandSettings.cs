@@ -23,6 +23,7 @@ namespace Exiled.Installer
                 (parsed) =>
                 {
                     string path = parsed.Tokens.SingleOrDefault()?.Value ?? Directory.GetCurrentDirectory();
+
                     if (string.IsNullOrEmpty(path))
                     {
                         parsed.ErrorMessage = "--path is null or empty";
@@ -33,8 +34,6 @@ namespace Exiled.Installer
                         parsed.ErrorMessage = "Can't be a file!";
                     else if (!Directory.Exists(path))
                         parsed.ErrorMessage = "Directory doesn't exist!";
-                    else if (!Program.ValidateServerPath(path, out string? targetFilePath))
-                        parsed.ErrorMessage = $"Couldn't find '{Program.TargetFileName}' in '{targetFilePath}'";
 
                     return new DirectoryInfo(path); // return for default value
                 },
@@ -47,12 +46,12 @@ namespace Exiled.Installer
                 (parsed) =>
                 {
                     string appdataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+
                     if (string.IsNullOrEmpty(appdataPath))
-                    {
                         Console.Error.WriteLine("Your appdata path is null, make sure it exists");
-                    }
 
                     string path = parsed.Tokens.SingleOrDefault()?.Value ?? appdataPath;
+
                     if (string.IsNullOrEmpty(path))
                     {
                         parsed.ErrorMessage = "--appdata is null or empty, make sure your appdata folder exists";
@@ -63,6 +62,29 @@ namespace Exiled.Installer
                 },
                 true,
                 "Forces the folder to be the AppData folder (useful for containers when pterodactyl runs as root)")
+                { IsRequired = true },
+
+             new Option<DirectoryInfo?>(
+                "--exiled",
+                (parsed) =>
+                {
+                    string appdataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+
+                    if (string.IsNullOrEmpty(appdataPath))
+                        Console.Error.WriteLine("Your Exiled path is null, make sure it exists");
+
+                    string path = parsed.Tokens.SingleOrDefault()?.Value ?? appdataPath;
+
+                    if (string.IsNullOrEmpty(path))
+                    {
+                        parsed.ErrorMessage = "--exiled is null or empty, make sure your Exiled folder exists";
+                        return null;
+                    }
+
+                    return new DirectoryInfo(path);
+                },
+                true,
+                "Indicates the root path of Exiled")
                 { IsRequired = true },
 
             new Option<bool>(
@@ -96,6 +118,8 @@ namespace Exiled.Installer
         public DirectoryInfo Path { get; set; }
 
         public DirectoryInfo AppData { get; set; }
+
+        public DirectoryInfo Exiled { get; set; }
 #nullable restore
 
         public bool PreReleases { get; set; }

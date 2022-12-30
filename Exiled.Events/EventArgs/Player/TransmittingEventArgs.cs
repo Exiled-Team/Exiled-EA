@@ -10,6 +10,7 @@ namespace Exiled.Events.EventArgs.Player
     using Exiled.API.Features;
     using Exiled.Events.EventArgs.Interfaces;
     using PlayerRoles.Voice;
+    using VoiceChat;
 
     /// <summary>
     ///     Contains all information after a player presses the transmission key.
@@ -25,18 +26,11 @@ namespace Exiled.Events.EventArgs.Player
         /// <param name="voiceModule">
         ///     <inheritdoc cref="VoiceModule" />
         /// </param>
-        /// <param name="isTransmitting">
-        ///     <inheritdoc cref="IsTransmitting" />
-        /// </param>
-        /// <param name="isAllowed">
-        ///     <inheritdoc cref="IsAllowed" />
-        /// </param>
-        public TransmittingEventArgs(Player player, VoiceModuleBase voiceModule, bool isTransmitting, bool isAllowed = true)
+        public TransmittingEventArgs(Player player, VoiceModuleBase voiceModule)
         {
             Player = player;
             VoiceModule = voiceModule;
-            IsTransmitting = isTransmitting;
-            IsAllowed = isAllowed;
+            IsTransmitting = voiceModule == null ? false : voiceModule.ServerIsSending && voiceModule.CurrentChannel == VoiceChatChannel.Radio;
         }
 
         /// <summary>
@@ -57,6 +51,6 @@ namespace Exiled.Events.EventArgs.Player
         /// <summary>
         ///     Gets or sets a value indicating whether or not the player can transmit.
         /// </summary>
-        public bool IsAllowed { get; set; }
+        public bool IsAllowed { get; set; } = true;
     }
 }

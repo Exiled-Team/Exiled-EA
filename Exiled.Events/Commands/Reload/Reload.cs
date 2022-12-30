@@ -33,7 +33,7 @@ namespace Exiled.Events.Commands.Reload
         public override string[] Aliases { get; } = new[] { "rld" };
 
         /// <inheritdoc/>
-        public override string Description { get; } = "Reload plugins, plugin configs, gameplay and remote admin configs.";
+        public override string Description { get; } = "Reload plugins, configs, gameplay configs, remote admin configs, translations, permissions or all of them.";
 
         /// <inheritdoc/>
         public override void LoadGeneratedCommands()
@@ -50,7 +50,7 @@ namespace Exiled.Events.Commands.Reload
         /// <inheritdoc/>
         protected override bool ExecuteParent(ArraySegment<string> arguments, ICommandSender sender, out string response)
         {
-            response = "Please, specify a valid subcommand! Available ones: all, plugins, gameplay, configs, remoteadmin, translations";
+            response = "Please, specify a valid subcommand! Available ones: all, plugins, gameplay, configs, remoteadmin, translations, permissions";
             return false;
         }
     }

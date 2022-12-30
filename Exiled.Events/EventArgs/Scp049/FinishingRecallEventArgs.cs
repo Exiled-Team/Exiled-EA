@@ -39,6 +39,11 @@ namespace Exiled.Events.EventArgs.Scp049
         }
 
         /// <summary>
+        ///     Gets the player who is controlling SCP-049.
+        /// </summary>
+        public Player Player { get; }
+
+        /// <summary>
         ///     Gets the player who's getting recalled.
         /// </summary>
         public Player Target { get; }
@@ -52,10 +57,5 @@ namespace Exiled.Events.EventArgs.Scp049
         ///     Gets or sets a value indicating whether or not the player can be recalled.
         /// </summary>
         public bool IsAllowed { get; set; }
-
-        /// <summary>
-        ///     Gets the player who is controlling SCP-049.
-        /// </summary>
-        public Player Player { get; }
     }
 }

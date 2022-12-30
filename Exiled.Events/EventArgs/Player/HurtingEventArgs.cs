@@ -31,11 +31,20 @@ namespace Exiled.Events.EventArgs.Player
         public HurtingEventArgs(Player target, DamageHandlerBase damageHandler)
         {
             DamageHandler = new CustomDamageHandler(target, damageHandler);
-            Attacker = DamageHandler.BaseIs(out CustomAttackerHandler attackerDamageHandler)
-                ? attackerDamageHandler.Attacker
-                : null;
+
+            Attacker = DamageHandler.BaseIs(out CustomAttackerHandler attackerDamageHandler) ? attackerDamageHandler.Attacker : null;
             Player = target;
         }
+
+        /// <summary>
+        ///     Gets the target player, who is going to be hurt.
+        /// </summary>
+        public Player Player { get; }
+
+        /// <summary>
+        ///     Gets the attacker player.
+        /// </summary>
+        public Player Attacker { get; }
 
         /// <summary>
         ///     Gets or sets the amount of inflicted damage.
@@ -47,11 +56,6 @@ namespace Exiled.Events.EventArgs.Player
         }
 
         /// <summary>
-        ///     Gets the target player, who is going to be hurt.
-        /// </summary>
-        public Player Player { get; }
-
-        /// <summary>
         ///     Gets or sets the <see cref="CustomDamageHandler" /> for the event.
         /// </summary>
         public CustomDamageHandler DamageHandler { get; set; }
@@ -60,10 +64,5 @@ namespace Exiled.Events.EventArgs.Player
         ///     Gets or sets a value indicating whether or not the player will be dealt damage.
         /// </summary>
         public bool IsAllowed { get; set; } = true;
-
-        /// <summary>
-        ///     Gets the attacker player.
-        /// </summary>
-        public Player Attacker { get; }
     }
 }

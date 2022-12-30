@@ -44,7 +44,7 @@ namespace Exiled.Events.Commands.Reload
             Exiled.Permissions.Extensions.Permissions.Reload();
             Server.OnReloadedPermissions();
 
-            response = "permissions have been reloaded successfully!";
+            response = "Permissions have been reloaded successfully!";
             return true;
         }
     }

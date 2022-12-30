@@ -9,13 +9,15 @@ namespace Exiled.Events.Handlers
 {
     using Exiled.Events.EventArgs.Warhead;
     using Extensions;
+    using PluginAPI.Core.Attributes;
+    using PluginAPI.Enums;
 
     using static Events;
 
     /// <summary>
     ///     Handles warhead related events.
     /// </summary>
-    public static class Warhead
+    public class Warhead
     {
         /// <summary>
         ///     Invoked before stopping the warhead.
@@ -28,14 +30,19 @@ namespace Exiled.Events.Handlers
         public static event CustomEventHandler<StartingEventArgs> Starting;
 
         /// <summary>
+        ///     Invoked before changing the warhead lever status.
+        /// </summary>
+        public static event CustomEventHandler<ChangingLeverStatusEventArgs> ChangingLeverStatus;
+
+        /// <summary>
         ///     Invoked after the warhead has been detonated.
         /// </summary>
         public static event CustomEventHandler Detonated;
 
         /// <summary>
-        ///     Invoked before changing the warhead lever status.
+        ///     Invoked before detonating the warhead.
         /// </summary>
-        public static event CustomEventHandler<ChangingLeverStatusEventArgs> ChangingLeverStatus;
+        public static event CustomEventHandler<DetonatingEventArgs> Detonating;
 
         /// <summary>
         ///     Called before stopping the warhead.
@@ -47,10 +54,13 @@ namespace Exiled.Events.Handlers
         ///     Called before starting the warhead.
         /// </summary>
         /// <param name="ev">The <see cref="StartingEventArgs" /> instance.</param>
-        public static void OnStarting(StartingEventArgs ev)
-        {
-            Starting.InvokeSafely(ev);
-        }
+        public static void OnStarting(StartingEventArgs ev) => Starting.InvokeSafely(ev);
+
+        /// <summary>
+        ///     Called before changing the warhead lever status.
+        /// </summary>
+        /// <param name="ev">The <see cref="ChangingLeverStatusEventArgs" /> instance.</param>
+        public static void OnChangingLeverStatus(ChangingLeverStatusEventArgs ev) => ChangingLeverStatus.InvokeSafely(ev);
 
         /// <summary>
         ///     Called after the warhead has been detonated.
@@ -58,9 +68,17 @@ namespace Exiled.Events.Handlers
         public static void OnDetonated() => Detonated.InvokeSafely();
 
         /// <summary>
-        ///     Called before changing the warhead lever status.
+        ///     Called before detonating the warhead.
         /// </summary>
-        /// <param name="ev">The <see cref="ChangingLeverStatusEventArgs" /> instance.</param>
-        public static void OnChangingLeverStatus(ChangingLeverStatusEventArgs ev) => ChangingLeverStatus.InvokeSafely(ev);
+        /// <returns>Returns whether the event is allowed or not.</returns>
+        [PluginEvent(ServerEventType.WarheadDetonation)]
+        public bool OnDetonating()
+        {
+            DetonatingEventArgs ev = new();
+
+            Detonating.InvokeSafely(ev);
+
+            return ev.IsAllowed;
+        }
     }
 }

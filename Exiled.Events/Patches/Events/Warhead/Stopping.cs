@@ -36,14 +36,14 @@ namespace Exiled.Events.Patches.Events.Warhead
 
             Label returnLabel = generator.DefineLabel();
 
-            // if(!AlphaWarheadController.inProgress)
+            // if (!AlphaWarheadController.inProgress)
             //   return;
             //
             // StoppingEventArgs ev = new(Player.Get(disabler), true);
             //
             // Handlers.Warhead.OnStopping(ev);
             //
-            // if(!ev.IsAllowed || Warhead.IsWarheadLocked)
+            // if (!ev.IsAllowed || Warhead.IsWarheadLocked)
             //   return;
             newInstructions.InsertRange(
                 0,
@@ -68,7 +68,7 @@ namespace Exiled.Events.Patches.Events.Warhead
                     // Handlers.Warhead.OnStopping(ev);
                     new(OpCodes.Call, Method(typeof(Warhead), nameof(Warhead.OnStopping))),
 
-                    // if(!ev.IsAllowed || Warhead.IsWarheadLocked)
+                    // if (!ev.IsAllowed || Warhead.IsWarheadLocked)
                     //   return;
                     new(OpCodes.Callvirt, PropertyGetter(typeof(StoppingEventArgs), nameof(StoppingEventArgs.IsAllowed))),
                     new(OpCodes.Brfalse_S, returnLabel),

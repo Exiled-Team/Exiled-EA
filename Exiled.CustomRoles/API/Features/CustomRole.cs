@@ -403,7 +403,7 @@ namespace Exiled.CustomRoles.API.Features
             Log.Debug($"{Name}: Adding role to {player.Nickname}.");
 
             if (Role != RoleTypeId.None)
-                player.SetRole(Role, SpawnReason.ForceClass);
+                player.Role.Set(Role, SpawnReason.ForceClass);
 
             Timing.CallDelayed(
                 1.5f,
@@ -473,7 +473,7 @@ namespace Exiled.CustomRoles.API.Features
             player.InfoArea |= PlayerInfoArea.Role;
             player.Scale = Vector3.one;
             if (RemovalKillsPlayer)
-                player.SetRole(RoleTypeId.Spectator);
+                player.Role.Set(RoleTypeId.Spectator);
             foreach (CustomAbility ability in CustomAbilities)
             {
                 ability.RemoveAbility(player);

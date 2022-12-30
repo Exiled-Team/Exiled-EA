@@ -131,8 +131,10 @@ namespace Exiled.Events.Patches.Events.Item
                     new(OpCodes.And),
 
                     // ThrowKeycardInteractingEventArgs ev = new(pickup, player, door, isAllowed);
+                    //
                     // Item.OnThrowKeycardInteracting(ev);
-                    // if(!ev.IsAllowed)
+                    //
+                    // if (!ev.IsAllowed)
                     //     return;
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(KeycardInteractingEventArgs))[0]),
                     new(OpCodes.Dup),
