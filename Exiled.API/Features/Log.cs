@@ -76,7 +76,7 @@ namespace Exiled.API.Features
             if (knownDebugValues[callingAssembly])
                 Send($"[{callingAssembly.GetName().Name}] {message}", Discord.LogLevel.Debug, ConsoleColor.Green);
 #endif
-        } 
+        }
 
         /// <summary>
         /// Sends a <see cref="Discord.LogLevel.Warn"/> level messages to the game console.
