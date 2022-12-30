@@ -129,13 +129,6 @@ namespace Exiled.API.Features.Items
         /// </summary>
         /// <param name="oldOwner">old <see cref="Item"/> owner.</param>
         /// <param name="newOwner">new <see cref="Item"/> owner.</param>
-        internal override void ChangeOwner(Player oldOwner, Player newOwner)
-        {
-            Base.Owner = newOwner.ReferenceHub;
-
-            // Base._radio = newOwner.ReferenceHub.GetComponent<global::Radio>();
-            if (newOwner != Server.Host)
-                Base._rangeId = Base._rangeId;
-        }
+        internal override void ChangeOwner(Player oldOwner, Player newOwner) => Base.Owner = newOwner.ReferenceHub;
     }
 }
