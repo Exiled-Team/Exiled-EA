@@ -8,22 +8,23 @@
 namespace Exiled.Events.Handlers.Internal
 {
     using Exiled.API.Features;
+    using PlayerRoles.Ragdolls;
 
     /// <summary>
-    /// Handles <see cref="Ragdoll"/> <see Ragdoll.BasicRagdollToRagdoll >.
+    /// Handles adding and removing from <see cref="Ragdoll.BasicRagdollToRagdoll"/>.
     /// </summary>
     internal static class RagdollList
     {
         /// <summary>
-        /// .
+        /// Called after a ragdoll is spawned. Hooked to <see cref="RagdollManager.OnRagdollSpawned"/>.
         /// </summary>
-        /// <param name="ragdoll">e.</param>
+        /// <param name="ragdoll">The spawned ragdoll.</param>
         internal static void OnSpawnedRagdoll(BasicRagdoll ragdoll) => Ragdoll.Get(ragdoll);
 
         /// <summary>
-        /// .
+        /// Called before a ragdoll is destroyed. Hooked to <see cref="RagdollManager.OnRagdollRemoved"/>.
         /// </summary>
-        /// <param name="ragdoll">e.</param>
+        /// <param name="ragdoll">The destroyed ragdoll.</param>
         internal static void OnRemovedRagdoll(BasicRagdoll ragdoll) => Ragdoll.BasicRagdollToRagdoll.Remove(ragdoll);
     }
 }
