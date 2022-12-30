@@ -213,5 +213,10 @@ namespace Exiled.API.Enums
         /// Damage caused by SCP-956.
         /// </summary>
         Scp956,
+
+        /// <summary>
+        /// Damage caused by <see cref="ItemType.GunCom45"/>.
+        /// </summary>
+        Com45,
     }
 }
