@@ -446,53 +446,51 @@ namespace Exiled.Loader
                 Log.Debug($"Attempting to load embedded resources for {target.FullName}");
 
                 string[] resourceNames = target.GetManifestResourceNames();
-                
+
                 foreach (string name in resourceNames)
                 {
                     Log.Debug($"Found resource {name}");
-                    
+
                     if (name.EndsWith(".dll", StringComparison.OrdinalIgnoreCase))
                     {
-                        using (MemoryStream stream = new MemoryStream())
-                        {
-                            Log.Debug($"Loading resource {name}");
-                            
-                            Stream dataStream = target.GetManifestResourceStream(name);
-                            
-                            if (dataStream == null)
-                            {
-                                Log.Error($"Unable to resolve resource {name} Stream was null");
-                                continue;
-                            }
+                        using MemoryStream stream = new();
 
-                            dataStream.CopyTo(stream);
+                        Log.Debug($"Loading resource {name}");
 
-                            Dependencies.Add(Assembly.Load(stream.ToArray()));
-                            
-                            Log.Debug($"Loaded resource {name}");
-                        }
-                    }
-                    else if (name.EndsWith(".dll.compressed", StringComparison.OrdinalIgnoreCase))
-                    {
                         Stream dataStream = target.GetManifestResourceStream(name);
-                        
+
                         if (dataStream == null)
                         {
                             Log.Error($"Unable to resolve resource {name} Stream was null");
                             continue;
                         }
 
-                        using (DeflateStream stream = new DeflateStream(dataStream, CompressionMode.Decompress))
-                        using (MemoryStream memStream = new MemoryStream())
-                        {
-                            Log.Debug($"Loading resource {name}");
-                            
-                            stream.CopyTo(memStream);
+                        dataStream.CopyTo(stream);
 
-                            Dependencies.Add(Assembly.Load(memStream.ToArray()));
-                            
-                            Log.Debug($"Loaded resource {name}");
+                        Dependencies.Add(Assembly.Load(stream.ToArray()));
+
+                        Log.Debug($"Loaded resource {name}");
+                    }
+                    else if (name.EndsWith(".dll.compressed", StringComparison.OrdinalIgnoreCase))
+                    {
+                        Stream dataStream = target.GetManifestResourceStream(name);
+
+                        if (dataStream == null)
+                        {
+                            Log.Error($"Unable to resolve resource {name} Stream was null");
+                            continue;
                         }
+
+                        using DeflateStream stream = new(dataStream, CompressionMode.Decompress);
+                        using MemoryStream memStream = new();
+
+                        Log.Debug($"Loading resource {name}");
+
+                        stream.CopyTo(memStream);
+
+                        Dependencies.Add(Assembly.Load(memStream.ToArray()));
+
+                        Log.Debug($"Loaded resource {name}");
                     }
                 }
             }
