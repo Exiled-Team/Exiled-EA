@@ -2664,7 +2664,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Places a Tantrum (SCP-173's ability) under the player.
         /// </summary>
-        /// <param name="isActive">Whether or not the tantrum will slow players down.</param>
+        /// <param name="isActive">Whether or not the tantrum will apply the <see cref="EffectType.Stained"/> effect.</param>
         /// <returns>The tantrum's <see cref="GameObject"/>.</returns>
         public GameObject PlaceTantrum(bool isActive = true) => Map.PlaceTantrum(Position, isActive);
 
