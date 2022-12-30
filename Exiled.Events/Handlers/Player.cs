@@ -1138,7 +1138,16 @@ namespace Exiled.Events.Handlers
             API.Features.Player exiledPlayer = player;
 
             if (exiledPlayer is not null)
+            {
                 Destroying.InvokeSafely(new(exiledPlayer));
+
+                API.Features.Player.Dictionary.Remove(exiledPlayer.GameObject);
+                API.Features.Player.UnverifiedPlayers.Remove(exiledPlayer.ReferenceHub);
+                API.Features.Player.IdsCache.Remove(exiledPlayer.Id);
+
+                if (exiledPlayer.UserId != null)
+                    API.Features.Player.UserIdsCache.Remove(player.UserId);
+            }
         }
     }
 }
