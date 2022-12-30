@@ -25,7 +25,7 @@ namespace Exiled.Events.Patches.Events.Scp079
     ///     Patches <see cref="Scp079BlackoutRoomAbility.ServerProcessCmd" />.
     ///     Adds the <see cref="RoomBlackoutEventArgs" /> event for SCP-079.
     /// </summary>
-    // [HarmonyPatch(typeof(Scp079BlackoutRoomAbility), nameof(Scp079BlackoutRoomAbility.ServerProcessCmd))]
+    [HarmonyPatch(typeof(Scp079BlackoutRoomAbility), nameof(Scp079BlackoutRoomAbility.ServerProcessCmd))]
     internal static class RoomBlackout
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
@@ -39,7 +39,7 @@ namespace Exiled.Events.Patches.Events.Scp079
             int offset = -1;
             int index = newInstructions.FindIndex(
                 instruction => instruction.Calls(PropertyGetter(typeof(Scp079AbilityBase), nameof(Scp079AbilityBase.LostSignalHandler)))) + offset;
-            newInstructions.RemoveRange(index, 5);
+            newInstructions.RemoveRange(index, 4);
 
             // this._syncPos = ev.Position;
             newInstructions.InsertRange(
