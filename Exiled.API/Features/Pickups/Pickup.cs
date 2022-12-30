@@ -288,6 +288,7 @@ namespace Exiled.API.Features.Pickups
         /// </summary>
         /// <param name="type">The <see cref="ItemType"/> to look for.</param>
         /// <returns>A <see cref="IEnumerable{T}"/> of <see cref="Pickup"/>.</returns>
+        /// <seealso cref="Map.GetRandomPickup(ItemType)"/>
         public static IEnumerable<Pickup> Get(ItemType type) => List.Where(x => x.Type == type);
 
         /// <summary>
