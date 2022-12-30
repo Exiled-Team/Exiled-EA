@@ -155,7 +155,9 @@ namespace Exiled.Loader
             try
             {
                 Assembly assembly = Assembly.Load(File.ReadAllBytes(path));
+                
                 ResolveAssemblyEmbeddedResources(assembly);
+
                 return assembly;
             }
             catch (Exception exception)
