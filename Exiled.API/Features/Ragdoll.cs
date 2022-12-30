@@ -346,9 +346,9 @@ namespace Exiled.API.Features
         public static IEnumerable<Ragdoll> Get(IEnumerable<Player> players) => players.SelectMany(pl => Ragdoll.List.Where(rd => rd.Owner == pl));
 
         /// <summary>
-        /// Deletes the ragdoll.
+        /// Destroys the ragdoll.
         /// </summary>
-        public void Delete() => Object.Destroy(GameObject);
+        public void Destroy() => Object.Destroy(GameObject);
 
         /// <summary>
         /// Spawns the ragdoll.
