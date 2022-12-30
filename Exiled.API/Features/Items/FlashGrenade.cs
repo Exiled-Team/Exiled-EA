@@ -96,25 +96,21 @@ namespace Exiled.API.Features.Items
         }
 
         /// <summary>
+        /// Clones current <see cref="FlashGrenade"/> object.
+        /// </summary>
+        /// <returns> New <see cref="FlashGrenade"/> object. </returns>
+        public override Item Clone() => new FlashGrenade()
+        {
+            BlindCurve = BlindCurve,
+            SurfaceDistanceIntensifier = SurfaceDistanceIntensifier,
+            DeafenCurve = DeafenCurve,
+            FuseTime = FuseTime,
+        };
+
+        /// <summary>
         /// Returns the FlashGrenade in a human readable format.
         /// </summary>
         /// <returns>A string containing FlashGrenade-related data.</returns>
         public override string ToString() => $"{Type} ({Serial}) [{Weight}] *{Scale}* |{FuseTime}|";
-
-        /// <summary>
-        /// Clones current <see cref="FlashGrenade"/> object.
-        /// </summary>
-        /// <returns> New <see cref="FlashGrenade"/> object. </returns>
-        public override Item Clone()
-        {
-            FlashGrenade cloneableItem = new();
-
-            cloneableItem.BlindCurve = BlindCurve;
-            cloneableItem.SurfaceDistanceIntensifier = SurfaceDistanceIntensifier;
-            cloneableItem.DeafenCurve = DeafenCurve;
-            cloneableItem.FuseTime = FuseTime;
-
-            return cloneableItem;
-        }
     }
 }

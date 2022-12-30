@@ -22,7 +22,7 @@ namespace Exiled.Events.Patches.Events.Player
     using static HarmonyLib.AccessTools;
 
     /// <summary>
-    ///     Patches <see cref="AmmoSearchCompletor.Complete" /> for the <see cref="Handlers.Player.PickingUpAmmo" /> event.
+    ///     Patches <see cref="AmmoSearchCompletor.Complete" /> for the <see cref="Handlers.Player.PickingUpItem" /> event.
     /// </summary>
     [HarmonyPatch(typeof(AmmoSearchCompletor), nameof(AmmoSearchCompletor.Complete))]
     internal static class PickingUpAmmo
@@ -53,15 +53,15 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Ldc_I4_1),
 
                     // PickingUpAmmoEventArgs ev = new(Player, ItemPickupBase, bool)
-                    new(OpCodes.Newobj, GetDeclaredConstructors(typeof(PickingUpAmmoEventArgs))[0]),
+                    new(OpCodes.Newobj, GetDeclaredConstructors(typeof(PickingUpItemEventArgs))[0]),
                     new(OpCodes.Dup),
 
                     // Handlers.Player.OnPickingUpAmmo(ev)
-                    new(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnPickingUpAmmo))),
+                    new(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnPickingUpItem))),
 
                     // if (!ev.IsAllowed)
                     //    return;
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(PickingUpAmmoEventArgs), nameof(PickingUpAmmoEventArgs.IsAllowed))),
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(PickingUpItemEventArgs), nameof(PickingUpItemEventArgs.IsAllowed))),
                     new(OpCodes.Brfalse, returnLabel),
                 });
 

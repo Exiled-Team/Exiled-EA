@@ -13,8 +13,10 @@ namespace Exiled.API.Features
 
     using Enums;
     using Exiled.API.Extensions;
+    using Exiled.API.Features.Items;
+    using Exiled.API.Features.Pickups;
+
     using Interactables.Interobjects.DoorUtils;
-    using Items;
     using MapGeneration;
     using MEC;
     using Mirror;
@@ -99,8 +101,7 @@ namespace Exiled.API.Features
             get
             {
                 List<Pickup> pickups = new();
-
-                foreach (Pickup pickup in Map.Pickups)
+                foreach (Pickup pickup in Pickup.List)
                 {
                     if (Map.FindParentRoom(pickup.GameObject) == this)
                         pickups.Add(pickup);

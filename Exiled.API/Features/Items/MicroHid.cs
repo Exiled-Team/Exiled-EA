@@ -9,8 +9,6 @@ namespace Exiled.API.Features.Items
 {
     using InventorySystem.Items.MicroHID;
 
-    using MEC;
-
     /// <summary>
     /// A wrapper class for <see cref="MicroHIDItem"/>.
     /// </summary>
@@ -67,28 +65,19 @@ namespace Exiled.API.Features.Items
         }
 
         /// <summary>
+        /// Clones current <see cref="MicroHid"/> object.
+        /// </summary>
+        /// <returns> New <see cref="MicroHid"/> object. </returns>
+        public override Item Clone() => new MicroHid()
+        {
+            State = State,
+            Energy = Energy,
+        };
+
+        /// <summary>
         /// Returns the MicroHid in a human readable format.
         /// </summary>
         /// <returns>A string containing MicroHid-related data.</returns>
         public override string ToString() => $"{Type} ({Serial}) [{Weight}] *{Scale}* |{Energy}| -{State}-";
-
-        /// <summary>
-        /// Clones current <see cref="MicroHid"/> object.
-        /// </summary>
-        /// <returns> New <see cref="MicroHid"/> object. </returns>
-        public override Item Clone()
-        {
-            MicroHid cloneableItem = new();
-
-            Timing.CallDelayed(
-                1f,
-                () =>
-                {
-                    cloneableItem.State = State;
-                    cloneableItem.Energy = Energy;
-                });
-
-            return cloneableItem;
-        }
     }
 }

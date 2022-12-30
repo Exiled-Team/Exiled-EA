@@ -7,49 +7,43 @@
 
 namespace Exiled.Events.EventArgs.Map
 {
-    using API.Features;
-    using API.Features.Items;
-    using Interfaces;
+    using Exiled.API.Features;
+    using Exiled.API.Features.Pickups;
+    using Exiled.Events.EventArgs.Interfaces;
 
     using InventorySystem.Items.ThrowableProjectiles;
 
     /// <summary>
     ///     Contains all information for when the server is turning a pickup into a live grenade.
     /// </summary>
-    public class ChangingIntoGrenadeEventArgs : IPickupEvent, IDeniableEvent
+    public class ChangingIntoGrenadeEventArgs : IDeniableEvent, IPickupEvent
     {
         /// <summary>
         ///     Initializes a new instance of the <see cref="ChangingIntoGrenadeEventArgs" /> class.
         /// </summary>
-        /// <param name="pickup">The <see cref="Pickup" /> being changed.</param>
+        /// <param name="pickup">The <see cref="API.Features.Pickups.Pickup"/> being changed.</param>
         public ChangingIntoGrenadeEventArgs(TimedGrenadePickup pickup)
         {
             if (pickup is null)
                 Log.Error($"{nameof(ChangingIntoGrenadeEventArgs)}: Pickup is null!");
 
             Pickup = Pickup.Get(pickup);
-            Type = pickup is not null ? pickup.Info.ItemId : ItemType.None;
-            FuseTime = Pickup.Base is TimeGrenade timeGrenade ? timeGrenade._fuseTime : 3f;
+            Type = Pickup.Type;
         }
 
         /// <summary>
-        ///     Gets or sets a value indicating what type of grenade will be spawned.
+        /// Gets a value indicating the pickup being changed.
         /// </summary>
-        public ItemType Type { get; set; }
+        public Pickup Pickup { get; }
 
         /// <summary>
-        ///     Gets or sets a value indicating how long the fuse of the changed grenade will be.
+        /// Gets or sets a value indicating what type of grenade will be spawned.
         /// </summary>
-        public float FuseTime { get; set; }
+        public ItemType Type { get; set; }
 
         /// <summary>
         ///     Gets or sets a value indicating whether the pickup will be changed.
         /// </summary>
         public bool IsAllowed { get; set; } = true;
-
-        /// <summary>
-        ///     Gets a value indicating the pickup being changed.
-        /// </summary>
-        public Pickup Pickup { get; }
     }
 }

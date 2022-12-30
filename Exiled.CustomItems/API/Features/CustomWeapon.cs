@@ -14,9 +14,10 @@ namespace Exiled.CustomItems.API.Features
     using Exiled.API.Features;
     using Exiled.API.Features.DamageHandlers;
     using Exiled.API.Features.Items;
+    using Exiled.API.Features.Pickups;
+    using Exiled.Events.EventArgs;
     using Exiled.Events.EventArgs.Player;
 
-    using InventorySystem.Items.Firearms;
     using InventorySystem.Items.Firearms.Attachments;
     using InventorySystem.Items.Firearms.Attachments.Components;
     using InventorySystem.Items.Firearms.BasicMessages;
@@ -44,7 +45,7 @@ namespace Exiled.CustomItems.API.Features
             get => base.Type;
             set
             {
-                if (!value.IsWeapon() && (value != ItemType.None))
+                if (!value.IsWeapon() && value != ItemType.None)
                     throw new ArgumentOutOfRangeException($"{nameof(Type)}", value, "Invalid weapon type.");
 
                 base.Type = value;
@@ -69,18 +70,19 @@ namespace Exiled.CustomItems.API.Features
         /// <inheritdoc />
         public override Pickup Spawn(Vector3 position, Player previousOwner = null)
         {
-            Item item = Item.Create(Type);
-
-            if (item is null)
+            if (Item.Create(Type) is not Firearm firearm)
             {
-                Log.Debug($"{nameof(Spawn)}: Item is null.");
+                Log.Debug($"{nameof(Spawn)}: Item is not Firearm.");
                 return null;
             }
 
-            if (item is Firearm firearm && Attachments is not null && !Attachments.IsEmpty())
+            if (Attachments is not null && !Attachments.IsEmpty())
                 firearm.AddAttachment(Attachments);
 
-            Pickup pickup = item.Spawn(position);
+            firearm.Ammo = ClipSize;
+
+            Pickup pickup = firearm.CreatePickup(position);
+
             if (pickup is null)
             {
                 Log.Debug($"{nameof(Spawn)}: Pickup is null.");
@@ -93,19 +95,6 @@ namespace Exiled.CustomItems.API.Features
                 pickup.PreviousOwner = previousOwner;
 
             TrackedSerials.Add(pickup.Serial);
-
-            Timing.CallDelayed(
-                1f,
-                () =>
-                {
-                    if (pickup.Base is FirearmPickup firearmPickup)
-                    {
-                        firearmPickup.Status = new FirearmStatus(ClipSize, firearmPickup.Status.Flags, firearmPickup.Status.Attachments);
-                        firearmPickup.NetworkStatus = firearmPickup.Status;
-                        Log.Debug($"{nameof(Name)}.{nameof(Spawn)}: Spawned item has: {firearmPickup.Status.Ammo}");
-                    }
-                });
-
             return pickup;
         }
 
@@ -118,26 +107,13 @@ namespace Exiled.CustomItems.API.Features
                     firearm.AddAttachment(Attachments);
                 byte ammo = firearm.Ammo;
                 Log.Debug($"{nameof(Name)}.{nameof(Spawn)}: Spawning weapon with {ammo} ammo.");
-                Pickup pickup = firearm.Spawn(position);
+                Pickup pickup = firearm.CreatePickup(position);
                 pickup.Scale = Scale;
 
                 if (previousOwner is not null)
                     pickup.PreviousOwner = previousOwner;
 
                 TrackedSerials.Add(pickup.Serial);
-
-                Timing.CallDelayed(
-                    1f,
-                    () =>
-                    {
-                        if (pickup.Base is FirearmPickup firearmPickup)
-                        {
-                            firearmPickup.Status = new FirearmStatus(ammo, firearmPickup.Status.Flags, firearmPickup.Status.Attachments);
-                            firearmPickup.NetworkStatus = firearmPickup.Status;
-                            Log.Debug($"{nameof(Name)}.{nameof(Spawn)}: Spawned item has: {firearmPickup.Status.Ammo}");
-                        }
-                    });
-
                 return pickup;
             }
 
@@ -244,7 +220,7 @@ namespace Exiled.CustomItems.API.Features
 
             Log.Debug($"{ev.Player.Nickname} ({ev.Player.UserId}) [{ev.Player.Role}] is reloading a {Name} ({Id}) [{Type} ({remainingClip}/{ClipSize})]!");
 
-            AmmoType ammoType = ((Firearm)ev.Player.CurrentItem).AmmoType;
+            AmmoType ammoType = ev.Firearm.AmmoType;
 
             if (!ev.Player.Ammo.ContainsKey(ammoType.GetItemType()))
             {
