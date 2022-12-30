@@ -59,6 +59,7 @@ namespace Exiled.Events.Patches.Fixes
             // projectile.Spawned = true;
             newInstructions.InsertRange(index, new[]
             {
+                // if (Item.Get(this) is Throwable throwable) goto cnt;
                 new CodeInstruction(OpCodes.Ldarg_0),
                 new(OpCodes.Call, Method(typeof(Item), nameof(Item.Get), new[] { typeof(ItemBase) })),
                 new(OpCodes.Isinst, typeof(Throwable)),
@@ -66,19 +67,25 @@ namespace Exiled.Events.Patches.Fixes
                 new(OpCodes.Stloc_S, throwable.LocalIndex),
                 new(OpCodes.Brtrue_S, cnt),
 
+                // Log.Error("Item is not Throwable, should never happen");
+                // return;
                 new(OpCodes.Ldstr, "Item is not Throwable, should never happen"),
                 new(OpCodes.Call, Method(typeof(API.Features.Log), nameof(API.Features.Log.Error), new[] { typeof(string) })),
                 new(OpCodes.Ret),
 
+                // Projectile projectile = throwable.Projectile;
                 new CodeInstruction(OpCodes.Ldloc_S, throwable.LocalIndex).WithLabels(cnt),
                 new(OpCodes.Callvirt, PropertyGetter(typeof(Throwable), nameof(Throwable.Projectile))),
                 new(OpCodes.Dup),
+
+                // ThrownProjectile baseProjectile = projectile.Base;
                 new(OpCodes.Stloc_S, projectile.LocalIndex),
                 new(OpCodes.Callvirt, DeclaredPropertyGetter(typeof(Projectile), nameof(Projectile.Base))),
                 new(OpCodes.Dup),
                 new(OpCodes.Dup),
                 new(OpCodes.Dup),
 
+                // baseProjectile.transform.position = this.Owner.PlayerCameraReference.position;
                 new(OpCodes.Callvirt, PropertyGetter(typeof(ThrownProjectile), nameof(ThrownProjectile.transform))),
                 new(OpCodes.Ldarg_0),
                 new(OpCodes.Callvirt, PropertyGetter(typeof(ThrowableItem), nameof(ThrowableItem.Owner))),
@@ -88,15 +95,18 @@ namespace Exiled.Events.Patches.Fixes
                 new(OpCodes.Callvirt, PropertyGetter(typeof(Transform), nameof(Transform.position))),
                 new(OpCodes.Callvirt, PropertySetter(typeof(Transform), nameof(Transform.position))),
 
+                // baseProjectile.transform.rotation = this.Owner.PlayerCameraReference.rotation;
                 new(OpCodes.Callvirt, PropertyGetter(typeof(ThrownProjectile), nameof(ThrownProjectile.transform))),
                 new(OpCodes.Ldloc_S, playerCamera.LocalIndex),
                 new(OpCodes.Callvirt, PropertyGetter(typeof(Transform), nameof(Transform.rotation))),
                 new(OpCodes.Callvirt, PropertySetter(typeof(Transform), nameof(Transform.rotation))),
 
+                // baseProjectile.gameObject.SetActive(true);
                 new(OpCodes.Callvirt, PropertyGetter(typeof(ThrownProjectile), nameof(ThrownProjectile.gameObject))),
                 new(OpCodes.Ldc_I4_1),
                 new(OpCodes.Callvirt, Method(typeof(GameObject), nameof(GameObject.SetActive))),
 
+                // projectile.Spawned = true;
                 new(OpCodes.Ldloc_S, projectile.LocalIndex),
                 new(OpCodes.Ldc_I4_1),
                 new(OpCodes.Callvirt, PropertySetter(typeof(Projectile), nameof(Projectile.IsSpawned))),

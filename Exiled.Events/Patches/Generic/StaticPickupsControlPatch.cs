@@ -39,6 +39,7 @@ namespace Exiled.Events.Patches.Generic
 
             newInstructions.InsertRange(index, new[]
             {
+                // _ = Pickup.Get(itemBase)
                 new CodeInstruction(OpCodes.Ldloc_1),
                 new(OpCodes.Callvirt, Method(typeof(Pickup), nameof(Pickup.Get), new[] { typeof(ItemPickupBase) })),
                 new(OpCodes.Pop),
