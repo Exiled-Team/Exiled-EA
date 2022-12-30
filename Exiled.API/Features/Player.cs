@@ -375,7 +375,7 @@ namespace Exiled.API.Features
         /// </summary>
         public Player Cuffer
         {
-            get => Get(DisarmedPlayers.Entries.FirstOrDefault(entry => entry.DisarmedPlayer == NetworkIdentity.netId).DisarmedPlayer);
+            get => Get(DisarmedPlayers.Entries.FirstOrDefault(entry => entry.DisarmedPlayer == NetworkIdentity.netId).Disarmer);
             set
             {
                 for (int i = 0; i < DisarmedPlayers.Entries.Count; i++)
