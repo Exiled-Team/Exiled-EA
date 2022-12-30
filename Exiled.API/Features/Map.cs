@@ -80,7 +80,7 @@ namespace Exiled.API.Features
                 {
                     Scp173GameRole scp173Role = RoleTypeId.Scp173.GetRoleBase() as Scp173GameRole;
 
-                    if (scp173Role.SubroutineModule.TryGetComponent(out Scp173TantrumAbility scp173TantrumAbility))
+                    if (scp173Role.SubroutineModule.TryGetSubroutine(out Scp173TantrumAbility scp173TantrumAbility))
                         tantrumPrefab = scp173TantrumAbility._tantrumPrefab;
                 }
 
@@ -99,7 +99,7 @@ namespace Exiled.API.Features
                 {
                     Scp939GameRole scp939Role = RoleTypeId.Scp939.GetRoleBase() as Scp939GameRole;
 
-                    if (scp939Role.SubroutineModule.TryGetComponent(out Scp939AmnesticCloudAbility ability))
+                    if (scp939Role.SubroutineModule.TryGetSubroutine(out Scp939AmnesticCloudAbility ability))
                         amnesticCloudPrefab = ability._instancePrefab;
                 }
 
