@@ -1634,8 +1634,7 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="type">The type to search for.</param>
         /// <returns><see langword="true"/>, if the player has it; otherwise, <see langword="false"/>.</returns>
-        public bool HasItem(ItemType type) =>
-            Items.Any(tempItem => tempItem.Type == type);
+        public bool HasItem(ItemType type) => Items.Any(tempItem => tempItem.Type == type);
 
         /// <summary>
         /// Counts how many items of a certain <see cref="ItemType"/> a player has.
@@ -1643,16 +1642,14 @@ namespace Exiled.API.Features
         /// <param name="item">The item to search for.</param>
         /// <returns>How many items of that <see cref="ItemType"/> the player has.</returns>
         /// <remarks>For counting ammo, see <see cref="GetAmmo(AmmoType)"/>.</remarks>
-        public int CountItem(ItemType item) =>
-            Items.Count(tempItem => tempItem.Type == item);
+        public int CountItem(ItemType item) => Items.Count(tempItem => tempItem.Type == item);
 
         /// <summary>
         /// Counts how many items of a certain <see cref="ProjectileType"/> a player has.
         /// </summary>
         /// <param name="grenadeType">The ProjectileType to search for.</param>
         /// <returns>How many items of that <see cref="ProjectileType"/> the player has.</returns>
-        public int CountItem(ProjectileType grenadeType) =>
-            Inventory.UserInventory.Items.Count(tempItem => tempItem.Value.ItemTypeId == grenadeType.GetItemType());
+        public int CountItem(ProjectileType grenadeType) => Inventory.UserInventory.Items.Count(tempItem => tempItem.Value.ItemTypeId == grenadeType.GetItemType());
 
         /// <summary>
         /// Counts how many items of a certain <see cref="ItemCategory"/> a player has.
@@ -2187,9 +2184,7 @@ namespace Exiled.API.Features
                 Timing.CallDelayed(0.02f, () =>
                 {
                     if (item.Type is ItemType.SCP330 && item.Base != null)
-                    {
                         ((Scp330)item).Base.ServerRefreshBag();
-                    }
                 });
 
                 ItemsValue.Add(item);
@@ -2959,10 +2954,8 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="time">The times for the cooldown.</param>
         /// <param name="itemType">The itemtypes to choose for being cooldown.</param>
-        public void GetCooldownItem(float time, ItemType itemType)
-        {
-            UsableItemsController.GetHandler(ReferenceHub).PersonalCooldowns[itemType] = Time.timeSinceLevelLoad + time;
-        }
+        public void GetCooldownItem(float time, ItemType itemType) 
+        => UsableItemsController.GetHandler(ReferenceHub).PersonalCooldowns[itemType] = Time.timeSinceLevelLoad + time;
 
         /// <summary>
         /// Converts the player in a human-readable format.

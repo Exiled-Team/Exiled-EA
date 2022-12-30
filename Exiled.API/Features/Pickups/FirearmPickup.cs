@@ -65,7 +65,7 @@ namespace Exiled.API.Features.Pickups
         public byte Ammo
         {
             get => Base.NetworkStatus.Ammo;
-            set => Base.NetworkStatus = new FirearmStatus(value, Base.NetworkStatus.Flags, Base.NetworkStatus.Attachments);
+            set => Base.NetworkStatus = new(value, Base.NetworkStatus.Flags, Base.NetworkStatus.Attachments);
         }
 
         /// <summary>
@@ -74,7 +74,7 @@ namespace Exiled.API.Features.Pickups
         public FirearmStatusFlags Flags
         {
             get => Base.NetworkStatus.Flags;
-            set => Base.NetworkStatus = new FirearmStatus(Base.NetworkStatus.Ammo, value, Base.NetworkStatus.Attachments);
+            set => Base.NetworkStatus = new(Base.NetworkStatus.Ammo, value, Base.NetworkStatus.Attachments);
         }
 
         /// <summary>
@@ -83,7 +83,7 @@ namespace Exiled.API.Features.Pickups
         public uint Attachments
         {
             get => Base.NetworkStatus.Attachments;
-            set => Base.NetworkStatus = new FirearmStatus(Base.NetworkStatus.Ammo, Base.NetworkStatus.Flags, value);
+            set => Base.NetworkStatus = new(Base.NetworkStatus.Ammo, Base.NetworkStatus.Flags, value);
         }
 
         /// <summary>

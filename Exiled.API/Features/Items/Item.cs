@@ -282,6 +282,7 @@ namespace Exiled.API.Features.Items
 
             if (spawn)
                 pickup.Spawn();
+
             return pickup;
         }
 

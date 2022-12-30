@@ -28,6 +28,7 @@ namespace Exiled.Events.EventArgs.Map
         {
             if (pickup is null)
                 Log.Error($"{nameof(ChangedIntoGrenadeEventArgs)}: Pickup is null!");
+
             Pickup = (GrenadePickup)API.Features.Pickups.Pickup.Get(pickup);
             Projectile = (Projectile)API.Features.Pickups.Pickup.Get(projectile);
             FuseTime = (Projectile as TimeGrenadeProjectile)?.FuseTime ?? float.NaN;

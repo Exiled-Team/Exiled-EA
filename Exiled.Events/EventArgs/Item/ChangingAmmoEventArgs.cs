@@ -27,6 +27,7 @@ namespace Exiled.Events.EventArgs.Item
         public ChangingAmmoEventArgs(Player player, InventorySystem.Items.ItemBase firearm, byte oldAmmo, byte newAmmo, bool isAllowed = true)
         {
             Item item = Item.Get(firearm);
+
             if (item is not Firearm firearmItem)
                 return;
 

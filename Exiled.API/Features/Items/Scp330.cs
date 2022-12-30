@@ -150,7 +150,7 @@ namespace Exiled.API.Features.Items
         public int RemoveAllCandy()
         {
             int amount = 0;
-            for (int i = Base.Candies.Count(); i > 0; i--)
+            for (int i = Base.Candies.Count; i > 0; i--)
             {
                 Base.TryRemove(0);
                 amount++;
@@ -190,8 +190,8 @@ namespace Exiled.API.Features.Items
                 if (exposedType is not CandyKindID.None)
                     pickup.ExposedCandy = exposedType;
                 for (int i = 0; i < count; i++)
-                    pickup.Candies.Add(type);
-                pickup.Info = new PickupSyncInfo(Type, Owner.Position, default, Weight, ItemSerialGenerator.GenerateNext());
+                pickup.Candies.Add(type);
+                pickup.Info = new(Type, Owner.Position, default, Weight, ItemSerialGenerator.GenerateNext());
                 pickup.Base.InfoReceived(default, pickup.Info);
                 pickup.Scale = Scale;
                 pickup.Spawn();
@@ -203,8 +203,10 @@ namespace Exiled.API.Features.Items
             for (int i = 0; i < count; i++)
             {
                 Scp330Pickup pickup = (Scp330Pickup)Pickup.Get(Object.Instantiate(Base.PickupDropModel, Owner.Position, default));
+
                 if (exposedType is not CandyKindID.None)
                     pickup.ExposedCandy = exposedType;
+
                 pickup.Candies.Add(type);
                 pickup.Info = new PickupSyncInfo(Type, Owner.Position, default, Weight, ItemSerialGenerator.GenerateNext());
                 pickup.Base.InfoReceived(default, pickup.Info);
@@ -227,13 +229,14 @@ namespace Exiled.API.Features.Items
         {
             Scp330Pickup pickup = (Scp330Pickup)Pickup.Get(Object.Instantiate(Base.PickupDropModel, position, rotation));
 
-            pickup.Info = new PickupSyncInfo(Type, Owner.Position, rotation, Weight, ItemSerialGenerator.GenerateNext());
+            pickup.Info = new(Type, Owner.Position, rotation, Weight, ItemSerialGenerator.GenerateNext());
             pickup.Candies = new(Base.Candies);
             pickup.ExposedCandy = ExposedType;
             pickup.Scale = Scale;
 
             if (spawn)
                 pickup.Spawn();
+
             return pickup;
         }
 

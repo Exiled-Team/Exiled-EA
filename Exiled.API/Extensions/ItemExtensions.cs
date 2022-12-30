@@ -177,7 +177,7 @@ namespace Exiled.API.Extensions
         };
 
         /// <summary>
-        /// Converts a valid projectile <see cref="ItemType"/> into an <see cref="ProjectileType"/>.
+        /// Converts a valid projectile <see cref="ItemType"/> into a <see cref="ProjectileType"/>.
         /// </summary>
         /// <param name="type">The <see cref="ItemType"/> to convert.</param>
         /// <returns>The projectile type of the given item type, or <see cref="ProjectileType.None"/> if the provided item type is not a projectile.</returns>

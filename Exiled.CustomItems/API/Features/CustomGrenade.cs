@@ -153,6 +153,7 @@ namespace Exiled.CustomItems.API.Features
 
             OnChangedIntoGrenade(ev);
 
+            
             if (ExplodeOnCollision)
                 ev.Projectile.GameObject.AddComponent<Exiled.API.Features.Components.CollisionHandler>().Init((ev.Pickup.PreviousOwner ?? Server.Host).GameObject, ev.Projectile.Base);
         }

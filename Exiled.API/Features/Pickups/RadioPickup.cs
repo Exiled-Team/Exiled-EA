@@ -61,7 +61,7 @@ namespace Exiled.API.Features.Pickups
         /// <summary>
         /// Gets or sets a value indicating whether the radio is active.
         /// </summary>
-        public bool IsEnable
+        public bool IsEnabled
         {
             get => Base.NetworkSavedEnabled;
             set => Base.NetworkSavedEnabled = value;

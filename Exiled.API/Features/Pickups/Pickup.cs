@@ -196,7 +196,7 @@ namespace Exiled.API.Features.Pickups
         public Player PreviousOwner
         {
             get => Player.Get(Base.PreviousOwner.Hub);
-            set => _ = value is null ? (Base.PreviousOwner = Server.Host.Footprint) : (Base.PreviousOwner = value.Footprint);
+            set => Base.PreviousOwner = value is null ? Server.Host.Footprint : value.Footprint;
         }
 
         /// <summary>
@@ -254,6 +254,7 @@ namespace Exiled.API.Features.Pickups
         {
             if (pickupBase is null)
                 return null;
+
             if (BaseToPickup.TryGetValue(pickupBase, out Pickup pickup))
                 return pickup;
 
@@ -359,6 +360,7 @@ namespace Exiled.API.Features.Pickups
             pickup.Rotation = rotation;
             pickup.PreviousOwner = previousOwner;
             pickup.Spawn();
+
             return pickup;
         }
 

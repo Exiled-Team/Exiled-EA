@@ -40,8 +40,7 @@ namespace Exiled.Events.Patches.Generic
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Shared.Rent(instructions);
 
             const int offset = -1;
-            int index = newInstructions.FindIndex(i =>
-                i.opcode == OpCodes.Ldarg_3) + offset;
+            int index = newInstructions.FindIndex(i => i.opcode == OpCodes.Ldarg_3) + offset;
 
             newInstructions.InsertRange(index, new CodeInstruction[]
             {
