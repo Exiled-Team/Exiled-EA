@@ -8,6 +8,7 @@
 namespace Exiled.Events.Patches.Events.Scp079
 {
     using System.Collections.Generic;
+    using System.Linq;
     using System.Reflection.Emit;
 
     using Exiled.API.Features;
@@ -36,9 +37,9 @@ namespace Exiled.Events.Patches.Events.Scp079
 
             LocalBuilder ev = generator.DeclareLocal(typeof(PingingEventArgs));
 
-            int offset = -12;
+            int offset = -2;
             int index = newInstructions.FindIndex(
-                instruction => instruction.Calls(Method(typeof(ScpSubroutineBase), nameof(ScpSubroutineBase.ServerSendRpc), new[] { typeof(System.Func<ReferenceHub, bool>), }))) + offset;
+                instruction => instruction.opcode == OpCodes.Stfld && instruction.operand == (object)Field(typeof(Scp079PingAbility), nameof(Scp079PingAbility._syncPos))) + offset;
 
             // this._syncPos = ev.Position;
             newInstructions.InsertRange(
@@ -77,15 +78,16 @@ namespace Exiled.Events.Patches.Events.Scp079
                     new(OpCodes.Brfalse, returnLabel),
 
                     // this._syncNormal = ev.Position;
+                    new(OpCodes.Ldloc, ev.LocalIndex),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(PingingEventArgs), nameof(PingingEventArgs.Position))),
                     new(OpCodes.Stfld, Field(typeof(Scp079PingAbility), nameof(Scp079PingAbility._syncNormal))),
                 });
 
             // Replace "this._syncPos.Position" with "ev.Position"
             offset = -2;
-            index = newInstructions.FindIndex(
+            index = newInstructions.FindLastIndex(
                 instruction => instruction.Calls(Method(typeof(RelativePositionSerialization), nameof(RelativePositionSerialization.ReadRelativePosition)))) + offset;
-
+            List<Label> savelabel = newInstructions[index].labels;
             newInstructions.RemoveRange(index, 3);
 
             newInstructions.InsertRange(
@@ -93,7 +95,7 @@ namespace Exiled.Events.Patches.Events.Scp079
                new CodeInstruction[]
                {
                     // ev.AuxiliaryPowerCost
-                    new(OpCodes.Ldloc, ev.LocalIndex),
+                    new CodeInstruction(OpCodes.Ldloc, ev.LocalIndex).WithLabels(savelabel),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(PingingEventArgs), nameof(PingingEventArgs.AuxiliaryPowerCost))),
                });
 
