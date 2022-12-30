@@ -38,7 +38,7 @@ namespace Exiled.Events.EventArgs.Player
         ///     Gets the player who's being muted/unmuted.
         /// </summary>
         public Player Player { get; }
-        
+
         /// <summary>
         ///     Gets a value indicating whether the player is being muted or unmuted.
         /// </summary>

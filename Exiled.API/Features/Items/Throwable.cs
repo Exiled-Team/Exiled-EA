@@ -88,15 +88,11 @@ namespace Exiled.API.Features.Items
         /// Clones current <see cref="Throwable"/> object.
         /// </summary>
         /// <returns> New <see cref="Throwable"/> object. </returns>
-        public override Item Clone()
+        public override Item Clone() => new Throwable(Type)
         {
-            Throwable cloneableItem = new(Type)
-            {
-                PinPullTime = PinPullTime,
-                Repickable = Repickable,
-            };
-            return cloneableItem;
-        }
+            PinPullTime = PinPullTime,
+            Repickable = Repickable,
+        };
 
         /// <summary>
         /// Returns the Throwable in a human readable format.

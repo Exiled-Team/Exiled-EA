@@ -68,16 +68,11 @@ namespace Exiled.API.Features.Items
         /// Clones current <see cref="MicroHid"/> object.
         /// </summary>
         /// <returns> New <see cref="MicroHid"/> object. </returns>
-        public override Item Clone()
+        public override Item Clone() => new MicroHid()
         {
-            MicroHid cloneableItem = new()
-            {
-                State = State,
-                Energy = Energy,
-            };
-
-            return cloneableItem;
-        }
+            State = State,
+            Energy = Energy,
+        };
 
         /// <summary>
         /// Returns the MicroHid in a human readable format.

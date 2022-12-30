@@ -270,11 +270,6 @@ namespace Exiled.API.Features.Items
         /// <param name="attachmentName">The <see cref="AttachmentName"/> to remove.</param>
         public void RemoveAttachment(AttachmentName attachmentName)
         {
-            Attachment firearmAttachment = Attachments.FirstOrDefault(att => (att.Name == attachmentName) && att.IsEnabled);
-
-            if (firearmAttachment is null)
-                return;
-
             uint code = AttachmentIdentifier.Get(Type, attachmentName).Code;
 
             Base.ApplyAttachmentsCode(Base.GetCurrentAttachmentsCode() & ~code, true);

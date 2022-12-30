@@ -148,21 +148,16 @@ namespace Exiled.API.Features.Items
         /// Clones current <see cref="ExplosiveGrenade"/> object.
         /// </summary>
         /// <returns> New <see cref="ExplosiveGrenade"/> object. </returns>
-        public override Item Clone()
+        public override Item Clone() => new ExplosiveGrenade(Type)
         {
-            ExplosiveGrenade cloneableItem = new(Type)
-            {
-                MaxRadius = MaxRadius,
-                ScpDamageMultiplier = ScpDamageMultiplier,
-                BurnDuration = BurnDuration,
-                DeafenDuration = DeafenDuration,
-                ConcussDuration = ConcussDuration,
-                FuseTime = FuseTime,
-                PinPullTime = PinPullTime,
-                Repickable = Repickable,
-            };
-
-            return cloneableItem;
-        }
+            MaxRadius = MaxRadius,
+            ScpDamageMultiplier = ScpDamageMultiplier,
+            BurnDuration = BurnDuration,
+            DeafenDuration = DeafenDuration,
+            ConcussDuration = ConcussDuration,
+            FuseTime = FuseTime,
+            PinPullTime = PinPullTime,
+            Repickable = Repickable,
+        };
     }
 }

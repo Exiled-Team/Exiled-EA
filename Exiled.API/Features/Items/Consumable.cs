@@ -7,14 +7,6 @@
 
 namespace Exiled.API.Features.Items
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
-
-    using InventorySystem.Items.Usables;
-
     using BaseConsumable = InventorySystem.Items.Usables.Consumable;
 
     /// <summary>

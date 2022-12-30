@@ -84,17 +84,12 @@ namespace Exiled.API.Features.Items
         /// Clones current <see cref="Scp2176"/> object.
         /// </summary>
         /// <returns> New <see cref="Scp2176"/> object. </returns>
-        public override Item Clone()
+        public override Item Clone() => new Scp2176()
         {
-            Scp2176 scp2176 = new()
-            {
-                FuseTime = FuseTime,
-                PinPullTime = PinPullTime,
-                Repickable = Repickable,
-            };
-
-            return scp2176;
-        }
+            FuseTime = FuseTime,
+            PinPullTime = PinPullTime,
+            Repickable = Repickable,
+        };
 
         /// <summary>
         /// Returns the ExplosiveGrenade in a human readable format.

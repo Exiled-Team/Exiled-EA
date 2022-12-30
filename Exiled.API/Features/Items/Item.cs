@@ -290,11 +290,7 @@ namespace Exiled.API.Features.Items
         /// Clones the current item with a different serial.
         /// </summary>
         /// <returns> Cloned item object. </returns>
-        public virtual Item Clone()
-        {
-            Item generatedItem = Create(Type);
-            return generatedItem;
-        }
+        public virtual Item Clone() => Create(Type);
 
         /// <summary>
         /// Returns the Item in a human readable format.

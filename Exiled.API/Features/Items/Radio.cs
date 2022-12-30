@@ -106,17 +106,12 @@ namespace Exiled.API.Features.Items
         /// Clones current <see cref="Radio"/> object.
         /// </summary>
         /// <returns> New <see cref="Radio"/> object. </returns>
-        public override Item Clone()
+        public override Item Clone() => new Radio()
         {
-            Radio radio = new()
-            {
-                BatteryLevel = BatteryLevel,
-                Range = Range,
-                RangeSettings = RangeSettings,
-            };
-
-            return radio;
-        }
+            BatteryLevel = BatteryLevel,
+            Range = Range,
+            RangeSettings = RangeSettings,
+        };
 
         /// <summary>
         /// Returns the Radio in a human readable format.

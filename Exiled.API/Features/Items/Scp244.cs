@@ -76,15 +76,10 @@ namespace Exiled.API.Features.Items
         /// Clones current <see cref="Scp244"/> object.
         /// </summary>
         /// <returns> New <see cref="Scp244"/> object. </returns>
-        public override Item Clone()
+        public override Item Clone() => new Scp244(Type)
         {
-            Scp244 cloneableItem = new(Type)
-            {
-                Primed = Primed,
-            };
-
-            return cloneableItem;
-        }
+            Primed = Primed,
+        };
 
         /// <summary>
         /// Returns the SCP-244 in a human readable format.

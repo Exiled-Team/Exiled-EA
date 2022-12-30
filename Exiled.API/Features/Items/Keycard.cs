@@ -53,15 +53,10 @@ namespace Exiled.API.Features.Items
         /// Clones current <see cref="Keycard"/> object.
         /// </summary>
         /// <returns> New <see cref="Keycard"/> object. </returns>
-        public override Item Clone()
+        public override Item Clone() => new Keycard(Type)
         {
-            Keycard cloneableItem = new(Type)
-            {
-                Permissions = Permissions,
-            };
-
-            return cloneableItem;
-        }
+            Permissions = Permissions,
+        };
 
         /// <summary>
         /// Returns the Keycard in a human readable format.

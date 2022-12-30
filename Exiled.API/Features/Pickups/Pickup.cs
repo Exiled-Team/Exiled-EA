@@ -368,17 +368,12 @@ namespace Exiled.API.Features.Pickups
         /// Clones current <see cref="Pickup"/> object.
         /// </summary>
         /// <returns> New <see cref="Pickup"/> object.</returns>
-        public Pickup Clone()
+        public Pickup Clone() => new(Type)
         {
-            Pickup cloneableItem = new(Type)
-            {
-                Scale = Scale,
-                PreviousOwner = PreviousOwner,
-                Info = Info,
-            };
-
-            return cloneableItem;
-        }
+            Scale = Scale,
+            PreviousOwner = PreviousOwner,
+            Info = Info,
+        };
 
         /// <summary>
         /// Returns the amount of time it will take for the provided <paramref name="player"/> to pick up this item, based on <see cref="Weight"/> and active status effects.
