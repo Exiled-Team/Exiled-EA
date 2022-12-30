@@ -39,7 +39,7 @@ namespace Exiled.Events.Patches.Events.Scp079
             int offset = -1;
             int index = newInstructions.FindIndex(
                 instruction => instruction.Calls(PropertyGetter(typeof(Scp079AbilityBase), nameof(Scp079AbilityBase.LostSignalHandler)))) + offset;
-            newInstructions.RemoveRange(index, 5);
+            newInstructions.RemoveRange(index, 4);
 
             // this._syncPos = ev.Position;
             newInstructions.InsertRange(
@@ -48,91 +48,9 @@ namespace Exiled.Events.Patches.Events.Scp079
                 {
                     // this.Owner
                     new(OpCodes.Ldarg_0),
-                    new(OpCodes.Call, PropertyGetter(typeof(ScpStandardSubroutine<Scp079Role>), nameof(ScpStandardSubroutine<Scp079Role>.Owner))),
-
-                    // this._roomController.Room
-                    new(OpCodes.Ldarg_0),
-                    new(OpCodes.Ldfld, Field(typeof(Scp079BlackoutRoomAbility), nameof(Scp079BlackoutRoomAbility._roomController))),
-                    new(OpCodes.Call, PropertyGetter(typeof(FlickerableLightController), nameof(FlickerableLightController.Room))),
-
-                    // this._cost
-                    new(OpCodes.Ldarg_0),
-                    new(OpCodes.Ldfld, Field(typeof(Scp079BlackoutRoomAbility), nameof(Scp079BlackoutRoomAbility._cost))),
-
-                    // this._blackoutDuration
-                    new(OpCodes.Ldarg_0),
-                    new(OpCodes.Ldfld, Field(typeof(Scp079BlackoutRoomAbility), nameof(Scp079BlackoutRoomAbility._blackoutDuration))),
-
-                    // this._cooldown
-                    new(OpCodes.Ldarg_0),
-                    new(OpCodes.Ldfld, Field(typeof(Scp079BlackoutRoomAbility), nameof(Scp079BlackoutRoomAbility._cooldown))),
-
-                    // this.LostSignalHandler.Lost
-                    new(OpCodes.Ldarg_0),
-                    new(OpCodes.Call, PropertyGetter(typeof(Scp079AbilityBase), nameof(Scp079AbilityBase.LostSignalHandler))),
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(Scp079LostSignalHandler), nameof(Scp079LostSignalHandler.Lost))),
-
-                    // ZoneBlackoutEventArgs ev = new(Player player, this._roomController.Room, this._cost, this._blackoutDuration, this._cooldown, this.LostSignalHandler.Lost);
-                    new(OpCodes.Newobj, GetDeclaredConstructors(typeof(RoomBlackoutEventArgs))[0]),
-                    new(OpCodes.Stloc_S, ev.LocalIndex),
-
-                    // Scp079.OnRoomBlackout(ev);
-                    new(OpCodes.Ldloc, ev.LocalIndex),
-                    new(OpCodes.Call, Method(typeof(Handlers.Scp079), nameof(Handlers.Scp079.OnRoomBlackout))),
-
-                    // if(!ev.IsAllowed) return;
-                    new(OpCodes.Ldloc, ev.LocalIndex),
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(RoomBlackoutEventArgs), nameof(RoomBlackoutEventArgs.IsAllowed))),
+                    new(OpCodes.Call, Method(typeof(RoomBlackout), nameof(ProcessRoomBlackout))),
                     new(OpCodes.Brfalse, returnLabel),
                 });
-
-            // Replace "(float)this._cost" with "ev.AuxiliaryPowerCost"
-            offset = -1;
-            index = newInstructions.FindLastIndex(
-            instruction => instruction.LoadsField(Field(typeof(Scp079BlackoutRoomAbility), nameof(Scp079BlackoutRoomAbility._cost)))) + offset;
-
-            newInstructions.RemoveRange(index, 2);
-
-            newInstructions.InsertRange(
-               index,
-               new CodeInstruction[]
-               {
-                    // ev.AuxiliaryPowerCost
-                    new(OpCodes.Ldloc, ev.LocalIndex),
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(RoomBlackoutEventArgs), nameof(RoomBlackoutEventArgs.AuxiliaryPowerCost))),
-               });
-
-            // Replace "this._blackoutDuration" with "ev.BlackoutDuration"
-            offset = -1;
-            index = newInstructions.FindLastIndex(
-            instruction => instruction.LoadsField(Field(typeof(Scp079BlackoutRoomAbility), nameof(Scp079BlackoutRoomAbility._blackoutDuration)))) + offset;
-
-            newInstructions.RemoveRange(index, 2);
-
-            newInstructions.InsertRange(
-               index,
-               new CodeInstruction[]
-               {
-                    // ev.AuxiliaryPowerCost
-                    new(OpCodes.Ldloc, ev.LocalIndex),
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(RoomBlackoutEventArgs), nameof(RoomBlackoutEventArgs.BlackoutDuration))),
-               });
-
-            // Replace "(double)this._cooldown" with "ev.Cooldown"
-            offset = -1;
-            index = newInstructions.FindLastIndex(
-            instruction => instruction.LoadsField(Field(typeof(Scp079BlackoutRoomAbility), nameof(Scp079BlackoutRoomAbility._cooldown)))) + offset;
-
-            newInstructions.RemoveRange(index, 1);
-
-            newInstructions.InsertRange(
-               index,
-               new CodeInstruction[]
-               {
-                    // ev.AuxiliaryPowerCost
-                    new(OpCodes.Ldloc, ev.LocalIndex),
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(RoomBlackoutEventArgs), nameof(RoomBlackoutEventArgs.Cooldown))),
-               });
 
             newInstructions[newInstructions.Count - 1].WithLabels(returnLabel);
 
@@ -140,6 +58,23 @@ namespace Exiled.Events.Patches.Events.Scp079
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Shared.Return(newInstructions);
+        }
+
+        private static bool ProcessRoomBlackout(Scp079BlackoutRoomAbility instance)
+        {
+            API.Features.Player currentPlayer = API.Features.Player.Get(instance.Owner);
+            RoomBlackoutEventArgs blackoutEvent = new RoomBlackoutEventArgs(currentPlayer, instance._roomController.Room, instance._cost, instance._blackoutDuration, instance._cooldown, instance.LostSignalHandler.Lost);
+            Handlers.Scp079.OnRoomBlackout(blackoutEvent);
+            if (blackoutEvent.IsAllowed)
+            {
+                instance._blackoutDuration = blackoutEvent.BlackoutDuration;
+                instance._cooldown = (float)blackoutEvent.Cooldown;
+
+                // Gets casted to float above, even though it is an int, joy.
+                instance._cost = (int)blackoutEvent.AuxiliaryPowerCost;
+            }
+
+            return blackoutEvent.IsAllowed;
         }
     }
 }
