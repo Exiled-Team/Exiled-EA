@@ -33,57 +33,6 @@ namespace Exiled.API.Features
         /// <summary>
         /// Initializes a new instance of the <see cref="Ragdoll"/> class.
         /// </summary>
-        /// <param name="player">The ragdoll's <see cref="Player">owner</see>.</param>
-        /// <param name="handler">The player's <see cref="DamageHandlerBase"/>.</param>
-        /// <param name="canBeSpawned">A value that represents whether the ragdoll can be spawned.</param>
-        public Ragdoll(Player player, DamageHandlerBase handler, bool canBeSpawned = false)
-        {
-            if (player.Role.Base is not IRagdollRole ragdollRole)
-                return;
-
-            GameObject modelRagdoll = ragdollRole.Ragdoll.gameObject;
-
-            if (modelRagdoll == null || !Object.Instantiate(modelRagdoll).TryGetComponent(out BasicRagdoll ragdoll))
-                return;
-
-            ragdoll.NetworkInfo = new RagdollData(player.ReferenceHub, handler, modelRagdoll.transform.localPosition, modelRagdoll.transform.localRotation);
-
-            Base = ragdoll;
-
-            Map.RagdollsValue.Add(this);
-
-            if (canBeSpawned)
-                Spawn();
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Ragdoll"/> class.
-        /// </summary>
-        /// <param name="networkInfo">The ragdoll's <see cref="RagdollData"/>.</param>
-        /// <param name="canBeSpawned">A value that represents whether the ragdoll can be spawned.</param>
-        public Ragdoll(RagdollData networkInfo, bool canBeSpawned = false)
-        {
-            if (networkInfo.RoleType.GetRoleBase() is not IRagdollRole ragdollRole)
-                return;
-
-            GameObject modelRagdoll = ragdollRole.Ragdoll.gameObject;
-
-            if (modelRagdoll == null || !Object.Instantiate(modelRagdoll).TryGetComponent(out BasicRagdoll ragdoll))
-                return;
-
-            ragdoll.NetworkInfo = networkInfo;
-
-            Base = ragdoll;
-
-            Map.RagdollsValue.Add(this);
-
-            if (canBeSpawned)
-                Spawn();
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Ragdoll"/> class.
-        /// </summary>
         /// <param name="ragdoll">The encapsulated <see cref="BasicRagdoll"/>.</param>
         internal Ragdoll(BasicRagdoll ragdoll) => Base = ragdoll;
 
@@ -269,6 +218,95 @@ namespace Exiled.API.Features
         internal static HashSet<BasicRagdoll> IgnoredRagdolls { get; set; } = new();
 
         /// <summary>
+        /// Creates a new ragdoll.
+        /// </summary>
+        /// <param name="networkInfo">The data associated with the ragdoll.</param>
+        /// <returns>The ragdoll.</returns>
+        /// <exception cref="ArgumentException">Provided RoleType is not a valid ragdoll role (Spectator, Scp079, etc).</exception>
+        /// <exception cref="InvalidOperationException">Unable to create a ragdoll.</exception>
+        public static Ragdoll Create(RagdollData networkInfo)
+        {
+            if (networkInfo.RoleType.GetRoleBase() is not IRagdollRole ragdollRole)
+                throw new ArgumentException($"Provided RoleType '{networkInfo.RoleType}' is not a valid ragdoll role.");
+
+            GameObject modelRagdoll = ragdollRole.Ragdoll.gameObject;
+
+            if (modelRagdoll == null || !Object.Instantiate(modelRagdoll).TryGetComponent(out BasicRagdoll ragdoll))
+                throw new InvalidOperationException("Unable to create a ragdoll.");
+
+            ragdoll.NetworkInfo = networkInfo;
+
+            Ragdoll doll = new Ragdoll(ragdoll);
+            doll.Position = networkInfo.StartPosition;
+            doll.Rotation = networkInfo.StartRotation;
+
+            Map.RagdollsValue.Add(doll);
+
+            return doll;
+        }
+
+        /// <summary>
+        /// Creates a new ragdoll.
+        /// </summary>
+        /// <param name="roleType">The <see cref="RoleTypeId"/> of the ragdoll.</param>
+        /// <param name="name">The name of the ragdoll.</param>
+        /// <param name="damageHandler">The damage handler responsible for the ragdoll's death.</param>
+        /// <param name="owner">The optional owner of the ragdoll.</param>
+        /// <returns>The ragdoll.</returns>
+        public static Ragdoll Create(RoleTypeId roleType, string name, DamageHandlerBase damageHandler, Player owner = null)
+            => Create(new(owner?.ReferenceHub ?? Server.Host.ReferenceHub, damageHandler, roleType, default, default, name, NetworkTime.time));
+
+        /// <summary>
+        /// Creates a new ragdoll.
+        /// </summary>
+        /// <param name="roleType">The <see cref="RoleTypeId"/> of the ragdoll.</param>
+        /// <param name="name">The name of the ragdoll.</param>
+        /// <param name="deathReason">The reason the ragdoll died.</param>
+        /// <param name="owner">The optional owner of the ragdoll.</param>
+        /// <returns>The ragdoll.</returns>
+        public static Ragdoll Create(RoleTypeId roleType, string name, string deathReason, Player owner = null)
+            => Create(new(owner?.ReferenceHub ?? Server.Host.ReferenceHub, new CustomReasonDamageHandler(deathReason), roleType, default, default, name, NetworkTime.time));
+
+        /// <summary>
+        /// Creates and spawns a new ragdoll.
+        /// </summary>
+        /// <param name="networkInfo">The data associated with the ragdoll.</param>
+        /// <returns>The ragdoll.</returns>
+        public static Ragdoll CreateAndSpawn(RagdollData networkInfo)
+        {
+            Ragdoll doll = Create(networkInfo);
+            doll.Spawn();
+
+            return doll;
+        }
+
+        /// <summary>
+        /// Creates and spawns a new ragdoll.
+        /// </summary>
+        /// <param name="roleType">The <see cref="RoleTypeId"/> of the ragdoll.</param>
+        /// <param name="name">The name of the ragdoll.</param>
+        /// <param name="damageHandler">The damage handler responsible for the ragdoll's death.</param>
+        /// <param name="position">The position of the ragdoll.</param>
+        /// <param name="rotation">The rotation of the ragdoll.</param>
+        /// <param name="owner">The optional owner of the ragdoll.</param>
+        /// <returns>The ragdoll.</returns>
+        public static Ragdoll CreateAndSpawn(RoleTypeId roleType, string name, DamageHandlerBase damageHandler, Vector3 position, Quaternion rotation, Player owner = null)
+            => CreateAndSpawn(new(owner?.ReferenceHub ?? Server.Host.ReferenceHub, damageHandler, roleType, position, rotation, name, NetworkTime.time));
+
+        /// <summary>
+        /// Creates and spawns a new ragdoll.
+        /// </summary>
+        /// <param name="roleType">The <see cref="RoleTypeId"/> of the ragdoll.</param>
+        /// <param name="name">The name of the ragdoll.</param>
+        /// <param name="deathReason">The reason the ragdoll died.</param>
+        /// <param name="position">The position of the ragdoll.</param>
+        /// <param name="rotation">The rotation of the ragdoll.</param>
+        /// <param name="owner">The optional owner of the ragdoll.</param>
+        /// <returns>The ragdoll.</returns>
+        public static Ragdoll CreateAndSpawn(RoleTypeId roleType, string name, string deathReason, Vector3 position, Quaternion rotation, Player owner = null)
+            => CreateAndSpawn(new(owner?.ReferenceHub ?? Server.Host.ReferenceHub, new CustomReasonDamageHandler(deathReason), roleType, position, rotation, name, NetworkTime.time));
+
+        /// <summary>
         /// Gets the <see cref="Ragdoll"/> belonging to the <see cref="BasicRagdoll"/>, if any.
         /// </summary>
         /// <param name="ragdoll">The <see cref="BasicRagdoll"/> to get.</param>
@@ -288,14 +326,6 @@ namespace Exiled.API.Features
         /// <param name="players">The <see cref="Player"/>s to get.</param>
         /// <returns>A <see cref="IEnumerable{T}"/> of <see cref="Ragdoll"/>.</returns>
         public static IEnumerable<Ragdoll> Get(IEnumerable<Player> players) => players.SelectMany(pl => Map.Ragdolls.Where(rd => rd.Owner == pl));
-
-        /// <summary>
-        /// Spawns a <see cref="Ragdoll"/> on the map.
-        /// </summary>
-        /// <param name="player">The ragdoll's <see cref="Player"/> owner.</param>
-        /// <param name="handler">The ragdoll's <see cref="DamageHandlerBase"/>.</param>
-        /// <returns>The created <see cref="Ragdoll"/>.</returns>
-        public static Ragdoll Spawn(Player player, DamageHandlers.DamageHandlerBase handler) => new(player, handler, true);
 
         /// <summary>
         /// Deletes the ragdoll.
