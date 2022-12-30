@@ -18,6 +18,10 @@ namespace Exiled.API.Features
     using DamageHandlers;
     using Enums;
     using Exiled.API.Features.Core.Interfaces;
+    using Exiled.API.Features.Items;
+    using Exiled.API.Features.Pickups;
+    using Exiled.API.Features.Roles;
+    using Exiled.API.Structs;
     using Extensions;
     using Footprinting;
     using global::Scp914;
@@ -30,8 +34,8 @@ namespace Exiled.API.Features
     using InventorySystem.Items.Firearms;
     using InventorySystem.Items.Firearms.Attachments;
     using InventorySystem.Items.Firearms.BasicMessages;
+    using InventorySystem.Items.Usables;
     using InventorySystem.Items.Usables.Scp330;
-    using Items;
     using MapGeneration.Distributors;
     using MEC;
     using Mirror;
@@ -48,9 +52,7 @@ namespace Exiled.API.Features
     using PlayerRoles.Voice;
     using PlayerStatsSystem;
     using RemoteAdmin;
-    using Roles;
     using RoundRestarting;
-    using Structs;
     using UnityEngine;
     using Utils.Networking;
     using VoiceChat;
@@ -60,6 +62,7 @@ namespace Exiled.API.Features
 
     using DamageHandlerBase = PlayerStatsSystem.DamageHandlerBase;
     using Firearm = Items.Firearm;
+    using FirearmPickup = Exiled.API.Features.Pickups.FirearmPickup;
     using HumanRole = Roles.HumanRole;
     using Random = UnityEngine.Random;
 
@@ -372,7 +375,7 @@ namespace Exiled.API.Features
         /// </summary>
         public Player Cuffer
         {
-            get => Get(DisarmedPlayers.Entries.FirstOrDefault(entry => entry.DisarmedPlayer == NetworkIdentity.netId).DisarmedPlayer);
+            get => Get(DisarmedPlayers.Entries.FirstOrDefault(entry => entry.DisarmedPlayer == NetworkIdentity.netId).Disarmer);
             set
             {
                 for (int i = 0; i < DisarmedPlayers.Entries.Count; i++)
@@ -428,6 +431,7 @@ namespace Exiled.API.Features
         /// <para>
         /// The type of the Role is different based on the <see cref="RoleTypeId"/> of the player, and casting should be used to modify the role.
         /// <br /><see cref="RoleTypeId.Spectator"/> = <see cref="SpectatorRole"/>.
+        /// <br /><see cref="RoleTypeId.Overwatch"/> = <see cref="OverwatchRole"/>.
         /// <br /><see cref="RoleTypeId.None"/> = <see cref="NoneRole"/>.
         /// <br /><see cref="RoleTypeId.Scp049"/> = <see cref="Scp049Role"/>.
         /// <br /><see cref="RoleTypeId.Scp0492"/> = <see cref="Scp0492Role"/>.
@@ -1610,45 +1614,28 @@ namespace Exiled.API.Features
         /// Drops an item from the player's inventory.
         /// </summary>
         /// <param name="item">The item to be dropped.</param>
-        /// <exception cref="ArgumentNullException">If the item parameter is <see langword="null"/>.</exception>
-        public void DropItem(Item item)
-        {
-            if (item is null)
-                throw new ArgumentNullException(nameof(item));
-            Inventory.ServerDropItem(item.Serial);
-        }
+        /// <returns>dropped <see cref="Pickup"/>.</returns>
+        public Pickup DropItem(Item item) => Pickup.Get(Inventory.ServerDropItem(item.Serial));
 
         /// <summary>
         /// Drops the held item. Will not do anything if the player is not holding an item.
         /// </summary>
-        public void DropHeldItem()
-        {
-            if (CurrentItem is null)
-                return;
-
-            DropItem(CurrentItem);
-        }
+        /// <returns>dropped <see cref="Pickup"/>.</returns>
+        public Pickup DropHeldItem() => DropItem(CurrentItem);
 
         /// <summary>
         /// Indicates whether or not the player has an item.
         /// </summary>
         /// <param name="item">The item to search for.</param>
         /// <returns><see langword="true"/>, if the player has it; otherwise, <see langword="false"/>.</returns>
-        /// <exception cref="ArgumentNullException">If the item parameter is <see langword="null"/>.</exception>
-        public bool HasItem(Item item)
-        {
-            if (item is null)
-                throw new ArgumentNullException(nameof(item));
-
-            return Inventory.UserInventory.Items.ContainsValue(item.Base);
-        }
+        public bool HasItem(Item item) => Items.Contains(item);
 
         /// <summary>
         /// Indicates whether or not the player has an item type.
         /// </summary>
         /// <param name="type">The type to search for.</param>
         /// <returns><see langword="true"/>, if the player has it; otherwise, <see langword="false"/>.</returns>
-        public bool HasItem(ItemType type) => Inventory.UserInventory.Items.Any(tempItem => tempItem.Value.ItemTypeId == type);
+        public bool HasItem(ItemType type) => Items.Any(tempItem => tempItem.Type == type);
 
         /// <summary>
         /// Counts how many items of a certain <see cref="ItemType"/> a player has.
@@ -1656,15 +1643,14 @@ namespace Exiled.API.Features
         /// <param name="item">The item to search for.</param>
         /// <returns>How many items of that <see cref="ItemType"/> the player has.</returns>
         /// <remarks>For counting ammo, see <see cref="GetAmmo(AmmoType)"/>.</remarks>
-        public int CountItem(ItemType item) => Inventory.UserInventory.Items.Count(tempItem => tempItem.Value.ItemTypeId == item);
+        public int CountItem(ItemType item) => Items.Count(tempItem => tempItem.Type == item);
 
         /// <summary>
-        /// Counts how many items of a certain <see cref="GrenadeType"/> a player has.
+        /// Counts how many items of a certain <see cref="ProjectileType"/> a player has.
         /// </summary>
-        /// <param name="grenadeType">The GrenadeType to search for.</param>
-        /// <returns>How many items of that <see cref="GrenadeType"/> the player has.</returns>
-        public int CountItem(GrenadeType grenadeType) =>
-            Inventory.UserInventory.Items.Count(tempItem => tempItem.Value.ItemTypeId == grenadeType.GetItemType());
+        /// <param name="grenadeType">The ProjectileType to search for.</param>
+        /// <returns>How many items of that <see cref="ProjectileType"/> the player has.</returns>
+        public int CountItem(ProjectileType grenadeType) => Inventory.UserInventory.Items.Count(tempItem => tempItem.Value.ItemTypeId == grenadeType.GetItemType());
 
         /// <summary>
         /// Counts how many items of a certain <see cref="ItemCategory"/> a player has.
@@ -1700,7 +1686,9 @@ namespace Exiled.API.Features
             }
             else
             {
-                if (CurrentItem is not null && (CurrentItem.Serial == item.Serial))
+                item.ChangeOwner(this, Server.Host);
+
+                if (CurrentItem is not null && CurrentItem.Serial == item.Serial)
                     Inventory.NetworkCurItem = ItemIdentifier.None;
 
                 Inventory.UserInventory.Items.Remove(item.Serial);
@@ -2115,7 +2103,7 @@ namespace Exiled.API.Features
             try
             {
                 if (item.Base is null)
-                    item = new Item(item.Type);
+                    item = Item.Create(item.Type);
 
                 AddItem(item.Base, item);
             }
@@ -2130,15 +2118,15 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="item">The item to be added.</param>
         /// <param name="identifiers">The attachments to be added to the item.</param>
-        public void AddItem(Item item, IEnumerable<AttachmentIdentifier> identifiers)
+        public void AddItem(Firearm item, IEnumerable<AttachmentIdentifier> identifiers)
         {
             try
             {
                 if (item.Base is null)
-                    item = new Item(item.Type);
+                    item = new Firearm(item.Type);
 
-                if (item is Firearm firearm && identifiers is not null)
-                    firearm.AddAttachment(identifiers);
+                if (identifiers is not null)
+                    item.AddAttachment(identifiers);
 
                 AddItem(item.Base, item);
             }
@@ -2158,17 +2146,17 @@ namespace Exiled.API.Features
         /// <summary>
         /// Adds an item to the player's inventory.
         /// </summary>
-        /// <param name="pickup">The <see cref="Pickup"/> of the item to be added.</param>
+        /// <param name="pickup">The <see cref="FirearmPickup"/> of the item to be added.</param>
         /// <param name="identifiers">The attachments to be added to <see cref="Pickup"/> of the item.</param>
         /// <returns>The <see cref="Item"/> that was added.</returns>
-        public Item AddItem(Pickup pickup, IEnumerable<AttachmentIdentifier> identifiers)
+        public Item AddItem(FirearmPickup pickup, IEnumerable<AttachmentIdentifier> identifiers)
         {
-            Item item = Item.Get(Inventory.ServerAddItem(pickup.Type, pickup.Serial, pickup.Base));
+            Firearm firearm = (Firearm)Item.Get(Inventory.ServerAddItem(pickup.Type, pickup.Serial, pickup.Base));
 
-            if (item is Firearm firearm && identifiers is not null)
+            if (identifiers is not null)
                 firearm.AddAttachment(identifiers);
 
-            return item;
+            return firearm;
         }
 
         /// <summary>
@@ -2176,39 +2164,29 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="itemBase">The item to be added.</param>
         /// <param name="item">The <see cref="Item"/> object of the item.</param>
-        /// <returns>The item that was added.</returns>
+        /// <returns>The <see cref="Item"/> that was added.</returns>
         public Item AddItem(ItemBase itemBase, Item item = null)
         {
             try
             {
                 item ??= Item.Get(itemBase);
 
-                int ammo = -1;
-
-                if (item is Firearm firearm1)
-                    ammo = firearm1.Ammo;
-
-                itemBase.Owner = ReferenceHub;
                 Inventory.UserInventory.Items[item.Serial] = itemBase;
 
-                if (itemBase.PickupDropModel is not null)
-                    itemBase.OnAdded(itemBase.PickupDropModel);
+                item.ChangeOwner(item.Owner, this);
 
-                if (itemBase is InventorySystem.Items.Firearms.Firearm firearm)
+                if (Inventory.isLocalPlayer && itemBase is IAcquisitionConfirmationTrigger acquisitionConfirmationTrigger)
                 {
-                    if (Preferences is not null && Preferences.TryGetValue(firearm.ItemTypeId, out AttachmentIdentifier[] attachments))
-                        firearm.ApplyAttachmentsCode(attachments.GetAttachmentsCode(), true);
-
-                    FirearmStatusFlags flags = FirearmStatusFlags.MagazineInserted;
-
-                    if (firearm.Attachments.Any(a => a.Name == AttachmentName.Flashlight))
-                        flags |= FirearmStatusFlags.FlashlightEnabled;
-
-                    firearm.Status = new FirearmStatus(ammo > -1 ? (byte)ammo : firearm.AmmoManagerModule.MaxAmmo, flags, firearm.GetCurrentAttachmentsCode());
+                    acquisitionConfirmationTrigger.ServerConfirmAcqusition();
+                    acquisitionConfirmationTrigger.AcquisitionAlreadyReceived = true;
                 }
 
-                if (itemBase is IAcquisitionConfirmationTrigger acquisitionConfirmationTrigger)
-                    acquisitionConfirmationTrigger.ServerConfirmAcqusition();
+                // Dont care, didnt ask, ratio
+                Timing.CallDelayed(0.02f, () =>
+                {
+                    if (item.Type is ItemType.SCP330 && item.Base != null)
+                        ((Scp330)item).Base.ServerRefreshBag();
+                });
 
                 ItemsValue.Add(item);
 
@@ -2240,15 +2218,15 @@ namespace Exiled.API.Features
         /// <summary>
         /// Add the amount of items to the player's inventory.
         /// </summary>
-        /// <param name="item">The item to be added.</param>
+        /// <param name="firearm">The firearm to be added.</param>
         /// <param name="amount">The amount of items to be added.</param>
         /// <param name="identifiers">The attachments to be added to the item.</param>
-        public void AddItem(Item item, int amount, IEnumerable<AttachmentIdentifier> identifiers)
+        public void AddItem(Firearm firearm, int amount, IEnumerable<AttachmentIdentifier> identifiers)
         {
             if (amount > 0)
             {
                 for (int i = 0; i < amount; i++)
-                    AddItem(item, identifiers);
+                    AddItem(firearm, identifiers);
             }
         }
 
@@ -2265,12 +2243,12 @@ namespace Exiled.API.Features
         /// <summary>
         /// Add the list of items to the player's inventory.
         /// </summary>
-        /// <param name="items">The <see cref="Dictionary{TKey, TValue}"/> of <see cref="Item"/> and <see cref="IEnumerable{T}"/> of <see cref="AttachmentIdentifier"/> to be added.</param>
-        public void AddItem(Dictionary<Item, IEnumerable<AttachmentIdentifier>> items)
+        /// <param name="firearms">The <see cref="Dictionary{TKey, TValue}"/> of <see cref="Firearm"/> and <see cref="IEnumerable{T}"/> of <see cref="AttachmentIdentifier"/> to be added.</param>
+        public void AddItem(Dictionary<Firearm, IEnumerable<AttachmentIdentifier>> firearms)
         {
-            if (items.Count > 0)
+            if (firearms.Count > 0)
             {
-                foreach (KeyValuePair<Item, IEnumerable<AttachmentIdentifier>> item in items)
+                foreach (KeyValuePair<Firearm, IEnumerable<AttachmentIdentifier>> item in firearms)
                     AddItem(item.Key, item.Value);
             }
         }
@@ -2359,15 +2337,15 @@ namespace Exiled.API.Features
         /// <summary>
         /// Causes the player to throw a grenade.
         /// </summary>
-        /// <param name="type">The <see cref="GrenadeType"/> to be thrown.</param>
+        /// <param name="type">The <see cref="ProjectileType"/> to be thrown.</param>
         /// <param name="fullForce">Whether to throw with full or half force.</param>
         /// <returns>The <see cref="Throwable"/> item that was spawned.</returns>
-        public Throwable ThrowGrenade(GrenadeType type, bool fullForce = true)
+        public Throwable ThrowGrenade(ProjectileType type, bool fullForce = true)
         {
             Throwable throwable = type switch
             {
-                GrenadeType.Flashbang => new FlashGrenade(),
-                GrenadeType.Scp2176 => new Scp2176(),
+                ProjectileType.Flashbang => new FlashGrenade(),
+                ProjectileType.Scp2176 => new Scp2176(),
                 _ => new ExplosiveGrenade(type.GetItemType()),
             };
 
@@ -2686,8 +2664,10 @@ namespace Exiled.API.Features
         /// <summary>
         /// Places a Tantrum (SCP-173's ability) under the player.
         /// </summary>
+        /// <param name="isActive">Whether or not the tantrum will apply the <see cref="EffectType.Stained"/> effect.</param>
+        /// <remarks>If <paramref name="isActive"/> is <see langword="true"/>, the tantrum is moved slightly up from its original position. Otherwise, the collision will not be detected and the slowness will not work.</remarks>
         /// <returns>The tantrum's <see cref="GameObject"/>.</returns>
-        public GameObject PlaceTantrum() => Map.PlaceTantrum(Position);
+        public GameObject PlaceTantrum(bool isActive = true) => Map.PlaceTantrum(Position, isActive);
 
         /// <summary>
         /// Gives a new <see cref="AhpStat">to the player</see>.
@@ -2855,7 +2835,7 @@ namespace Exiled.API.Features
                 nameof(Room) => Room.List.ElementAt(Random.Range(0, Room.RoomIdentifierToRoom.Count)),
                 nameof(TeslaGate) => TeslaGate.List.ElementAt(Random.Range(0, TeslaGate.BaseTeslaGateToTeslaGate.Count)),
                 nameof(Player) => Dictionary.Values.ElementAt(Random.Range(0, Dictionary.Count)),
-                nameof(Pickup) => Map.Pickups[Random.Range(0, Map.Pickups.Count)],
+                nameof(Pickup) => Pickup.BaseToPickup.ElementAt(Random.Range(0, Pickup.BaseToPickup.Count)).Value,
                 nameof(Ragdoll) => Map.RagdollsValue[Random.Range(0, Map.RagdollsValue.Count)],
                 nameof(Locker) => Map.GetRandomLocker(),
                 nameof(Generator) => Generator.List.ElementAt(Random.Range(0, Generator.Scp079GeneratorToGenerator.Count)),
@@ -2971,6 +2951,14 @@ namespace Exiled.API.Features
         public bool HasComponent(Type type, bool depthInheritance = false) => depthInheritance
             ? componentsInChildren.Any(comp => type.IsSubclassOf(comp.GetType()))
             : componentsInChildren.Any(comp => type == comp.GetType());
+
+        /// <summary>
+        /// Set the time cooldown on this ItemType.
+        /// </summary>
+        /// <param name="time">The times for the cooldown.</param>
+        /// <param name="itemType">The itemtypes to choose for being cooldown.</param>
+        public void GetCooldownItem(float time, ItemType itemType)
+        => UsableItemsController.GetHandler(ReferenceHub).PersonalCooldowns[itemType] = Time.timeSinceLevelLoad + time;
 
         /// <summary>
         /// Converts the player in a human-readable format.

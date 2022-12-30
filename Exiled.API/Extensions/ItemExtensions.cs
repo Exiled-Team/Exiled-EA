@@ -177,16 +177,30 @@ namespace Exiled.API.Extensions
         };
 
         /// <summary>
-        /// Converts a <see cref="GrenadeType"/> into the corresponding <see cref="ItemType"/>.
+        /// Converts a valid projectile <see cref="ItemType"/> into a <see cref="ProjectileType"/>.
         /// </summary>
-        /// <param name="type">The <see cref="GrenadeType"/> to convert.</param>
-        /// <returns>The Item type of the specified grenade.</returns>
-        public static ItemType GetItemType(this GrenadeType type) => type switch
+        /// <param name="type">The <see cref="ItemType"/> to convert.</param>
+        /// <returns>The projectile type of the given item type, or <see cref="ProjectileType.None"/> if the provided item type is not a projectile.</returns>
+        public static ProjectileType GetProjectileType(this ItemType type) => type switch
         {
-            GrenadeType.Flashbang => ItemType.GrenadeFlash,
-            GrenadeType.Scp018 => ItemType.SCP018,
-            GrenadeType.FragGrenade => ItemType.GrenadeHE,
-            GrenadeType.Scp2176 => ItemType.SCP2176,
+            ItemType.GrenadeFlash => ProjectileType.Flashbang,
+            ItemType.GrenadeHE => ProjectileType.FragGrenade,
+            ItemType.SCP018 => ProjectileType.Scp018,
+            ItemType.SCP2176 => ProjectileType.Scp2176,
+            _ => ProjectileType.None,
+        };
+
+        /// <summary>
+        /// Converts a <see cref="ProjectileType"/> into the corresponding <see cref="ItemType"/>.
+        /// </summary>
+        /// <param name="type">The <see cref="ProjectileType"/> to convert.</param>
+        /// <returns>The Item type of the specified grenade.</returns>
+        public static ItemType GetItemType(this ProjectileType type) => type switch
+        {
+            ProjectileType.Flashbang => ItemType.GrenadeFlash,
+            ProjectileType.Scp018 => ItemType.SCP018,
+            ProjectileType.FragGrenade => ItemType.GrenadeHE,
+            ProjectileType.Scp2176 => ItemType.SCP2176,
             _ => ItemType.None,
         };
 

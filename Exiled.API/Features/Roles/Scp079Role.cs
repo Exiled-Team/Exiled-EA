@@ -49,6 +49,11 @@ namespace Exiled.API.Features.Roles
         }
 
         /// <summary>
+        /// Gets a value indicating whether or not SCP-079 can transmit its voice to a speaker.
+        /// </summary>
+        public bool CanTransmit => SubroutineModule.TryGetSubroutine(out Scp079SpeakerAbility ability) && ability.CanTransmit;
+
+        /// <summary>
         /// Gets the speaker SCP-079 is currently using. Can be <see langword="null"/>.
         /// </summary>
         public Scp079Speaker Speaker

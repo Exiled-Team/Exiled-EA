@@ -7,10 +7,10 @@
 
 namespace Exiled.Events.EventArgs.Scp244
 {
-    using API.Features;
-    using API.Features.DamageHandlers;
-    using API.Features.Items;
-    using Interfaces;
+    using Exiled.API.Features;
+    using Exiled.API.Features.DamageHandlers;
+    using Exiled.API.Features.Pickups;
+    using Exiled.Events.EventArgs.Interfaces;
 
     using InventorySystem.Items.Usables.Scp244;
 
@@ -22,7 +22,7 @@ namespace Exiled.Events.EventArgs.Scp244
     /// <summary>
     ///     Contains all information before damage is dealt to a <see cref="Scp244DeployablePickup" />.
     /// </summary>
-    public class DamagingScp244EventArgs : IPickupEvent, IDeniableEvent
+    public class DamagingScp244EventArgs : IDeniableEvent
     {
         /// <summary>
         ///     Initializes a new instance of the <see cref="DamagingScp244EventArgs" /> class.
@@ -37,32 +37,26 @@ namespace Exiled.Events.EventArgs.Scp244
         public DamagingScp244EventArgs(Scp244DeployablePickup scp244, float damage, DamageHandlerBase handler)
         {
             IsAllowed = handler is ExplosionDamageHandler;
-            Scp244 = scp244;
-            Pickup = Pickup.Get(scp244);
-            DamageHandler = new DamageHandler(handler is AttackerDamageHandler attackerDamageHandler ? Player.Get(attackerDamageHandler.Attacker.Hub) : null, handler)
+            Pickup = (Scp244Pickup)API.Features.Pickups.Pickup.Get(scp244);
+            Handler = new(handler is AttackerDamageHandler attackerDamageHandler ? Player.Get(attackerDamageHandler.Attacker.Hub) : null, handler)
             {
                 Damage = damage,
             };
         }
 
         /// <summary>
-        ///     Gets the <see cref="Scp244DeployablePickup" /> object that is damaged.
+        ///     Gets the <see cref="Scp244Pickup"/> object that is damaged.
         /// </summary>
-        public Scp244DeployablePickup Scp244 { get; }
+        public Scp244Pickup Pickup { get; }
 
         /// <summary>
         ///     Gets the Damage handler for this event.
         /// </summary>
-        public DamageHandler DamageHandler { get; }
+        public DamageHandler Handler { get; }
 
         /// <summary>
-        ///     Gets or sets a value indicating whether the window can be broken.
+        ///     Gets or sets a value indicating whether the <see cref="Scp244Pickup"/> can be broken.
         /// </summary>
-        public bool IsAllowed { get; set; } = true;
-
-        /// <summary>
-        ///     Gets the <see cref="Pickup" /> object that is damaged.
-        /// </summary>
-        public Pickup Pickup { get; }
+        public bool IsAllowed { get; set; }
     }
 }

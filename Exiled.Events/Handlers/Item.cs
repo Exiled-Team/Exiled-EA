@@ -18,9 +18,9 @@ namespace Exiled.Events.Handlers
     public static class Item
     {
         /// <summary>
-        ///     Invoked before the durability of an item is changed.
+        ///     Invoked before the ammo of an firearm are changed.
         /// </summary>
-        public static event CustomEventHandler<ChangingDurabilityEventArgs> ChangingDurability;
+        public static event CustomEventHandler<ChangingAmmoEventArgs> ChangingAmmo;
 
         /// <summary>
         ///     Invoked before item attachments are changed.
@@ -38,10 +38,10 @@ namespace Exiled.Events.Handlers
         public static event CustomEventHandler<KeycardInteractingEventArgs> KeycardInteracting;
 
         /// <summary>
-        ///     Called before the durability of an item is changed.
+        /// Called before the ammo of an firearm is changed.
         /// </summary>
-        /// <param name="ev">The <see cref="ChangingDurabilityEventArgs" /> instance.</param>
-        public static void OnChangingDurability(ChangingDurabilityEventArgs ev) => ChangingDurability.InvokeSafely(ev);
+        /// <param name="ev">The <see cref="ChangingAmmoEventArgs"/> instance.</param>
+        public static void OnChangingAmmo(ChangingAmmoEventArgs ev) => ChangingAmmo.InvokeSafely(ev);
 
         /// <summary>
         ///     Called before item attachments are changed.

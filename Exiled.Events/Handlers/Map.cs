@@ -7,7 +7,7 @@
 
 namespace Exiled.Events.Handlers
 {
-    using API.Features.Items;
+    using Exiled.API.Features.Pickups;
     using Exiled.Events.EventArgs.Map;
     using Extensions;
 
@@ -74,6 +74,11 @@ namespace Exiled.Events.Handlers
         /// Invoked before the server changes a pickup into a grenade, when triggered by an explosion.
         /// </summary>
         public static event CustomEventHandler<ChangingIntoGrenadeEventArgs> ChangingIntoGrenade;
+
+        /// <summary>
+        /// Invoked after the server changes a pickup into a grenade, when triggered by an explosion.
+        /// </summary>
+        public static event CustomEventHandler<ChangedIntoGrenadeEventArgs> ChangedIntoGrenade;
 
         /// <summary>
         /// Invoked before turning off lights.
@@ -144,6 +149,12 @@ namespace Exiled.Events.Handlers
         /// </summary>
         /// <param name="ev">The <see cref="ChangingIntoGrenadeEventArgs"/> instance.</param>
         public static void OnChangingIntoGrenade(ChangingIntoGrenadeEventArgs ev) => ChangingIntoGrenade.InvokeSafely(ev);
+
+        /// <summary>
+        /// Called after the server changes a <see cref="Pickup"/> into a live Grenade when hit by an explosion.
+        /// </summary>
+        /// <param name="ev">The <see cref="ChangingIntoGrenadeEventArgs"/> instance.</param>
+        public static void OnChangedIntoGrenade(ChangedIntoGrenadeEventArgs ev) => ChangedIntoGrenade.InvokeSafely(ev);
 
         /// <summary>
         /// Called before turning off lights.

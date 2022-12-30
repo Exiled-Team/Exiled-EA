@@ -1,4 +1,4 @@
-﻿// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
 // <copyright file="CustomArmor.cs" company="Exiled Team">
 // Copyright (c) Exiled Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
@@ -79,20 +79,20 @@ namespace Exiled.CustomItems.API.Features
         /// <inheritdoc/>
         protected override void SubscribeEvents()
         {
-            Exiled.Events.Handlers.Player.PickingUpArmor += OnInternalPickingUpArmor;
+            Exiled.Events.Handlers.Player.PickingUpItem += OnInternalPickingUpItem;
             base.SubscribeEvents();
         }
 
         /// <inheritdoc/>
         protected override void UnsubscribeEvents()
         {
-            Exiled.Events.Handlers.Player.PickingUpArmor -= OnInternalPickingUpArmor;
+            Exiled.Events.Handlers.Player.PickingUpItem -= OnInternalPickingUpItem;
             base.UnsubscribeEvents();
         }
 
-        private void OnInternalPickingUpArmor(PickingUpArmorEventArgs ev)
+        private void OnInternalPickingUpItem(PickingUpItemEventArgs ev)
         {
-            if (!Check(ev.Pickup) || ev.Player.Items.Count >= 8)
+            if (!Check(ev.Pickup) || ev.Player.Items.Count >= 8 || ev.Pickup is Exiled.API.Features.Pickups.BodyArmorPickup)
                 return;
 
             OnPickingUp(ev);

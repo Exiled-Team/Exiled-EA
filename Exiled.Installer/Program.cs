@@ -42,7 +42,7 @@ namespace Exiled.Installer
 
     internal static class Program
     {
-        private const long RepoID = 231269519;
+        private const long RepoID = 568270546;
         private const string ExiledAssetName = "exiled.tar.gz";
 
         private static readonly Version VersionLimit = new("2.0.0");
@@ -50,8 +50,7 @@ namespace Exiled.Installer
 
         private static readonly string Header = $"{Assembly.GetExecutingAssembly().GetName().Name}-{Assembly.GetExecutingAssembly().GetName().Version}";
 
-        private static readonly GitHubClient GitHubClient = new(
-            new ProductHeaderValue(Header));
+        private static readonly GitHubClient GitHubClient = new(new ProductHeaderValue(Header));
 
         // Force use of LF because the file uses LF
         private static readonly Dictionary<string, string> Markup = Resources.Markup.Trim().Split('\n').ToDictionary(s => s.Split(':')[0], s => s.Split(':', 2)[1]);
