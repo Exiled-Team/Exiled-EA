@@ -446,15 +446,19 @@ namespace Exiled.Loader
                 Log.Debug($"Attempting to load embedded resources for {target.FullName}");
 
                 string[] resourceNames = target.GetManifestResourceNames();
+                
                 foreach (string name in resourceNames)
                 {
                     Log.Debug($"Found resource {name}");
+                    
                     if (name.EndsWith(".dll", StringComparison.OrdinalIgnoreCase))
                     {
                         using (MemoryStream stream = new MemoryStream())
                         {
                             Log.Debug($"Loading resource {name}");
+                            
                             Stream dataStream = target.GetManifestResourceStream(name);
+                            
                             if (dataStream == null)
                             {
                                 Log.Error($"Unable to resolve resource {name} Stream was null");
@@ -462,14 +466,16 @@ namespace Exiled.Loader
                             }
 
                             dataStream.CopyTo(stream);
-                            Assembly assembly = Assembly.Load(stream.ToArray());
-                            Dependencies.Add(assembly);
+
+                            Dependencies.Add(Assembly.Load(stream.ToArray()));
+                            
                             Log.Debug($"Loaded resource {name}");
                         }
                     }
                     else if (name.EndsWith(".dll.compressed", StringComparison.OrdinalIgnoreCase))
                     {
                         Stream dataStream = target.GetManifestResourceStream(name);
+                        
                         if (dataStream == null)
                         {
                             Log.Error($"Unable to resolve resource {name} Stream was null");
@@ -480,9 +486,11 @@ namespace Exiled.Loader
                         using (MemoryStream memStream = new MemoryStream())
                         {
                             Log.Debug($"Loading resource {name}");
+                            
                             stream.CopyTo(memStream);
-                            Assembly assembly = Assembly.Load(memStream.ToArray());
-                            Dependencies.Add(assembly);
+
+                            Dependencies.Add(Assembly.Load(memStream.ToArray()));
+                            
                             Log.Debug($"Loaded resource {name}");
                         }
                     }
