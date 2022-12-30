@@ -22,6 +22,7 @@ namespace Exiled.API.Features.Items
     using InventorySystem.Items.Radio;
     using InventorySystem.Items.ThrowableProjectiles;
     using InventorySystem.Items.Usables;
+    using InventorySystem.Items.Usables.Scp1576;
     using InventorySystem.Items.Usables.Scp244;
     using InventorySystem.Items.Usables.Scp330;
     using Mirror;
@@ -178,6 +179,7 @@ namespace Exiled.API.Features.Items
                 {
                     Scp330Bag scp330Bag => new Scp330(scp330Bag),
                     Scp244Item scp244Item => new Scp244(scp244Item),
+                    Scp1576Item scp1576 => new Scp1576(scp1576),
                     _ => new Usable(usable),
                 },
                 RadioItem radio => new Radio(radio),
