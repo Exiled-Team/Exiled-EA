@@ -50,8 +50,7 @@ namespace Exiled.Installer
 
         private static readonly string Header = $"{Assembly.GetExecutingAssembly().GetName().Name}-{Assembly.GetExecutingAssembly().GetName().Version}";
 
-        private static readonly GitHubClient GitHubClient = new(
-            new ProductHeaderValue(Header));
+        private static readonly GitHubClient GitHubClient = new(new ProductHeaderValue(Header));
 
         // Force use of LF because the file uses LF
         private static readonly Dictionary<string, string> Markup = Resources.Markup.Trim().Split('\n').ToDictionary(s => s.Split(':')[0], s => s.Split(':', 2)[1]);
