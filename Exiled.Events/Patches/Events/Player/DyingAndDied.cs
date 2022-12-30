@@ -46,10 +46,10 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Ldarg_0),
                     new(OpCodes.Ldfld, Field(typeof(PlayerStats), nameof(PlayerStats._hub))),
                     new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
-                    new(OpCodes.Dup),
-                    new(OpCodes.Stloc, player.LocalIndex),
+                    /*new(OpCodes.Dup),*/
+                    new(OpCodes.Stloc_S, player.LocalIndex),
 
-                    // handler
+                    /*// handler
                     new(OpCodes.Ldarg_1),
 
                     // DyingEventArgs ev = new(Player, DamageHandlerBase)
@@ -65,10 +65,10 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Brfalse, ret),
 
                     // oldRole = player.Role.Type
-                    new(OpCodes.Ldloc, player.LocalIndex),
+                    new(OpCodes.Ldloc_S, player.LocalIndex),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(Player), nameof(Player.Role))),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(Role), nameof(Role.Type))),
-                    new(OpCodes.Stloc, oldRole.LocalIndex),
+                    new(OpCodes.Stloc, oldRole.LocalIndex),*/
                 });
 
             newInstructions.InsertRange(
@@ -76,10 +76,10 @@ namespace Exiled.Events.Patches.Events.Player
                 new CodeInstruction[]
                 {
                     // player
-                    new(OpCodes.Ldloc, player.LocalIndex),
+                    new(OpCodes.Ldloc_S, player.LocalIndex),
 
                     // oldRole
-                    new(OpCodes.Ldloc, oldRole.LocalIndex),
+                    new(OpCodes.Ldloc_S, oldRole.LocalIndex),
 
                     // handler
                     new(OpCodes.Ldarg_1),

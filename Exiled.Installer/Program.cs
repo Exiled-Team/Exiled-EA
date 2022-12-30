@@ -35,19 +35,16 @@ namespace Exiled.Installer
         Absolute,
 
         /// <summary>
-        ///     The path that goes through the path of the game passing through the subfolders.
+        ///     Exiled path that is routed to exiled root path.
         /// </summary>
-        Game,
+        Exiled,
     }
 
     internal static class Program
     {
         private const long RepoID = 231269519;
         private const string ExiledAssetName = "exiled.tar.gz";
-        internal const string TargetFileName = "Assembly-CSharp.dll";
 
-        private static readonly string[] TargetSubfolders = { "SCPSL_Data", "Managed" };
-        private static readonly string LinkedSubfolders = string.Join(Path.DirectorySeparatorChar.ToString(), TargetSubfolders);
         private static readonly Version VersionLimit = new("2.0.0");
         private static readonly uint SecondsWaitForDownload = 480;
 
@@ -83,12 +80,7 @@ namespace Exiled.Installer
                 }
 
                 Console.WriteLine(Resources.Program_MainSafe_AppData_folder___0_, args.AppData.FullName);
-
-                if (!ValidateServerPath(args.Path.FullName, out string? targetFilePath))
-                {
-                    Console.WriteLine(Resources.Program_MainSafe_Couldn_t_find___0___in___1__, TargetFileName, targetFilePath);
-                    throw new FileNotFoundException("Check the validation of the path parameter");
-                }
+                Console.WriteLine(Resources.Program_MainSafe_Exiled_folder___0_, args.Exiled.FullName);
 
                 if (args.GitHubToken is not null)
                 {
@@ -140,7 +132,7 @@ namespace Exiled.Installer
                 while ((entry = tarInputStream.GetNextEntry()) is not null)
                 {
                     entry.Name = entry.Name.Replace('/', Path.DirectorySeparatorChar);
-                    ProcessTarEntry(args, targetFilePath, tarInputStream, entry);
+                    ProcessTarEntry(args, tarInputStream, entry);
                 }
 
                 Console.WriteLine(Resources.Program_MainSafe_Installation_complete);
@@ -185,20 +177,16 @@ namespace Exiled.Installer
 
         private static string FormatAsset(ReleaseAsset a) => $"ID: {a.Id} | NAME: {a.Name} | SIZE: {a.Size} | URL: {a.Url} | DownloadURL: {a.BrowserDownloadUrl}";
 
-        private static void ResolvePath(CommandSettings args, string filePath, out string path)
-        {
-            path = Path.Combine(args.AppData.FullName, filePath);
-        }
+        private static void ResolvePath(string filePath, string folderPath, out string path) => path = Path.Combine(folderPath, filePath);
 
-        private static void ProcessTarEntry(CommandSettings args, string targetFilePath, TarInputStream tarInputStream, TarEntry entry)
+        private static void ProcessTarEntry(CommandSettings args, TarInputStream tarInputStream, TarEntry entry)
         {
             if (entry.IsDirectory)
             {
                 TarEntry[] entries = entry.GetDirectoryEntries();
+
                 for (int z = 0; z < entries.Length; z++)
-                {
-                    ProcessTarEntry(args, targetFilePath, tarInputStream, entries[z]);
-                }
+                    ProcessTarEntry(args, tarInputStream, entries[z]);
             }
             else
             {
@@ -213,11 +201,12 @@ namespace Exiled.Installer
                 switch (ResolveEntry(entry))
                 {
                     case PathResolution.Absolute:
-                        ResolvePath(args, entry.Name, out string path);
+                        ResolvePath(entry.Name, args.AppData.FullName, out string path);
                         ExtractEntry(tarInputStream, entry, path);
                         break;
-                    case PathResolution.Game:
-                        ExtractEntry(tarInputStream, entry, targetFilePath);
+                    case PathResolution.Exiled:
+                        ResolvePath(entry.Name, args.Exiled.FullName, out path);
+                        ExtractEntry(tarInputStream, entry, path);
                         break;
                     default:
                         Console.WriteLine(Resources.Program_ProcessTarEntry_Couldn_t_resolve_path_for___0____update_installer, entry.Name);
@@ -249,12 +238,6 @@ namespace Exiled.Installer
             }
         }
 
-        internal static bool ValidateServerPath(string serverPath, out string targetFilePath)
-        {
-            targetFilePath = Path.Combine(serverPath, LinkedSubfolders, TargetFileName);
-            return File.Exists(targetFilePath);
-        }
-
         private static void EnsureDirExists(string pathToDir)
         {
 #if DEBUG
@@ -269,6 +252,7 @@ namespace Exiled.Installer
         {
             static PathResolution TryParse(string s)
             {
+                Console.WriteLine(s);
                 // We'll get UNDEFINED if it cannot be determined
                 Enum.TryParse(s, true, out PathResolution result);
                 return result;

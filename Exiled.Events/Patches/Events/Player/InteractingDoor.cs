@@ -4,7 +4,7 @@
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
-
+/*
 namespace Exiled.Events.Patches.Events.Player
 {
 #pragma warning disable SA1313
@@ -101,3 +101,4 @@ namespace Exiled.Events.Patches.Events.Player
         }
     }
 }
+*/

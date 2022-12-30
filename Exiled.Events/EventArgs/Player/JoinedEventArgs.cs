@@ -21,10 +21,7 @@ namespace Exiled.Events.EventArgs.Player
         /// <param name="player">
         ///     <inheritdoc cref="Player" />
         /// </param>
-        public JoinedEventArgs(Player player)
-        {
-            Player = player;
-        }
+        public JoinedEventArgs(Player player) => Player = player;
 
         /// <summary>
         ///     Gets the joined player.
