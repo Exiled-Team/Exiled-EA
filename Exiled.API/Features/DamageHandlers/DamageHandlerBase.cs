@@ -14,7 +14,7 @@ namespace Exiled.API.Features.DamageHandlers
 
     using Enums;
     using Extensions;
-
+    using PlayerRoles.PlayableScps.Scp939;
     using PlayerStatsSystem;
 
     using BaseHandler = PlayerStatsSystem.DamageHandlerBase;
@@ -109,6 +109,8 @@ namespace Exiled.API.Features.DamageHandlers
                         return DamageType.MicroHid;
                     case DisruptorDamageHandler:
                         return DamageType.ParticleDisruptor;
+                    case Scp939DamageHandler:
+                        return DamageType.Scp939;
                     case UniversalDamageHandler universal:
                         {
                             DeathTranslation translation = DeathTranslations.TranslationsById[universal.TranslationId];
