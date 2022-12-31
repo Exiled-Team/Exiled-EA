@@ -148,7 +148,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets or sets a value indicating whether or not the lights in this room are currently off.
         /// </summary>
-        public bool LightsOff
+        public bool AreLightsOff
         {
             get => FlickerableLightController && !FlickerableLightController.NetworkLightsEnabled;
             set
