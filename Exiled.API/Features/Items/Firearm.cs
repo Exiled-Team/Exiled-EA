@@ -131,6 +131,11 @@ namespace Exiled.API.Features.Items
         public bool FlashlightEnabled => Base.Status.Flags.HasFlagFast(FirearmStatusFlags.FlashlightEnabled);
 
         /// <summary>
+        /// Gets a value indicating whether or not the firearm is automatic.
+        /// </summary>
+        public bool IsAutomatic => Base is AutomaticFirearm;
+
+        /// <summary>
         /// Gets the <see cref="Attachment"/>s of the firearm.
         /// </summary>
         public Attachment[] Attachments => Base.Attachments;
@@ -155,7 +160,8 @@ namespace Exiled.API.Features.Items
         /// <summary>
         /// Gets or sets the fire rate of the firearm, if it is an automatic weapon.
         /// </summary>
-        /// <exception cref="InvalidOperationException">When trying to set this value for a weapon that is semi-automatic.</exception>
+        /// <remarks>This property will not do anything if the firearm is not an automatic weapon.</remarks>
+        /// <seealso cref="IsAutomatic"/>
         public float FireRate
         {
             get => Base is AutomaticFirearm auto ? auto._fireRate : 1f;
@@ -163,15 +169,14 @@ namespace Exiled.API.Features.Items
             {
                 if (Base is AutomaticFirearm auto)
                     auto._fireRate = value;
-                else
-                    throw new InvalidOperationException("You cannot change the fire rate of non-automatic weapons.");
             }
         }
 
         /// <summary>
         /// Gets or sets the recoil settings of the firearm, if it's an automatic weapon.
         /// </summary>
-        /// <exception cref="InvalidOperationException">When trying to set this value for a weapon that is semi-automatic.</exception>
+        /// <remarks>This property will not do anything if the firearm is not an automatic weapon.</remarks>
+        /// <seealso cref="IsAutomatic"/>
         public RecoilSettings Recoil
         {
             get => Base is AutomaticFirearm auto ? auto._recoil : default;
@@ -179,10 +184,13 @@ namespace Exiled.API.Features.Items
             {
                 if (Base is AutomaticFirearm auto)
                     auto.ActionModule = new AutomaticAction(Base, auto._semiAutomatic, auto._boltTravelTime, 1f / auto._fireRate, auto._dryfireClipId, auto._triggerClipId, auto._gunshotPitchRandomization, value, auto._recoilPattern, false, Mathf.Max(1, auto._chamberSize));
-                else
-                    throw new InvalidOperationException("You cannot change the recoil pattern of non-automatic weapons.");
             }
         }
+
+        /// <summary>
+        /// Gets the firearm's <see cref="FirearmRecoilPattern"/>. Will be <see langword="null"/> for non-automatic weapons.
+        /// </summary>
+        public FirearmRecoilPattern RecoilPattern => Base is AutomaticFirearm auto ? auto._recoilPattern : null;
 
         /// <summary>
         /// Gets a <see cref="Dictionary{TKey, TValue}"/> of <see cref="ItemType"/> and <see cref="AttachmentIdentifier"/>[] which contains all available attachments for all firearms.
