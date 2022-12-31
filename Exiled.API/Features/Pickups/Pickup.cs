@@ -53,6 +53,10 @@ namespace Exiled.API.Features.Pickups
             if (pickupBase.Info.ItemId == ItemType.None)
                 return;
 
+            // prevent exploded grenades to added in dict
+            if (!PhysicsPredictionPickup.AllPickups.Contains(pickupBase))
+                return;
+
             BaseToPickup.Add(pickupBase, this);
         }
 

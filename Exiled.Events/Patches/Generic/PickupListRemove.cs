@@ -21,7 +21,7 @@ namespace Exiled.Events.Patches.Generic
     using static HarmonyLib.AccessTools;
 
     /// <summary>
-    /// Patches <see cref="ItemPickupBase.DestroySelf"/>.
+    /// Patches <see cref="ItemPickupBase.OnDestroy"/>.
     /// </summary>
     [HarmonyPatch(typeof(ItemPickupBase), nameof(ItemPickupBase.OnDestroy))]
     internal static class PickupListRemove
