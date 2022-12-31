@@ -98,6 +98,8 @@ namespace Exiled.API.Features.Items
 #endif
             FlashbangProjectile grenade = (FlashbangProjectile)Pickup.Get(Object.Instantiate(Projectile.Base, position, Quaternion.identity));
 
+            grenade.Base.gameObject.SetActive(true);
+
             grenade.MinimalDurationEffect = MinimalDurationEffect;
             grenade.AdditionalBlindedEffect = AdditionalBlindedEffect;
             grenade.SurfaceDistanceIntensifier = SurfaceDistanceIntensifier;
@@ -105,9 +107,9 @@ namespace Exiled.API.Features.Items
 
             grenade.PreviousOwner = owner ?? Server.Host;
 
-            grenade.Spawn();
-
             grenade.Info = new PickupSyncInfo(grenade.Type, position, Quaternion.identity, Weight, ItemSerialGenerator.GenerateNext());
+
+            grenade.Spawn();
 
             grenade.Base.ServerActivate();
 

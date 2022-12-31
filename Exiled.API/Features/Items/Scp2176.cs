@@ -69,13 +69,15 @@ namespace Exiled.API.Features.Items
 #endif
             Scp2176Projectile grenade = (Scp2176Projectile)Pickup.Get(Object.Instantiate(Projectile.Base, position, Quaternion.identity));
 
+            grenade.Base.gameObject.SetActive(true);
+
             grenade.FuseTime = FuseTime;
 
             grenade.PreviousOwner = owner ?? Server.Host;
 
-            grenade.Spawn();
-
             grenade.Info = new PickupSyncInfo(grenade.Type, position, Quaternion.identity, Weight, ItemSerialGenerator.GenerateNext());
+
+            grenade.Spawn();
 
             grenade.Base.ServerActivate();
 

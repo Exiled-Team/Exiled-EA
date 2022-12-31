@@ -115,6 +115,8 @@ namespace Exiled.API.Features.Items
 #endif
             ExplosionGrenadeProjectile grenade = (ExplosionGrenadeProjectile)Pickup.Get(Object.Instantiate(Projectile.Base, position, Quaternion.identity));
 
+            grenade.Base.gameObject.SetActive(true);
+
             grenade.MaxRadius = MaxRadius;
             grenade.ScpDamageMultiplier = ScpDamageMultiplier;
             grenade.BurnDuration = BurnDuration;
@@ -124,9 +126,9 @@ namespace Exiled.API.Features.Items
 
             grenade.PreviousOwner = owner ?? Server.Host;
 
-            grenade.Spawn();
-
             grenade.Info = new PickupSyncInfo(grenade.Type, position, Quaternion.identity, Weight, ItemSerialGenerator.GenerateNext());
+
+            grenade.Spawn();
 
             grenade.Base.ServerActivate();
 
