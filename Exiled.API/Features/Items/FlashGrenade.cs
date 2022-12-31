@@ -12,6 +12,7 @@ namespace Exiled.API.Features.Items
     using Exiled.API.Features.Pickups.Projectiles;
 
     using InventorySystem.Items;
+    using InventorySystem.Items.Pickups;
     using InventorySystem.Items.ThrowableProjectiles;
 
     using UnityEngine;
@@ -97,8 +98,6 @@ namespace Exiled.API.Features.Items
 #endif
             FlashbangProjectile grenade = (FlashbangProjectile)Pickup.Get(Object.Instantiate(Projectile.Base, position, Quaternion.identity));
 
-            grenade.Serial = ItemSerialGenerator.GenerateNext();
-
             grenade.MinimalDurationEffect = MinimalDurationEffect;
             grenade.AdditionalBlindedEffect = AdditionalBlindedEffect;
             grenade.SurfaceDistanceIntensifier = SurfaceDistanceIntensifier;
@@ -107,6 +106,9 @@ namespace Exiled.API.Features.Items
             grenade.PreviousOwner = owner ?? Server.Host;
 
             grenade.Spawn();
+
+            grenade.Info = new PickupSyncInfo(grenade.Type, position, Quaternion.identity, Weight, ItemSerialGenerator.GenerateNext());
+
             grenade.Base.ServerActivate();
 
             return grenade;
@@ -118,8 +120,12 @@ namespace Exiled.API.Features.Items
         /// <returns> New <see cref="FlashGrenade"/> object. </returns>
         public override Item Clone() => new FlashGrenade()
         {
+            MinimalDurationEffect = MinimalDurationEffect,
+            AdditionalBlindedEffect = AdditionalBlindedEffect,
             SurfaceDistanceIntensifier = SurfaceDistanceIntensifier,
             FuseTime = FuseTime,
+            Repickable = Repickable,
+            PinPullTime = PinPullTime,
         };
 
         /// <summary>

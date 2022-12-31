@@ -7,12 +7,11 @@
 
 namespace Exiled.API.Features.Items
 {
-    using System.Collections.Generic;
-
     using Enums;
     using Exiled.API.Features.Pickups;
     using Exiled.API.Features.Pickups.Projectiles;
     using InventorySystem.Items;
+    using InventorySystem.Items.Pickups;
     using InventorySystem.Items.ThrowableProjectiles;
     using UnityEngine;
 
@@ -116,8 +115,6 @@ namespace Exiled.API.Features.Items
 #endif
             ExplosionGrenadeProjectile grenade = (ExplosionGrenadeProjectile)Pickup.Get(Object.Instantiate(Projectile.Base, position, Quaternion.identity));
 
-            grenade.Serial = ItemSerialGenerator.GenerateNext();
-
             grenade.MaxRadius = MaxRadius;
             grenade.ScpDamageMultiplier = ScpDamageMultiplier;
             grenade.BurnDuration = BurnDuration;
@@ -128,6 +125,9 @@ namespace Exiled.API.Features.Items
             grenade.PreviousOwner = owner ?? Server.Host;
 
             grenade.Spawn();
+
+            grenade.Info = new PickupSyncInfo(grenade.Type, position, Quaternion.identity, Weight, ItemSerialGenerator.GenerateNext());
+
             grenade.Base.ServerActivate();
 
             return grenade;

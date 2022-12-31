@@ -10,6 +10,7 @@ namespace Exiled.API.Features.Items
     using Exiled.API.Features.Pickups;
 
     using InventorySystem.Items;
+    using InventorySystem.Items.Pickups;
     using InventorySystem.Items.ThrowableProjectiles;
 
     using UnityEngine;
@@ -68,13 +69,14 @@ namespace Exiled.API.Features.Items
 #endif
             Scp2176Projectile grenade = (Scp2176Projectile)Pickup.Get(Object.Instantiate(Projectile.Base, position, Quaternion.identity));
 
-            grenade.Serial = ItemSerialGenerator.GenerateNext();
-
             grenade.FuseTime = FuseTime;
 
             grenade.PreviousOwner = owner ?? Server.Host;
 
             grenade.Spawn();
+
+            grenade.Info = new PickupSyncInfo(grenade.Type, position, Quaternion.identity, Weight, ItemSerialGenerator.GenerateNext());
+
             grenade.Base.ServerActivate();
 
             return grenade;
