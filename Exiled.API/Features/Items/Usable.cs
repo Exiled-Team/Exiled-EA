@@ -7,7 +7,12 @@
 
 namespace Exiled.API.Features.Items
 {
+    using Exiled.API.Features.Pickups;
+
+    using InventorySystem.Items;
     using InventorySystem.Items.Usables;
+
+    using UnityEngine;
 
     /// <summary>
     /// A wrapper class for <see cref="UsableItem"/>.
@@ -49,11 +54,11 @@ namespace Exiled.API.Features.Items
         public bool Holsterable => Base.AllowHolster;
 
         /// <summary>
-        /// Gets or sets the Weight of the item.
+        /// Gets or sets the weight of the item.
         /// </summary>
         public new float Weight
         {
-            get => Base.Weight;
+            get => Base._weight;
             set => Base._weight = value;
         }
 
@@ -85,8 +90,33 @@ namespace Exiled.API.Features.Items
         /// </summary>
         public float RemainingCooldown
         {
-            get => Base.RemainingCooldown;
-            set => Base.RemainingCooldown = value;
+            get => UsableItemsController.GlobalItemCooldowns[Serial];
+            set => UsableItemsController.GlobalItemCooldowns[Serial] = Time.timeSinceLevelLoad + value;
+        }
+
+        /// <summary>
+        /// Gets all the cooldown between uses of this item.
+        /// </summary>
+        public float PlayerGetCooldown => UsableItemsController.GetCooldown(Serial, Base, UsableItemsController.GetHandler(Base.Owner));
+
+        /// <summary>
+        /// Creates the <see cref="Pickup"/> that based on this <see cref="Item"/>.
+        /// </summary>
+        /// <param name="position">The location to spawn the item.</param>
+        /// <param name="rotation">The rotation of the item.</param>
+        /// <param name="spawn">Whether the <see cref="Pickup"/> should be initially spawned.</param>
+        /// <returns>The created <see cref="Pickup"/>.</returns>
+        public override Pickup CreatePickup(Vector3 position, Quaternion rotation = default, bool spawn = true)
+        {
+            Pickup pickup = Pickup.Get(Object.Instantiate(Base.PickupDropModel, position, rotation));
+
+            pickup.Info = new(Type, position, rotation, Weight, ItemSerialGenerator.GenerateNext());
+            pickup.Scale = Scale;
+
+            if (spawn)
+                pickup.Spawn();
+
+            return pickup;
         }
 
         /// <summary>

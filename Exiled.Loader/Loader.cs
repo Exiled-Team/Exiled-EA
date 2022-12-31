@@ -10,6 +10,7 @@ namespace Exiled.Loader
     using System;
     using System.Collections.Generic;
     using System.IO;
+    using System.IO.Compression;
     using System.Linq;
     using System.Reflection;
     using System.Runtime.InteropServices;
@@ -153,7 +154,11 @@ namespace Exiled.Loader
         {
             try
             {
-                return Assembly.Load(File.ReadAllBytes(path));
+                Assembly assembly = Assembly.Load(File.ReadAllBytes(path));
+
+                ResolveAssemblyEmbeddedResources(assembly);
+
+                return assembly;
             }
             catch (Exception exception)
             {
@@ -428,6 +433,71 @@ namespace Exiled.Loader
             }
 
             return false;
+        }
+
+        /// <summary>
+        /// Attempts to load Embedded (compressed) assemblies from specified Assembly.
+        /// </summary>
+        /// <param name="target">Assembly to check for embedded assemblies.</param>
+        private static void ResolveAssemblyEmbeddedResources(Assembly target)
+        {
+            try
+            {
+                Log.Debug($"Attempting to load embedded resources for {target.FullName}");
+
+                string[] resourceNames = target.GetManifestResourceNames();
+
+                foreach (string name in resourceNames)
+                {
+                    Log.Debug($"Found resource {name}");
+
+                    if (name.EndsWith(".dll", StringComparison.OrdinalIgnoreCase))
+                    {
+                        using MemoryStream stream = new();
+
+                        Log.Debug($"Loading resource {name}");
+
+                        Stream dataStream = target.GetManifestResourceStream(name);
+
+                        if (dataStream == null)
+                        {
+                            Log.Error($"Unable to resolve resource {name} Stream was null");
+                            continue;
+                        }
+
+                        dataStream.CopyTo(stream);
+
+                        Dependencies.Add(Assembly.Load(stream.ToArray()));
+
+                        Log.Debug($"Loaded resource {name}");
+                    }
+                    else if (name.EndsWith(".dll.compressed", StringComparison.OrdinalIgnoreCase))
+                    {
+                        Stream dataStream = target.GetManifestResourceStream(name);
+
+                        if (dataStream == null)
+                        {
+                            Log.Error($"Unable to resolve resource {name} Stream was null");
+                            continue;
+                        }
+
+                        using DeflateStream stream = new(dataStream, CompressionMode.Decompress);
+                        using MemoryStream memStream = new();
+
+                        Log.Debug($"Loading resource {name}");
+
+                        stream.CopyTo(memStream);
+
+                        Dependencies.Add(Assembly.Load(memStream.ToArray()));
+
+                        Log.Debug($"Loaded resource {name}");
+                    }
+                }
+            }
+            catch (Exception exception)
+            {
+                Log.Error($"Failed to load embedded resources from {target.FullName}: {exception}");
+            }
         }
 
 #pragma warning disable SA1201
