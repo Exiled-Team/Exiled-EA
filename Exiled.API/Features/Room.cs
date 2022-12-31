@@ -13,9 +13,8 @@ namespace Exiled.API.Features
 
     using Enums;
     using Exiled.API.Extensions;
-    using Exiled.API.Features.Items;
     using Exiled.API.Features.Pickups;
-
+    using HarmonyLib;
     using Interactables.Interobjects.DoorUtils;
     using MapGeneration;
     using MEC;
@@ -211,6 +210,40 @@ namespace Exiled.API.Features
         /// <param name="predicate">The condition to satify.</param>
         /// <returns>A <see cref="IEnumerable{T}"/> of <see cref="Room"/> which contains elements that satify the condition.</returns>
         public static IEnumerable<Room> Get(Func<Room, bool> predicate) => List.Where(predicate);
+
+        /// <summary>
+        /// Gets a <see cref="IEnumerable{T}"/> of <see cref="Room"/> given the nearest Room.
+        /// </summary>
+        /// <param name="room">The <see cref="Room"/> to search for.</param>
+        /// <param name="size">.</param>
+        /// <returns>The <see cref="Room"/> with the given <see cref="ZoneType"/> or <see langword="null"/> if not found.</returns>
+        public static IEnumerable<Room> GetNearest(Room room, int size)
+        {
+            IEnumerable<Room> rooms = Enumerable.Empty<Room>();
+            rooms.AddItem(room);
+            RoomIdentifier roomIdentifier;
+            Vector3Int vector3Int;
+            for (int i = 1; i < size; i++)
+            {
+                int x = (int)(room.Position.x / RoomIdentifier.GridScale.x);
+                int z = (int)(room.Position.z / RoomIdentifier.GridScale.z);
+
+                vector3Int = new(x * i, (int)RoomIdentifier.GridScale.y, z * i);
+                if (RoomIdentifier.RoomsByCoordinates.TryGetValue(vector3Int, out roomIdentifier))
+                    rooms.AddItem(Get(roomIdentifier));
+                vector3Int.Set(x * -i, (int)RoomIdentifier.GridScale.y, z * i);
+                if (RoomIdentifier.RoomsByCoordinates.TryGetValue(vector3Int, out roomIdentifier))
+                    rooms.AddItem(Get(roomIdentifier));
+                vector3Int = new(x * i, (int)RoomIdentifier.GridScale.y, z * i);
+                if (RoomIdentifier.RoomsByCoordinates.TryGetValue(vector3Int, out roomIdentifier))
+                    rooms.AddItem(Get(roomIdentifier));
+                vector3Int = new(x * i, (int)RoomIdentifier.GridScale.y, z * -i);
+                if (RoomIdentifier.RoomsByCoordinates.TryGetValue(vector3Int, out roomIdentifier))
+                    rooms.AddItem(Get(roomIdentifier));
+            }
+
+            return rooms;
+        }
 
         /// <summary>
         /// Gets a random <see cref="Room"/>.
