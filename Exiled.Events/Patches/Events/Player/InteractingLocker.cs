@@ -40,7 +40,7 @@ namespace Exiled.Events.Patches.Events.Player
                 new[]
                 {
                     // Player.Get(ply);
-                    new CodeInstruction(OpCodes.Ldarg_1).MoveLabelsFrom(newInstructions[index]),
+                    new CodeInstruction(OpCodes.Ldarg_1),
                     new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
 
                     // this
@@ -55,8 +55,10 @@ namespace Exiled.Events.Patches.Events.Player
                     // colliderId
                     new(OpCodes.Ldarg_2),
 
-                    // flag
+                    // !flag
                     new(OpCodes.Ldloc_0),
+                    new(OpCodes.Ldc_I4_0),
+                    new(OpCodes.Ceq),
 
                     // InteractingLockerEventArgs ev = new(Player, Locker, LockerChamber, byte, bool)
                     new CodeInstruction(OpCodes.Newobj, GetDeclaredConstructors(typeof(InteractingLockerEventArgs))[0]),
@@ -65,8 +67,10 @@ namespace Exiled.Events.Patches.Events.Player
                     // Handlers.Player.OnInteractingLocker(ev)
                     new(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnInteractingLocker))),
 
-                    // flag = ev.IsAllowed
+                    // flag = !ev.IsAllowed
                     new(OpCodes.Callvirt, PropertyGetter(typeof(InteractingLockerEventArgs), nameof(InteractingLockerEventArgs.IsAllowed))),
+                    new(OpCodes.Ldc_I4_0),
+                    new(OpCodes.Ceq),
                     new(OpCodes.Stloc_0),
                 });
 
