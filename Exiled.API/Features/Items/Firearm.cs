@@ -203,6 +203,14 @@ namespace Exiled.API.Features.Items
         internal static Dictionary<FirearmType, AttachmentIdentifier[]> AvailableAttachmentsValue { get; } = new();
 
         /// <summary>
+        /// Creates and returns a <see cref="Firearm"/> representing the provided <see cref="Enums.FirearmType"/>.
+        /// </summary>
+        /// <param name="type">The type of firearm to create.</param>
+        /// <returns>The newly created firearm.</returns>
+        public static Firearm Create(FirearmType type)
+            => type is not FirearmType.None ? (Firearm)Create(type.GetItemType()) : null;
+
+        /// <summary>
         /// Adds a <see cref="AttachmentIdentifier"/> to the firearm.
         /// </summary>
         /// <param name="identifier">The <see cref="AttachmentIdentifier"/> to add.</param>
