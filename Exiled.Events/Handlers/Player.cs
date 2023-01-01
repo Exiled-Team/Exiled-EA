@@ -1006,14 +1006,8 @@ namespace Exiled.Events.Handlers
         /// <summary>
         /// Called before a <see cref="API.Features.Player"/> interacts with a door.
         /// </summary>
-        /// <param name="player"><inheritdoc cref="InteractingDoorEventArgs.Player"/></param>
-        /// <param name="doorVariant"><inheritdoc cref="InteractingDoorEventArgs.Door"/></param>
-        /// <param name="canOpen">Indicates whether the door can open or not.</param>
-        /// <returns><inheritdoc cref="InteractingDoorEventArgs.IsAllowed"/></returns>
-        [PluginEvent(ServerEventType.PlayerInteractDoor)]
-
-        // TODO: NWAPI supports skipping permission check, so player can change door's TargetStatus even if it doesn't met the keycard permissions. EXILED should implement that too.
-        public bool OnInteractingDoor(PluginAPI.Core.Player player, DoorVariant doorVariant, bool canOpen) => InteractingDoor.InvokeSafely(new(player, doorVariant));
+        /// <param name="ev">The <see cref="InteractingDoorEventArgs"/> instance.</param>
+        public static void OnInteractingDoor(InteractingDoorEventArgs ev) => InteractingDoor.InvokeSafely(ev);
 
         /// <summary>
         /// Called before muting a user.
