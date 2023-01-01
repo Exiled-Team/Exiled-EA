@@ -1021,17 +1021,6 @@ namespace Exiled.Events.Handlers
         public bool OnInteractingDoor(PluginAPI.Core.Player player, DoorVariant doorVariant, bool canOpen) => InteractingDoor.InvokeSafely(new(player, doorVariant));
 
         /// <summary>
-        /// Called before dropping ammo.
-        /// </summary>
-        /// <param name="player"><inheritdoc cref="DroppingAmmoEventArgs.Player"/></param>
-        /// <param name="item"><inheritdoc cref="DroppingAmmoEventArgs.AmmoType"/></param>
-        /// <param name="amount"><inheritdoc cref="DroppingAmmoEventArgs.Amount"/></param>
-        /// <returns><inheritdoc cref="DroppingAmmoEventArgs.IsAllowed"/></returns>
-        [PluginEvent(ServerEventType.PlayerDropAmmo)]
-        public bool OnDroppingAmmo(PluginAPI.Core.Player player, ItemType item, int amount)
-            => DroppingAmmo.InvokeSafely(new(player, item.GetAmmoType(), (ushort)amount));
-
-        /// <summary>
         /// Called before muting a user.
         /// </summary>
         /// <param name="player"><inheritdoc cref="IssuingMuteEventArgs.Player"/></param>
