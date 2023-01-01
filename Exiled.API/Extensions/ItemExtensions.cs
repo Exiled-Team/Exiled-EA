@@ -247,7 +247,7 @@ namespace Exiled.API.Extensions
         public static IEnumerable<ItemType> GetItemTypes(this IEnumerable<Item> items) => items.Select(item => item.Type);
 
         /// <summary>
-        /// Gets all <see cref="AttachmentIdentifier"/>s present on an <see cref="FirearmType"/>.
+        /// Gets all <see cref="AttachmentIdentifier"/>s present on a <see cref="FirearmType"/>.
         /// </summary>
         /// <param name="type">The <see cref="FirearmType"/> to iterate over.</param>
         /// <param name="code">The <see cref="uint"/> value which represents the attachments code to check.</param>
@@ -266,7 +266,7 @@ namespace Exiled.API.Extensions
         }
 
         /// <summary>
-        /// Tries to get all <see cref="AttachmentIdentifier"/>s present on an <see cref="ItemType"/>.
+        /// Tries to get all <see cref="AttachmentIdentifier"/>s present on a <see cref="FirearmType"/>.
         /// </summary>
         /// <param name="type">The <see cref="FirearmType"/> to iterate over.</param>
         /// <param name="code">The <see cref="uint"/> value which represents the attachments code to check.</param>
@@ -292,9 +292,9 @@ namespace Exiled.API.Extensions
         public static uint GetAttachmentsCode(this IEnumerable<AttachmentIdentifier> identifiers) => identifiers.Aggregate<AttachmentIdentifier, uint>(0, (current, identifier) => current + identifier);
 
         /// <summary>
-        /// Gets the base code of the specified <see cref="ItemType"/>.
+        /// Gets the base code of the specified <see cref="FirearmType"/>.
         /// </summary>
-        /// <param name="type">The <see cref="ItemType"/> to check.</param>
+        /// <param name="type">The <see cref="FirearmType"/> to check.</param>
         /// <returns>The corresponding base code.</returns>
         public static uint GetBaseCode(this FirearmType type)
         {

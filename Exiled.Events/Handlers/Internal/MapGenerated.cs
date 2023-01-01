@@ -14,6 +14,7 @@ namespace Exiled.Events.Handlers.Internal
     using API.Features;
     using API.Features.Items;
     using API.Structs;
+    using Exiled.API.Enums;
     using Exiled.API.Extensions;
     using Interactables.Interobjects;
     using InventorySystem.Items.Firearms.Attachments;
@@ -122,13 +123,14 @@ namespace Exiled.Events.Handlers.Internal
         {
             foreach (ItemType type in Enum.GetValues(typeof(ItemType)))
             {
+                FirearmType firearmType = type.GetFirearmType();
                 if (!type.IsWeapon(false))
                     continue;
 
                 if (Item.Create(type) is not Firearm firearm)
                     continue;
 
-                Firearm.ItemTypeToFirearmInstance.Add(type, firearm);
+                Firearm.ItemTypeToFirearmInstance.Add(firearmType, firearm);
 
                 List<AttachmentIdentifier> attachmentIdentifiers = new();
                 HashSet<AttachmentSlot> attachmentsSlots = new();
@@ -149,8 +151,8 @@ namespace Exiled.Events.Handlers.Internal
                     .Where(attachment => attachment.Slot == slot)
                     .Aggregate((curMin, nextEntry) => nextEntry.Code < curMin.Code ? nextEntry : curMin));
 
-                Firearm.BaseCodesValue.Add(type, baseCode);
-                Firearm.AvailableAttachmentsValue.Add(type, attachmentIdentifiers.ToArray());
+                Firearm.BaseCodesValue.Add(firearmType, baseCode);
+                Firearm.AvailableAttachmentsValue.Add(firearmType, attachmentIdentifiers.ToArray());
             }
         }
     }
