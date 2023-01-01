@@ -337,11 +337,6 @@ namespace Exiled.Events.Handlers
         public static event CustomEventHandler<ProcessingHotkeyEventArgs> ProcessingHotkey;
 
         /// <summary>
-        /// Invoked before dropping ammo.
-        /// </summary>
-        public static event CustomEventHandler<DroppingAmmoEventArgs> DroppingAmmo;
-
-        /// <summary>
         /// Invoked before a <see cref="API.Features.Player"/> interacts with a shooting target.
         /// </summary>
         public static event CustomEventHandler<InteractingShootingTargetEventArgs> InteractingShootingTarget;
