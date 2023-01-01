@@ -375,7 +375,7 @@ namespace Exiled.API.Features
         /// </summary>
         public Player Cuffer
         {
-            get => Get(DisarmedPlayers.Entries.FirstOrDefault(entry => entry.DisarmedPlayer == NetworkIdentity.netId).DisarmedPlayer);
+            get => Get(DisarmedPlayers.Entries.FirstOrDefault(entry => entry.DisarmedPlayer == NetworkIdentity.netId).Disarmer);
             set
             {
                 for (int i = 0; i < DisarmedPlayers.Entries.Count; i++)
@@ -506,7 +506,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets a value indicating whether or not the player is the host.
         /// </summary>
-        public bool IsHost => ReferenceHub.isServer;
+        public bool IsHost => ReferenceHub.isLocalPlayer;
 
         /// <summary>
         /// Gets a value indicating whether or not the player is alive.
