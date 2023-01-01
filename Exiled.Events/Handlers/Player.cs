@@ -1026,7 +1026,6 @@ namespace Exiled.Events.Handlers
         /// Called before destroying a <see cref="API.Features.Player"/>.
         /// </summary>
         /// <param name="player"><inheritdoc cref="DestroyingEventArgs.Player"/></param>
-        [PluginEvent(ServerEventType.PlayerLeft)]
         public void OnDestroying(DestroyingEventArgs ev) => Destroying.InvokeSafely(ev);
     }
 }
