@@ -907,7 +907,6 @@ namespace Exiled.Events.Handlers
         /// <param name="window"><inheritdoc cref="DamagingWindowEventArgs.Window"/></param>
         /// <param name="handler"><inheritdoc cref="DamagingWindowEventArgs.Handler"/></param>
         /// <param name="damageAmount">The damage inflicted to the window.</param>
-        // [PluginEvent(ServerEventType.PlayerDamagedWindow)]
         public void OnPlayerDamageWindow(DamagingWindowEventArgs ev) => PlayerDamageWindow.InvokeSafely(ev);
 
         /// <summary>
