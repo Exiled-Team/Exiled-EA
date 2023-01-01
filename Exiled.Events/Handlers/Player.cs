@@ -684,16 +684,12 @@ namespace Exiled.Events.Handlers
         /// Called before a <see cref="API.Features.Player"/> interacts with an elevator.
         /// </summary>
         /// <param name="ev">The <see cref="InteractingElevatorEventArgs"/> instance.</param>
-        // [PluginEvent(ServerEventType.PlayerInteractElevator)]
-        // TODO: Can't be implemented right now. Missing Elevator argument.
         public static void OnInteractingElevator(InteractingElevatorEventArgs ev) => InteractingElevator.InvokeSafely(ev);
 
         /// <summary>
         /// Called before a <see cref="API.Features.Player"/> interacts with a locker.
         /// </summary>
         /// <param name="ev">The <see cref="InteractingLockerEventArgs"/> instance.</param>
-        // [PluginEvent(ServerEventType.PlayerInteractLocker)]
-        // TODO: Can't be implemented right now. Missing LockerChamber argument.
         public static void OnInteractingLocker(InteractingLockerEventArgs ev) => InteractingLocker.InvokeSafely(ev);
 
         /// <summary>
@@ -706,8 +702,6 @@ namespace Exiled.Events.Handlers
         /// Called before a <see cref="API.Features.Player"/> receives a status effect.
         /// </summary>
         /// <param name="ev">The <see cref="ReceivingEffectEventArgs"/> instance.</param>
-        // [PluginEvent(ServerEventType.PlayerReceiveEffect)]
-        // TODO: Can't be implemented right now. Missing effect properties.
         public static void OnReceivingEffect(ReceivingEffectEventArgs ev) => ReceivingEffect.InvokeSafely(ev);
 
         /// <summary>
@@ -732,24 +726,18 @@ namespace Exiled.Events.Handlers
         /// Called before processing a hotkey.
         /// </summary>
         /// <param name="ev">The <see cref="ProcessingHotkeyEventArgs"/> instance.</param>
-        // [PluginEvent(ServerEventType.PlayerUseHotkey)]
-        // TODO: Can't be implemented right now. Looks like our enum is outdated. We can also use NW's one.
         public static void OnProcessingHotkey(ProcessingHotkeyEventArgs ev) => ProcessingHotkey.InvokeSafely(ev);
 
         /// <summary>
         /// Called before a <see cref="API.Features.Player"/> interacts with a shooting target.
         /// </summary>
         /// <param name="ev">The <see cref="InteractingShootingTargetEventArgs"/> instance.</param>
-        // [PluginEvent(ServerEventType.PlayerInteractShootingTarget)]
-        // TODO: Can't be implemented right now. No ShootingTarget argument.
         public static void OnInteractingShootingTarget(InteractingShootingTargetEventArgs ev) => InteractingShootingTarget.InvokeSafely(ev);
 
         /// <summary>
         /// Called before a <see cref="API.Features.Player"/> damages a shooting target.
         /// </summary>
         /// <param name="ev">The <see cref="DamagingShootingTargetEventArgs"/> instance.</param>
-        // [PluginEvent(ServerEventType.PlayerDamagedShootingTarget)]
-        // TODO: Can't be implemented right now. Missing arguments like distance and hitpoint.
         public static void OnDamagingShootingTarget(DamagingShootingTargetEventArgs ev) => DamagingShootingTarget.InvokeSafely(ev);
 
         /// <summary>
