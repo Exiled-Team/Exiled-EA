@@ -23,9 +23,7 @@ namespace Exiled.Events.Handlers
     using PluginAPI.Events;
 
     using static Events;
-#pragma warning disable SA1615//TODO
-#pragma warning disable SA1611
-#pragma warning disable SA1204
+
 #pragma warning disable IDE0079
 #pragma warning disable IDE0060
 
@@ -335,6 +333,11 @@ namespace Exiled.Events.Handlers
         /// Called before processing a hotkey.
         /// </summary>
         public static event CustomEventHandler<ProcessingHotkeyEventArgs> ProcessingHotkey;
+
+        /// <summary>
+        /// Invoked before dropping ammo.
+        /// </summary>
+        public static event CustomEventHandler<DroppingAmmoEventArgs> DroppingAmmo;
 
         /// <summary>
         /// Invoked before a <see cref="API.Features.Player"/> interacts with a shooting target.
@@ -679,16 +682,12 @@ namespace Exiled.Events.Handlers
         /// Called before a <see cref="API.Features.Player"/> interacts with an elevator.
         /// </summary>
         /// <param name="ev">The <see cref="InteractingElevatorEventArgs"/> instance.</param>
-        // [PluginEvent(ServerEventType.PlayerInteractElevator)]
-        // TODO: Can't be implemented right now. Missing Elevator argument.
         public static void OnInteractingElevator(InteractingElevatorEventArgs ev) => InteractingElevator.InvokeSafely(ev);
 
         /// <summary>
         /// Called before a <see cref="API.Features.Player"/> interacts with a locker.
         /// </summary>
         /// <param name="ev">The <see cref="InteractingLockerEventArgs"/> instance.</param>
-        // [PluginEvent(ServerEventType.PlayerInteractLocker)]
-        // TODO: Can't be implemented right now. Missing LockerChamber argument.
         public static void OnInteractingLocker(InteractingLockerEventArgs ev) => InteractingLocker.InvokeSafely(ev);
 
         /// <summary>
@@ -701,8 +700,6 @@ namespace Exiled.Events.Handlers
         /// Called before a <see cref="API.Features.Player"/> receives a status effect.
         /// </summary>
         /// <param name="ev">The <see cref="ReceivingEffectEventArgs"/> instance.</param>
-        // [PluginEvent(ServerEventType.PlayerReceiveEffect)]
-        // TODO: Can't be implemented right now. Missing effect properties.
         public static void OnReceivingEffect(ReceivingEffectEventArgs ev) => ReceivingEffect.InvokeSafely(ev);
 
         /// <summary>
@@ -714,7 +711,7 @@ namespace Exiled.Events.Handlers
         /// <summary>
         /// Called before a <see cref="API.Features.Player"/> MicroHID state is changed.
         /// </summary>
-        /// <param name="ev">The <see cref="ChangingRadioPresetEventArgs"/> instance.</param>
+        /// <param name="ev">The <see cref="ChangingMicroHIDStateEventArgs"/> instance.</param>
         public static void OnChangingMicroHIDState(ChangingMicroHIDStateEventArgs ev) => ChangingMicroHIDState.InvokeSafely(ev);
 
         /// <summary>
@@ -727,24 +724,18 @@ namespace Exiled.Events.Handlers
         /// Called before processing a hotkey.
         /// </summary>
         /// <param name="ev">The <see cref="ProcessingHotkeyEventArgs"/> instance.</param>
-        // [PluginEvent(ServerEventType.PlayerUseHotkey)]
-        // TODO: Can't be implemented right now. Looks like our enum is outdated. We can also use NW's one.
         public static void OnProcessingHotkey(ProcessingHotkeyEventArgs ev) => ProcessingHotkey.InvokeSafely(ev);
 
         /// <summary>
         /// Called before a <see cref="API.Features.Player"/> interacts with a shooting target.
         /// </summary>
         /// <param name="ev">The <see cref="InteractingShootingTargetEventArgs"/> instance.</param>
-        // [PluginEvent(ServerEventType.PlayerInteractShootingTarget)]
-        // TODO: Can't be implemented right now. No ShootingTarget argument.
         public static void OnInteractingShootingTarget(InteractingShootingTargetEventArgs ev) => InteractingShootingTarget.InvokeSafely(ev);
 
         /// <summary>
         /// Called before a <see cref="API.Features.Player"/> damages a shooting target.
         /// </summary>
         /// <param name="ev">The <see cref="DamagingShootingTargetEventArgs"/> instance.</param>
-        // [PluginEvent(ServerEventType.PlayerDamagedShootingTarget)]
-        // TODO: Can't be implemented right now. Missing arguments like distance and hitpoint.
         public static void OnDamagingShootingTarget(DamagingShootingTargetEventArgs ev) => DamagingShootingTarget.InvokeSafely(ev);
 
         /// <summary>
@@ -879,6 +870,102 @@ namespace Exiled.Events.Handlers
         public static void OnExitingEnvironmentalHazard(ExitingEnvironmentalHazardEventArgs ev) => ExitingEnvironmentalHazard.InvokeSafely(ev);
 
         /// <summary>
+        /// Called before a <see cref="API.Features.Player"/> damage a window.
+        /// </summary>
+        /// <param name="ev">The <see cref="DamagingWindowEventArgs"/> instance. </param>
+        public static void OnPlayerDamageWindow(DamagingWindowEventArgs ev) => PlayerDamageWindow.InvokeSafely(ev);
+
+        /// <summary>
+        /// Called before a <see cref="API.Features.Player"/> unlocks a generator.
+        /// </summary>
+        /// <param name="ev">The <see cref="UnlockingGeneratorEventArgs"/> instance. </param>
+        public static void OnUnlockingGenerator(UnlockingGeneratorEventArgs ev) => UnlockingGenerator.InvokeSafely(ev);
+
+        /// <summary>
+        /// Called before a <see cref="API.Features.Player"/> opens a generator.
+        /// </summary>
+        /// <param name="ev">The <see cref="OpeningGeneratorEventArgs"/> instance. </param>
+        public static void OnOpeningGenerator(OpeningGeneratorEventArgs ev) => OpeningGenerator.InvokeSafely(ev);
+
+        /// <summary>
+        /// Called before a <see cref="API.Features.Player"/> closes a generator.
+        /// </summary>
+        /// <param name="ev">The <see cref="ClosingGeneratorEventArgs"/> instance. </param>
+        public static void OnClosingGenerator(ClosingGeneratorEventArgs ev) => ClosingGenerator.InvokeSafely(ev);
+
+        /// <summary>
+        /// Called before a <see cref="API.Features.Player"/> turns on the generator by switching lever.
+        /// </summary>
+        /// <param name="ev">The <see cref="ActivatingGeneratorEventArgs"/> instance. </param>
+        public static void OnActivatingGenerator(ActivatingGeneratorEventArgs ev) => ActivatingGenerator.InvokeSafely(ev);
+
+        /// <summary>
+        /// Called before a <see cref="API.Features.Player"/> turns off the generator by switching lever.
+        /// </summary>
+        /// <param name="ev">The <see cref="StoppingGeneratorEventArgs"/> instance. </param>
+        public static void OnStoppingGenerator(StoppingGeneratorEventArgs ev) => StoppingGenerator.InvokeSafely(ev);
+
+        /// <summary>
+        /// Called before a <see cref="API.Features.Player"/> interacts with a door.
+        /// </summary>
+        /// <param name="ev">The <see cref="InteractingDoorEventArgs"/> instance. </param>
+        public static void OnInteractingDoor(InteractingDoorEventArgs ev) => InteractingDoor.InvokeSafely(ev);
+
+        /// <summary>
+        /// Called before dropping ammo.
+        /// </summary>
+        /// <param name="ev">The <see cref="DroppingAmmoEventArgs"/> instance. </param>
+        public static void OnDroppingAmmo(DroppingAmmoEventArgs ev) => DroppingAmmo.InvokeSafely(ev);
+
+        /// <summary>
+        /// Called before muting a user.
+        /// </summary>
+        /// <param name="ev">The <see cref="IssuingMuteEventArgs"/> instance. </param>
+        public static void OnIssuingMute(IssuingMuteEventArgs ev) => IssuingMute.InvokeSafely(ev);
+
+        /// <summary>
+        /// Called before unmuting a user.
+        /// </summary>
+        /// <param name="ev">The <see cref="RevokingMuteEventArgs"/> instance. </param>
+        public static void OnRevokingMute(RevokingMuteEventArgs ev) => RevokingMute.InvokeSafely(ev);
+
+        /// <summary>
+        /// Called before a user's radio preset is changed.
+        /// </summary>
+        /// <param name="ev">The <see cref="ChangingRadioPresetEventArgs"/> instance. </param>
+        public static void OnChangingRadioPreset(ChangingRadioPresetEventArgs ev) => ChangingRadioPreset.InvokeSafely(ev);
+
+        /// <summary>
+        /// Called before hurting a player.
+        /// </summary>
+        /// <param name="ev">The <see cref="HurtingEventArgs"/> instance. </param>
+        public static void OnHurting(HurtingEventArgs ev) => Hurting.InvokeSafely(ev);
+
+        /// <summary>
+        /// Called before a <see cref="API.Features.Player"/> dies.
+        /// </summary>
+        /// <param name="ev">The <see cref="DyingEventArgs"/> instance. </param>
+        public static void OnDying(DyingEventArgs ev) => Dying.InvokeSafely(ev);
+
+        /// <summary>
+        /// Called after a <see cref="API.Features.Player"/> has joined the server.
+        /// </summary>
+        /// <param name="ev">The <see cref="JoinedEventArgs"/> instance. </param>
+        public static void OnJoined(JoinedEventArgs ev) => Joined.InvokeSafely(ev);
+
+        /// <summary>
+        /// Called after a <see cref="API.Features.Player"/> has been verified.
+        /// </summary>
+        /// <param name="ev">The <see cref="VerifiedEventArgs"/> instance. </param>
+        public static void OnVerified(VerifiedEventArgs ev) => Verified.InvokeSafely(ev);
+
+        /// <summary>
+        /// Called before destroying a <see cref="API.Features.Player"/>.
+        /// </summary>
+        /// <param name="ev">The <see cref="DestroyingEventArgs"/> instance. </param>
+        public static void OnDestroying(DestroyingEventArgs ev) => Destroying.InvokeSafely(ev);
+
+        /// <summary>
         /// Called before pre-authenticating a <see cref="API.Features.Player"/>.
         /// </summary>
         /// <param name="userId"><inheritdoc cref="PreAuthenticatingEventArgs.UserId"/></param>
@@ -905,222 +992,6 @@ namespace Exiled.Events.Handlers
             PreAuthenticating.InvokeSafely(ev);
 
             return ev.CachedPreauthData;
-        }
-
-        /// <summary>
-        /// Called before a <see cref="API.Features.Player"/> damage a window.
-        /// </summary>
-        /// <param name="player"><inheritdoc cref="DamagingWindowEventArgs.Player"/></param>
-        /// <param name="window"><inheritdoc cref="DamagingWindowEventArgs.Window"/></param>
-        /// <param name="handler"><inheritdoc cref="DamagingWindowEventArgs.Handler"/></param>
-        /// <param name="damageAmount">The damage inflicted to the window.</param>
-        [PluginEvent(ServerEventType.PlayerDamagedWindow)]
-        public void OnPlayerDamageWindow(PluginAPI.Core.Player player, BreakableWindow window, PlayerStatsSystem.DamageHandlerBase handler, float damageAmount) =>
-            PlayerDamageWindow.InvokeSafely(new DamagingWindowEventArgs(window, damageAmount, handler));
-
-        /// <summary>
-        /// Called before a <see cref="API.Features.Player"/> unlocks a generator.
-        /// </summary>
-        /// <param name="player"><inheritdoc cref="UnlockingGeneratorEventArgs.Player"/></param>
-        /// <param name="generator"><inheritdoc cref="UnlockingGeneratorEventArgs.Generator"/></param>
-        /// <returns><inheritdoc cref="UnlockingGeneratorEventArgs.IsAllowed"/></returns>
-        [PluginEvent(ServerEventType.PlayerUnlockGenerator)]
-        public bool OnUnlockingGenerator(PluginAPI.Core.Player player, Scp079Generator generator)
-        {
-            UnlockingGeneratorEventArgs ev = new(player, generator);
-
-            if (!UnlockingGenerator.InvokeSafely(ev))
-                ev.Generator.DenyUnlockAndResetCooldown();
-
-            return ev.IsAllowed;
-        }
-
-        /// <summary>
-        /// Called before a <see cref="API.Features.Player"/> opens a generator.
-        /// </summary>
-        /// <param name="player"><inheritdoc cref="OpeningGeneratorEventArgs.Player"/></param>
-        /// <param name="generator"><inheritdoc cref="OpeningGeneratorEventArgs.Generator"/></param>
-        /// <returns><inheritdoc cref="OpeningGeneratorEventArgs.IsAllowed"/></returns>
-        [PluginEvent(ServerEventType.PlayerOpenGenerator)]
-        public bool OnOpeningGenerator(PluginAPI.Core.Player player, Scp079Generator generator)
-        {
-            OpeningGeneratorEventArgs ev = new(player, generator);
-
-            if (!OpeningGenerator.InvokeSafely(ev))
-                ev.Generator.DenyUnlockAndResetCooldown();
-
-            return ev.IsAllowed;
-        }
-
-        /// <summary>
-        /// Called before a <see cref="API.Features.Player"/> closes a generator.
-        /// </summary>
-        /// <param name="player"><inheritdoc cref="OpeningGeneratorEventArgs.Player"/></param>
-        /// <param name="generator"><inheritdoc cref="OpeningGeneratorEventArgs.Generator"/></param>
-        /// <returns><inheritdoc cref="OpeningGeneratorEventArgs.IsAllowed"/></returns>
-        [PluginEvent(ServerEventType.PlayerCloseGenerator)]
-        public bool OnClosingGenerator(PluginAPI.Core.Player player, Scp079Generator generator)
-        {
-            ClosingGeneratorEventArgs ev = new(player, generator);
-
-            if (!ClosingGenerator.InvokeSafely(ev))
-                ev.Generator.DenyUnlockAndResetCooldown();
-
-            return ev.IsAllowed;
-        }
-
-        /// <summary>
-        /// Called before a <see cref="API.Features.Player"/> turns on the generator by switching lever.
-        /// </summary>
-        /// <param name="player"><inheritdoc cref="ActivatingGeneratorEventArgs.Player"/></param>
-        /// <param name="generator"><inheritdoc cref="ActivatingGeneratorEventArgs.Generator"/></param>
-        /// <returns><inheritdoc cref="ActivatingGeneratorEventArgs.IsAllowed"/></returns>
-        [PluginEvent(ServerEventType.PlayerActivateGenerator)]
-        public bool OnActivatingGenerator(PluginAPI.Core.Player player, Scp079Generator generator)
-        {
-            ActivatingGeneratorEventArgs ev = new(player, generator);
-
-            if (!ActivatingGenerator.InvokeSafely(ev))
-                ev.Generator.DenyUnlockAndResetCooldown();
-
-            return ev.IsAllowed;
-        }
-
-        /// <summary>
-        /// Called before a <see cref="API.Features.Player"/> turns off the generator by switching lever.
-        /// </summary>
-        /// <param name="player"><inheritdoc cref="ActivatingGeneratorEventArgs.Player"/></param>
-        /// <param name="generator"><inheritdoc cref="ActivatingGeneratorEventArgs.Generator"/></param>
-        /// <returns><inheritdoc cref="ActivatingGeneratorEventArgs.IsAllowed"/></returns>
-        [PluginEvent(ServerEventType.PlayerDeactivatedGenerator)]
-        public bool OnStoppingGenerator(PluginAPI.Core.Player player, Scp079Generator generator)
-        {
-            StoppingGeneratorEventArgs ev = new(player, generator);
-
-            if (!StoppingGenerator.InvokeSafely(ev))
-                ev.Generator.DenyUnlockAndResetCooldown();
-
-            return ev.IsAllowed;
-        }
-
-        /// <summary>
-        /// Called before a <see cref="API.Features.Player"/> interacts with a door.
-        /// </summary>
-        /// <param name="ev">The <see cref="InteractingDoorEventArgs"/> instance.</param>
-        public static void OnInteractingDoor(InteractingDoorEventArgs ev) => InteractingDoor.InvokeSafely(ev);
-
-        /// <summary>
-        /// Called before muting a user.
-        /// </summary>
-        /// <param name="player"><inheritdoc cref="IssuingMuteEventArgs.Player"/></param>
-        /// <param name="isIntercom"><inheritdoc cref="IssuingMuteEventArgs.IsIntercom"/></param>
-        /// <returns><inheritdoc cref="IssuingMuteEventArgs.IsAllowed"/></returns>
-        [PluginEvent(ServerEventType.PlayerMuted)]
-        public bool OnIssuingMute(PluginAPI.Core.Player player, bool isIntercom) => IssuingMute.InvokeSafely(new(player, isIntercom));
-
-        /// <summary>
-        /// Called before unmuting a user.
-        /// </summary>
-        /// <param name="player"><inheritdoc cref="IssuingMuteEventArgs.Player"/></param>
-        /// <param name="isIntercom"><inheritdoc cref="IssuingMuteEventArgs.IsIntercom"/></param>
-        /// <returns><inheritdoc cref="IssuingMuteEventArgs.IsAllowed"/></returns>
-        [PluginEvent(ServerEventType.PlayerUnmuted)]
-        public bool OnRevokingMute(PluginAPI.Core.Player player, bool isIntercom) => RevokingMute.InvokeSafely(new(player, isIntercom));
-
-        /// <summary>
-        /// Called before a user's radio preset is changed.
-        /// </summary>
-        /// <param name="player"><inheritdoc cref="ChangingRadioPresetEventArgs.Player"/></param>
-        /// <param name="radio">The <see cref="RadioItem"/> instance.</param>
-        /// <param name="range"><inheritdoc cref="ChangingRadioPresetEventArgs.NewValue"/></param>
-        /// <returns><inheritdoc cref="ChangingRadioPresetEventArgs.IsAllowed"/></returns>
-        [PluginEvent(ServerEventType.PlayerChangeRadioRange)]
-        public bool OnChangingRadioPreset(PluginAPI.Core.Player player, RadioItem radio, byte range)
-            => ChangingRadioPreset.InvokeSafely(new(player, radio.RangeLevel, (RadioMessages.RadioRangeLevel)range));
-
-        /// <summary>
-        /// Called before hurting a player.
-        /// </summary>
-        /// <param name="target"><inheritdoc cref="HurtingEventArgs.Attacker"/></param>
-        /// <param name="attacker"><inheritdoc cref="HurtingEventArgs.Player"/></param>
-        /// <param name="damageHandler"><inheritdoc cref="HurtingEventArgs.DamageHandler"/></param>
-        /// <returns><inheritdoc cref="HurtingEventArgs.IsAllowed"/></returns>
-        [PluginEvent(ServerEventType.PlayerDamage)]
-        public bool OnHurting(PluginAPI.Core.Player target, PluginAPI.Core.Player attacker, DamageHandlerBase damageHandler)
-        {
-            if (damageHandler is RecontainmentDamageHandler && target.Role == RoleTypeId.Scp079)
-                Scp079.OnRecontained(new RecontainedEventArgs(target));
-
-            return Hurting.InvokeSafely(new(target, damageHandler));
-        }
-
-        /// <summary>
-        /// Called before a <see cref="API.Features.Player"/> dies.
-        /// </summary>
-        /// <param name="player"><inheritdoc cref="DyingEventArgs.Player"/></param>
-        /// <param name="attacker"><inheritdoc cref="DyingEventArgs.Attacker"/></param>
-        /// <param name="damageHandler"><inheritdoc cref="DyingEventArgs.DamageHandler"/></param>
-        /// <returns><inheritdoc cref="DyingEventArgs.IsAllowed"/></returns>
-        [PluginEvent(ServerEventType.PlayerDeath)]
-        public bool OnDying(PluginAPI.Core.Player player, PluginAPI.Core.Player attacker, PlayerStatsSystem.DamageHandlerBase damageHandler)
-            => Dying.InvokeSafely(new(player, damageHandler));
-
-        /// <summary>
-        /// Called after a <see cref="API.Features.Player"/> has joined the server.
-        /// </summary>
-        /// <param name="player"><inheritdoc cref="JoinedEventArgs.Player"/></param>
-        [PluginEvent(ServerEventType.PlayerJoined)]
-        public void OnJoined(PluginAPI.Core.Player player)
-        {
-            API.Features.Player exiledPlayer = new(player.ReferenceHub);
-            API.Features.Player.UnverifiedPlayers.Add(player.ReferenceHub, exiledPlayer);
-
-            Joined.InvokeSafely(new(exiledPlayer));
-        }
-
-        /// <summary>
-        /// Called after a <see cref="API.Features.Player"/> has been verified.
-        /// </summary>
-        /// <param name="player"><inheritdoc cref="VerifiedEventArgs.Player"/></param>
-        [PluginEvent(ServerEventType.PlayerJoined)]
-        public void OnVerified(PluginAPI.Core.Player player)
-        {
-            if (!API.Features.Player.UnverifiedPlayers.TryGetValue(player.ReferenceHub, out API.Features.Player exiledPlayer))
-            {
-                Log.Error($"Player {player.Nickname} is not verified. This error should never appear.");
-                return;
-            }
-
-            API.Features.Player.Dictionary.Add(player.ReferenceHub.gameObject, exiledPlayer);
-
-            exiledPlayer.IsVerified = true;
-            exiledPlayer.RawUserId = exiledPlayer.UserId.GetRawUserId();
-
-            Log.SendRaw($"Player {exiledPlayer.Nickname} ({exiledPlayer.UserId}) ({exiledPlayer.Id}) connected with the IP: {exiledPlayer.IPAddress}", System.ConsoleColor.Green);
-
-            Verified.InvokeSafely(new(exiledPlayer));
-        }
-
-        /// <summary>
-        /// Called before destroying a <see cref="API.Features.Player"/>.
-        /// </summary>
-        /// <param name="player"><inheritdoc cref="DestroyingEventArgs.Player"/></param>
-        [PluginEvent(ServerEventType.PlayerLeft)]
-        public void OnDestroying(PluginAPI.Core.Player player)
-        {
-            API.Features.Player exiledPlayer = player;
-
-            if (exiledPlayer is not null)
-            {
-                Destroying.InvokeSafely(new(exiledPlayer));
-
-                API.Features.Player.Dictionary.Remove(exiledPlayer.GameObject);
-                API.Features.Player.UnverifiedPlayers.Remove(exiledPlayer.ReferenceHub);
-                API.Features.Player.IdsCache.Remove(exiledPlayer.Id);
-
-                if (exiledPlayer.UserId != null)
-                    API.Features.Player.UserIdsCache.Remove(player.UserId);
-            }
         }
     }
 }
