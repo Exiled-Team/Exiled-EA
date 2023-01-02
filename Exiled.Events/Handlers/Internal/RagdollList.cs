@@ -25,6 +25,6 @@ namespace Exiled.Events.Handlers.Internal
         /// Called before a ragdoll is destroyed. Hooked to <see cref="RagdollManager.OnRagdollRemoved"/>.
         /// </summary>
         /// <param name="ragdoll">The destroyed ragdoll.</param>
-        internal static void OnRemovedRagdoll(BasicRagdoll ragdoll) => Ragdoll.BasicRagdollToRagdoll.Remove(ragdoll);
+        public static void OnRemovedRagdoll(BasicRagdoll ragdoll) => Ragdoll.BasicRagdollToRagdoll.Remove(ragdoll);
     }
 }
