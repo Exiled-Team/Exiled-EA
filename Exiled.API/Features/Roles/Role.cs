@@ -105,7 +105,7 @@ namespace Exiled.API.Features.Roles
         /// <summary>
         /// Gets a value indicating whether or not this role is still valid. This will only ever be <see langword="false"/> if the Role is stored and accessed at a later date.
         /// </summary>
-        public bool IsValid => Type == Owner.RoleManager.CurrentRole.RoleTypeId;
+        public bool IsValid => Owner == null || Type == Owner.RoleManager.CurrentRole.RoleTypeId;
 
         /// <summary>
         /// Gets a random spawn position of this role.
