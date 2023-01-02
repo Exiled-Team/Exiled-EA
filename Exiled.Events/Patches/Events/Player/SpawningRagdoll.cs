@@ -105,36 +105,6 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Callvirt, PropertyGetter(typeof(SpawningRagdollEventArgs), nameof(SpawningRagdollEventArgs.Info))),
                 });
 
-            index = newInstructions.FindLastIndex(instruction => instruction.opcode == OpCodes.Ldnull);
-
-            List<Label> labels = newInstructions[index].ExtractLabels();
-
-            newInstructions.RemoveRange(index, 2);
-
-            newInstructions.InsertRange(
-                index,
-                new[]
-                {
-                    // pop the gameObject in the stack
-                    new CodeInstruction(OpCodes.Pop).WithLabels(labels),
-
-                    // Ragdoll newRagdoll = new Ragdoll(ragdoll)
-                    new CodeInstruction(OpCodes.Ldloc_1),
-                    new(OpCodes.Newobj, GetDeclaredConstructors(typeof(API.Features.Ragdoll))[2]),
-                    new(OpCodes.Dup),
-                    new(OpCodes.Stloc_S, newRagdoll.LocalIndex),
-
-                    // NetworkServer.Spawn(newRagdoll.GameObject, null)
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(API.Features.Ragdoll), nameof(API.Features.Ragdoll.GameObject))),
-                    new(OpCodes.Ldnull),
-                    new(OpCodes.Call, Method(typeof(NetworkServer), nameof(NetworkServer.Spawn), new[] { typeof(GameObject), typeof(NetworkConnection) })),
-
-                    // Map.RagdollsValue.Add(newRagdoll)
-                    new(OpCodes.Ldsfld, Field(typeof(Map), nameof(Map.RagdollsValue))),
-                    new(OpCodes.Ldloc_S, newRagdoll.LocalIndex),
-                    new(OpCodes.Callvirt, Method(typeof(List<API.Features.Ragdoll>), nameof(List<API.Features.Ragdoll>.Add))),
-                });
-
             newInstructions[newInstructions.Count - 1].WithLabels(ret);
 
             for (int z = 0; z < newInstructions.Count; z++)
