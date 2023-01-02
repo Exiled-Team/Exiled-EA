@@ -28,6 +28,16 @@ namespace Exiled.API.Features.Pickups.Projectiles
         }
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="EffectGrenadeProjectile"/> class.
+        /// </summary>
+        /// <param name="type">The <see cref="ItemType"/> of the pickup.</param>
+        internal EffectGrenadeProjectile(ItemType type)
+            : base(type)
+        {
+            Base = (EffectGrenade)((Pickup)this).Base;
+        }
+
+        /// <summary>
         /// Gets the <see cref="EffectGrenade"/> that this class is encapsulating.
         /// </summary>
         public new EffectGrenade Base { get; }
