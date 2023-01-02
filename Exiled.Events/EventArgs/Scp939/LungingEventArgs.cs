@@ -24,9 +24,9 @@ namespace Exiled.Events.EventArgs.Scp939
         /// <param name="isAllowed">
         ///     <inheritdoc cref="IsAllowed" />
         /// </param>
-        public LungingEventArgs(Player player, bool isAllowed = true)
+        public LungingEventArgs(ReferenceHub player, bool isAllowed = true)
         {
-            Player = player;
+            Player = Player.Get(player);
             IsAllowed = isAllowed;
         }
 

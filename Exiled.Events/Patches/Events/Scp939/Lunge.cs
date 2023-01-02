@@ -26,7 +26,7 @@ namespace Exiled.Events.Patches.Events.Scp939
             if (__instance.State != Scp939LungeState.Triggered && !__instance.IsReady)
                 return false;
 
-            LungingEventArgs ev = new(API.Features.Player.Get(__instance.Owner));
+            LungingEventArgs ev = new(__instance.Owner);
             Scp939.OnLunging(ev);
             return ev.IsAllowed;
         }

@@ -26,7 +26,7 @@ namespace Exiled.Events.Patches.Events.Scp939
             bool flag = reader.ReadBoolean();
             bool toAll = flag != __instance.TargetState;
 
-            PlacingAmnesticCloudEventArgs ev = new(API.Features.Player.Get(__instance.Owner), flag, __instance.Cooldown.IsReady, __instance._failedCooldown);
+            PlacingAmnesticCloudEventArgs ev = new(__instance.Owner, flag, __instance.Cooldown.IsReady, __instance._failedCooldown);
             Scp939.OnPlacingAmnesticCloud(ev);
 
             if (!ev.IsAllowed)

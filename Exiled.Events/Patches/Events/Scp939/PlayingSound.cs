@@ -29,7 +29,7 @@ namespace Exiled.Events.Patches.Events.Scp939
 
             EnvMimicryOption sound = __instance.Categories[category].Options[option];
 
-            PlayingSoundEventArgs ev = new(API.Features.Player.Get(__instance.Owner), sound, __instance.Cooldown.IsReady, __instance._activationCooldown, __instance.Cooldown.IsReady);
+            PlayingSoundEventArgs ev = new(__instance.Owner, sound, __instance.Cooldown.IsReady, __instance._activationCooldown, __instance.Cooldown.IsReady);
 
             if (ev.IsReady && ev.IsAllowed)
             {

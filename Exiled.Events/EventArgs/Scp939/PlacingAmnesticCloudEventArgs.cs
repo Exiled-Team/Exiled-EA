@@ -33,9 +33,9 @@ namespace Exiled.Events.EventArgs.Scp939
         /// <param name="isAllowed">
         ///     <inheritdoc cref="IsAllowed" />
         /// </param>
-        public PlacingAmnesticCloudEventArgs(Player player, bool state, bool isReady, float cooldown, bool isAllowed = true)
+        public PlacingAmnesticCloudEventArgs(ReferenceHub player, bool state, bool isReady, float cooldown, bool isAllowed = true)
         {
-            Player = player;
+            Player = Player.Get(player);
             State = state;
             IsReady = isReady;
             Cooldown = cooldown;
