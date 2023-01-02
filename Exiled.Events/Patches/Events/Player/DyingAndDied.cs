@@ -79,7 +79,7 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Ldloc_S, player.LocalIndex),
 
                     // oldRole
-                    new(OpCodes.Ldloc, oldRole.LocalIndex),
+                    new(OpCodes.Ldloc_S, oldRole.LocalIndex),
 
                     // handler
                     new(OpCodes.Ldarg_1),
