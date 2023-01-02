@@ -252,13 +252,11 @@ namespace Exiled.API.Features
 
             ragdoll.NetworkInfo = networkInfo;
 
-            Ragdoll doll = new(ragdoll)
+            return new(ragdoll)
             {
                 Position = networkInfo.StartPosition,
                 Rotation = networkInfo.StartRotation,
             };
-
-            return doll;
         }
 
         /// <summary>
