@@ -38,6 +38,11 @@ namespace Exiled.Events.Handlers
         public static event CustomEventHandler<PlayingVoiceEventArgs> PlayingVoice;
 
         /// <summary>
+        ///     Invoked before SCP-939 will save Human voice.
+        /// </summary>
+        public static event CustomEventHandler<SavingVoiceEventArgs> SavingVoice;
+
+        /// <summary>
         ///     Invoked before SCP-939 plays a sound effect.
         /// </summary>
         public static event CustomEventHandler<PlayingSoundEventArgs> PlayingSound;
@@ -65,6 +70,12 @@ namespace Exiled.Events.Handlers
         /// </summary>
         /// <param name="ev">The <see cref="PlacingAmnesticCloudEventArgs" /> instance.</param>
         public static void OnPlayingVoice(PlayingVoiceEventArgs ev) => PlayingVoice.InvokeSafely(ev);
+
+        /// <summary>
+        ///     Called before SCP-939 plays a stolen voice.
+        /// </summary>
+        /// <param name="ev">The <see cref="PlacingAmnesticCloudEventArgs" /> instance.</param>
+        public static void OnSavingVoice(SavingVoiceEventArgs ev) => SavingVoice.InvokeSafely(ev);
 
         /// <summary>
         ///     Called before SCP-939 plays a sound.

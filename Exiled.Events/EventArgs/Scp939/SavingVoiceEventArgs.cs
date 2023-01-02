@@ -13,10 +13,10 @@ namespace Exiled.Events.EventArgs.Scp939
     /// <summary>
     ///     Contains all information before SCP-939 plays a stolen player's voice.
     /// </summary>
-    public class PlayingVoiceEventArgs : IPlayerEvent, IDeniableEvent
+    public class SavingVoiceEventArgs : IPlayerEvent, IDeniableEvent
     {
         /// <summary>
-        ///     Initializes a new instance of the <see cref="PlayingVoiceEventArgs" /> class.
+        ///     Initializes a new instance of the <see cref="SavingVoiceEventArgs" /> class.
         /// </summary>
         /// <param name="player">
         ///     <inheritdoc cref="Player" />
@@ -27,7 +27,7 @@ namespace Exiled.Events.EventArgs.Scp939
         /// <param name="isAllowed">
         ///     <inheritdoc cref="IsAllowed" />
         /// </param>
-        public PlayingVoiceEventArgs(ReferenceHub player, ReferenceHub stolen, bool isAllowed = true)
+        public SavingVoiceEventArgs(ReferenceHub player, ReferenceHub stolen, bool isAllowed = true)
         {
             Player = Player.Get(player);
             Stolen = Player.Get(stolen);

@@ -14,17 +14,31 @@ namespace Exiled.Events.Patches.Events.Scp939
     using Mirror;
     using PlayerRoles.PlayableScps.Scp939;
     using PlayerRoles.PlayableScps.Scp939.Mimicry;
+    using Utils.Networking;
 
-    // TODO: Add this
-    /*/// <summary>
-    ///     Patches <see cref="Scp939AmnesticCloudAbility.ServerProcessCmd(NetworkReader)" />
+    /// <summary>
+    ///     Patches <see cref="MimicryRecorder.ServerProcessCmd(NetworkReader)" />
     ///     to add the <see cref="Scp939.PlayingVoice" /> event.
     /// </summary>
-    [HarmonyPatch(typeof(MimicryTransmitter), nameof(MimicryTransmitter.Update))]
+    [HarmonyPatch(typeof(MimicryRecorder), nameof(MimicryRecorder.ServerProcessCmd))]
     internal static class PlayingVoice
     {
-        private static bool Prefix(Scp939AmnesticCloudAbility __instance, NetworkReader reader)
+        private static bool Prefix(MimicryRecorder __instance, NetworkReader reader)
         {
+            __instance.ServerProcessCmd(reader);
+            ReferenceHub rh = reader.ReadReferenceHub();
+            if (!__instance._serverSentVoices.Contains(rh))
+                return false;
+            if (!__instance._serverSentConfirmations.Add(rh))
+                return false;
+
+            PlayingVoiceEventArgs ev = new(__instance.Owner, rh);
+            Scp939.OnPlayingVoice(ev);
+            if (!ev.IsAllowed)
+                return false;
+
+            __instance.ServerSendRpc((ReferenceHub x) => x == rh);
+            return false;
         }
-    }*/
+    }
 }
