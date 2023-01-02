@@ -129,6 +129,8 @@ namespace Exiled.API.Features.Roles
         /// Gets or sets a value indicating whether or not the player has noclip enabled.
         /// </summary>
         /// <returns><see cref="bool"/> indicating status.</returns>
+        /// <remarks>For permitting a player to enter and exit noclip freely, see <see cref="Player.IsNoclipPermitted"/>.</remarks>
+        /// <seealso cref="Player.IsNoclipPermitted"/>
         public bool IsNoclipEnabled
         {
             get => Owner.ReferenceHub.playerStats.GetModule<AdminFlagsStat>().HasFlag(AdminFlags.Noclip);

@@ -52,18 +52,12 @@ namespace Exiled.API.Features
         internal static readonly List<PocketDimensionTeleport> TeleportsValue = new(8);
 
         /// <summary>
-        /// A list of <see cref="Ragdoll"/>s on the map.
-        /// </summary>
-        internal static readonly List<Ragdoll> RagdollsValue = new();
-
-        /// <summary>
         /// A list of <see cref="AdminToy"/>s on the map.
         /// </summary>
         internal static readonly List<AdminToy> ToysValue = new();
 
         private static readonly ReadOnlyCollection<PocketDimensionTeleport> ReadOnlyTeleportsValue = TeleportsValue.AsReadOnly();
         private static readonly ReadOnlyCollection<Locker> ReadOnlyLockersValue = LockersValue.AsReadOnly();
-        private static readonly ReadOnlyCollection<Ragdoll> ReadOnlyRagdollsValue = RagdollsValue.AsReadOnly();
         private static readonly ReadOnlyCollection<AdminToy> ReadOnlyToysValue = ToysValue.AsReadOnly();
 
         private static TantrumEnvironmentalHazard tantrumPrefab;
@@ -121,11 +115,6 @@ namespace Exiled.API.Features
         /// Gets all <see cref="Locker"/> objects.
         /// </summary>
         public static ReadOnlyCollection<Locker> Lockers => ReadOnlyLockersValue;
-
-        /// <summary>
-        /// Gets all <see cref="Ragdoll"/> objects.
-        /// </summary>
-        public static ReadOnlyCollection<Ragdoll> Ragdolls => ReadOnlyRagdollsValue;
 
         /// <summary>
         /// Gets all <see cref="AdminToy"/> objects.
@@ -354,7 +343,7 @@ namespace Exiled.API.Features
             Item.BaseToItem.Clear();
             TeleportsValue.Clear();
             LockersValue.Clear();
-            RagdollsValue.Clear();
+            Ragdoll.BasicRagdollToRagdoll.Clear();
             Firearm.ItemTypeToFirearmInstance.Clear();
             Firearm.BaseCodesValue.Clear();
             Firearm.AvailableAttachmentsValue.Clear();
