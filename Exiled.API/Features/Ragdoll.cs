@@ -248,7 +248,7 @@ namespace Exiled.API.Features
             GameObject modelRagdoll = ragdollRole.Ragdoll.gameObject;
 
             if (modelRagdoll == null || !Object.Instantiate(modelRagdoll).TryGetComponent(out BasicRagdoll ragdoll))
-                throw new InvalidOperationException("Unable to create a ragdoll.");
+                throw new InvalidOperationException($"Unable to create a ragdoll of type {networkInfo.RoleType}.");
 
             ragdoll.NetworkInfo = networkInfo;
 
