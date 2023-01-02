@@ -36,6 +36,9 @@ namespace Exiled.Example.Commands
 
             Log.Warn($"{player.Items.Count} -- {player.Inventory.UserInventory.Items.Count}");
 
+            foreach (Player item in Player.List)
+                Log.Warn(item);
+
             foreach (Pickup pickup in Pickup.List)
                 Log.Warn($"{pickup.Type} ({pickup.Serial}) -- {pickup.Position}");
 
