@@ -318,7 +318,7 @@ namespace Exiled.API.Features
         /// <param name="owner">The optional owner of the ragdoll.</param>
         /// <returns>The ragdoll.</returns>
         public static Ragdoll CreateAndSpawn(RoleTypeId roleType, string name, string deathReason, Vector3 position, Quaternion rotation, Player owner = null)
-            => CreateAndSpawn(roleType, name, new CustomReasonDamageHandler(deathReason), position, rotation, player);
+            => CreateAndSpawn(roleType, name, new CustomReasonDamageHandler(deathReason), position, rotation, owner);
 
         /// <summary>
         /// Gets the <see cref="Ragdoll"/> belonging to the <see cref="BasicRagdoll"/>, if any.
