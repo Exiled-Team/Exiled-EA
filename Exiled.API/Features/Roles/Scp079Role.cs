@@ -14,6 +14,7 @@ namespace Exiled.API.Features.Roles
     using PlayerRoles.PlayableScps.Scp079;
     using PlayerRoles.PlayableScps.Subroutines;
 
+    using Mathf = UnityEngine.Mathf;
     using Scp079GameRole = PlayerRoles.PlayableScps.Scp079.Scp079Role;
 
     /// <summary>
@@ -29,6 +30,7 @@ namespace Exiled.API.Features.Roles
             : base(baseRole)
         {
             SubroutineModule = baseRole.SubroutineModule;
+            Internal = baseRole;
         }
 
         /// <inheritdoc/>
@@ -41,6 +43,11 @@ namespace Exiled.API.Features.Roles
         /// Gets the camera SCP-079 is currently controlling.
         /// </summary>
         public Camera Camera => Camera.Get(Internal.CurrentCamera);
+
+        /// <summary>
+        /// Gets a value indicating whether or not SCP-079 can transmit its voice to a speaker.
+        /// </summary>
+        public bool CanTransmit => SubroutineModule.TryGetSubroutine(out Scp079SpeakerAbility ability) && ability.CanTransmit;
 
         /// <summary>
         /// Gets the speaker SCP-079 is currently using. Can be <see langword="null"/>.
@@ -102,7 +109,7 @@ namespace Exiled.API.Features.Roles
                 if (!SubroutineModule.TryGetSubroutine(out Scp079TierManager ability))
                     return;
 
-                ability.AccessTierIndex = value - 1;
+                Experience = value <= 1 ? 0 : ability.AbsoluteThresholds[Mathf.Clamp(value - 2, 0, ability.AbsoluteThresholds.Length - 1)];
             }
         }
 

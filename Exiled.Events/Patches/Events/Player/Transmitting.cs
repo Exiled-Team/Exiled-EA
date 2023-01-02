@@ -44,37 +44,36 @@ namespace Exiled.Events.Patches.Events.Player
                 {
                     // hub
                     new CodeInstruction(OpCodes.Ldarg_0).MoveLabelsFrom(newInstructions[index]),
-                    new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
 
                     // voiceModule
                     new(OpCodes.Ldloc_1),
-                    new(OpCodes.Dup),
 
-                    // voiceModule.ServerIsSending
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(VoiceModuleBase), nameof(VoiceModuleBase.ServerIsSending))),
+                    // HandleTransmitting(ReferenceHub, VoiceModule)
+                    new(OpCodes.Call, Method(typeof(Transmitting), nameof(HandleTransmitting))),
 
-                    // true
-                    new(OpCodes.Ldc_I4_1),
-
-                    // TransmittingEventArgs ev = new(Player, VoiceModuleBase, bool, bool)
-                    new(OpCodes.Newobj, GetDeclaredConstructors(typeof(TransmittingEventArgs))[0]),
-                    new(OpCodes.Dup),
-
-                    // Handlers.Player.OnTransmitting(ev)
-                    new(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnTransmitting))),
-
-                    // if (!ev.IsAllowed)
-                    //    return;
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(TransmittingEventArgs), nameof(TransmittingEventArgs.IsAllowed))),
+                    // return false if not allowed
                     new(OpCodes.Brfalse_S, retLabel),
                 });
 
-            newInstructions[newInstructions.Count - 1].WithLabels(retLabel);
+            // -2 to return false
+            newInstructions[newInstructions.Count - 2].WithLabels(retLabel);
 
             for (int z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Shared.Return(newInstructions);
+        }
+
+        private static bool HandleTransmitting(ReferenceHub hub, VoiceModuleBase voiceModule)
+        {
+            if (hub == null || Player.Get(hub) is not Player player)
+                return false;
+
+            TransmittingEventArgs ev = new(player, voiceModule);
+
+            Handlers.Player.OnTransmitting(ev);
+
+            return ev.IsAllowed;
         }
     }
 }

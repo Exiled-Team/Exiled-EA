@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------
-// <copyright file="RagdollCleanUpPatch.cs" company="Exiled Team">
+// <copyright file="PickupListRemove.cs" company="Exiled Team">
 // Copyright (c) Exiled Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
@@ -10,39 +10,34 @@ namespace Exiled.Events.Patches.Generic
     using System.Collections.Generic;
     using System.Reflection.Emit;
 
-    using API.Features;
+    using Exiled.API.Features.Pickups;
 
     using HarmonyLib;
+
+    using InventorySystem.Items.Pickups;
 
     using NorthwoodLib.Pools;
 
     using static HarmonyLib.AccessTools;
 
     /// <summary>
-    /// Patches <see cref="BasicRagdoll.UpdateCleanup"/>.
+    /// Patches <see cref="ItemPickupBase.OnDestroy"/>.
     /// </summary>
-    [HarmonyPatch(typeof(BasicRagdoll), nameof(BasicRagdoll.UpdateCleanup))]
-    internal class RagdollCleanUpPatch
+    [HarmonyPatch(typeof(ItemPickupBase), nameof(ItemPickupBase.OnDestroy))]
+    internal static class PickupListRemove
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Shared.Rent(instructions);
 
-            Label ret = generator.DefineLabel();
-
-            // if (Ragdoll.IgnoredRagdolls.Contains(this))
-            //   return;
-            newInstructions.InsertRange(
-                0,
-                new CodeInstruction[]
-                {
-                    new(OpCodes.Call, PropertyGetter(typeof(Ragdoll), nameof(Ragdoll.IgnoredRagdolls))),
-                    new(OpCodes.Ldarg_0),
-                    new(OpCodes.Callvirt, Method(typeof(HashSet<BasicRagdoll>), nameof(HashSet<BasicRagdoll>.Contains))),
-                    new(OpCodes.Brtrue_S, ret),
-                });
-
-            newInstructions[newInstructions.Count - 1].labels.Add(ret);
+            newInstructions.InsertRange(0, new[]
+            {
+                // _ = Pickup.BaseToPickup.Remove(this);
+                new CodeInstruction(OpCodes.Ldsfld, Field(typeof(Pickup), nameof(Pickup.BaseToPickup))),
+                new(OpCodes.Ldarg_0),
+                new(OpCodes.Callvirt, Method(typeof(Dictionary<ItemPickupBase, Pickup>), nameof(Dictionary<ItemPickupBase, Pickup>.Remove), new[] { typeof(ItemPickupBase) })),
+                new(OpCodes.Pop),
+            });
 
             for (int z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];

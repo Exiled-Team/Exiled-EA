@@ -22,7 +22,7 @@ namespace Exiled.Events.Patches.Events.Player
 
     /// <summary>
     ///     Patch the <see cref="VoiceChatMutes.IssueLocalMute(string, bool)" />.
-    ///     Adds the <see cref="Handlers.Player.OnIssuingMute" /> event.
+    ///     Adds the <see cref="Handlers.Player.IssuingMute" /> event.
     /// </summary>
     [HarmonyPatch(typeof(VoiceChatMutes), nameof(VoiceChatMutes.IssueLocalMute))]
     internal static class IssuingMute

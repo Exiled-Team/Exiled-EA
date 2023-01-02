@@ -13,14 +13,20 @@ namespace Exiled.API.Features.Items
 
     using CameraShaking;
     using Enums;
+    using Exiled.API.Features.Pickups;
+    using Exiled.API.Structs;
     using Extensions;
+    using InventorySystem.Items;
     using InventorySystem.Items.Firearms;
     using InventorySystem.Items.Firearms.Attachments;
     using InventorySystem.Items.Firearms.Attachments.Components;
     using InventorySystem.Items.Firearms.BasicMessages;
     using InventorySystem.Items.Firearms.Modules;
-    using Structs;
     using UnityEngine;
+
+    using BaseFirearm = InventorySystem.Items.Firearms.Firearm;
+    using FirearmPickup = Exiled.API.Features.Pickups.FirearmPickup;
+    using Object = UnityEngine.Object;
 
     /// <summary>
     /// A wrapper class for <see cref="InventorySystem.Items.Firearms.Firearm"/>.
@@ -41,19 +47,10 @@ namespace Exiled.API.Features.Items
         /// Initializes a new instance of the <see cref="Firearm"/> class.
         /// </summary>
         /// <param name="itemBase">The base <see cref="InventorySystem.Items.Firearms.Firearm"/> class.</param>
-        public Firearm(InventorySystem.Items.Firearms.Firearm itemBase)
+        public Firearm(BaseFirearm itemBase)
             : base(itemBase)
         {
             Base = itemBase;
-
-            Base.AmmoManagerModule = Base switch
-            {
-                AutomaticFirearm auto => new AutomaticAmmoManager(auto, auto._baseMaxAmmo, 1, auto._chamberSize),
-                Shotgun shotgun => new TubularMagazineAmmoManager(shotgun, Serial, shotgun._ammoCapacity, shotgun._numberOfChambers, 0.5f, 3, "ShellsToLoad", ActionName.Zoom, ActionName.Shoot),
-                ParticleDisruptor particleDisruptor => new DisruptorAction(particleDisruptor, 0f, 0f, true),
-                _ => new ClipLoadedInternalMagAmmoManager(Base, 6),
-            };
-            Base._status = new FirearmStatus(MaxAmmo, FirearmStatusFlags.MagazineInserted, 0);
         }
 
         /// <summary>
@@ -61,8 +58,13 @@ namespace Exiled.API.Features.Items
         /// </summary>
         /// <param name="type">The <see cref="ItemType"/> of the firearm.</param>
         internal Firearm(ItemType type)
-            : this((InventorySystem.Items.Firearms.Firearm)Server.Host.Inventory.CreateItemInstance(type, false))
+            : this((BaseFirearm)Server.Host.Inventory.CreateItemInstance(type, false))
         {
+            FirearmStatusFlags firearmStatusFlags = FirearmStatusFlags.MagazineInserted;
+            if (Base.HasAdvantageFlag(AttachmentDescriptiveAdvantages.Flashlight))
+                firearmStatusFlags |= FirearmStatusFlags.FlashlightEnabled;
+
+            Base.Status = new FirearmStatus(MaxAmmo, firearmStatusFlags, Base.Status.Attachments);
         }
 
         /// <inheritdoc cref="BaseCodesValue"/>.
@@ -97,7 +99,7 @@ namespace Exiled.API.Features.Items
         /// <summary>
         /// Gets the <see cref="InventorySystem.Items.Firearms.Firearm"/> that this class is encapsulating.
         /// </summary>
-        public new InventorySystem.Items.Firearms.Firearm Base { get; }
+        public new BaseFirearm Base { get; }
 
         /// <summary>
         /// Gets or sets the amount of ammo in the firearm.
@@ -198,7 +200,7 @@ namespace Exiled.API.Features.Items
 
             foreach (Attachment attachment in Base.Attachments)
             {
-                if ((attachment.Name == identifier.Name) && attachment.IsEnabled)
+                if (attachment.Slot == identifier.Slot && attachment.IsEnabled)
                 {
                     toRemove = code;
                     break;
@@ -214,15 +216,14 @@ namespace Exiled.API.Features.Items
                 : identifier.Code;
 
             Base.ApplyAttachmentsCode((Base.GetCurrentAttachmentsCode() & ~toRemove) | newCode, true);
-
-            Base.Status = new FirearmStatus((byte)Mathf.Min(Ammo, MaxAmmo), Base.Status.Flags, Base.GetCurrentAttachmentsCode());
+            Base.Status = new FirearmStatus(Math.Min(Ammo, MaxAmmo), Base.Status.Flags, Base.GetCurrentAttachmentsCode());
         }
 
         /// <summary>
         /// Adds a <see cref="Attachment"/> of the specified <see cref="AttachmentName"/> to the firearm.
         /// </summary>
         /// <param name="attachmentName">The <see cref="AttachmentName"/> to add.</param>
-        public void AddAttachment(AttachmentName attachmentName) => AddAttachment(new AttachmentIdentifier(attachmentName));
+        public void AddAttachment(AttachmentName attachmentName) => AddAttachment(AttachmentIdentifier.Get(Type, attachmentName));
 
         /// <summary>
         /// Adds a <see cref="IEnumerable{T}"/> of <see cref="AttachmentIdentifier"/> to the firearm.
@@ -241,7 +242,7 @@ namespace Exiled.API.Features.Items
         public void AddAttachment(IEnumerable<AttachmentName> attachmentNames)
         {
             foreach (AttachmentName attachmentName in attachmentNames)
-                AddAttachment(new AttachmentIdentifier(attachmentName));
+                AddAttachment(attachmentName);
         }
 
         /// <summary>
@@ -253,18 +254,14 @@ namespace Exiled.API.Features.Items
             if (!Attachments.Any(attachment => (attachment.Name == identifier.Name) && attachment.IsEnabled))
                 return;
 
-            uint code = identifier.Code == 0
-                ? AvailableAttachments[Type].FirstOrDefault(
-                    attId =>
-                        attId.Name == identifier.Name).Code
-                : identifier.Code;
+            uint code = identifier.Code;
 
             Base.ApplyAttachmentsCode(Base.GetCurrentAttachmentsCode() & ~code, true);
 
             if (identifier.Name == AttachmentName.Flashlight)
-                Base.Status = new FirearmStatus((byte)Mathf.Min(Ammo, MaxAmmo), Base.Status.Flags & ~FirearmStatusFlags.FlashlightEnabled, Base.GetCurrentAttachmentsCode());
+                Base.Status = new FirearmStatus(Math.Min(Ammo, MaxAmmo), Base.Status.Flags & ~FirearmStatusFlags.FlashlightEnabled, Base.GetCurrentAttachmentsCode());
             else
-                Base.Status = new FirearmStatus((byte)Mathf.Min(Ammo, MaxAmmo), Base.Status.Flags, Base.GetCurrentAttachmentsCode());
+                Base.Status = new FirearmStatus(Math.Min(Ammo, MaxAmmo), Base.Status.Flags, Base.GetCurrentAttachmentsCode());
         }
 
         /// <summary>
@@ -273,19 +270,14 @@ namespace Exiled.API.Features.Items
         /// <param name="attachmentName">The <see cref="AttachmentName"/> to remove.</param>
         public void RemoveAttachment(AttachmentName attachmentName)
         {
-            Attachment firearmAttachment = Attachments.FirstOrDefault(att => (att.Name == attachmentName) && att.IsEnabled);
-
-            if (firearmAttachment is null)
-                return;
-
-            uint code = AvailableAttachments[Type].FirstOrDefault(attId => attId == firearmAttachment).Code;
+            uint code = AttachmentIdentifier.Get(Type, attachmentName).Code;
 
             Base.ApplyAttachmentsCode(Base.GetCurrentAttachmentsCode() & ~code, true);
 
             if (attachmentName == AttachmentName.Flashlight)
-                Base.Status = new FirearmStatus((byte)Mathf.Min(Ammo, MaxAmmo), Base.Status.Flags & ~FirearmStatusFlags.FlashlightEnabled, Base.GetCurrentAttachmentsCode());
+                Base.Status = new FirearmStatus(Math.Min(Ammo, MaxAmmo), Base.Status.Flags & ~FirearmStatusFlags.FlashlightEnabled, Base.GetCurrentAttachmentsCode());
             else
-                Base.Status = new FirearmStatus((byte)Mathf.Min(Ammo, MaxAmmo), Base.Status.Flags, Base.GetCurrentAttachmentsCode());
+                Base.Status = new FirearmStatus(Math.Min(Ammo, MaxAmmo), Base.Status.Flags, Base.GetCurrentAttachmentsCode());
         }
 
         /// <summary>
@@ -304,9 +296,9 @@ namespace Exiled.API.Features.Items
             Base.ApplyAttachmentsCode(Base.GetCurrentAttachmentsCode() & ~code, true);
 
             if (firearmAttachment.Name == AttachmentName.Flashlight)
-                Base.Status = new FirearmStatus((byte)Mathf.Min(Ammo, MaxAmmo), Base.Status.Flags & ~FirearmStatusFlags.FlashlightEnabled, Base.GetCurrentAttachmentsCode());
+                Base.Status = new FirearmStatus(Math.Min(Ammo, MaxAmmo), Base.Status.Flags & ~FirearmStatusFlags.FlashlightEnabled, Base.GetCurrentAttachmentsCode());
             else
-                Base.Status = new FirearmStatus((byte)Mathf.Min(Ammo, MaxAmmo), Base.Status.Flags, Base.GetCurrentAttachmentsCode());
+                Base.Status = new FirearmStatus(Math.Min(Ammo, MaxAmmo), Base.Status.Flags, Base.GetCurrentAttachmentsCode());
         }
 
         /// <summary>
@@ -382,7 +374,7 @@ namespace Exiled.API.Features.Items
             if (Attachments.All(attachment => attachment.Name != attachmentName))
                 return false;
 
-            firearmAttachment = GetAttachment(new AttachmentIdentifier(attachmentName));
+            firearmAttachment = GetAttachment(AttachmentIdentifier.Get(Type, attachmentName));
 
             return true;
         }
@@ -540,6 +532,27 @@ namespace Exiled.API.Features.Items
         }
 
         /// <summary>
+        /// Creates the <see cref="Pickup"/> that based on this <see cref="Item"/>.
+        /// </summary>
+        /// <param name="position">The location to spawn the item.</param>
+        /// <param name="rotation">The rotation of the item.</param>
+        /// <param name="spawn">Whether the <see cref="Pickup"/> should be initially spawned.</param>
+        /// <returns>The created <see cref="Pickup"/>.</returns>
+        public override Pickup CreatePickup(Vector3 position, Quaternion rotation = default, bool spawn = true)
+        {
+            FirearmPickup pickup = (FirearmPickup)Pickup.Get(Object.Instantiate(Base.PickupDropModel, position, rotation));
+
+            pickup.Info = new(Type, position, rotation, pickup.Weight, ItemSerialGenerator.GenerateNext());
+            pickup.Scale = Scale;
+            pickup.Status = Base.Status;
+
+            if (spawn)
+                pickup.Spawn();
+
+            return pickup;
+        }
+
+        /// <summary>
         /// Clones current <see cref="Firearm"/> object.
         /// </summary>
         /// <returns> New <see cref="Firearm"/> object. </returns>
@@ -548,10 +561,43 @@ namespace Exiled.API.Features.Items
             Firearm cloneableItem = new(Type)
             {
                 Ammo = Ammo,
-                FireRate = FireRate,
             };
 
+            if (cloneableItem.Base is AutomaticFirearm)
+            {
+                cloneableItem.FireRate = FireRate;
+                cloneableItem.Recoil = Recoil;
+            }
+
+            cloneableItem.AddAttachment(AttachmentIdentifiers);
+
             return cloneableItem;
+        }
+
+        /// <summary>
+        /// Change the owner of the <see cref="Firearm"/>.
+        /// </summary>
+        /// <param name="oldOwner">old <see cref="Firearm"/> owner.</param>
+        /// <param name="newOwner">new <see cref="Firearm"/> owner.</param>
+        internal override void ChangeOwner(Player oldOwner, Player newOwner)
+        {
+            Base.Owner = newOwner.ReferenceHub;
+
+            Base.HitregModule = Base switch
+            {
+                AutomaticFirearm automaticFirearm =>
+                    new SingleBulletHitreg(automaticFirearm, automaticFirearm.Owner, automaticFirearm._recoilPattern),
+                Shotgun shotgun =>
+                    new BuckshotHitreg(shotgun, shotgun.Owner, shotgun._buckshotStats),
+                ParticleDisruptor particleDisruptor =>
+                    new DisruptorHitreg(particleDisruptor, particleDisruptor.Owner, particleDisruptor._explosionSettings),
+                Revolver revolver =>
+                    new SingleBulletHitreg(revolver, revolver.Owner),
+                _ => throw new NotImplementedException("Should never happend"),
+            };
+
+            Base._sendStatusNextFrame = true;
+            Base._footprintValid = false;
         }
     }
 }

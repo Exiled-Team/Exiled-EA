@@ -7,13 +7,12 @@
 
 namespace Exiled.Events.Handlers.Internal
 {
-    using API.Features;
-    using API.Features.Items;
+    using Exiled.API.Features;
     using Exiled.API.Features.Roles;
     using Exiled.Events.EventArgs.Player;
+    using Exiled.Loader;
+    using Exiled.Loader.Features;
     using InventorySystem;
-    using Loader;
-    using Loader.Features;
     using PlayerRoles;
 
     /// <summary>
@@ -25,10 +24,6 @@ namespace Exiled.Events.Handlers.Internal
         public static void OnWaitingForPlayers()
         {
             MultiAdminFeatures.CallEvent(MultiAdminFeatures.EventType.WAITING_FOR_PLAYERS);
-            Item.BaseToItem.Clear();
-            Pickup.BaseToItem.Clear();
-            ExplosiveGrenade.GrenadeToItem.Clear();
-            FlashGrenade.GrenadeToItem.Clear();
 
             if (Events.Instance.Config.ShouldReloadConfigsAtRoundRestart)
                 ConfigManager.Reload();
@@ -42,10 +37,11 @@ namespace Exiled.Events.Handlers.Internal
         /// <inheritdoc cref="Handlers.Server.OnRestartingRound" />
         public static void OnRestartingRound()
         {
-            MultiAdminFeatures.CallEvent(MultiAdminFeatures.EventType.ROUND_END);
-
             Scp173Role.TurnedPlayers.Clear();
             Scp096Role.TurnedPlayers.Clear();
+
+            MultiAdminFeatures.CallEvent(MultiAdminFeatures.EventType.ROUND_END);
+
             TeslaGate.IgnoredPlayers.Clear();
             TeslaGate.IgnoredRoles.Clear();
             TeslaGate.IgnoredTeams.Clear();

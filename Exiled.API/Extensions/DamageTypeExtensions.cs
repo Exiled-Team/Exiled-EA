@@ -19,10 +19,7 @@ namespace Exiled.API.Extensions
     /// </summary>
     public static class DamageTypeExtensions
     {
-        /// <summary>
-        /// Gets conversion information between <see cref="DeathTranslation.Id"/>s and <see cref="DamageType"/>s.
-        /// </summary>
-        public static Dictionary<byte, DamageType> TranslationIdConversion { get; } = new() // TODO: ReadOnlyDictionary
+        private static readonly Dictionary<byte, DamageType> TranslationIdConversionInternal = new()
         {
             { DeathTranslations.Asphyxiated.Id, DamageType.Asphyxiation },
             { DeathTranslations.Bleeding.Id, DamageType.Bleeding },
@@ -51,10 +48,7 @@ namespace Exiled.API.Extensions
             { DeathTranslations.Hypothermia.Id, DamageType.Hypothermia },
         };
 
-        /// <summary>
-        /// Gets conversion information between <see cref="DeathTranslation"/>s and <see cref="DamageType"/>s.
-        /// </summary>
-        public static Dictionary<DeathTranslation, DamageType> TranslationConversion { get; } = new() // TODO: ReadOnlyDictionary
+        private static readonly Dictionary<DeathTranslation, DamageType> TranslationConversionInternal = new()
         {
             { DeathTranslations.Asphyxiated, DamageType.Asphyxiation },
             { DeathTranslations.Bleeding, DamageType.Bleeding },
@@ -83,10 +77,7 @@ namespace Exiled.API.Extensions
             { DeathTranslations.Hypothermia, DamageType.Hypothermia },
         };
 
-        /// <summary>
-        /// Gets conversion information between <see cref="ItemType"/>s and <see cref="DamageType"/>s.
-        /// </summary>
-        public static Dictionary<ItemType, DamageType> ItemConversion { get; } = new() // TODO: ReadOnlyDictionary
+        private static readonly Dictionary<ItemType, DamageType> ItemConversionInternal = new()
         {
             { ItemType.GunCrossvec, DamageType.Crossvec },
             { ItemType.GunLogicer, DamageType.Logicer },
@@ -94,12 +85,28 @@ namespace Exiled.API.Extensions
             { ItemType.GunShotgun, DamageType.Shotgun },
             { ItemType.GunAK, DamageType.AK },
             { ItemType.GunCOM15, DamageType.Com15 },
+            { ItemType.GunCom45, DamageType.Com45 },
             { ItemType.GunCOM18, DamageType.Com18 },
             { ItemType.GunFSP9, DamageType.Fsp9 },
             { ItemType.GunE11SR, DamageType.E11Sr },
             { ItemType.MicroHID, DamageType.MicroHid },
             { ItemType.ParticleDisruptor, DamageType.ParticleDisruptor },
         };
+
+        /// <summary>
+        /// Gets conversion information between <see cref="DeathTranslation.Id"/>s and <see cref="DamageType"/>s.
+        /// </summary>
+        public static IReadOnlyDictionary<byte, DamageType> TranslationIdConversion => TranslationIdConversionInternal;
+
+        /// <summary>
+        /// Gets conversion information between <see cref="DeathTranslation"/>s and <see cref="DamageType"/>s.
+        /// </summary>
+        public static IReadOnlyDictionary<DeathTranslation, DamageType> TranslationConversion => TranslationConversionInternal;
+
+        /// <summary>
+        /// Gets conversion information between <see cref="ItemType"/>s and <see cref="DamageType"/>s.
+        /// </summary>
+        public static IReadOnlyDictionary<ItemType, DamageType> ItemConversion => ItemConversionInternal;
 
         /// <summary>
         /// Check if a <see cref="DamageType">damage type</see> is caused by weapon.
@@ -109,7 +116,7 @@ namespace Exiled.API.Extensions
         /// <returns>Returns whether the <see cref="DamageType"/> is caused by weapon or not.</returns>
         public static bool IsWeapon(this DamageType type, bool checkMicro = true) => type switch
         {
-            DamageType.Crossvec or DamageType.Logicer or DamageType.Revolver or DamageType.Shotgun or DamageType.AK or DamageType.Com15 or DamageType.Com18 or DamageType.E11Sr or DamageType.Fsp9 or DamageType.ParticleDisruptor => true,
+            DamageType.Crossvec or DamageType.Logicer or DamageType.Revolver or DamageType.Shotgun or DamageType.AK or DamageType.Com15 or DamageType.Com18 or DamageType.E11Sr or DamageType.Fsp9 or DamageType.ParticleDisruptor or DamageType.Com45 => true,
             DamageType.MicroHid when checkMicro => true,
             _ => false,
         };
@@ -166,9 +173,7 @@ namespace Exiled.API.Extensions
                 case Scp956DamageHandler:
                     return DamageType.Scp956;
                 case FirearmDamageHandler firearmDamageHandler:
-                    {
-                        return ItemConversion.ContainsKey(firearmDamageHandler.WeaponType) ? ItemConversion[firearmDamageHandler.WeaponType] : DamageType.Firearm;
-                    }
+                    return ItemConversion.ContainsKey(firearmDamageHandler.WeaponType) ? ItemConversion[firearmDamageHandler.WeaponType] : DamageType.Firearm;
 
                 case ScpDamageHandler scpDamageHandler:
                     {

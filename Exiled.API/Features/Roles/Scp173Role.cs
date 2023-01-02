@@ -12,6 +12,7 @@ namespace Exiled.API.Features.Roles
     using Mirror;
 
     using PlayerRoles;
+    using PlayerRoles.PlayableScps.HumeShield;
     using PlayerRoles.PlayableScps.Scp173;
     using PlayerRoles.PlayableScps.Subroutines;
 
@@ -22,7 +23,7 @@ namespace Exiled.API.Features.Roles
     /// <summary>
     /// Defines a role that represents SCP-173.
     /// </summary>
-    public class Scp173Role : FpcRole, ISubroutinedScpRole
+    public class Scp173Role : FpcRole, ISubroutinedScpRole, IHumeShieldRole
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Scp173Role"/> class.
@@ -32,6 +33,7 @@ namespace Exiled.API.Features.Roles
             : base(baseRole)
         {
             SubroutineModule = baseRole.SubroutineModule;
+            HumeShieldModule = baseRole.HumeShieldModule;
             MovementModule = FirstPersonController.FpcModule as Scp173MovementModule;
         }
 
@@ -45,6 +47,9 @@ namespace Exiled.API.Features.Roles
 
         /// <inheritdoc/>
         public SubroutineManagerModule SubroutineModule { get; }
+
+        /// <inheritdoc/>
+        public HumeShieldModuleBase HumeShieldModule { get; }
 
         /// <summary>
         /// Gets a value indicating whether or not SCP-173 is currently being viewed by one or more players.

@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------
-// <copyright file="GrenadeType.cs" company="Exiled Team">
+// <copyright file="ProjectileType.cs" company="Exiled Team">
 // Copyright (c) Exiled Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
@@ -10,11 +10,17 @@ namespace Exiled.API.Enums
     using Extensions;
 
     /// <summary>
-    /// The unique type of grenade.
+    /// Projectile types.
     /// </summary>
-    /// <seealso cref="ItemExtensions.GetItemType(GrenadeType)"/>
-    public enum GrenadeType
+    /// <seealso cref="ItemExtensions.GetItemType(ProjectileType)"/>
+    /// <seealso cref="ItemExtensions.GetProjectileType(ItemType)"/>
+    public enum ProjectileType
     {
+        /// <summary>
+        /// Not a projectile.
+        /// </summary>
+        None,
+
         /// <summary>
         /// Frag grenade.
         /// Used by <see cref="ItemType.GrenadeHE"/>.

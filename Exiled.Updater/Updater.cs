@@ -28,7 +28,6 @@ namespace Exiled.Updater
     using UnityEngine;
 
 #pragma warning disable SA1124 // Do not use regions
-#pragma warning disable SA1300 // Element should begin with upper-case letter
 
     public sealed class Updater : Plugin<Config>
     {
@@ -40,7 +39,7 @@ namespace Exiled.Updater
             Installed,
         }
 
-        public const long REPOID = 231269519;
+        public const long REPOID = 568270546;
 
         public static Updater Instance { get; } = new();
 
@@ -77,7 +76,7 @@ namespace Exiled.Updater
             // FixInvalidProxyHandling();
             if (_stage == Stage.Free)
             {
-                Timing.RunCoroutine(_CheckUpdate(forced), Segment.EndOfFrame);
+                Timing.RunCoroutine(CheckUpdateInternal(forced), Segment.EndOfFrame);
                 return true;
             }
 
@@ -96,7 +95,7 @@ namespace Exiled.Updater
             return client;
         }
 
-        private IEnumerator<float> _CheckUpdate(bool forced)
+        private IEnumerator<float> CheckUpdateInternal(bool forced)
         {
             _stage = Stage.Start;
 
@@ -293,7 +292,7 @@ namespace Exiled.Updater
                         FileName = installerPath,
                         UseShellExecute = false,
                         CreateNoWindow = true,
-                        Arguments = $"--exit --target-version {newVersion.Release.TagName} --appdata \"{Paths.AppData}\"",
+                        Arguments = $"--exit --target-version {newVersion.Release.TagName} --appdata \"{Paths.AppData}\" --exiled \"{Path.Combine(Paths.Exiled, "..")}\"",
                         RedirectStandardOutput = true,
                         RedirectStandardError = true,
                         StandardErrorEncoding = ProcessEncoding,

@@ -1,5 +1,5 @@
-// -----------------------------------------------------------------------
-// <copyright file="ChangingDurability.cs" company="Exiled Team">
+﻿// -----------------------------------------------------------------------
+// <copyright file="ChangingAmmo.cs" company="Exiled Team">
 // Copyright (c) Exiled Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
@@ -25,10 +25,10 @@ namespace Exiled.Events.Patches.Events.Item
 
     /// <summary>
     ///     Patches <see cref="Firearm.Status" />.
-    ///     Adds the <see cref="Item.ChangingDurability" /> event.
+    ///     Adds the <see cref="Item.ChangingAmmo" /> event.
     /// </summary>
     [HarmonyPatch(typeof(Firearm), nameof(Firearm.Status), MethodType.Setter)]
-    internal static class ChangingDurability
+    internal static class ChangingAmmo
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
@@ -37,8 +37,8 @@ namespace Exiled.Events.Patches.Events.Item
             const int offset = 2;
             int index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Brfalse_S) + offset;
 
-            LocalBuilder ev = generator.DeclareLocal(typeof(ChangingDurabilityEventArgs));
-            LocalBuilder durability = generator.DeclareLocal(typeof(byte));
+            LocalBuilder ev = generator.DeclareLocal(typeof(ChangingAmmoEventArgs));
+            LocalBuilder ammo = generator.DeclareLocal(typeof(byte));
 
             Label cdc = generator.DefineLabel();
             Label jmp = generator.DefineLabel();
@@ -87,29 +87,29 @@ namespace Exiled.Events.Patches.Events.Item
                     new(OpCodes.Ldc_I4_1),
 
                     // ChangingDurabilityEventArgs ev = new(Player, ItemBase, byte, byte, bool)
-                    new(OpCodes.Newobj, GetDeclaredConstructors(typeof(ChangingDurabilityEventArgs))[0]),
+                    new(OpCodes.Newobj, GetDeclaredConstructors(typeof(ChangingAmmoEventArgs))[0]),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),
                     new(OpCodes.Stloc_S, ev.LocalIndex),
 
-                    // Item.OnChangingDurability(ev)
-                    new(OpCodes.Call, Method(typeof(Item), nameof(Item.OnChangingDurability))),
+                    // Item.ChangingAmmoEventArgs(ev)
+                    new(OpCodes.Call, Method(typeof(Item), nameof(Item.OnChangingAmmo))),
 
                     // if (ev.Firearm == null)
                     //   goto cdc;
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(ChangingDurabilityEventArgs), nameof(ChangingDurabilityEventArgs.Firearm))),
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(ChangingAmmoEventArgs), nameof(ChangingAmmoEventArgs.Firearm))),
                     new(OpCodes.Brfalse_S, cdc),
                     new(OpCodes.Ldloc_S, ev.LocalIndex),
 
                     // if (!ev.IsAllowed)
                     //   goto jmp;
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(ChangingDurabilityEventArgs), nameof(ChangingDurabilityEventArgs.IsAllowed))),
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(ChangingAmmoEventArgs), nameof(ChangingAmmoEventArgs.IsAllowed))),
                     new(OpCodes.Brfalse_S, jmp),
 
                     // ev.NewDurability
                     // goto jcc;
                     new(OpCodes.Ldloc_S, ev.LocalIndex),
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(ChangingDurabilityEventArgs), nameof(ChangingDurabilityEventArgs.NewDurability))),
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(ChangingAmmoEventArgs), nameof(ChangingAmmoEventArgs.NewAmmo))),
                     new(OpCodes.Br_S, jcc),
 
                     // this._status.Ammo
@@ -117,9 +117,9 @@ namespace Exiled.Events.Patches.Events.Item
                     new(OpCodes.Ldfld, Field(typeof(Firearm), nameof(Firearm._status))),
                     new(OpCodes.Ldfld, Field(typeof(FirearmStatus), nameof(FirearmStatus.Ammo))),
 
-                    // durability = (...)
-                    new CodeInstruction(OpCodes.Stloc_S, durability.LocalIndex).WithLabels(jcc),
-                    new(OpCodes.Ldloc_S, durability.LocalIndex),
+                    // ammo = (...)
+                    new CodeInstruction(OpCodes.Stloc_S, ammo.LocalIndex).WithLabels(jcc),
+                    new(OpCodes.Ldloc_S, ammo.LocalIndex),
 
                     // value.Flags
                     new(OpCodes.Ldarg_1),

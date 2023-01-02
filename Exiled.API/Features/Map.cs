@@ -14,10 +14,11 @@ namespace Exiled.API.Features
 
     using Enums;
     using Exiled.API.Extensions;
+    using Exiled.API.Features.Pickups;
     using Exiled.API.Features.Roles;
+    using Exiled.API.Features.Toys;
     using Hazards;
     using InventorySystem.Items.Firearms.BasicMessages;
-    using InventorySystem.Items.Pickups;
     using Items;
     using LightContainmentZoneDecontamination;
     using MapGeneration;
@@ -27,7 +28,6 @@ namespace Exiled.API.Features
     using PlayerRoles.PlayableScps.Scp173;
     using PlayerRoles.PlayableScps.Scp939;
     using RelativePositioning;
-    using Toys;
     using UnityEngine;
     using Utils.Networking;
 
@@ -52,21 +52,13 @@ namespace Exiled.API.Features
         internal static readonly List<PocketDimensionTeleport> TeleportsValue = new(8);
 
         /// <summary>
-        /// A list of <see cref="Ragdoll"/>s on the map.
-        /// </summary>
-        internal static readonly List<Ragdoll> RagdollsValue = new();
-
-        /// <summary>
         /// A list of <see cref="AdminToy"/>s on the map.
         /// </summary>
         internal static readonly List<AdminToy> ToysValue = new();
 
         private static readonly ReadOnlyCollection<PocketDimensionTeleport> ReadOnlyTeleportsValue = TeleportsValue.AsReadOnly();
         private static readonly ReadOnlyCollection<Locker> ReadOnlyLockersValue = LockersValue.AsReadOnly();
-        private static readonly ReadOnlyCollection<Ragdoll> ReadOnlyRagdollsValue = RagdollsValue.AsReadOnly();
         private static readonly ReadOnlyCollection<AdminToy> ReadOnlyToysValue = ToysValue.AsReadOnly();
-
-        private static readonly RaycastHit[] CachedFindParentRoomRaycast = new RaycastHit[1];
 
         private static TantrumEnvironmentalHazard tantrumPrefab;
         private static Scp939AmnesticCloudInstance amnesticCloudPrefab;
@@ -82,7 +74,7 @@ namespace Exiled.API.Features
                 {
                     Scp173GameRole scp173Role = RoleTypeId.Scp173.GetRoleBase() as Scp173GameRole;
 
-                    if (scp173Role.SubroutineModule.TryGetComponent(out Scp173TantrumAbility scp173TantrumAbility))
+                    if (scp173Role.SubroutineModule.TryGetSubroutine(out Scp173TantrumAbility scp173TantrumAbility))
                         tantrumPrefab = scp173TantrumAbility._tantrumPrefab;
                 }
 
@@ -101,7 +93,7 @@ namespace Exiled.API.Features
                 {
                     Scp939GameRole scp939Role = RoleTypeId.Scp939.GetRoleBase() as Scp939GameRole;
 
-                    if (scp939Role.SubroutineModule.TryGetComponent(out Scp939AmnesticCloudAbility ability))
+                    if (scp939Role.SubroutineModule.TryGetSubroutine(out Scp939AmnesticCloudAbility ability))
                         amnesticCloudPrefab = ability._instancePrefab;
                 }
 
@@ -123,30 +115,6 @@ namespace Exiled.API.Features
         /// Gets all <see cref="Locker"/> objects.
         /// </summary>
         public static ReadOnlyCollection<Locker> Lockers => ReadOnlyLockersValue;
-
-        /// <summary>
-        /// gets all <see cref="Pickup"/>s on the map.
-        /// </summary>
-        public static ReadOnlyCollection<Pickup> Pickups
-        {
-            get
-            {
-                List<Pickup> pickups = new();
-
-                foreach (ItemPickupBase itemPickupBase in Object.FindObjectsOfType<ItemPickupBase>())
-                {
-                    if (Pickup.Get(itemPickupBase) is Pickup pickup)
-                        pickups.Add(pickup);
-                }
-
-                return pickups.AsReadOnly();
-            }
-        }
-
-        /// <summary>
-        /// Gets all <see cref="Ragdoll"/> objects.
-        /// </summary>
-        public static ReadOnlyCollection<Ragdoll> Ragdolls => ReadOnlyRagdollsValue;
 
         /// <summary>
         /// Gets all <see cref="AdminToy"/> objects.
@@ -176,13 +144,11 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="objectInRoom">The <see cref="GameObject"/> inside the room.</param>
         /// <returns>The <see cref="Room"/> that the <see cref="GameObject"/> is located inside.</returns>
+        /// <seealso cref="Room.Get(Vector3)"/>
         public static Room FindParentRoom(GameObject objectInRoom)
         {
             if (objectInRoom == null)
-                return null;
-
-            // Avoid errors by forcing Map.Rooms to populate when this is called.
-            IEnumerable<Room> rooms = Room.List;
+                return default;
 
             Room room = null;
 
@@ -205,18 +171,8 @@ namespace Exiled.API.Features
                     room = FindParentRoom(role.Camera.GameObject);
             }
 
-            if (room is null)
-            {
-                // Then try for objects that aren't children, like players and pickups.
-                room = Room.Get(objectInRoom.transform.position);
-
-                // Always default to surface transform, since it's static.
-                // The current index of the 'Outside' room is the last one
-                if (rooms.Count() != 0)
-                    return rooms.FirstOrDefault(r => r.gameObject.name == "Outside");
-            }
-
-            return room;
+            // Finally, try for objects that aren't children, like players and pickups.
+            return room ?? Room.Get(objectInRoom.transform.position) ?? default;
         }
 
         /// <summary>
@@ -312,8 +268,7 @@ namespace Exiled.API.Features
         /// <returns><see cref="Pickup"/> object.</returns>
         public static Pickup GetRandomPickup(ItemType type = ItemType.None)
         {
-            List<Pickup> pickups = (type != ItemType.None ? Pickups.Where(p => p.Type == type) : Pickups).ToList();
-
+            List<Pickup> pickups = (type != ItemType.None ? Pickup.List.Where(p => p.Type == type) : Pickup.List).ToList();
             return pickups[Random.Range(0, pickups.Count)];
         }
 
@@ -338,38 +293,23 @@ namespace Exiled.API.Features
         /// Places a Tantrum (SCP-173's ability) in the indicated position.
         /// </summary>
         /// <param name="position">The position where you want to spawn the Tantrum.</param>
+        /// <param name="isActive">Whether or not the tantrum will apply the <see cref="EffectType.Stained"/> effect.</param>
+        /// <remarks>If <paramref name="isActive"/> is <see langword="true"/>, the tantrum is moved slightly up from its original position. Otherwise, the collision will not be detected and the slowness will not work.</remarks>
         /// <returns>The tantrum's <see cref="GameObject"/>.</returns>
-        public static GameObject PlaceTantrum(Vector3 position)
+        public static GameObject PlaceTantrum(Vector3 position, bool isActive = true)
         {
             TantrumEnvironmentalHazard tantrum = Object.Instantiate(TantrumPrefab);
 
-            tantrum.gameObject.transform.position = position;
-            tantrum.SynchronizedPosition = new RelativePosition(position);
+            if (!isActive)
+                tantrum.SynchronizedPosition = new RelativePosition(position);
+            else
+                tantrum.SynchronizedPosition = new RelativePosition(position + (Vector3.up * 0.25f));
+
+            tantrum._destroyed = !isActive;
 
             NetworkServer.Spawn(tantrum.gameObject);
 
             return tantrum.gameObject;
-        }
-
-        /// <summary>
-        /// Spawns an amnestic cloud on the map.
-        /// </summary>
-        /// <param name="position">The position to spawn the amnestic cloud.</param>
-        /// <param name="owner">The owner of the cloud, optional.</param>
-        /// <returns>The cloud's <see cref="GameObject"/>.</returns>
-        public static GameObject PlaceAmnesticCloud(Vector3 position, Player owner = null)
-        {
-            Scp939AmnesticCloudInstance cloud = Object.Instantiate(AmnesticCloudPrefab);
-
-            cloud.gameObject.transform.position = position;
-            cloud.Network_syncPos = new RelativePosition(position);
-
-            if (owner is not null)
-                cloud.ServerSetup(owner.ReferenceHub);
-
-            NetworkServer.Spawn(cloud.gameObject);
-
-            return cloud.gameObject;
         }
 
         /// <summary>
@@ -399,9 +339,11 @@ namespace Exiled.API.Features
             Camera.Camera079ToCamera.Clear();
             Window.BreakableWindowToWindow.Clear();
             TeslaGate.BaseTeslaGateToTeslaGate.Clear();
+            Pickup.BaseToPickup.Clear();
+            Item.BaseToItem.Clear();
             TeleportsValue.Clear();
             LockersValue.Clear();
-            RagdollsValue.Clear();
+            Ragdoll.BasicRagdollToRagdoll.Clear();
             Firearm.ItemTypeToFirearmInstance.Clear();
             Firearm.BaseCodesValue.Clear();
             Firearm.AvailableAttachmentsValue.Clear();

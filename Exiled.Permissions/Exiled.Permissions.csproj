@@ -27,6 +27,7 @@
         <Reference Include="Mirror" HintPath="$(BETA_EXILED_REFERENCES)\Mirror.dll" Private="false" />
         <Reference Include="UnityEngine.CoreModule" HintPath="$(BETA_EXILED_REFERENCES)\UnityEngine.CoreModule.dll" Private="false" />
         <Reference Include="NorthwoodLib" HintPath="$(BETA_EXILED_REFERENCES)\NorthwoodLib.dll" Private="false" />
+        <Reference Include="PluginAPI" HintPath="$(BETA_EXILED_REFERENCES)\PluginAPI.dll" Private="false" />
         <Reference Include="UnityEngine.PhysicsModule" HintPath="$(BETA_EXILED_REFERENCES)\UnityEngine.PhysicsModule.dll" Private="false" />
     </ItemGroup>
 

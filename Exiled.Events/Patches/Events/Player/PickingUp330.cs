@@ -5,13 +5,12 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-namespace Exiled.Events.Patches.Events.Scp330
+namespace Exiled.Events.Patches.Events.Player
 {
     using System.Collections.Generic;
     using System.Reflection.Emit;
 
-    using Exiled.Events.EventArgs.Scp330;
-    using Handlers;
+    using Exiled.Events.EventArgs.Player;
 
     using HarmonyLib;
 
@@ -25,7 +24,7 @@ namespace Exiled.Events.Patches.Events.Scp330
 
     /// <summary>
     ///     Patches the <see cref="Scp330Bag.ServerProcessPickup" /> method to add the
-    ///     <see cref="Scp330.PickingUpScp330" /> event.
+    ///     <see cref="Handlers.Player.PickingUpItem" /> event.
     /// </summary>
     [HarmonyPatch(typeof(Scp330Bag), nameof(Scp330Bag.ServerProcessPickup))]
     internal static class PickingUp330
@@ -34,7 +33,7 @@ namespace Exiled.Events.Patches.Events.Scp330
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Shared.Rent(instructions);
 
-            LocalBuilder ev = generator.DeclareLocal(typeof(PickingUpScp330EventArgs));
+            LocalBuilder ev = generator.DeclareLocal(typeof(PickingUpItemEventArgs));
 
             Label continueLabel = generator.DefineLabel();
 
@@ -55,18 +54,21 @@ namespace Exiled.Events.Patches.Events.Scp330
                     // pickup
                     new(OpCodes.Ldarg_1),
 
-                    // PickingUpScp330EventArgs ev = new(Player.Get(ply), pickup);
-                    new(OpCodes.Newobj, GetDeclaredConstructors(typeof(PickingUpScp330EventArgs))[0]),
+                    // true
+                    new(OpCodes.Ldc_I4_1),
+
+                    // PickingUpItemEventArgs ev = new(Player.Get(ply), pickup, true);
+                    new(OpCodes.Newobj, GetDeclaredConstructors(typeof(PickingUpItemEventArgs))[0]),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),
                     new(OpCodes.Stloc, ev.LocalIndex),
 
                     // Handlers.Scp330.OnPickingUpScp330(ev);
-                    new(OpCodes.Call, Method(typeof(Scp330), nameof(Scp330.OnPickingUp330))),
+                    new(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnPickingUpItem))),
 
                     // if (!ev.IsAllowed)
                     //    return false;
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(PickingUpScp330EventArgs), nameof(PickingUpScp330EventArgs.IsAllowed))),
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(PickingUpItemEventArgs), nameof(PickingUpItemEventArgs.IsAllowed))),
                     new(OpCodes.Brtrue, continueLabel),
 
                     // We need to load false onto the stack before returning, since the method returns a bool.

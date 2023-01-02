@@ -10,6 +10,7 @@ namespace Exiled.Events.Patches.Events.Map
     using System.Collections.Generic;
     using System.Reflection.Emit;
 
+    using Exiled.API.Features.Pickups;
     using Exiled.Events.EventArgs.Map;
     using Handlers;
 
@@ -32,6 +33,7 @@ namespace Exiled.Events.Patches.Events.Map
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Shared.Rent(instructions);
 
+            LocalBuilder ev = generator.DeclareLocal(typeof(SpawningItem));
             Label returnLabel = generator.DefineLabel();
 
             const int offset = 1;

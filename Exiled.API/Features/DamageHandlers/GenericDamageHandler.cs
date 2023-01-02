@@ -11,6 +11,7 @@ namespace Exiled.API.Features.DamageHandlers
     using Footprinting;
     using Items;
     using PlayerRoles.PlayableScps.Scp096;
+    using PlayerRoles.PlayableScps.Scp939;
     using PlayerStatsSystem;
 
     /// <summary>
@@ -43,7 +44,7 @@ namespace Exiled.API.Features.DamageHandlers
             customCassieAnnouncement = cassieAnnouncement;
 
             if (customCassieAnnouncement is not null)
-                customCassieAnnouncement.Announcement = customCassieAnnouncement.Announcement ?? $"{player.Nickname} killed by {attacker.Nickname} utilizing {damageType}";
+                customCassieAnnouncement.Announcement ??= $"{player.Nickname} killed by {attacker.Nickname} utilizing {damageType}";
 
             Attacker = attacker.Footprint;
             AllowSelfDamage = true;
@@ -135,6 +136,9 @@ namespace Exiled.API.Features.DamageHandlers
                 case DamageType.E11Sr:
                     GenericFirearm(player, attacker, damage, damageType, ItemType.GunE11SR);
                     break;
+                case DamageType.Com45:
+                    GenericFirearm(player, attacker, damage, damageType, ItemType.GunCom45);
+                    break;
                 case DamageType.ParticleDisruptor:
                     Base = new DisruptorDamageHandler(Attacker, damage);
                     break;
@@ -146,6 +150,14 @@ namespace Exiled.API.Features.DamageHandlers
                         curr096._lastOwner = attacker.ReferenceHub;
 
                     Base = new Scp096DamageHandler(curr096, damage, Scp096DamageHandler.AttackType.SlapRight);
+                    break;
+                case DamageType.Scp939:
+                    Scp939Role curr939 = attacker.ReferenceHub.roleManager.CurrentRole as Scp939Role ?? new Scp939Role();
+
+                    if (curr939 != null)
+                        curr939._lastOwner = attacker.ReferenceHub;
+
+                    Base = new Scp939DamageHandler(curr939, Scp939DamageType.LungeTarget) { Damage = damage, };
                     break;
                 case DamageType.Scp:
                     Base = new PlayerStatsSystem.ScpDamageHandler(attacker.ReferenceHub, damage, DeathTranslations.Unknown);
@@ -161,9 +173,6 @@ namespace Exiled.API.Features.DamageHandlers
                     break;
                 case DamageType.Scp173:
                     Base = new PlayerStatsSystem.ScpDamageHandler(attacker.ReferenceHub, damage, DeathTranslations.Scp173);
-                    break;
-                case DamageType.Scp939:
-                    Base = new PlayerStatsSystem.ScpDamageHandler(attacker.ReferenceHub, damage, DeathTranslations.Scp939Lunge);
                     break;
                 case DamageType.Scp0492:
                     Base = new PlayerStatsSystem.ScpDamageHandler(attacker.ReferenceHub, damage, DeathTranslations.Zombie);
