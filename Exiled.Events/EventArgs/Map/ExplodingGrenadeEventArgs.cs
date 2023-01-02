@@ -40,6 +40,7 @@ namespace Exiled.Events.EventArgs.Map
             TargetsToAffect = ListPool<Player>.Shared.Rent();
             if (Projectile.Base is not ExplosionGrenade)
                 return;
+
             foreach (Collider collider in targets)
             {
                 if (!collider.TryGetComponent(out IDestructible destructible) || !ReferenceHub.TryGetHubNetID(destructible.NetworkId, out ReferenceHub hub))
