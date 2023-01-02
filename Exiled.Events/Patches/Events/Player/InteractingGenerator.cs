@@ -190,7 +190,7 @@ namespace Exiled.Events.Patches.Events.Player
                     // Player.OnUnlockingGenerator(ev)
                     new(OpCodes.Call, Method(typeof(Player), nameof(Player.OnUnlockingGenerator))),
 
-                    // if (!ev.IAsllowed)
+                    // if (!ev.IsAllowed)
                     //    goto notAllowed;
                     new(OpCodes.Callvirt, PropertyGetter(typeof(UnlockingGeneratorEventArgs), nameof(UnlockingGeneratorEventArgs.IsAllowed))),
                     new(OpCodes.Brfalse_S, notAllowed),
