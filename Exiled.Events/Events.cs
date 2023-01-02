@@ -129,6 +129,9 @@ namespace Exiled.Events
 
             AnimatedCharacterModel.OnFootstepPlayed -= Handlers.Player.OnMakingNoise;
 
+            RagdollManager.OnRagdollSpawned -= Handlers.Internal.RagdollList.OnSpawnedRagdoll;
+            RagdollManager.OnRagdollRemoved -= Handlers.Internal.RagdollList.OnRemovedRagdoll;
+
             EventManager.UnregisterEvents<Handlers.Warhead>(this);
             EventManager.UnregisterEvents<Handlers.Player>(this);
         }
