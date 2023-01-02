@@ -279,7 +279,7 @@ namespace Exiled.API.Features
         /// <param name="owner">The optional owner of the ragdoll.</param>
         /// <returns>The ragdoll.</returns>
         public static Ragdoll Create(RoleTypeId roleType, string name, string deathReason, Player owner = null)
-            => Create(new(owner?.ReferenceHub ?? Server.Host.ReferenceHub, new CustomReasonDamageHandler(deathReason), roleType, default, default, name, NetworkTime.time));
+            => Create(roleType, name, new CustomReasonDamageHandler(deathReason), owner);
 
         /// <summary>
         /// Creates and spawns a new ragdoll.
