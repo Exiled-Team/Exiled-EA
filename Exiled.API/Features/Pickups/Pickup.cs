@@ -53,6 +53,10 @@ namespace Exiled.API.Features.Pickups
             if (pickupBase.Info.ItemId == ItemType.None)
                 return;
 
+            // prevent exploded grenades to added in dict
+            if (!PhysicsPredictionPickup.AllPickups.Contains(pickupBase))
+                return;
+
             BaseToPickup.Add(pickupBase, this);
         }
 
@@ -107,9 +111,7 @@ namespace Exiled.API.Features.Pickups
             set
             {
                 Base.Info.Serial = value;
-
-                if (IsSpawned)
-                    Base.NetworkInfo = Base.Info;
+                Info = Base.Info;
             }
         }
 
@@ -188,7 +190,13 @@ namespace Exiled.API.Features.Pickups
         public PickupSyncInfo Info
         {
             get => Base.NetworkInfo;
-            set => Base.NetworkInfo = value;
+            set
+            {
+                Base.Info = value;
+
+                if (GameObject.activeSelf)
+                    Base.NetworkInfo = value;
+            }
         }
 
         /// <summary>
