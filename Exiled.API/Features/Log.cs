@@ -19,7 +19,7 @@ namespace Exiled.API.Features
     /// </summary>
     public static class Log
     {
-        private static Dictionary<Assembly, bool> knownDebugValues = new();
+        private static readonly Dictionary<Assembly, bool> KnownDebugValues = new();
 
         /// <summary>
         /// Sends a <see cref="Discord.LogLevel.Info"/> level messages to the game console.
@@ -61,19 +61,24 @@ namespace Exiled.API.Features
         /// <param name="message">The message to be sent.</param>
         public static void Debug(string message)
         {
-#if !DEBUG
             Assembly callingAssembly = Assembly.GetCallingAssembly();
-            if (!knownDebugValues.ContainsKey(callingAssembly))
+#if DEBUG
+            if (callingAssembly.GetName().Name is "Exiled.API")
+            {
+                Send($"[{callingAssembly.GetName().Name}] {message}", Discord.LogLevel.Debug, ConsoleColor.Green);
+                return;
+            }
+#endif
+            if (!KnownDebugValues.ContainsKey(callingAssembly))
             {
                 if (!Server.PluginAssemblies.ContainsKey(callingAssembly))
                     SetDebugThroughReflection(callingAssembly);
                 else
-                    knownDebugValues.Add(callingAssembly, Server.PluginAssemblies[callingAssembly].Config.Debug);
+                    KnownDebugValues.Add(callingAssembly, Server.PluginAssemblies[callingAssembly].Config.Debug);
             }
 
-            if (knownDebugValues[callingAssembly])
-#endif
-            Send($"[{Assembly.GetCallingAssembly().GetName().Name}] {message}", Discord.LogLevel.Debug, ConsoleColor.Green);
+            if (KnownDebugValues[callingAssembly])
+                Send($"[{callingAssembly.GetName().Name}] {message}", Discord.LogLevel.Debug, ConsoleColor.Green);
         }
 
         /// <summary>
@@ -168,12 +173,12 @@ namespace Exiled.API.Features
             try
             {
                 IPlugin<IConfig> eventsPlugin = Server.PluginAssemblies.Values.FirstOrDefault(p => p.Name == "Exiled.Events");
-                knownDebugValues.Add(assembly, eventsPlugin?.Config.Debug ?? false);
+                KnownDebugValues.Add(assembly, eventsPlugin?.Config.Debug ?? false);
             }
             catch (Exception e)
             {
                 Error(e);
-                knownDebugValues.Add(assembly, false);
+                KnownDebugValues.Add(assembly, false);
             }
         }
     }

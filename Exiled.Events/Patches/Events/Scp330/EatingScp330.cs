@@ -10,8 +10,8 @@ namespace Exiled.Events.Patches.Events.Scp330
     using System.Collections.Generic;
     using System.Reflection.Emit;
 
-    using Exiled.Events.EventArgs.Player;
     using Exiled.Events.EventArgs.Scp330;
+
     using Handlers;
 
     using HarmonyLib;
