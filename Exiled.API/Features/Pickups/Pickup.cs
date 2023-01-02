@@ -193,6 +193,7 @@ namespace Exiled.API.Features.Pickups
             set
             {
                 Base.Info = value;
+
                 if (GameObject.activeSelf)
                     Base.NetworkInfo = value;
             }
