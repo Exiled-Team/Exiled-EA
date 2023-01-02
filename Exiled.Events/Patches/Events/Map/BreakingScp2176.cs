@@ -56,7 +56,7 @@ namespace Exiled.Events.Patches.Events.Map
                     // new List<Player>
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(List<Player>))[0]),
 
-                    // new ExplodingGrenadeEventArgs(Player, EffectGrenade)
+                    // new ExplodingGrenadeEventArgs(Player, EffectGrenade, List<Player>)
                     new(OpCodes.Newobj, DeclaredConstructor(typeof(ExplodingGrenadeEventArgs), new[] { typeof(Player), typeof(EffectGrenade), typeof(List<Player>), })),
                     new(OpCodes.Dup),
 
