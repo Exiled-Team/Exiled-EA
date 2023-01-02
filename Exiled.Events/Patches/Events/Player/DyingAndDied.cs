@@ -47,7 +47,7 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Ldfld, Field(typeof(PlayerStats), nameof(PlayerStats._hub))),
                     new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
                     new(OpCodes.Dup),
-                    new(OpCodes.Stloc, player.LocalIndex),
+                    new(OpCodes.Stloc_S, player.LocalIndex),
 
                     // handler
                     new(OpCodes.Ldarg_1),
