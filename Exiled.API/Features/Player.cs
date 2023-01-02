@@ -506,7 +506,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets a value indicating whether or not the player is the host.
         /// </summary>
-        public bool IsHost => ReferenceHub.isServer;
+        public bool IsHost => ReferenceHub.isLocalPlayer;
 
         /// <summary>
         /// Gets a value indicating whether or not the player is alive.
@@ -2958,7 +2958,7 @@ namespace Exiled.API.Features
         /// <param name="time">The times for the cooldown.</param>
         /// <param name="itemType">The itemtypes to choose for being cooldown.</param>
         public void GetCooldownItem(float time, ItemType itemType)
-        => UsableItemsController.GetHandler(ReferenceHub).PersonalCooldowns[itemType] = Time.timeSinceLevelLoad + time;
+            => UsableItemsController.GetHandler(ReferenceHub).PersonalCooldowns[itemType] = Time.timeSinceLevelLoad + time;
 
         /// <summary>
         /// Converts the player in a human-readable format.
