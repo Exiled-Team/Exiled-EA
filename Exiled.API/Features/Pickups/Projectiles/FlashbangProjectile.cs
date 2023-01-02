@@ -27,6 +27,15 @@ namespace Exiled.API.Features.Pickups.Projectiles
         }
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="FlashbangProjectile"/> class.
+        /// </summary>
+        internal FlashbangProjectile()
+            : base(ItemType.GrenadeFlash)
+        {
+            Base = (FlashbangGrenade)((Pickup)this).Base;
+        }
+
+        /// <summary>
         /// Gets the <see cref="FlashbangGrenade"/> that this class is encapsulating.
         /// </summary>
         public new FlashbangGrenade Base { get; }

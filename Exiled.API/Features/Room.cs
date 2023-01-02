@@ -146,15 +146,15 @@ namespace Exiled.API.Features
         public IEnumerable<Camera> Cameras { get; private set; } = Enumerable.Empty<Camera>();
 
         /// <summary>
-        /// Gets or sets a value indicating whether or not the lights in this room are currently flickered on.
+        /// Gets or sets a value indicating whether or not the lights in this room are currently off.
         /// </summary>
-        public bool LightsOn
+        public bool AreLightsOff
         {
-            get => FlickerableLightController && FlickerableLightController.NetworkLightsEnabled;
+            get => FlickerableLightController && !FlickerableLightController.NetworkLightsEnabled;
             set
             {
                 if (FlickerableLightController)
-                    FlickerableLightController.NetworkLightsEnabled = value;
+                    FlickerableLightController.NetworkLightsEnabled = !value;
             }
         }
 
@@ -389,7 +389,7 @@ namespace Exiled.API.Features
             Type = FindType(gameObject);
 
             Identifier = gameObject.GetComponent<RoomIdentifier>();
-            FlickerableLightController = gameObject.GetComponent<FlickerableLightController>();
+            FlickerableLightController = gameObject.GetComponentInChildren<FlickerableLightController>();
 
             Doors = DoorVariant.DoorsByRoom.ContainsKey(Identifier) ? DoorVariant.DoorsByRoom[Identifier].Select(x => Door.Get(x, this)).ToList() : new();
             Cameras = Camera.List.Where(x => x.Base.Room == Identifier).ToList();

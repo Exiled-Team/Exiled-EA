@@ -85,16 +85,16 @@ namespace Exiled.Events.Patches.Events.Map
                     new(OpCodes.Ldloc_3),
 
                     // ExplodingGrenadeEventArgs ev = new(player, position, grenade, colliders);
-                    //
-                    // Map.OnExplodingGrenade(ev);
-                    //
-                    // if (!ev.IsAllowed)
-                    //     return;
                     new(OpCodes.Newobj, DeclaredConstructor(typeof(ExplodingGrenadeEventArgs), new[] { typeof(Player), typeof(Vector3), typeof(EffectGrenade), typeof(Collider[]) })),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),
                     new(OpCodes.Stloc, ev.LocalIndex),
+
+                    // Map.OnExplodingGrenade(ev);
                     new(OpCodes.Call, Method(typeof(Handlers.Map), nameof(Handlers.Map.OnExplodingGrenade))),
+
+                    // if (!ev.IsAllowed)
+                    //     return;
                     new(OpCodes.Callvirt, PropertyGetter(typeof(ExplodingGrenadeEventArgs), nameof(ExplodingGrenadeEventArgs.IsAllowed))),
                     new(OpCodes.Brfalse, returnLabel),
 

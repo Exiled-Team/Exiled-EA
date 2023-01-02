@@ -26,40 +26,6 @@ namespace Exiled.Events.EventArgs.Map
     public class ExplodingGrenadeEventArgs : IPlayerEvent, IDeniableEvent
     {
         /// <summary>
-        ///     Initializes a new instance of the <see cref="ExplodingGrenadeEventArgs" /> class.
-        /// </summary>
-        /// <param name="thrower">
-        ///     <inheritdoc cref="Player" />
-        /// </param>
-        /// <param name="grenade">
-        ///     <inheritdoc cref="Projectile" />
-        /// </param>
-        /// <param name="targets">
-        ///     <inheritdoc cref="TargetsToAffect" />
-        /// </param>
-        public ExplodingGrenadeEventArgs(Player thrower, EffectGrenade grenade, Collider[] targets)
-        {
-            Player = thrower ?? Server.Host;
-            Projectile = (EffectGrenadeProjectile)Pickup.Get(grenade);
-            Position = Projectile.Position;
-            TargetsToAffect = ListPool<Player>.Shared.Rent();
-
-            foreach (Collider collider in targets)
-            {
-                if (Projectile.Base is not ExplosionGrenade || !collider.TryGetComponent(out IDestructible destructible) || !ReferenceHub.TryGetHubNetID(destructible.NetworkId, out ReferenceHub hub))
-                    continue;
-
-                Player player = Player.Get(hub);
-
-                if (player is null)
-                    continue;
-
-                if (!TargetsToAffect.Contains(player))
-                    TargetsToAffect.Add(player);
-            }
-        }
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="ExplodingGrenadeEventArgs"/> class.
         /// </summary>
         /// <param name="thrower"><inheritdoc cref="Player"/></param>
@@ -72,9 +38,13 @@ namespace Exiled.Events.EventArgs.Map
             Projectile = (EffectGrenadeProjectile)Pickup.Get(grenade);
             Position = position;
             TargetsToAffect = ListPool<Player>.Shared.Rent();
+
+            if (Projectile.Base is not ExplosionGrenade)
+                return;
+
             foreach (Collider collider in targets)
             {
-                if (Projectile.Base is not ExplosionGrenade || !collider.TryGetComponent(out IDestructible destructible) || !ReferenceHub.TryGetHubNetID(destructible.NetworkId, out ReferenceHub hub))
+                if (!collider.TryGetComponent(out IDestructible destructible) || !ReferenceHub.TryGetHubNetID(destructible.NetworkId, out ReferenceHub hub))
                     continue;
 
                 Player player = Player.Get(hub);

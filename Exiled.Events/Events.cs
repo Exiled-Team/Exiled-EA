@@ -18,6 +18,7 @@ namespace Exiled.Events
     using HarmonyLib;
     using PlayerRoles;
     using PlayerRoles.FirstPersonControl.Thirdperson;
+    using PlayerRoles.Ragdolls;
     using PluginAPI.Events;
     using UnityEngine.SceneManagement;
 
@@ -94,6 +95,9 @@ namespace Exiled.Events
 
             AnimatedCharacterModel.OnFootstepPlayed += Handlers.Player.OnMakingNoise;
 
+            RagdollManager.OnRagdollSpawned += Handlers.Internal.RagdollList.OnSpawnedRagdoll;
+            RagdollManager.OnRagdollRemoved += Handlers.Internal.RagdollList.OnRemovedRagdoll;
+
             ServerConsole.ReloadServerName();
 
             EventManager.RegisterEvents<Handlers.Warhead>(this);
@@ -124,6 +128,9 @@ namespace Exiled.Events
             InventorySystem.InventoryExtensions.OnItemAdded -= Handlers.Player.OnItemAdded;
 
             AnimatedCharacterModel.OnFootstepPlayed -= Handlers.Player.OnMakingNoise;
+
+            RagdollManager.OnRagdollSpawned -= Handlers.Internal.RagdollList.OnSpawnedRagdoll;
+            RagdollManager.OnRagdollRemoved -= Handlers.Internal.RagdollList.OnRemovedRagdoll;
 
             EventManager.UnregisterEvents<Handlers.Warhead>(this);
             EventManager.UnregisterEvents<Handlers.Player>(this);

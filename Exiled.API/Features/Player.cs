@@ -368,6 +368,23 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
+        /// Gets or sets a value indicating whether or not the player is allowed to enter noclip mode.
+        /// </summary>
+        /// <remarks>For forcing the player into noclip mode, see <see cref="FpcRole.IsNoclipEnabled"/>.</remarks>
+        /// <seealso cref="FpcRole.IsNoclipEnabled"/>
+        public bool IsNoclipPermitted
+        {
+            get => FpcNoclip.IsPermitted(ReferenceHub);
+            set
+            {
+                if (value && !FpcNoclip.PermittedPlayers.Contains(ReferenceHub.netId))
+                    FpcNoclip.PermitPlayer(ReferenceHub);
+                else if (!value && FpcNoclip.PermittedPlayers.Contains(ReferenceHub.netId))
+                    FpcNoclip.UnpermitPlayer(ReferenceHub);
+            }
+        }
+
+        /// <summary>
         /// Gets or sets a value indicating the <see cref="Player"/> that currently has the player cuffed.
         /// <para>
         /// This value will be <see langword="null"/> if the player is not cuffed. Setting this value to <see langword="null"/> will uncuff the player if they are cuffed.
@@ -2836,7 +2853,7 @@ namespace Exiled.API.Features
                 nameof(TeslaGate) => TeslaGate.List.ElementAt(Random.Range(0, TeslaGate.BaseTeslaGateToTeslaGate.Count)),
                 nameof(Player) => Dictionary.Values.ElementAt(Random.Range(0, Dictionary.Count)),
                 nameof(Pickup) => Pickup.BaseToPickup.ElementAt(Random.Range(0, Pickup.BaseToPickup.Count)).Value,
-                nameof(Ragdoll) => Map.RagdollsValue[Random.Range(0, Map.RagdollsValue.Count)],
+                nameof(Ragdoll) => Ragdoll.List.ElementAt(Random.Range(0, Ragdoll.BasicRagdollToRagdoll.Count)),
                 nameof(Locker) => Map.GetRandomLocker(),
                 nameof(Generator) => Generator.List.ElementAt(Random.Range(0, Generator.Scp079GeneratorToGenerator.Count)),
                 nameof(Window) => Window.List.ElementAt(Random.Range(0, Window.BreakableWindowToWindow.Count)),
