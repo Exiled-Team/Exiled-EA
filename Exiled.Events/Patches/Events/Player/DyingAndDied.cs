@@ -76,7 +76,7 @@ namespace Exiled.Events.Patches.Events.Player
                 new CodeInstruction[]
                 {
                     // player
-                    new(OpCodes.Ldloc, player.LocalIndex),
+                    new(OpCodes.Ldloc_S, player.LocalIndex),
 
                     // oldRole
                     new(OpCodes.Ldloc, oldRole.LocalIndex),
