@@ -19,7 +19,7 @@ namespace Exiled.Events.Handlers.Internal
         /// Called after a ragdoll is spawned. Hooked to <see cref="RagdollManager.OnRagdollSpawned"/>.
         /// </summary>
         /// <param name="ragdoll">The spawned ragdoll.</param>
-        internal static void OnSpawnedRagdoll(BasicRagdoll ragdoll) => Ragdoll.Get(ragdoll);
+        public static void OnSpawnedRagdoll(BasicRagdoll ragdoll) => Ragdoll.Get(ragdoll);
 
         /// <summary>
         /// Called before a ragdoll is destroyed. Hooked to <see cref="RagdollManager.OnRagdollRemoved"/>.
