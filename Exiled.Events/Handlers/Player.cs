@@ -337,11 +337,6 @@ namespace Exiled.Events.Handlers
         public static event CustomEventHandler<ProcessingHotkeyEventArgs> ProcessingHotkey;
 
         /// <summary>
-        /// Invoked before dropping ammo.
-        /// </summary>
-        public static event CustomEventHandler<DroppingAmmoEventArgs> DroppingAmmo;
-
-        /// <summary>
         /// Invoked before a <see cref="API.Features.Player"/> interacts with a shooting target.
         /// </summary>
         public static event CustomEventHandler<InteractingShootingTargetEventArgs> InteractingShootingTarget;
@@ -1011,25 +1006,8 @@ namespace Exiled.Events.Handlers
         /// <summary>
         /// Called before a <see cref="API.Features.Player"/> interacts with a door.
         /// </summary>
-        /// <param name="player"><inheritdoc cref="InteractingDoorEventArgs.Player"/></param>
-        /// <param name="doorVariant"><inheritdoc cref="InteractingDoorEventArgs.Door"/></param>
-        /// <param name="canOpen">Indicates whether the door can open or not.</param>
-        /// <returns><inheritdoc cref="InteractingDoorEventArgs.IsAllowed"/></returns>
-        [PluginEvent(ServerEventType.PlayerInteractDoor)]
-
-        // TODO: NWAPI supports skipping permission check, so player can change door's TargetStatus even if it doesn't met the keycard permissions. EXILED should implement that too.
-        public bool OnInteractingDoor(PluginAPI.Core.Player player, DoorVariant doorVariant, bool canOpen) => InteractingDoor.InvokeSafely(new(player, doorVariant));
-
-        /// <summary>
-        /// Called before dropping ammo.
-        /// </summary>
-        /// <param name="player"><inheritdoc cref="DroppingAmmoEventArgs.Player"/></param>
-        /// <param name="item"><inheritdoc cref="DroppingAmmoEventArgs.AmmoType"/></param>
-        /// <param name="amount"><inheritdoc cref="DroppingAmmoEventArgs.Amount"/></param>
-        /// <returns><inheritdoc cref="DroppingAmmoEventArgs.IsAllowed"/></returns>
-        [PluginEvent(ServerEventType.PlayerDropAmmo)]
-        public bool OnDroppingAmmo(PluginAPI.Core.Player player, ItemType item, int amount)
-            => DroppingAmmo.InvokeSafely(new(player, item.GetAmmoType(), (ushort)amount));
+        /// <param name="ev">The <see cref="InteractingDoorEventArgs"/> instance.</param>
+        public static void OnInteractingDoor(InteractingDoorEventArgs ev) => InteractingDoor.InvokeSafely(ev);
 
         /// <summary>
         /// Called before muting a user.
