@@ -38,6 +38,7 @@ namespace Exiled.Events.EventArgs.Map
             Projectile = (EffectGrenadeProjectile)Pickup.Get(grenade);
             Position = position;
             TargetsToAffect = ListPool<Player>.Shared.Rent();
+
             if (Projectile.Base is not ExplosionGrenade)
                 return;
 
