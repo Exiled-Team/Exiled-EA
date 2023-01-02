@@ -65,7 +65,7 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Brfalse, ret),
 
                     // oldRole = player.Role.Type
-                    new(OpCodes.Ldloc, player.LocalIndex),
+                    new(OpCodes.Ldloc_S, player.LocalIndex),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(Player), nameof(Player.Role))),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(Role), nameof(Role.Type))),
                     new(OpCodes.Stloc, oldRole.LocalIndex),
