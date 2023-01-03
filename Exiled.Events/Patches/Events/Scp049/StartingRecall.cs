@@ -26,7 +26,7 @@ namespace Exiled.Events.Patches.Events.Scp049
     ///     Patches <see cref="Scp049ResurrectAbility.ServerComplete" />.
     ///     Adds the <see cref="Handlers.Scp049.StartingRecall" /> event.
     /// </summary>
-    [HarmonyPatch(typeof(Scp049ResurrectAbility), nameof(Scp049ResurrectAbility.ServerValidateAny))]
+    // [HarmonyPatch(typeof(Scp049ResurrectAbility), nameof(Scp049ResurrectAbility.ServerValidateBegin))]
     internal static class StartingRecall
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
@@ -59,7 +59,8 @@ namespace Exiled.Events.Patches.Events.Scp049
             Scp049ResurrectAbility.ResurrectError resurrectError = instance.CheckBeginConditions(ragdoll);
             StartingReviveEventArgs startingReviveEvent = new StartingReviveEventArgs(Player.Get(ragdoll.Info.OwnerHub), Player.Get(instance.Owner), ragdoll, resurrectError);
             Handlers.Scp049.OnStartingRecall(startingReviveEvent);
-            return startingReviveEvent.IsAllowed;
+            //NW funny 0 is good, 1 is bad
+            return !startingReviveEvent.IsAllowed;
         }
     }
 }
