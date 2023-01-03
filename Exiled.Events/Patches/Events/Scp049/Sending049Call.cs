@@ -63,6 +63,12 @@ namespace Exiled.Events.Patches.Events.Scp049
             API.Features.Player currentPlayer = API.Features.Player.Get(callAbility.Owner);
             Sending049CallEventArgs sendingCallEvent = new Sending049CallEventArgs(currentPlayer, reader);
             Handlers.Scp049.OnSendingCall(sendingCallEvent);
+
+            if (!sendingCallEvent.IsAllowed)
+            {
+                return;
+            }
+
             if (!sendingCallEvent.BypassChecks)
             {
                 if (callAbility._serverTriggered || !callAbility.Cooldown.IsReady)
@@ -70,12 +76,10 @@ namespace Exiled.Events.Patches.Events.Scp049
                     return;
                 }
             }
-            if (sendingCallEvent.IsAllowed)
-            {
-                callAbility.Duration.Trigger(sendingCallEvent.Duration);
-                callAbility._serverTriggered = true;
-                callAbility.ServerSendRpc(true);
-            }
+
+            callAbility.Duration.Trigger(sendingCallEvent.Duration);
+            callAbility._serverTriggered = true;
+            callAbility.ServerSendRpc(true);
         }
 
     }
