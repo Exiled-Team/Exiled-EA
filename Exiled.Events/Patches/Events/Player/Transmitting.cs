@@ -78,23 +78,5 @@ namespace Exiled.Events.Patches.Events.Player
 
             return ev.IsAllowed;
         }
-
-        private static string[] GetStack(int removeLines)
-        {
-            string[] stack = Environment.StackTrace.Split(
-                new string[] {Environment.NewLine},
-                StringSplitOptions.RemoveEmptyEntries);
-
-            if(stack.Length <= removeLines)
-                return new string[0];
-
-            string[] actualResult = new string[stack.Length - removeLines];
-            for (int i = removeLines; i < stack.Length; i++)
-                // Remove 6 characters (e.g. "  at ") from the beginning of the line
-                // This might be different for other languages and platforms
-                actualResult[i - removeLines] = stack[i].Substring(3);
-
-            return actualResult;
-        }
     }
 }
