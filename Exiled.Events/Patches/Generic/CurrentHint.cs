@@ -34,9 +34,7 @@ namespace Exiled.Events.Patches.Generic
                 return;
 
             if (PlayerCurrentHints.TryGetValue(player, out CoroutineHandle oldCoroutine))
-            {
                 Timing.KillCoroutines(oldCoroutine);
-            }
 
             PlayerCurrentHints[player] = Timing.RunCoroutine(CurrentHintToNull(player, hint.DurationScalar));
             player.CurrentHint = new API.Features.Hint(textHint.Text, textHint.DurationScalar);
