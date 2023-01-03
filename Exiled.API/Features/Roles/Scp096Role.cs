@@ -34,14 +34,19 @@ namespace Exiled.API.Features.Roles
             Internal = baseRole;
 
             if (!SubroutineModule.TryGetSubroutine(out Scp096RageCycleAbility scp096RageCycleAbility))
-                Log.Error("impossible to take Scp096RageCycleAbility in Scp096Role.cttor");
-            Scp096RageCycleAbility = scp096RageCycleAbility;
+                Log.Debug("RageCycleAbility subroutine not found in Scp096Role::ctor");
+
+            RageCycleAbility = scp096RageCycleAbility;
+
             if (!SubroutineModule.TryGetSubroutine(out Scp096RageManager scp096RageManager))
-                Log.Error("impossible to take Scp096RageManager in Scp096Role.cttor");
-            Scp096RageManager = scp096RageManager;
+                Log.Debug("RageManager subroutine not found in Scp096Role::ctor");
+
+            RageManager = scp096RageManager;
+
             if (!SubroutineModule.TryGetSubroutine(out Scp096TargetsTracker scp096TargetsTracker))
-                Log.Error("impossible to take Scp096TargetsTracker in Scp096Role.cttor");
-            Scp096TargetsTracker = scp096TargetsTracker;
+                Log.Debug("TargetsTracker not found in Scp096Role::ctor");
+
+            TargetsTracker = scp096TargetsTracker;
         }
 
         /// <summary>
@@ -61,17 +66,17 @@ namespace Exiled.API.Features.Roles
         /// <summary>
         /// Gets .
         /// </summary>
-        public Scp096RageCycleAbility Scp096RageCycleAbility { get; }
+        public Scp096RageCycleAbility RageCycleAbility { get; }
 
         /// <summary>
         /// Gets .
         /// </summary>
-        public Scp096RageManager Scp096RageManager { get; }
+        public Scp096RageManager RageManager { get; }
 
         /// <summary>
         /// Gets .
         /// </summary>
-        public Scp096TargetsTracker Scp096TargetsTracker { get; }
+        public Scp096TargetsTracker TargetsTracker { get; }
 
         /// <summary>
         /// Gets a value indicating SCP-096's ability state.
@@ -86,18 +91,18 @@ namespace Exiled.API.Features.Roles
         /// <summary>
         /// Gets a value indicating whether or not SCP-096 can receive targets.
         /// </summary>
-        public bool CanReceiveTargets => Scp096RageCycleAbility._targetsTracker.CanReceiveTargets;
+        public bool CanReceiveTargets => RageCycleAbility._targetsTracker.CanReceiveTargets;
 
         /// <summary>
         /// Gets or sets the amount of time in between SCP-096 charges.
         /// </summary>
         public float ChargeCooldown
         {
-            get => Scp096RageCycleAbility._timeToChangeState;
+            get => RageCycleAbility._timeToChangeState;
             set
             {
-                Scp096RageCycleAbility._timeToChangeState = value;
-                Scp096RageCycleAbility.ServerSendRpc(true);
+                RageCycleAbility._timeToChangeState = value;
+                RageCycleAbility.ServerSendRpc(true);
             }
         }
 
@@ -106,11 +111,11 @@ namespace Exiled.API.Features.Roles
         /// </summary>
         public float EnrageCooldown
         {
-            get => Scp096RageCycleAbility._activationTime.Remaining;
+            get => RageCycleAbility._activationTime.Remaining;
             set
             {
-                Scp096RageCycleAbility._activationTime.Remaining = value;
-                Scp096RageCycleAbility.ServerSendRpc(true);
+                RageCycleAbility._activationTime.Remaining = value;
+                RageCycleAbility.ServerSendRpc(true);
             }
         }
 
@@ -119,11 +124,11 @@ namespace Exiled.API.Features.Roles
         /// </summary>
         public float EnragedTimeLeft
         {
-            get => Scp096RageManager.EnragedTimeLeft;
+            get => RageManager.EnragedTimeLeft;
             set
             {
-                Scp096RageManager.EnragedTimeLeft = value;
-                Scp096RageManager.ServerSendRpc(true);
+                RageManager.EnragedTimeLeft = value;
+                RageManager.ServerSendRpc(true);
             }
         }
 
@@ -132,19 +137,18 @@ namespace Exiled.API.Features.Roles
         /// </summary>
         public float TotalEnrageTime
         {
-            get => Scp096RageManager.TotalRageTime;
+            get => RageManager.TotalRageTime;
             set
             {
-                Scp096RageManager.TotalRageTime = value;
-                Scp096RageManager.ServerSendRpc(true);
+                RageManager.TotalRageTime = value;
+                RageManager.ServerSendRpc(true);
             }
         }
 
         /// <summary>
         /// Gets a <see cref="IReadOnlyCollection{T}"/> of Players that are currently targeted by SCP-096.
         /// </summary>
-        public IReadOnlyCollection<Player> Targets
-            => SubroutineModule.TryGetSubroutine(out Scp096RageCycleAbility ability) ? ability._targetsTracker.Targets.Select(Player.Get).ToList().AsReadOnly() : emptyList;
+        public IReadOnlyCollection<Player> Targets => RageCycleAbility._targetsTracker.Targets.Select(Player.Get).ToList().AsReadOnly();
 
         /// <summary>
         /// Gets the <see cref="Scp096GameRole"/>.
@@ -155,37 +159,37 @@ namespace Exiled.API.Features.Roles
         /// e.
         /// </summary>
         /// <param name="player">.</param>
-        public void AddTarget(Player player) => Scp096TargetsTracker.AddTarget(player.ReferenceHub);
+        public void AddTarget(Player player) => TargetsTracker.AddTarget(player.ReferenceHub);
 
         /// <summary>
         /// e.
         /// </summary>
         /// <param name="player">.</param>
-        public void RemoveTarget(Player player) => Scp096TargetsTracker.RemoveTarget(player.ReferenceHub);
+        public void RemoveTarget(Player player) => TargetsTracker.RemoveTarget(player.ReferenceHub);
 
         /// <summary>
         /// .
         /// </summary>
         /// <param name="time">e.</param>
-        public void Enrage(float time) => Scp096RageManager.ServerEnrage(time);
+        public void Enrage(float time) => RageManager.ServerEnrage(time);
 
         /// <summary>
         /// .
         /// </summary>
         /// <param name="player">ee.</param>
         /// <returns>e.</returns>
-        public bool HasTarget(Player player) => Scp096TargetsTracker.HasTarget(player.ReferenceHub);
+        public bool HasTarget(Player player) => TargetsTracker.HasTarget(player.ReferenceHub);
 
         /// <summary>
         /// .
         /// </summary>
         /// <param name="player">ee.</param>
         /// <returns>e.</returns>
-        public bool IsObserved(Player player) => Scp096TargetsTracker.IsObservedBy(player.ReferenceHub);
+        public bool IsObserved(Player player) => TargetsTracker.IsObservedBy(player.ReferenceHub);
 
         /// <summary>
         /// .
         /// </summary>
-        public void ClearTarget() => Scp096TargetsTracker.ClearAllTargets();
+        public void ClearTarget() => TargetsTracker.ClearAllTargets();
     }
 }
