@@ -90,9 +90,9 @@ namespace Exiled.Events.EventArgs.Scp106
         public bool BypassChecks { get; set; }
 
         /// <summary>
-        ///     Gets or sets the stalk ability instance.
+        ///     Gets the stalk ability instance.
         /// </summary>
-        public Scp106StalkAbility Scp106StalkAbility { get; set; }
+        public Scp106StalkAbility Scp106StalkAbility { get; }
 
         /// <summary>
         ///     Gets or sets a value indicating whether or not SCP-106 can teleport using a portal.
