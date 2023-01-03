@@ -183,9 +183,15 @@ namespace Exiled.API.Features
         public Transform Transform => ReferenceHub.transform;
 
         /// <summary>
+        /// Gets the hint currently watched by the player.
+        /// </summary>
+        /// May be <see langword="null"/>.
+        public Hint CurrentHint { get; internal set; }
+
+        /// <summary>
         /// Gets a value indicating whether or not the player is viewing a hint.
         /// </summary>
-        public bool HasHint { get; internal set; }
+        public bool HasHint => CurrentHint != null;
 
         /// <summary>
         /// Gets the <see cref="ReferenceHub"/>'s <see cref="VoiceModule"/>, can be null.
@@ -2388,12 +2394,17 @@ namespace Exiled.API.Features
         /// <param name="duration">The duration the text will be on screen.</param>
         public void ShowHint(string message, float duration = 3f)
         {
-            HintParameter[] parameters = new HintParameter[]
-            {
-                new StringHintParameter(message),
-            };
+            HintDisplay.Show(new TextHint(message, new HintParameter[] { new StringHintParameter(message) }, null, duration));
+        }
 
-            HintDisplay.Show(new TextHint(message, parameters, null, duration));
+        /// <summary>
+        /// Show a hint to the player.
+        /// </summary>
+        /// <param name="hint">The hint to be shown.</param>
+        public void ShowHint(Hint hint)
+        {
+            if (hint.Show)
+                ShowHint(hint.Content, hint.Duration);
         }
 
         /// <summary>
