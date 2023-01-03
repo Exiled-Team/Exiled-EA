@@ -67,7 +67,7 @@ namespace Exiled.Events.EventArgs.Scp079
         public Vector3 Position { get; set; }
 
         /// <summary>
-        /// Gets the room that the ping is located in.
+        /// Gets the room where the ping is located in.
         /// </summary>
         public Room Room { get; }
 

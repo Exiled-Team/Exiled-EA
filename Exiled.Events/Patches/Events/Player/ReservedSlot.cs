@@ -35,7 +35,7 @@ namespace Exiled.Events.Patches.Events.Player
     ///     Patches <see cref="ReservedSlot.HasReservedSlot(string userId, out bool bypass)" />.
     ///     Adds the <see cref="Player.ReservedSlot" /> event.
     /// </summary>
-    [HarmonyPatch(typeof(ReservedSlot), "HasReservedSlot")]
+    [HarmonyPatch(typeof(ReservedSlot), nameof(ReservedSlot.HasReservedSlot))]
     internal static class ReservedSlotPatch
     {
         [HarmonyTranspiler]

@@ -69,12 +69,12 @@ namespace Exiled.Events.Handlers
         public static event CustomEventHandler<PingingEventArgs> Pinging;
 
         /// <summary>
-        ///     Invoked before SCP-079 blacks out the lights in a room.
+        ///     Invoked before SCP-079 turns off the lights in a room.
         /// </summary>
         public static event CustomEventHandler<RoomBlackoutEventArgs> RoomBlackout;
 
         /// <summary>
-        ///     Invoked before SCP-079 blacks out the lights in a zone.
+        ///     Invoked before SCP-079 turns off the lights in a zone.
         /// </summary>
         public static event CustomEventHandler<ZoneBlackoutEventArgs> ZoneBlackout;
 
@@ -139,13 +139,13 @@ namespace Exiled.Events.Handlers
         public static void OnPinging(PingingEventArgs ev) => Pinging.InvokeSafely(ev);
 
         /// <summary>
-        ///     Called before SCP-079 blacks out the lights in a room.
+        ///     Called before SCP-079 turns off the lights in a room.
         /// </summary>
         /// <param name="ev">The <see cref="PingingEventArgs" /> instance.</param>
         public static void OnRoomBlackout(RoomBlackoutEventArgs ev) => RoomBlackout.InvokeSafely(ev);
 
         /// <summary>
-        ///     Called before SCP-079 blacks out the lights in a zone.
+        ///     Called before SCP-079 turns off the lights in a zone.
         /// </summary>
         /// <param name="ev">The <see cref="PingingEventArgs" /> instance.</param>
         public static void OnZoneBlackout(ZoneBlackoutEventArgs ev) => ZoneBlackout.InvokeSafely(ev);

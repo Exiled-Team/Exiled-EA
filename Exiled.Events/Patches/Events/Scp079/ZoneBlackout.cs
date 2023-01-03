@@ -53,18 +53,21 @@ namespace Exiled.Events.Patches.Events.Scp079
         private static bool ProcessZoneBlackout(Scp079BlackoutZoneAbility instance)
         {
             API.Features.Player currentPlayer = API.Features.Player.Get(instance.Owner);
-            ZoneBlackoutEventArgs zoneEvent = new ZoneBlackoutEventArgs(currentPlayer, instance._syncZone, instance._cost, instance._duration, instance._cooldown, instance.ErrorCode);
-            Handlers.Scp079.OnZoneBlackout(zoneEvent);
-            if (zoneEvent.IsAllowed)
+            
+            ZoneBlackoutEventArgs ev = new(currentPlayer, instance._syncZone, instance._cost, instance._duration, instance._cooldown, instance.ErrorCode);
+            
+            Handlers.Scp079.OnZoneBlackout(ev);
+            
+            if (ev.IsAllowed)
             {
-                instance._duration = zoneEvent.BlackoutDuration;
-                instance._cooldown = zoneEvent.Cooldown;
+                instance._duration = ev.BlackoutDuration;
+                instance._cooldown = ev.Cooldown;
 
                 // Gets casted to float above, even though it is an int, joy.
-                instance._cost = (int)zoneEvent.AuxiliaryPowerCost;
+                instance._cost = (int)ev.AuxiliaryPowerCost;
             }
 
-            return zoneEvent.IsAllowed;
+            return ev.IsAllowed;
         }
     }
 }

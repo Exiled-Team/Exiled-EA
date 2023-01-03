@@ -59,14 +59,17 @@ namespace Exiled.Events.Patches.Events.Scp079
         private static void ProcessPinging(Scp079PingAbility instance, NetworkReader reader)
         {
             RelativePosition curRelativePos = reader.ReadRelativePosition();
-            PingingEventArgs pingEvent = new PingingEventArgs(instance.Owner, curRelativePos, instance._cost, instance._syncProcessorIndex);
-            Handlers.Scp079.OnPinging(pingEvent);
-            if (pingEvent.IsAllowed)
+
+            PingingEventArgs ev = new PingingEventArgs(instance.Owner, curRelativePos, instance._cost, instance._syncProcessorIndex);
+
+            Handlers.Scp079.OnPinging(ev);
+           
+             if (ev.IsAllowed)
             {
-                instance._syncNormal = pingEvent.Position;
+                instance._syncNormal = ev.Position;
                 instance._syncPos = curRelativePos;
-                instance.ServerSendRpc(hub => instance.ServerCheckReceiver(hub, pingEvent.Position, (int)pingEvent.Type));
-                instance.AuxManager.CurrentAux = pingEvent.AuxiliaryPowerCost;
+                instance.ServerSendRpc(hub => instance.ServerCheckReceiver(hub, ev.Position, (int)ev.Type));
+                instance.AuxManager.CurrentAux = ev.AuxiliaryPowerCost;
                 instance._rateLimiter.RegisterInput();
             }
         }

@@ -15,7 +15,7 @@ namespace Exiled.Events.EventArgs.Scp079
     using PlayerRoles.PlayableScps.Scp079;
 
     /// <summary>
-    ///     Contains all information before SCP-079 blacks out the lights in a room.
+    ///     Contains all information before SCP-079 turns off the lights in a room.
     /// </summary>
     public class RoomBlackoutEventArgs : IPlayerEvent, IRoomEvent, IDeniableEvent
     {
@@ -71,7 +71,7 @@ namespace Exiled.Events.EventArgs.Scp079
         public float AuxiliaryPowerCost { get; set; }
 
         /// <summary>
-        ///     Gets or sets the time of the Cooldown to player to make an other zone blackout.
+        ///     Gets or sets the blackout cooldown duration.
         /// </summary>
         public double Cooldown { get; set; }
 

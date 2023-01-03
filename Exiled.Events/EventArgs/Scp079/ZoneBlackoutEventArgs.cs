@@ -79,7 +79,7 @@ namespace Exiled.Events.EventArgs.Scp079
         public float BlackoutDuration { get; set; }
 
         /// <summary>
-        ///     Gets or sets the time of the Cooldown to player to make an other zone blackout.
+        /// Gets or sets the blackout cooldown duration.
         /// </summary>
         public float Cooldown { get; set; }
 
