@@ -129,7 +129,7 @@ namespace Exiled.API.Features.Roles
         /// <summary>
         /// Gets a value indicating the position of SCP-939's mimic point. May be <see langword="null"/> if <see cref="MimicryPointActive"/> is <see langword="false"/>.
         /// </summary>
-        public UnityEngine.Vector3? MinicryPointPosition => SubroutineModule.TryGetSubroutine(out EnvironmentalMimicry ability) && ability._mimicPoint.Active ? ability._mimicPoint.MimicPointTransform.position : null;
+        public UnityEngine.Vector3? MimicryPointPosition => SubroutineModule.TryGetSubroutine(out EnvironmentalMimicry ability) && ability._mimicPoint.Active ? ability._mimicPoint.MimicPointTransform.position : null;
 
         /// <summary>
         /// Gets a list of players this SCP-939 instance can see regardless of their movement.
