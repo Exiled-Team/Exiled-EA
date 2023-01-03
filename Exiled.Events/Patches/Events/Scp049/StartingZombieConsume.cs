@@ -90,17 +90,21 @@ namespace Exiled.Events.Patches.Events.Scp049
             zombieAbilityBase.CurRagdoll = zombieAbilityBase._syncRagdoll;
             zombieAbilityBase._errorCode = zombieAbilityBase.ServerValidateBegin(zombieAbilityBase._syncRagdoll);
 
-            // API.Features.Player currentPlayer = API.Features.Player.Get(zombieAbilityBase.Owner);
-            // ZombieConsumeEventArgs zombieConsumeEvent = new ZombieConsumeEventArgs(currentPlayer, curRagdoll, ZombieConsumeAbility.ConsumedRagdolls, zombieAbilityBase._errorCode);
-            // Handlers.Scp049.OnStartingConsume(zombieConsumeEvent);
-            //
-            // if (!zombieConsumeEvent.IsAllowed)
-            // {
-            //     return;
-            // }
-            //
-            // curRagdoll = zombieConsumeEvent.TargetRagdoll;
-            // zombieAbilityBase._errorCode = zombieConsumeEvent.Errorcode;
+            API.Features.Player currentPlayer = API.Features.Player.Get(zombieAbilityBase.Owner);
+            if (currentPlayer.Role.Type is not RoleTypeId.Scp049)
+            {
+                ZombieConsumeEventArgs zombieConsumeEvent = new ZombieConsumeEventArgs(currentPlayer, curRagdoll, ZombieConsumeAbility.ConsumedRagdolls, zombieAbilityBase._errorCode);
+                Handlers.Scp049.OnStartingConsume(zombieConsumeEvent);
+
+                if (!zombieConsumeEvent.IsAllowed)
+                {
+                    return;
+                }
+
+                curRagdoll = zombieConsumeEvent.TargetRagdoll;
+                zombieAbilityBase._errorCode = zombieConsumeEvent.Errorcode;
+            }
+
             bool flag = zombieAbilityBase._errorCode > 0;
             if (flag)
             {

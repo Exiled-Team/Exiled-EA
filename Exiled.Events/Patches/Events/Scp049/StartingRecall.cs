@@ -26,7 +26,7 @@ namespace Exiled.Events.Patches.Events.Scp049
     ///     Patches <see cref="Scp049ResurrectAbility.ServerComplete" />.
     ///     Adds the <see cref="Handlers.Scp049.StartingRecall" /> event.
     /// </summary>
-    // [HarmonyPatch(typeof(Scp049ResurrectAbility), nameof(Scp049ResurrectAbility.ServerValidateBegin))]
+    [HarmonyPatch(typeof(Scp049ResurrectAbility), nameof(Scp049ResurrectAbility.ServerValidateBegin))]
     internal static class StartingRecall
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
