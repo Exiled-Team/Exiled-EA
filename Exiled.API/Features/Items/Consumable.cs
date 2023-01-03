@@ -37,5 +37,14 @@ namespace Exiled.API.Features.Items
         /// Gets the <see cref="BaseConsumable"/> that this class is encapsulating.
         /// </summary>
         public new BaseConsumable Base { get; }
+
+        /// <inheritdoc/>
+        internal override void ChangeOwner(Player oldOwner, Player newOwner)
+        {
+            if (oldOwner != Server.Host)
+                Base.OnRemoved(null);
+
+            Base.Owner = newOwner.ReferenceHub;
+        }
     }
 }
