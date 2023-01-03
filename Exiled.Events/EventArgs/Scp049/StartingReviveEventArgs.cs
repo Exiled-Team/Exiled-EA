@@ -5,6 +5,8 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
+using PlayerRoles.PlayableScps.Scp049;
+
 namespace Exiled.Events.EventArgs.Scp049
 {
     using API.Features;
@@ -13,10 +15,10 @@ namespace Exiled.Events.EventArgs.Scp049
     /// <summary>
     ///     Contains all information before SCP-049 begins recalling a player.
     /// </summary>
-    public class StartingRecallEventArgs : IPlayerEvent, IDeniableEvent, IRagdollEvent
+    public class StartingReviveEventArgs : IPlayerEvent, IDeniableEvent, IRagdollEvent
     {
         /// <summary>
-        ///     Initializes a new instance of the <see cref="StartingRecallEventArgs" /> class.
+        ///     Initializes a new instance of the <see cref="StartingReviveEventArgs" /> class.
         /// </summary>
         /// <param name="target">
         ///     <inheritdoc cref="Target" />
@@ -30,7 +32,7 @@ namespace Exiled.Events.EventArgs.Scp049
         /// <param name="isAllowed">
         ///     <inheritdoc cref="IsAllowed" />
         /// </param>
-        public StartingRecallEventArgs(Player target, Player scp049, BasicRagdoll ragdoll, bool isAllowed = true)
+        public StartingReviveEventArgs(Player target, Player scp049, BasicRagdoll ragdoll,  Scp049ResurrectAbility.ResurrectError resurrectError,  bool isAllowed = true)
         {
             Target = target;
             Player = scp049;

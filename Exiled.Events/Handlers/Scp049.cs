@@ -25,7 +25,7 @@ namespace Exiled.Events.Handlers
         /// <summary>
         ///     Invoked before SCP-049 begins recalling a player.
         /// </summary>
-        public static event CustomEventHandler<StartingRecallEventArgs> StartingRecall;
+        public static event CustomEventHandler<StartingReviveEventArgs> StartingRecall;
 
         /// <summary>
         ///     Invoked before SCP-049 sends call to player.
@@ -51,8 +51,8 @@ namespace Exiled.Events.Handlers
         /// <summary>
         ///     Called before SCP-049 starts to recall a player.
         /// </summary>
-        /// <param name="ev">The <see cref="StartingRecallEventArgs" /> instance.</param>
-        public static void OnStartingRecall(StartingRecallEventArgs ev) => StartingRecall.InvokeSafely(ev);
+        /// <param name="ev">The <see cref="StartingReviveEventArgs" /> instance.</param>
+        public static void OnStartingRecall(StartingReviveEventArgs ev) => StartingRecall.InvokeSafely(ev);
 
         /// <summary>
         ///     Called before SCP-049 can start recall via send to client.

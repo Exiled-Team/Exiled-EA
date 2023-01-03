@@ -95,7 +95,6 @@ namespace Exiled.Events.Patches.Events.Scp049
 
             if (!zombieConsumeEvent.IsAllowed)
             {
-                Log.Info("Not allowed");
                 return;
             }
 
