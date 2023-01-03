@@ -42,7 +42,9 @@ namespace Exiled.API.Features
         /// <param name="room">The <see cref="Room"/> for this door.</param>
         public Door(DoorVariant door, Room room)
         {
-            DoorVariantToDoor.Add(door, this);
+            if (room != null)
+                DoorVariantToDoor.Add(door, this);
+
             Base = door;
             Room = room;
             Type = GetDoorType();
@@ -265,9 +267,9 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="doorVariant">The base-game <see cref="DoorVariant"/>.</param>
         /// <returns>A <see cref="Door"/> wrapper object.</returns>
-        public static Door Get(DoorVariant doorVariant) => DoorVariantToDoor.ContainsKey(doorVariant)
-            ? DoorVariantToDoor[doorVariant]
-            : new Door(doorVariant, doorVariant.GetComponentInParent<Room>());
+        public static Door Get(DoorVariant doorVariant) => doorVariant != null ? (DoorVariantToDoor.TryGetValue(doorVariant, out Door door)
+            ? door
+            : new Door(doorVariant, doorVariant.GetComponentInParent<Room>())) : null;
 
         /// <summary>
         /// Gets a <see cref="Door"/> given the specified name.

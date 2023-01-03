@@ -35,6 +35,7 @@ namespace Exiled.Events.Patches.Events.Player
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Shared.Rent(instructions);
 
             LocalBuilder player = generator.DeclareLocal(typeof(API.Features.Player));
+            LocalBuilder isAllowedUnlocking = generator.DeclareLocal(typeof(bool));
 
             Label isOpening = generator.DefineLabel();
             Label isActivating = generator.DefineLabel();
@@ -42,6 +43,7 @@ namespace Exiled.Events.Patches.Events.Player
             Label check2 = generator.DefineLabel();
             Label notAllowed = generator.DefineLabel();
             Label skip = generator.DefineLabel();
+            Label skip2 = generator.DefineLabel();
             Label @break = newInstructions.FindLast(instruction => instruction.IsLdarg(0)).labels[0];
 
             int offset = 1;
@@ -154,41 +156,35 @@ namespace Exiled.Events.Patches.Events.Player
                     new CodeInstruction(OpCodes.Nop).WithLabels(skip),
                 });
 
-            offset = -8;
-            index = newInstructions.FindIndex(
-                instruction => instruction.Calls(Method(typeof(Scp079Generator), nameof(Scp079Generator.ServerGrantTicketsConditionally)))) + offset;
-
-            // remove base game unlocking, we will unlock generator and grant tickets after UnlockingGeneratorEventArgs invokation and allowed check
-            newInstructions.RemoveRange(index, 9);
-
             offset = -5;
-            index = newInstructions.FindIndex(instruction => instruction.Calls(Method(typeof(Scp079Generator), nameof(Scp079Generator.RpcDenied)))) + offset;
+            index = newInstructions.FindLastIndex(instruction => instruction.Calls(Method(typeof(Scp079Generator), nameof(Scp079Generator.RpcDenied)))) + offset;
+
+            newInstructions.RemoveRange(index, 7);
+
+            offset = 0;
+            int index2 = newInstructions.FindLastIndex(instruction => instruction.LoadsConstant(51)) + offset;
 
             newInstructions.InsertRange(
                 index,
                 new[]
                 {
+                    // isAllowed var set
+                    new(OpCodes.Ldc_I4_0),
+                    new(OpCodes.Br_S, skip2),
+                    new CodeInstruction(OpCodes.Ldc_I4_1).MoveLabelsFrom(newInstructions[index2]),
+                    new CodeInstruction(OpCodes.Stloc_S, isAllowedUnlocking.LocalIndex).WithLabels(skip2),
+
                     // player
-                    new CodeInstruction(OpCodes.Ldloc_S, player.LocalIndex).MoveLabelsFrom(newInstructions[index]),
+                    new(OpCodes.Ldloc_S, player.LocalIndex),
 
                     // this
                     new(OpCodes.Ldarg_0),
 
-                    // true
-                    new(OpCodes.Ldc_I4_0),
-                });
+                    // isAllowed
+                    new(OpCodes.Ldloc_S, isAllowedUnlocking.LocalIndex),
 
-            index += 3;
-
-            // remove base game cooldown logic and RpcDenied (same as unlocking)
-            newInstructions.RemoveRange(index, 6);
-
-            newInstructions.InsertRange(
-                index,
-                new[]
-                {
                     // UnlockingGeneratorEventArgs ev = new(Player, Scp079Generator, bool)
-                    new CodeInstruction(OpCodes.Newobj, GetDeclaredConstructors(typeof(UnlockingGeneratorEventArgs))[0]),
+                    new(OpCodes.Newobj, GetDeclaredConstructors(typeof(UnlockingGeneratorEventArgs))[0]),
                     new(OpCodes.Dup),
 
                     // Player.OnUnlockingGenerator(ev)
@@ -198,19 +194,6 @@ namespace Exiled.Events.Patches.Events.Player
                     //    goto notAllowed;
                     new(OpCodes.Callvirt, PropertyGetter(typeof(UnlockingGeneratorEventArgs), nameof(UnlockingGeneratorEventArgs.IsAllowed))),
                     new(OpCodes.Brfalse_S, notAllowed),
-
-                    // this.ServerSetFlag(GeneratorFlags.Unlocked, true)
-                    new(OpCodes.Ldarg_0),
-                    new(OpCodes.Ldc_I4_2), // GeneratorFlags.Unlocked
-                    new(OpCodes.Ldc_I4_1),
-                    new(OpCodes.Callvirt, Method(typeof(Scp079Generator), nameof(Scp079Generator.ServerSetFlag))),
-
-                    // this.ServerGrantTicketsConditionally(new Footprinting.Footprint(ply), 0.5f)
-                    new(OpCodes.Ldarg_0),
-                    new(OpCodes.Ldarg_1),
-                    new(OpCodes.Newobj, GetDeclaredConstructors(typeof(Footprint))[0]),
-                    new(OpCodes.Ldc_R4, 0.5f),
-                    new(OpCodes.Call, Method(typeof(Scp079Generator), nameof(Scp079Generator.ServerGrantTicketsConditionally))),
                 });
 
             offset = -5;

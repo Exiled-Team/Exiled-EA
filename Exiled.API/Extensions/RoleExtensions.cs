@@ -11,7 +11,7 @@ namespace Exiled.API.Extensions
     using Exiled.API.Features;
     using Exiled.API.Features.Spawn;
     using PlayerRoles;
-    using PlayerRoles.FirstPersonControl.Spawnpoints;
+    using PlayerRoles.FirstPersonControl;
     using UnityEngine;
 
     using Team = PlayerRoles.Team;
@@ -24,16 +24,16 @@ namespace Exiled.API.Extensions
         /// <summary>
         /// Get a <see cref="RoleTypeId">role's</see> <see cref="Color"/>.
         /// </summary>
-        /// <param name="typeId">The <see cref="RoleTypeId"/> to get the color of.</param>
+        /// <param name="roleType">The <see cref="RoleTypeId"/> to get the color of.</param>
         /// <returns>The <see cref="Color"/> of the role.</returns>
-        public static Color GetColor(this RoleTypeId typeId) => typeId == RoleTypeId.None ? Color.white : typeId.GetRoleBase().RoleColor;
+        public static Color GetColor(this RoleTypeId roleType) => roleType == RoleTypeId.None ? Color.white : roleType.GetRoleBase().RoleColor;
 
         /// <summary>
         /// Get a <see cref="RoleTypeId">role's</see> <see cref="Side"/>.
         /// </summary>
-        /// <param name="typeId">The <see cref="RoleTypeId"/> to check the side of.</param>
+        /// <param name="roleType">The <see cref="RoleTypeId"/> to check the side of.</param>
         /// <returns><see cref="Side"/>.</returns>
-        public static Side GetSide(this RoleTypeId typeId) => GetTeam(typeId).GetSide();
+        public static Side GetSide(this RoleTypeId roleType) => GetTeam(roleType).GetSide();
 
         /// <summary>
         /// Get a <see cref="Team">team's</see> <see cref="Side"/>.
@@ -52,9 +52,9 @@ namespace Exiled.API.Extensions
         /// <summary>
         /// Get the <see cref="Team"/> of the given <see cref="RoleTypeId"/>.
         /// </summary>
-        /// <param name="typeId">The <see cref="RoleTypeId"/>.</param>
+        /// <param name="roleType">The <see cref="RoleTypeId"/>.</param>
         /// <returns><see cref="Team"/>.</returns>
-        public static Team GetTeam(this RoleTypeId typeId) => typeId switch
+        public static Team GetTeam(this RoleTypeId roleType) => roleType switch
         {
             RoleTypeId.ChaosConscript or RoleTypeId.ChaosMarauder or RoleTypeId.ChaosRepressor or RoleTypeId.ChaosRifleman => Team.ChaosInsurgency,
             RoleTypeId.Scientist => Team.Scientists,
@@ -75,12 +75,12 @@ namespace Exiled.API.Extensions
         /// <summary>
         /// Gets the base <see cref="PlayerRoleBase"/> of the given <see cref="RoleTypeId"/>.
         /// </summary>
-        /// <param name="typeId">The <see cref="RoleTypeId"/>.</param>
+        /// <param name="roleType">The <see cref="RoleTypeId"/>.</param>
         /// <returns>The <see cref="PlayerRoleBase"/>.</returns>
-        public static PlayerRoleBase GetRoleBase(this RoleTypeId typeId) => Server.Host.RoleManager.GetRoleBase(typeId);
+        public static PlayerRoleBase GetRoleBase(this RoleTypeId roleType) => Server.Host.RoleManager.GetRoleBase(roleType);
 
         /// <summary>
-        /// Get the <see cref="LeadingTeam"/>.
+        /// Gets the <see cref="LeadingTeam"/>.
         /// </summary>
         /// <param name="team">Team.</param>
         /// <returns><see cref="LeadingTeam"/>.</returns>
@@ -93,16 +93,27 @@ namespace Exiled.API.Extensions
         };
 
         /// <summary>
+        /// Checks whether a <see cref="RoleTypeId"/> is an <see cref="IFpcRole"/> or not.
+        /// </summary>
+        /// <param name="roleType">The <see cref="RoleTypeId"/>.</param>
+        /// <returns>Returns whether <paramref name="roleType"/> is an <see cref="IFpcRole"/> or not.</returns>
+        public static bool IsFpcRole(this RoleTypeId roleType) => roleType.GetRoleBase() is IFpcRole;
+
+        /// <summary>
         /// Gets a random spawn point of a <see cref="RoleTypeId"/>.
         /// </summary>
         /// <param name="roleType">The <see cref="RoleTypeId"/> to get the spawn point from.</param>
         /// <returns>Returns a <see cref="SpawnLocation"/> representing the spawn, or <see langword="null"/> if no spawns were found.</returns>
         public static SpawnLocation GetRandomSpawnLocation(this RoleTypeId roleType)
         {
-            return !RoleSpawnpointManager.TryGetSpawnpointForRole(roleType, out ISpawnpointHandler spawnpoint) ||
-                !spawnpoint.TryGetSpawnpoint(out Vector3 position, out float horizontalRotation) ?
-                null :
-                new SpawnLocation(roleType, position, horizontalRotation);
+            if (roleType.GetRoleBase() is IFpcRole fpcRole &&
+                fpcRole.SpawnpointHandler != null &&
+                fpcRole.SpawnpointHandler.TryGetSpawnpoint(out Vector3 position, out float horizontalRotation))
+            {
+                return new SpawnLocation(roleType, position, horizontalRotation);
+            }
+
+            return null;
         }
     }
 }
