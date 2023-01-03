@@ -72,7 +72,6 @@ namespace Exiled.Events.Patches.Events.Scp049
         private static void ServerProcessCmdRewrite(RagdollAbilityBase<ZombieRole> zombieAbilityBase)
         {
 
-            Log.Info($"Is this actually zombieRole {zombieAbilityBase is ZombieRole} or is it Scp049 {zombieAbilityBase is Scp049Role}");
             if (zombieAbilityBase.IsInProgress)
             {
                 return;
