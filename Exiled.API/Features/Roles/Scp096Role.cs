@@ -34,17 +34,17 @@ namespace Exiled.API.Features.Roles
             Internal = baseRole;
 
             if (!SubroutineModule.TryGetSubroutine(out Scp096RageCycleAbility scp096RageCycleAbility))
-                Log.Debug("RageCycleAbility subroutine not found in Scp096Role::ctor");
+                Log.Error("RageCycleAbility subroutine not found in Scp096Role::ctor");
 
             RageCycleAbility = scp096RageCycleAbility;
 
             if (!SubroutineModule.TryGetSubroutine(out Scp096RageManager scp096RageManager))
-                Log.Debug("RageManager subroutine not found in Scp096Role::ctor");
+                Log.Error("RageManager subroutine not found in Scp096Role::ctor");
 
             RageManager = scp096RageManager;
 
             if (!SubroutineModule.TryGetSubroutine(out Scp096TargetsTracker scp096TargetsTracker))
-                Log.Debug("TargetsTracker not found in Scp096Role::ctor");
+                Log.Error("TargetsTracker not found in Scp096Role::ctor");
 
             TargetsTracker = scp096TargetsTracker;
         }
