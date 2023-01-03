@@ -84,7 +84,6 @@ namespace Exiled.API.Features.Roles
         /// </summary>
         public Player RecallingPlayer => Player.Get(ResurrectAbility.CurRagdoll?.Info.OwnerHub);
 
-
         /// <summary>
         /// Gets the ragdoll that is currently being revived by SCP-049. Will be <see langword="null"/> if <see cref="IsRecalling"/> is <see langword="false"/>.
         /// </summary>

@@ -9,12 +9,10 @@ namespace Exiled.API.Features.Roles
 {
     using System.Collections.Generic;
     using System.Linq;
-    using Mirror;
 
+    using Mirror;
     using PlayerRoles;
     using PlayerRoles.PlayableScps.HumeShield;
-    using PlayerRoles.PlayableScps.Scp079;
-    using PlayerRoles.PlayableScps.Scp106;
     using PlayerRoles.PlayableScps.Scp173;
     using PlayerRoles.PlayableScps.Subroutines;
 
