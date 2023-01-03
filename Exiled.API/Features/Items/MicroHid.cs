@@ -58,11 +58,12 @@ namespace Exiled.API.Features.Items
         /// <summary>
         /// Starts firing the MicroHID.
         /// </summary>
-        public void Fire()
-        {
-            Base.UserInput = HidUserInput.Fire;
-            State = HidState.Firing;
-        }
+        public void Fire() => Base.Fire();
+
+        /// <summary>
+        /// Recharges the MicroHID.
+        /// </summary>
+        public void Recharge() => Base.Recharge();
 
         /// <summary>
         /// Clones current <see cref="MicroHid"/> object.

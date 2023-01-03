@@ -39,7 +39,7 @@ namespace Exiled.API.Features.Pickups
         /// <summary>
         /// A dictionary of all <see cref="ItemBase"/>'s that have been converted into <see cref="Items.Item"/>.
         /// </summary>
-        internal static readonly Dictionary<ItemPickupBase, Pickup> BaseToPickup = new();
+        internal static readonly Dictionary<ItemPickupBase, Pickup> BaseToPickup = new(new ComponentsEqualityComparer());
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Pickup"/> class.
@@ -428,7 +428,7 @@ namespace Exiled.API.Features.Pickups
         }
 
         /// <summary>
-        /// Destroys the pickup.
+        /// Destroys the already spawned pickup.
         /// </summary>
         /// <seealso cref="UnSpawn"/>
         public void Destroy() => Base.DestroySelf();
