@@ -23,9 +23,21 @@ namespace Exiled.Events.Handlers
         public static event CustomEventHandler<TeleportingEventArgs> Teleporting;
 
         /// <summary>
+        ///     Invoked before SCP-106 stalks
+        /// </summary>
+        public static event CustomEventHandler<StalkingEventArgs> Stalking;
+
+
+        /// <summary>
         ///     Called before SCP-106 teleports through the minimap.
         /// </summary>
         /// <param name="ev">The <see cref="TeleportingEventArgs" /> instance.</param>
         public static void OnTeleporting(TeleportingEventArgs ev) => Teleporting.InvokeSafely(ev);
+
+        /// <summary>
+        ///     Called before SCP-106 teleports through the minimap.
+        /// </summary>
+        /// <param name="ev">The <see cref="StalkingEventArgs" /> instance.</param>
+        public static void OnStalking(StalkingEventArgs ev) => Stalking.InvokeSafely(ev);
     }
 }
