@@ -43,7 +43,7 @@ namespace Exiled.Events.EventArgs.Map
         public Pickup Pickup { get; }
 
         /// <summary>
-        ///     Gets or sets a value indicating whether or not the item will be initially spawn.
+        ///     Gets or sets a value indicating whether or not the item will be initially spawned.
         /// </summary>
         public bool ShouldInitiallySpawn { get; set; }
 

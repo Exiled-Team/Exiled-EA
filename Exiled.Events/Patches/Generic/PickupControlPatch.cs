@@ -74,9 +74,7 @@ namespace Exiled.Events.Patches.Generic
     [HarmonyPatch(typeof(ItemDistributor), nameof(ItemDistributor.SpawnPickup))]
     internal static class TriggerPickupControlPatch
     {
-        private static IEnumerable<CodeInstruction> Transpiler(
-            IEnumerable<CodeInstruction> instructions,
-            ILGenerator generator)
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Shared.Rent(instructions);
 
