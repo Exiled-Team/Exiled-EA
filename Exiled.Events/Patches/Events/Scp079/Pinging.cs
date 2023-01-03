@@ -41,8 +41,6 @@ namespace Exiled.Events.Patches.Events.Scp079
                 index,
                 new CodeInstruction[]
                 {
-                    // new(OpCodes.Ldarg_0, 0),
-                    // new(OpCodes.Ldarg_1),
                     new(OpCodes.Call, Method(typeof(Pinging), nameof(Pinging.ProcessPinging))),
                     new(OpCodes.Ret),
 
@@ -63,7 +61,7 @@ namespace Exiled.Events.Patches.Events.Scp079
             PingingEventArgs ev = new PingingEventArgs(instance.Owner, curRelativePos, instance._cost, instance._syncProcessorIndex);
 
             Handlers.Scp079.OnPinging(ev);
-           
+
              if (ev.IsAllowed)
             {
                 instance._syncNormal = ev.Position;
