@@ -51,8 +51,8 @@ namespace Exiled.Events.EventArgs.Map
         ///     Gets or sets a value indicating the trigger door for pickup.
         /// </summary>
         /// <remarks>
-        ///     Works only when <see cref="ShouldInitiallySpawn"/> is true.
-        ///     Can be null when <see cref="ShouldInitiallySpawn"/> is false.
+        ///     Works only when <see cref="ShouldInitiallySpawn"/> is false.
+        ///     null when <see cref="ShouldInitiallySpawn"/> is true.
         /// </remarks>
         public Door TriggerDoor { get; set; }
 
