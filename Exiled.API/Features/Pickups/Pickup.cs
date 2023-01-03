@@ -39,7 +39,7 @@ namespace Exiled.API.Features.Pickups
         /// <summary>
         /// A dictionary of all <see cref="ItemBase"/>'s that have been converted into <see cref="Items.Item"/>.
         /// </summary>
-        internal static readonly Dictionary<ItemPickupBase, Pickup> BaseToPickup = new();
+        internal static readonly Dictionary<ItemPickupBase, Pickup> BaseToPickup = new(new ComponentsEqualityComparer());
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Pickup"/> class.
@@ -51,6 +51,10 @@ namespace Exiled.API.Features.Pickups
 
             // prevent prefabs like `InventoryItemLoader.AvailableItems[ItemType.GrenadeHE].PickupDropModel` from adding to pickup list
             if (pickupBase.Info.ItemId == ItemType.None)
+                return;
+
+            // prevent exploded grenades to added in dict
+            if (!PhysicsPredictionPickup.AllPickups.Contains(pickupBase))
                 return;
 
             BaseToPickup.Add(pickupBase, this);
@@ -107,9 +111,7 @@ namespace Exiled.API.Features.Pickups
             set
             {
                 Base.Info.Serial = value;
-
-                if (IsSpawned)
-                    Base.NetworkInfo = Base.Info;
+                Info = Base.Info;
             }
         }
 
@@ -188,7 +190,13 @@ namespace Exiled.API.Features.Pickups
         public PickupSyncInfo Info
         {
             get => Base.NetworkInfo;
-            set => Base.NetworkInfo = value;
+            set
+            {
+                Base.Info = value;
+
+                if (GameObject.activeSelf)
+                    Base.NetworkInfo = value;
+            }
         }
 
         /// <summary>
@@ -420,7 +428,7 @@ namespace Exiled.API.Features.Pickups
         }
 
         /// <summary>
-        /// Destroys the pickup.
+        /// Destroys the already spawned pickup.
         /// </summary>
         /// <seealso cref="UnSpawn"/>
         public void Destroy() => Base.DestroySelf();

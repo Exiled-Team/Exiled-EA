@@ -17,6 +17,7 @@ namespace Exiled.Events.Patches.Events.Player
     using Interactables.Interobjects;
     using Mirror;
     using NorthwoodLib.Pools;
+    using PluginAPI.Enums;
 
     using static HarmonyLib.AccessTools;
 
@@ -31,10 +32,10 @@ namespace Exiled.Events.Patches.Events.Player
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Shared.Rent(instructions);
 
-            Label ret = generator.DefineLabel();
+            Label @break = (Label)newInstructions.FindLast(i => i.opcode == OpCodes.Leave_S).operand;
 
-            int offset = -2;
-            int index = newInstructions.FindLastIndex(i => i.Calls(PropertyGetter(typeof(ElevatorChamber), nameof(ElevatorChamber.IsReady)))) + offset;
+            int offset = 0;
+            int index = newInstructions.FindLastIndex(i => i.LoadsConstant(ServerEventType.PlayerInteractElevator)) + offset;
 
             // InteractingElevatorEventArgs ev = new(Player.Get(referenceHub), elevatorChamber, true);
             //
@@ -66,10 +67,8 @@ namespace Exiled.Events.Patches.Events.Player
                     // if (!ev.IsAllowed)
                     //     continue;
                     new(OpCodes.Callvirt, PropertyGetter(typeof(InteractingElevatorEventArgs), nameof(InteractingElevatorEventArgs.IsAllowed))),
-                    new(OpCodes.Brfalse_S, ret),
+                    new(OpCodes.Brfalse_S, @break),
                 });
-
-            newInstructions[newInstructions.Count - 1].WithLabels(ret);
 
             for (int z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];

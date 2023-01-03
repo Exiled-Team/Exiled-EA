@@ -183,9 +183,15 @@ namespace Exiled.API.Features
         public Transform Transform => ReferenceHub.transform;
 
         /// <summary>
+        /// Gets the hint currently watched by the player.
+        /// </summary>
+        /// May be <see langword="null"/>.
+        public Hint CurrentHint { get; internal set; }
+
+        /// <summary>
         /// Gets a value indicating whether or not the player is viewing a hint.
         /// </summary>
-        public bool HasHint { get; internal set; }
+        public bool HasHint => CurrentHint != null;
 
         /// <summary>
         /// Gets the <see cref="ReferenceHub"/>'s <see cref="VoiceModule"/>, can be null.
@@ -365,6 +371,23 @@ namespace Exiled.API.Features
         {
             get => ReferenceHub.serverRoles.OverwatchEnabled;
             set => ReferenceHub.serverRoles.SetOverwatchStatus(value);
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether or not the player is allowed to enter noclip mode.
+        /// </summary>
+        /// <remarks>For forcing the player into noclip mode, see <see cref="FpcRole.IsNoclipEnabled"/>.</remarks>
+        /// <seealso cref="FpcRole.IsNoclipEnabled"/>
+        public bool IsNoclipPermitted
+        {
+            get => FpcNoclip.IsPermitted(ReferenceHub);
+            set
+            {
+                if (value && !FpcNoclip.PermittedPlayers.Contains(ReferenceHub.netId))
+                    FpcNoclip.PermitPlayer(ReferenceHub);
+                else if (!value && FpcNoclip.PermittedPlayers.Contains(ReferenceHub.netId))
+                    FpcNoclip.UnpermitPlayer(ReferenceHub);
+            }
         }
 
         /// <summary>
@@ -2371,12 +2394,17 @@ namespace Exiled.API.Features
         /// <param name="duration">The duration the text will be on screen.</param>
         public void ShowHint(string message, float duration = 3f)
         {
-            HintParameter[] parameters = new HintParameter[]
-            {
-                new StringHintParameter(message),
-            };
+            HintDisplay.Show(new TextHint(message, new HintParameter[] { new StringHintParameter(message) }, null, duration));
+        }
 
-            HintDisplay.Show(new TextHint(message, parameters, null, duration));
+        /// <summary>
+        /// Show a hint to the player.
+        /// </summary>
+        /// <param name="hint">The hint to be shown.</param>
+        public void ShowHint(Hint hint)
+        {
+            if (hint.Show)
+                ShowHint(hint.Content, hint.Duration);
         }
 
         /// <summary>
@@ -2836,7 +2864,7 @@ namespace Exiled.API.Features
                 nameof(TeslaGate) => TeslaGate.List.ElementAt(Random.Range(0, TeslaGate.BaseTeslaGateToTeslaGate.Count)),
                 nameof(Player) => Dictionary.Values.ElementAt(Random.Range(0, Dictionary.Count)),
                 nameof(Pickup) => Pickup.BaseToPickup.ElementAt(Random.Range(0, Pickup.BaseToPickup.Count)).Value,
-                nameof(Ragdoll) => Map.RagdollsValue[Random.Range(0, Map.RagdollsValue.Count)],
+                nameof(Ragdoll) => Ragdoll.List.ElementAt(Random.Range(0, Ragdoll.BasicRagdollToRagdoll.Count)),
                 nameof(Locker) => Map.GetRandomLocker(),
                 nameof(Generator) => Generator.List.ElementAt(Random.Range(0, Generator.Scp079GeneratorToGenerator.Count)),
                 nameof(Window) => Window.List.ElementAt(Random.Range(0, Window.BreakableWindowToWindow.Count)),
@@ -2958,7 +2986,7 @@ namespace Exiled.API.Features
         /// <param name="time">The times for the cooldown.</param>
         /// <param name="itemType">The itemtypes to choose for being cooldown.</param>
         public void GetCooldownItem(float time, ItemType itemType)
-        => UsableItemsController.GetHandler(ReferenceHub).PersonalCooldowns[itemType] = Time.timeSinceLevelLoad + time;
+            => UsableItemsController.GetHandler(ReferenceHub).PersonalCooldowns[itemType] = Time.timeSinceLevelLoad + time;
 
         /// <summary>
         /// Converts the player in a human-readable format.

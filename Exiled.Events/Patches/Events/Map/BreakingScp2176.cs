@@ -53,12 +53,11 @@ namespace Exiled.Events.Patches.Events.Map
                     // this
                     new(OpCodes.Ldarg_0),
 
-                    // new Collider[0]
-                    new(OpCodes.Ldc_I4_0),
-                    new(OpCodes.Newarr, typeof(Collider)),
+                    // new List<Player>
+                    new(OpCodes.Newobj, GetDeclaredConstructors(typeof(List<Player>))[0]),
 
-                    // new ExplodingGrenadeEventArgs(Player, EffectGrenade, Collider[])
-                    new(OpCodes.Newobj, DeclaredConstructor(typeof(ExplodingGrenadeEventArgs), new[] { typeof(Player), typeof(EffectGrenade), typeof(Collider[]) })),
+                    // new ExplodingGrenadeEventArgs(Player, EffectGrenade, List<Player>)
+                    new(OpCodes.Newobj, DeclaredConstructor(typeof(ExplodingGrenadeEventArgs), new[] { typeof(Player), typeof(EffectGrenade), typeof(List<Player>), })),
                     new(OpCodes.Dup),
 
                     // Handlers.Map.OnExplodingGrenade(ev);

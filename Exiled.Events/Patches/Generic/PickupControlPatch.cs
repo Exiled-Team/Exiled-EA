@@ -8,7 +8,6 @@
 namespace Exiled.Events.Patches.Generic
 {
 #pragma warning disable SA1402
-#pragma warning disable SA1649
     using System.Collections.Generic;
     using System.Reflection.Emit;
 
@@ -20,7 +19,7 @@ namespace Exiled.Events.Patches.Generic
     using InventorySystem;
     using InventorySystem.Items;
     using InventorySystem.Items.Pickups;
-
+    using MapGeneration.Distributors;
     using NorthwoodLib.Pools;
 
     using static HarmonyLib.AccessTools;
@@ -31,7 +30,7 @@ namespace Exiled.Events.Patches.Generic
     /// Patches <see cref="InventoryExtensions.ServerCreatePickup(Inventory, ItemBase, PickupSyncInfo, bool)"/> to save scale for pickups and control <see cref="Pickup.IsSpawned"/> property.
     /// </summary>
     [HarmonyPatch(typeof(InventoryExtensions), nameof(InventoryExtensions.ServerCreatePickup))]
-    internal static class CreatePickupPatch
+    internal static class PickupControlPatch
     {
         private static IEnumerable<CodeInstruction> Transpiler(
             IEnumerable<CodeInstruction> instructions,
@@ -39,7 +38,7 @@ namespace Exiled.Events.Patches.Generic
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Shared.Rent(instructions);
 
-            const int offset = -1;
+            const int offset = 0;
             int index = newInstructions.FindIndex(i => i.opcode == OpCodes.Ldarg_3) + offset;
 
             newInstructions.InsertRange(index, new CodeInstruction[]
@@ -59,6 +58,32 @@ namespace Exiled.Events.Patches.Generic
 
                 // pickup.IsSpawned = spawn
                 new(OpCodes.Ldarg_3),
+                new(OpCodes.Callvirt, PropertySetter(typeof(Pickup), nameof(Pickup.IsSpawned))),
+            });
+
+            for (int z = 0; z < newInstructions.Count; z++)
+                yield return newInstructions[z];
+
+            ListPool<CodeInstruction>.Shared.Return(newInstructions);
+        }
+    }
+
+    /// <summary>
+    /// Patches <see cref="ItemDistributor.SpawnPickup"/> to control <see cref="Pickup.IsSpawned"/> property for delayed spawned pickup.
+    /// </summary>
+    [HarmonyPatch(typeof(ItemDistributor), nameof(ItemDistributor.SpawnPickup))]
+    internal static class TriggerPickupControlPatch
+    {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+        {
+            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Shared.Rent(instructions);
+
+            newInstructions.InsertRange(newInstructions.Count - 1, new CodeInstruction[]
+            {
+                // Pickup.Get(pickupBase).IsSpawned = true
+                new(OpCodes.Ldarg_0),
+                new(OpCodes.Call, Method(typeof(Pickup), nameof(Pickup.Get), new[] { typeof(ItemPickupBase) })),
+                new(OpCodes.Ldc_I4_1),
                 new(OpCodes.Callvirt, PropertySetter(typeof(Pickup), nameof(Pickup.IsSpawned))),
             });
 

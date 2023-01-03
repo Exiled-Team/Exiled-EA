@@ -30,12 +30,10 @@ namespace Exiled.Events.Patches.Generic
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Shared.Rent(instructions);
 
-            int index = newInstructions.FindLastIndex(i => i.opcode == OpCodes.Ldarg_0);
-
-            newInstructions.InsertRange(index, new[]
+            newInstructions.InsertRange(0, new[]
             {
                 // _ = Pickup.BaseToPickup.Remove(this);
-                new CodeInstruction(OpCodes.Ldsfld, Field(typeof(Pickup), nameof(Pickup.BaseToPickup))).MoveLabelsFrom(newInstructions[index]),
+                new CodeInstruction(OpCodes.Ldsfld, Field(typeof(Pickup), nameof(Pickup.BaseToPickup))),
                 new(OpCodes.Ldarg_0),
                 new(OpCodes.Callvirt, Method(typeof(Dictionary<ItemPickupBase, Pickup>), nameof(Dictionary<ItemPickupBase, Pickup>.Remove), new[] { typeof(ItemPickupBase) })),
                 new(OpCodes.Pop),
