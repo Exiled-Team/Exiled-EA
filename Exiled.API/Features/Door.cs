@@ -44,6 +44,7 @@ namespace Exiled.API.Features
         {
             if (room != null)
                 DoorVariantToDoor.Add(door, this);
+
             Base = door;
             Room = room;
             Type = GetDoorType();
