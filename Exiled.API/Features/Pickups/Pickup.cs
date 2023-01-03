@@ -433,25 +433,12 @@ namespace Exiled.API.Features.Pickups
         }
 
         /// <summary>
-        /// Destroys the already spawned pickup, or .
+        /// Destroys the already spawned pickup.
         /// </summary>
         /// <seealso cref="UnSpawn"/>
         public void Destroy()
         {
             Base.DestroySelf();
-
-            if (!IsSpawned)
-            {
-                foreach (var item in Server.ItemDistributor._unspawnedObjects)
-                {
-                    if (item.Value.Remove(GameObject))
-                    {
-                        Object.Destroy(GameObject);
-
-                        return;
-                    }
-                }
-            }
         }
 
         /// <summary>
