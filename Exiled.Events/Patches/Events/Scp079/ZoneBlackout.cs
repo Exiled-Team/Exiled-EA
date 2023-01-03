@@ -52,12 +52,10 @@ namespace Exiled.Events.Patches.Events.Scp079
 
         private static bool ProcessZoneBlackout(Scp079BlackoutZoneAbility instance)
         {
-            API.Features.Player currentPlayer = API.Features.Player.Get(instance.Owner);
-            
-            ZoneBlackoutEventArgs ev = new(currentPlayer, instance._syncZone, instance._cost, instance._duration, instance._cooldown, instance.ErrorCode);
-            
+            ZoneBlackoutEventArgs ev = new(instance.Owner, instance._syncZone, instance._cost, instance._duration, instance._cooldown, instance.ErrorCode);
+
             Handlers.Scp079.OnZoneBlackout(ev);
-            
+
             if (ev.IsAllowed)
             {
                 instance._duration = ev.BlackoutDuration;

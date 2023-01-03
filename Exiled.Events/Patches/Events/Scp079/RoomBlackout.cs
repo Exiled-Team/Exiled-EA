@@ -62,12 +62,10 @@ namespace Exiled.Events.Patches.Events.Scp079
 
         private static bool ProcessRoomBlackout(Scp079BlackoutRoomAbility instance)
         {
-            API.Features.Player currentPlayer = API.Features.Player.Get(instance.Owner);
-            
-            RoomBlackoutEventArgs ev = new(currentPlayer, instance._roomController.Room, instance._cost, instance._blackoutDuration, instance._cooldown, instance.LostSignalHandler.Lost);
-            
-            Handlers.Scp079.OnRoomBlackout(blackoutEvent);
-            
+            RoomBlackoutEventArgs ev = new(instance.Owner, instance._roomController.Room, instance._cost, instance._blackoutDuration, instance._cooldown, instance.LostSignalHandler.Lost);
+
+            Handlers.Scp079.OnRoomBlackout(ev);
+
             if (ev.IsAllowed)
             {
                 instance._blackoutDuration = ev.BlackoutDuration;

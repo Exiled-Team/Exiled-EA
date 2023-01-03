@@ -42,9 +42,9 @@ namespace Exiled.Events.EventArgs.Scp079
         /// <param name="scp079HudTranslation">
         ///     <inheritdoc cref="Scp079HudTranslation" />
         /// </param>
-        public ZoneBlackoutEventArgs(Player player, FacilityZone zone, float auxiliaryPowerCost, float blackoutduration, float cooldown, Scp079HudTranslation scp079HudTranslation)
+        public ZoneBlackoutEventArgs(ReferenceHub player, FacilityZone zone, float auxiliaryPowerCost, float blackoutduration, float cooldown, Scp079HudTranslation scp079HudTranslation)
         {
-            Player = player;
+            Player = Player.Get(player);
             Zone = zone.GetZone();
             AuxiliaryPowerCost = auxiliaryPowerCost;
             BlackoutDuration = blackoutduration;
