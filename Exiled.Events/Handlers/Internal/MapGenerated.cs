@@ -61,6 +61,7 @@ namespace Exiled.Events.Handlers.Internal
 
             GenerateCamera();
             GenerateTeslaGates();
+            GenerateRooms();
             GenerateWindows();
             GenerateLifts();
             GeneratePocketTeleports();
@@ -72,6 +73,21 @@ namespace Exiled.Events.Handlers.Internal
             Handlers.Map.OnGenerated();
 
             Timing.CallDelayed(0.1f, Handlers.Server.OnWaitingForPlayers);
+        }
+
+        private static void GenerateRooms()
+        {
+            // Get bulk of rooms with sorted.
+            List<RoomIdentifier> roomIdentifiers = ListPool<RoomIdentifier>.Shared.Rent(RoomIdentifier.AllRoomIdentifiers);
+
+            // If no rooms were found, it means a plugin is trying to access this before the map is created.
+            if (roomIdentifiers.Count == 0)
+                throw new InvalidOperationException("Plugin is trying to access Rooms before they are created.");
+
+            foreach (RoomIdentifier roomIdentifier in roomIdentifiers)
+                Room.RoomIdentifierToRoom.Add(roomIdentifier, Room.CreateComponent(roomIdentifier.gameObject));
+
+            ListPool<RoomIdentifier>.Shared.Return(roomIdentifiers);
         }
 
         private static void GenerateWindows()
