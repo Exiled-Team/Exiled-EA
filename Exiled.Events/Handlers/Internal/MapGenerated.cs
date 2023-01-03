@@ -56,7 +56,7 @@ namespace Exiled.Events.Handlers.Internal
         {
             Warhead.SitePanel = Object.FindObjectOfType<AlphaWarheadNukesitePanel>();
             Warhead.OutsitePanel = Object.FindObjectOfType<AlphaWarheadOutsitePanel>();
-            Server.Host = new Player(ReferenceHub.HostHub);
+
             Server.Broadcast = ReferenceHub.HostHub.GetComponent<Broadcast>();
 
             GenerateCamera();

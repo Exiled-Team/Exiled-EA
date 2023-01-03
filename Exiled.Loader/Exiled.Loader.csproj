@@ -5,7 +5,7 @@
         <OutputType>Library</OutputType>
         <AssemblyName>Exiled.Loader</AssemblyName>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-        <Configurations>Debug;Release;Programs</Configurations>
+        <Configurations>Debug;Release;Installer</Configurations>
         <Platforms>AnyCPU</Platforms>
     </PropertyGroup>
 
