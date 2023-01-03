@@ -265,8 +265,8 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="doorVariant">The base-game <see cref="DoorVariant"/>.</param>
         /// <returns>A <see cref="Door"/> wrapper object.</returns>
-        public static Door Get(DoorVariant doorVariant) => doorVariant != null ? (DoorVariantToDoor.ContainsKey(doorVariant)
-            ? DoorVariantToDoor[doorVariant]
+        public static Door Get(DoorVariant doorVariant) => doorVariant != null ? (DoorVariantToDoor.TryGetValue(doorVariant, out Door door)
+            ? door
             : new Door(doorVariant, doorVariant.GetComponentInParent<Room>())) : null;
 
         /// <summary>
