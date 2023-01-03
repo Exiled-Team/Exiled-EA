@@ -41,7 +41,6 @@ namespace Exiled.Events.Patches.Events.Scp079
                 instruction => instruction.Calls(PropertyGetter(typeof(Scp079AbilityBase), nameof(Scp079AbilityBase.LostSignalHandler)))) + offset;
             newInstructions.RemoveRange(index, 4);
 
-            // this._syncPos = ev.Position;
             newInstructions.InsertRange(
                 index,
                 new CodeInstruction[]
