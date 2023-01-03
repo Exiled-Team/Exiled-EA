@@ -251,7 +251,6 @@ namespace Exiled.Installer
         {
             static PathResolution TryParse(string s)
             {
-                Console.WriteLine(s);
                 // We'll get UNDEFINED if it cannot be determined
                 Enum.TryParse(s, true, out PathResolution result);
                 return result;
