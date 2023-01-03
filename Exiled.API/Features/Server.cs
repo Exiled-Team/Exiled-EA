@@ -14,6 +14,7 @@ namespace Exiled.API.Features
     using CustomPlayerEffects;
     using GameCore;
     using Interfaces;
+    using MapGeneration.Distributors;
     using MEC;
     using Mirror;
     using PlayerRoles.RoleAssign;

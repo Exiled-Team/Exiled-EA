@@ -42,9 +42,16 @@ namespace Exiled.Events.Patches.Events.Player
                 Log.Debug($"Object exists {player is not null}");
                 Log.Debug($"Creating player object for {hub.nicknameSync.Network_displayName}");
 #endif
-                Player.UnverifiedPlayers.Add(hub, player);
+                if (ReferenceHub.HostHub == null)
+                {
+                    Server.Host = player;
+                }
+                else
+                {
+                    Player.UnverifiedPlayers.Add(hub, player);
 
-                Handlers.Player.OnJoined(new JoinedEventArgs(player));
+                    Handlers.Player.OnJoined(new JoinedEventArgs(player));
+                }
             }
             catch (Exception exception)
             {
@@ -68,30 +75,12 @@ namespace Exiled.Events.Patches.Events.Player
                 newInstructions.Count - 1,
                 new[]
                 {
-                    // if (this.isServer)
-                    //    goto continueLabel;
-                    new(OpCodes.Ldarg_0),
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(ReferenceHub), nameof(ReferenceHub.isServer))),
-                    new(OpCodes.Brtrue_S, ret),
-
-                    // if (ReferenceHub.HostHub == null)
-                    //    goto continueLabel;
-                    new(OpCodes.Call, PropertyGetter(typeof(ReferenceHub), nameof(ReferenceHub.HostHub))),
-                    new(OpCodes.Ldnull),
-                    new(OpCodes.Ceq),
-                    new(OpCodes.Brtrue_S, ret),
-
-                    // if (ReferenceHub.LocalHub == null)
-                    //    goto continueLabel;
-                    new(OpCodes.Call, PropertyGetter(typeof(ReferenceHub), nameof(ReferenceHub.LocalHub))),
-                    new(OpCodes.Ldnull),
-                    new(OpCodes.Ceq),
-                    new(OpCodes.Brtrue_S, ret),
-
-                    // if (ReferenceHub.AllHubs.Count < CustomNetworkManager.slots)
+                    // if (ReferenceHub.AllHubs.Count - 1 < CustomNetworkManager.slots)
                     //    goto serverNotFull;
                     new(OpCodes.Call, PropertyGetter(typeof(ReferenceHub), nameof(ReferenceHub.AllHubs))),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(HashSet<ReferenceHub>), nameof(HashSet<ReferenceHub>.Count))),
+                    new(OpCodes.Ldc_I4_1),
+                    new(OpCodes.Sub),
                     new(OpCodes.Ldsfld, Field(typeof(CustomNetworkManager), nameof(CustomNetworkManager.slots))),
                     new(OpCodes.Blt_S, serverNotFull),
 
