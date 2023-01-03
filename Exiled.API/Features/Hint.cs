@@ -50,7 +50,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets or sets a value indicating whether the hint should be shown or not.
         /// </summary>
-        [Description("Indicates whether the hint be shown or not")]
+        [Description("Indicates whether the hint should be shown or not")]
         public bool Show { get; set; }
 
         /// <summary>
