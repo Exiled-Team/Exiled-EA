@@ -70,17 +70,17 @@ namespace Exiled.API.Features.Roles
         /// <summary>
         /// Gets the <see cref="PlayerRoles.Team"/> of this <see cref="Role"/>.
         /// </summary>
-        public Team Team => RoleExtensions.GetTeam(Type);
+        public Team Team => Base.Team;
 
         /// <summary>
         /// Gets the <see cref="Enums.Side"/> of this <see cref="Role"/>.
         /// </summary>
-        public Side Side => Type.GetSide();
+        public Side Side => Base.Team.GetSide();
 
         /// <summary>
         /// Gets the <see cref="UnityEngine.Color"/> of this <see cref="Role"/>.
         /// </summary>
-        public Color Color => Type.GetColor();
+        public Color Color => Base.RoleColor;
 
         /// <summary>
         /// Gets the <see cref="Role"/> full name.
@@ -90,7 +90,7 @@ namespace Exiled.API.Features.Roles
         /// <summary>
         /// Gets the last time the <see cref="Role"/> was active.
         /// </summary>
-        public TimeSpan ActiveTime => TimeSpan.FromSeconds((double)Base.ActiveTime);
+        public TimeSpan ActiveTime => TimeSpan.FromSeconds(Base.ActiveTime);
 
         /// <summary>
         /// Gets a value indicating whether or not this role represents a dead role.
@@ -125,7 +125,7 @@ namespace Exiled.API.Features.Roles
         /// <param name="left">The role.</param>
         /// <param name="right">The other role.</param>
         /// <returns><see langword="true"/> if the values are equal.</returns>
-        public static bool operator ==(Role left, Role right) => left is null ? right is null : left.Equals(right);
+        public static bool operator ==(Role left, Role right) => left?.Equals(right) ?? right is null;
 
         /// <summary>
         /// Returns whether or not the two roles are different.
@@ -185,7 +185,12 @@ namespace Exiled.API.Features.Roles
         /// <param name="newRole">The new <see cref="RoleTypeId"/> to be set.</param>
         /// <param name="reason">The <see cref="SpawnReason"/> defining why the player's role was changed.</param>
         public virtual void Set(RoleTypeId newRole, SpawnReason reason = Enums.SpawnReason.ForceClass)
-            => Owner.RoleManager.ServerSetRole(newRole, (RoleChangeReason)reason);
+        {
+            if (Owner.Role == newRole)
+                return;
+
+            Owner.RoleManager.ServerSetRole(newRole, (RoleChangeReason)reason);
+        }
 
         /// <summary>
         /// Creates a role from <see cref="RoleTypeId"/> and <see cref="Player"/>.
