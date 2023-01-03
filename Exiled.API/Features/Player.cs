@@ -183,7 +183,7 @@ namespace Exiled.API.Features
         public Transform Transform => ReferenceHub.transform;
 
         /// <summary>
-        /// Gets the current hint the player watching at the moment.
+        /// Gets the hint currently watched by the player.
         /// </summary>
         /// May be <see langword="null"/>.
         public Hint CurrentHint { get; internal set; }
