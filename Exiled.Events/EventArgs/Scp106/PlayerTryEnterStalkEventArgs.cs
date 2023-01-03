@@ -19,10 +19,10 @@ namespace Exiled.Events.EventArgs.Scp106
     /// <summary>
     ///     Contains all information before SCP-106 teleports using a portal.
     /// </summary>
-    public class StalkingEventArgs : IPlayerEvent, IDeniableEvent
+    public class PlayerTryEnterStalkEventArgs : IPlayerEvent, IDeniableEvent
     {
         /// <summary>
-        ///     Initializes a new instance of the <see cref="TeleportingEventArgs" /> class.
+        ///     Initializes a new instance of the <see cref="PlayerTryEnterStalkEventArgs" /> class.
         /// </summary>
         /// <param name="player">
         ///     <inheritdoc cref="Player" />
@@ -33,10 +33,11 @@ namespace Exiled.Events.EventArgs.Scp106
         /// <param name="isAllowed">
         ///     <inheritdoc cref="IsAllowed" />
         /// </param>
-        public StalkingEventArgs(Player player, Scp106StalkAbility stalkAbilityInstance, AbilityCooldown cooldown, bool isAllowed = true)
+        public PlayerTryEnterStalkEventArgs(Player player, Scp106StalkAbility stalkAbilityInstance, AbilityCooldown cooldown, bool isAllowed = true)
         {
             Player = player;
             Scp106StalkAbility = stalkAbilityInstance;
+            Vigor = Scp106StalkAbility.Vigor.VigorAmount;
             Cooldown = cooldown;
             IsAllowed = isAllowed;
             BypassChecks = false;
@@ -45,6 +46,11 @@ namespace Exiled.Events.EventArgs.Scp106
             MustUseAllVigor = false;
 
         }
+
+        /// <summary>
+        /// Vigor value
+        /// </summary>
+        public float Vigor { get; set; }
 
         /// <summary>
         /// Scp106 cooldown, if you want to overwrite it, do <see cref="Scp106StalkAbility.ServerWriteRpc"/> with <see cref="NetworkWriterPool.GetWriter"/>
