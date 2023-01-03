@@ -43,16 +43,32 @@ namespace Exiled.API.Features.Roles
         public HumeShieldModuleBase HumeShieldModule { get; }
 
         /// <summary>
+        /// Gets the <see cref="Scp106Vigor"/>.
+        /// </summary>
+        public Scp106Vigor VigorComponent { get; }
+
+        /// <summary>
+        /// Gets the <see cref="Scp106Attack"/>.
+        /// </summary>
+        public Scp106Attack Attack { get; }
+
+        /// <summary>
+        /// Gets the <see cref="Scp106Attack"/>.
+        /// </summary>
+        public Scp106StalkAbility StalkAbility { get; }
+
+        /// <summary>
+        /// Gets the <see cref="Scp106HuntersAtlasAbility"/>.
+        /// </summary>
+        public Scp106HuntersAtlasAbility HuntersAtlasAbility { get; }
+
+        /// <summary>
         /// Gets or sets SCP-106's Vigor.
         /// </summary>
         public float Vigor
         {
-            get => SubroutineModule.TryGetSubroutine(out Scp106Vigor ability) ? ability.VigorAmount : 0;
-            set
-            {
-                if (SubroutineModule.TryGetSubroutine(out Scp106Vigor ability))
-                    ability.VigorAmount = value;
-            }
+            get => VigorComponent.VigorAmount;
+            set => VigorComponent.VigorAmount = value;
         }
 
         /// <summary>
@@ -95,14 +111,11 @@ namespace Exiled.API.Features.Roles
         /// </summary>
         public float CaptureCooldown
         {
-            get => SubroutineModule.TryGetSubroutine(out Scp106Attack ability) ? ability._hitCooldown : 0;
+            get => Attack._hitCooldown;
             set
             {
-                if (SubroutineModule.TryGetSubroutine(out Scp106Attack ability))
-                {
-                    ability._hitCooldown = value;
-                    ability.ServerSendRpc(true);
-                }
+                Attack._hitCooldown = value;
+                Attack.ServerSendRpc(true);
             }
         }
 
@@ -114,19 +127,11 @@ namespace Exiled.API.Features.Roles
         /// <summary>
         /// Forces SCP-106 to use its portal, if one is placed.
         /// </summary>
-        public void UsePortal()
-        {
-            if (SubroutineModule.TryGetSubroutine(out Scp106HuntersAtlasAbility ability))
-                ability.SetSubmerged(true);
-        }
+        public void UsePortal() => HuntersAtlasAbility.SetSubmerged(true);
 
         /// <summary>
         /// Causes SCP-106 to enter his stalking mode.
         /// </summary>
-        public void Stalk()
-        {
-            if (SubroutineModule.TryGetSubroutine(out Scp106StalkAbility ability))
-                ability.IsActive = true;
-        }
+        public void Stalk() => StalkAbility.IsActive = true;
     }
 }
