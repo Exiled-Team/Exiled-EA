@@ -20,9 +20,6 @@ namespace Exiled.API.Features
         public bool Equals(Component x, Component y) => x == y;
 
         /// <inheritdoc/>
-        public int GetHashCode(Component obj)
-        {
-            return obj?.GetHashCode() ?? 0;
-        }
+        public int GetHashCode(Component obj) => obj == null ? 0 : obj.GetHashCode();
     }
 }
