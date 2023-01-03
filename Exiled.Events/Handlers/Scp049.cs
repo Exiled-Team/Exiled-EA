@@ -28,6 +28,21 @@ namespace Exiled.Events.Handlers
         public static event CustomEventHandler<StartingRecallEventArgs> StartingRecall;
 
         /// <summary>
+        ///     Invoked before SCP-049 sends call to player.
+        /// </summary>
+        public static event CustomEventHandler<Sending049CallEventArgs> SendingRecall;
+
+        /// <summary>
+        ///     Invoked before SCP-049 uses sense.
+        /// </summary>
+        public static event CustomEventHandler<DoctorSenseEventArgs> DoctorSense;
+
+        /// <summary>
+        ///     Invoked before SCP-0492 can consume
+        /// </summary>
+        public static event CustomEventHandler<ZombieConsumeEventArgs> StartingZombieConsume;
+
+        /// <summary>
         ///     Called before SCP-049 finishes recalling a player.
         /// </summary>
         /// <param name="ev">The <see cref="FinishingRecallEventArgs" /> instance.</param>
@@ -38,5 +53,23 @@ namespace Exiled.Events.Handlers
         /// </summary>
         /// <param name="ev">The <see cref="StartingRecallEventArgs" /> instance.</param>
         public static void OnStartingRecall(StartingRecallEventArgs ev) => StartingRecall.InvokeSafely(ev);
+
+        /// <summary>
+        ///     Called before SCP-049 can start recall via send to client.
+        /// </summary>
+        /// <param name="ev">The <see cref="Sending049CallEventArgs" /> instance.</param>
+        public static void OnSendingCall(Sending049CallEventArgs ev) => SendingRecall.InvokeSafely(ev);
+
+        /// <summary>
+        ///     Called before SCP-049 starts doctor sense.
+        /// </summary>
+        /// <param name="ev">The <see cref="DoctorSenseEventArgs" /> instance.</param>
+        public static void OnDoctorSense(DoctorSenseEventArgs ev) => DoctorSense.InvokeSafely(ev);
+
+        /// <summary>
+        ///     Called before SCP-0492 can start consuming.
+        /// </summary>
+        /// <param name="ev">The <see cref="ZombieConsumeEventArgs" /> instance.</param>
+        public static void OnStartingConsume(ZombieConsumeEventArgs ev) => StartingZombieConsume.InvokeSafely(ev);
     }
 }
