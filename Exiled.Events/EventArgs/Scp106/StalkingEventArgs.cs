@@ -5,7 +5,9 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
+using Mirror;
 using PlayerRoles.PlayableScps.Scp106;
+using PlayerRoles.PlayableScps.Subroutines;
 
 namespace Exiled.Events.EventArgs.Scp106
 {
@@ -31,16 +33,23 @@ namespace Exiled.Events.EventArgs.Scp106
         /// <param name="isAllowed">
         ///     <inheritdoc cref="IsAllowed" />
         /// </param>
-        public StalkingEventArgs(Player player, Scp106StalkAbility stalkAbilityInstance, bool isAllowed = true)
+        public StalkingEventArgs(Player player, Scp106StalkAbility stalkAbilityInstance, AbilityCooldown cooldown, bool isAllowed = true)
         {
             Player = player;
             Scp106StalkAbility = stalkAbilityInstance;
+            Cooldown = cooldown;
             IsAllowed = isAllowed;
             BypassChecks = false;
             ValidateNewVigor = false;
             MinimumVigor = .25f;
             MustUseAllVigor = false;
+
         }
+
+        /// <summary>
+        /// Scp106 cooldown, if you want to overwrite it, do <see cref="Scp106StalkAbility.ServerWriteRpc"/> with <see cref="NetworkWriterPool.GetWriter"/>
+        /// </summary>
+        public AbilityCooldown Cooldown { get; set; }
 
         /// <summary>
         /// Force the Scp106 to use all their current vigor before leaving state.

@@ -71,7 +71,7 @@ namespace Exiled.Events.Patches.Events.Scp106
         private static bool Scp106Stalking(Scp106StalkAbility instance, NetworkReader reader)
         {
             API.Features.Player currentPlayer = API.Features.Player.Get(instance.Owner);
-            StalkingEventArgs stalkingEventArgs = new StalkingEventArgs(currentPlayer, instance);
+            StalkingEventArgs stalkingEventArgs = new StalkingEventArgs(currentPlayer, instance, instance._sinkhole.Cooldown);
             Handlers.Scp106.OnStalking(stalkingEventArgs);
 
             if (instance.IsActive && !stalkingEventArgs.MustUseAllVigor)
