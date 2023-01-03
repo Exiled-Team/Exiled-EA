@@ -431,10 +431,7 @@ namespace Exiled.API.Features.Pickups
         /// Destroys the already spawned pickup.
         /// </summary>
         /// <seealso cref="UnSpawn"/>
-        public void Destroy()
-        {
-            Base.DestroySelf();
-        }
+        public void Destroy() => Base.DestroySelf();
 
         /// <summary>
         /// Returns the Pickup in a human readable format.
