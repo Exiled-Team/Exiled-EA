@@ -32,7 +32,7 @@ namespace Exiled.Events.Patches.Events.Scp079
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Shared.Rent(instructions);
-            int offset = 0;
+            int offset = -2;
             int index = newInstructions.FindIndex(
                 instruction => instruction.Calls(Method(typeof(RelativePositionSerialization), nameof(RelativePositionSerialization.ReadRelativePosition)))) + offset;
 
@@ -41,12 +41,12 @@ namespace Exiled.Events.Patches.Events.Scp079
                 index,
                 new CodeInstruction[]
                 {
+
+                    // Load Scp079PingAbility , NetworkReader into ProcessPinging
+                    new CodeInstruction(OpCodes.Ldarg_0).MoveBlocksFrom(newInstructions[index]),
+                    new(OpCodes.Ldarg_1),
                     new(OpCodes.Call, Method(typeof(Pinging), nameof(Pinging.ProcessPinging))),
                     new(OpCodes.Ret),
-
-                    //To satisfy harmony but I should never get here.
-                    new(OpCodes.Ldarg_0),
-                    new(OpCodes.Ldarg_1),
                 });
 
             for (int z = 0; z < newInstructions.Count; z++)
