@@ -7,8 +7,6 @@
 
 namespace Exiled.Events.Patches.Generic
 {
-#pragma warning disable SA1402
-#pragma warning disable SA1649
     using System.Collections.Generic;
     using System.Reflection.Emit;
 
@@ -31,7 +29,7 @@ namespace Exiled.Events.Patches.Generic
     /// Patches <see cref="InventoryExtensions.ServerCreatePickup(Inventory, ItemBase, PickupSyncInfo, bool)"/> to save scale for pickups and control <see cref="Pickup.IsSpawned"/> property.
     /// </summary>
     [HarmonyPatch(typeof(InventoryExtensions), nameof(InventoryExtensions.ServerCreatePickup))]
-    internal static class CreatePickupPatch
+    internal static class PickupControlPatch
     {
         private static IEnumerable<CodeInstruction> Transpiler(
             IEnumerable<CodeInstruction> instructions,
@@ -39,7 +37,7 @@ namespace Exiled.Events.Patches.Generic
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Shared.Rent(instructions);
 
-            const int offset = -1;
+            const int offset = 0;
             int index = newInstructions.FindIndex(i => i.opcode == OpCodes.Ldarg_3) + offset;
 
             newInstructions.InsertRange(index, new CodeInstruction[]
