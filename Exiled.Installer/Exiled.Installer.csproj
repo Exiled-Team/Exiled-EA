@@ -14,7 +14,7 @@
 
         <BuildProperties>false</BuildProperties>
         <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-        <OutputPath>..\bin\Installer\</OutputPath>
+        <OutputPath>\bin\$(Configuration)\</OutputPath>
 
         <AssemblyTitle>Exiled online installer</AssemblyTitle>
         <Version>3.2.3</Version>
@@ -26,7 +26,6 @@
 
     <PropertyGroup Condition="$(Configuration) == 'Release'">
         <PublishSingleFile>true</PublishSingleFile>
-        <PublishTrimmed>true</PublishTrimmed>
         <TrimUnusedDependencies>true</TrimUnusedDependencies>
     </PropertyGroup>
 
