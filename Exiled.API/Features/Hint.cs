@@ -56,7 +56,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Returns the hint in a human-readable format.
         /// </summary>
-        /// <returns>A string containing Broadcast-related data.</returns>
+        /// <returns>A string containing hint-related data.</returns>
         public override string ToString() => $"({Content}) {Duration}";
     }
 }
