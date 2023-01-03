@@ -31,7 +31,7 @@ namespace Exiled.API.Features.Roles
             SubroutineModule = baseRole.SubroutineModule;
             HumeShieldModule = baseRole.HumeShieldModule;
             Internal = baseRole;
-            MovementModule = baseRole.FpcModule as Scp106MovementModule;
+            MovementModule = FirstPersonController.FpcModule as Scp106MovementModule;
 
             if (!SubroutineModule.TryGetSubroutine(out Scp106Vigor scp106Vigor))
                 Log.Error("Scp106Vigor subroutine not found in Scp096Role::ctor");
