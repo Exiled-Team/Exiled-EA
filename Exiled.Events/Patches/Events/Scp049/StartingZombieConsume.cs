@@ -31,60 +31,26 @@ namespace Exiled.Events.Patches.Events.Scp049
     public class StartingZombieConsume
     {
 
-        private static MethodInfo GetSendMethod()
-        {
-            foreach (MethodInfo method in typeof(RagdollAbilityBase<ZombieRole>).GetMethods(BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
-            {
-                // if(method.Name.Contains("Server"))
-
-                    if (method.Name.Contains("ServerValidateAny") && method.GetGenericArguments().Length == 0)
-                    {
-                        Log.Info($"What is current method: {method} and {method.Name.Contains("ServerValidateAny")}");
-                        return method;
-                        //return method.MakeGenericMethod(typeof(ZombieConsumeAbility));
-                    }
-            }
-
-            return null;
-        }
-
         [HarmonyPatch(typeof(RagdollAbilityBase<ZombieRole>), nameof(RagdollAbilityBase<ZombieRole>.ServerProcessCmd))]
-        [HarmonyTranspiler]
-        private static IEnumerable<CodeInstruction> ZombieServerProcessCmdPatch(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
-        {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Shared.Rent(instructions);
-
-            // Finds ServerValidateAny which check if corpse is nearby
-            int offset = -1;
-            // int index = newInstructions.FindIndex(instruction => instruction.Calls(Method(typeof(ZombieConsumeAbility), nameof(ZombieConsumeAbility.ServerValidateAny)))) + offset;
-            int index = newInstructions.FindIndex(instruction => instruction.Calls(Method(typeof(RagdollAbilityBase<ZombieRole>), nameof(RagdollAbilityBase<ZombieRole>.ServerValidateAny)))) + offset;
-            newInstructions.RemoveRange(index, 3);
-
-            for (int z = 0; z < newInstructions.Count; z++)
-                yield return newInstructions[z];
-
-            ListPool<CodeInstruction>.Shared.Return(newInstructions);
-
-        }
-
-        [HarmonyPatch(typeof(ZombieConsumeAbility), nameof(ZombieConsumeAbility.ServerValidateBegin))]
         [HarmonyTranspiler]
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Shared.Rent(instructions);
 
+            int offset = -1;
+            //Find IsCorpse, then going backwards, find IsInProgress
+            int index = newInstructions.FindIndex(instruction => instruction.Calls(Method(typeof(RagdollAbilityBase<ZombieRole>), nameof(RagdollAbilityBase<ZombieRole>.IsCorpseNearby))));
+            index = newInstructions.FindLastIndex(index, instruction => instruction.Calls(PropertyGetter(typeof(RagdollAbilityBase<ZombieRole>), nameof(RagdollAbilityBase<ZombieRole>.IsInProgress)))) + offset;
             // Immediately return
             Label returnLabel = generator.DefineLabel();
 
             newInstructions.InsertRange(
-                0,
+                index,
                 new[]
                 {
-                    // Scp049SenseAbility, BasicRagdoll
-                    new CodeInstruction(OpCodes.Ldarg_0),
-                    new CodeInstruction(OpCodes.Ldarg_1),
-                    // Returns Byte
-                    new(OpCodes.Call, Method(typeof(StartingZombieConsume), nameof(ZombieConsumeConditions))),
+                    // Scp049SenseAbility
+                    new CodeInstruction(OpCodes.Ldarg_0).MoveLabelsFrom(newInstructions[index]),
+                    new(OpCodes.Call, Method(typeof(StartingZombieConsume), nameof(ServerProcessCmdRewrite))),
                     new(OpCodes.Br, returnLabel),
 
                 });
@@ -98,43 +64,56 @@ namespace Exiled.Events.Patches.Events.Scp049
         }
 
         /// <summary>
-        /// Basically rewrites the ServerProcessCmd - It really is not worth it to not do this
+        /// Basically rewrites the ServerProcessCmd - It really is not worth it to not do zombieAbilityBase
         /// </summary>
         /// <param name="senseAbility"></param>
         /// <param name="reader"></param>
         /// <returns></returns>
-        private static byte ZombieConsumeConditions(ZombieConsumeAbility zombieConsumeInstance, BasicRagdoll ragdoll)
+        private static void ServerProcessCmdRewrite(RagdollAbilityBase<ZombieRole> zombieAbilityBase)
         {
-            API.Features.Player currentPlayer = API.Features.Player.Get(zombieConsumeInstance.Owner);
-            API.Features.Player target = API.Features.Player.Get(ragdoll.Info.OwnerHub);
-            ZombieConsumeEventArgs zombieConsumeEvent = new ZombieConsumeEventArgs(currentPlayer, target, ZombieConsumeAbility.ConsumedRagdolls);
+
+            if (zombieAbilityBase.IsInProgress)
+            {
+                return;
+            }
+            Transform transform;
+            Vector3 position = zombieAbilityBase.ScpRole.FpcModule.Position;
+            if (!zombieAbilityBase.IsCorpseNearby(position, zombieAbilityBase._syncRagdoll, out transform))
+            {
+                return;
+            }
+
+            Transform ragdollTransform = zombieAbilityBase._ragdollTransform;
+            BasicRagdoll curRagdoll = zombieAbilityBase.CurRagdoll;
+            zombieAbilityBase._ragdollTransform = transform;
+            zombieAbilityBase.CurRagdoll = zombieAbilityBase._syncRagdoll;
+            zombieAbilityBase._errorCode = zombieAbilityBase.ServerValidateBegin(zombieAbilityBase._syncRagdoll);
+
+            API.Features.Player currentPlayer = API.Features.Player.Get(zombieAbilityBase.Owner);
+            ZombieConsumeEventArgs zombieConsumeEvent = new ZombieConsumeEventArgs(currentPlayer, curRagdoll, ZombieConsumeAbility.ConsumedRagdolls, zombieAbilityBase._errorCode);
             Handlers.Scp049.OnStartingConsume(zombieConsumeEvent);
 
             if (!zombieConsumeEvent.IsAllowed)
             {
-                return 0;
+                Log.Info("Not allowed");
+                return;
             }
 
-            if (ZombieConsumeAbility.ConsumedRagdolls.Contains(ragdoll))
+            curRagdoll = zombieConsumeEvent.TargetRagdoll;
+            zombieAbilityBase._errorCode = zombieConsumeEvent.Errorcode;
+            bool flag = zombieAbilityBase._errorCode > 0;
+            if (flag)
             {
-                return 2;
-            }
-            if ( (!ragdoll.Info.RoleType.IsHuman() || !zombieConsumeInstance.ServerValidateAny()) && !zombieConsumeEvent.AllowNonHumans)
-            {
-                return 3;
-            }
-            if (zombieConsumeInstance.Owner.playerStats.GetModule<HealthStat>().NormalizedValue == 1f)
-            {
-                return 8;
-            }
-            foreach (ZombieConsumeAbility zombieConsumeAbility in ZombieConsumeAbility.AllAbilities)
-            {
-                if (zombieConsumeAbility.IsInProgress && zombieConsumeAbility.CurRagdoll == ragdoll)
+                zombieAbilityBase._ragdollTransform = ragdollTransform;
+                zombieAbilityBase.CurRagdoll = curRagdoll;
+                if (flag)
                 {
-                    return 9;
+                    zombieAbilityBase.ServerSendRpc(true);
                 }
+                return;
             }
-            return 0;
+            zombieAbilityBase.IsInProgress = true;
+
         }
 
     }

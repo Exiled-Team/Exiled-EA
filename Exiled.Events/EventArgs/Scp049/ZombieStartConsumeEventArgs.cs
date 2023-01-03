@@ -26,19 +26,19 @@ namespace Exiled.Events.EventArgs.Scp049
         /// <param name="reader"> <inheritdoc cref="Reader" /></param>
         /// <param name="bypassChecks"> <inheritdoc cref="BypassChecks" /></param>
         /// <param name="isAllowed"> <inheritdoc cref="IsAllowed" /></param>
-        public ZombieConsumeEventArgs(Player scp049, Player target, HashSet<BasicRagdoll> consumedRagdolls, bool isAllowed = true)
+        public ZombieConsumeEventArgs(Player scp049, BasicRagdoll target, HashSet<BasicRagdoll> consumedRagdolls, byte errorCode, bool isAllowed = true)
         {
             Player = scp049;
-            Target = target;
+            TargetRagdoll = target;
             ConsomedRagdolls = consumedRagdolls;
             IsAllowed = isAllowed;
-            AllowNonHumans = false;
+            Errorcode = errorCode;
         }
 
         /// <summary>
-        /// Allow consumption of non-humans
+        /// Error code to send back to client
         /// </summary>
-        public bool AllowNonHumans { get; set; }
+        public byte Errorcode { get; set; }
 
         /// <summary>
         /// Scp0492 ragdolls consumed thus far.
@@ -46,9 +46,9 @@ namespace Exiled.Events.EventArgs.Scp049
         public HashSet<BasicRagdoll> ConsomedRagdolls { get; set; }
 
         /// <summary>
-        ///     Gets the player who is currently being targeted.
+        ///     Gets the Ragdoll to be consumed
         /// </summary>
-        public Player Target { get; }
+        public BasicRagdoll TargetRagdoll { get; }
 
         /// <summary>
         ///     Gets the player who is controlling SCP-049.
