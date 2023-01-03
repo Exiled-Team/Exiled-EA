@@ -256,6 +256,11 @@ namespace Exiled.API.Features.Pickups
         public bool IsSpawned { get; internal set; }
 
         /// <summary>
+        /// Gets a value indicating whether this pickup is placed at his spawnposition, and wait untill door trigger.
+        /// </summary>
+        public bool IsPlaced => Server.ItemDistributor._unspawnedObjects.Any(keyvalue => keyvalue.Value.Any(gameObj => gameObj == GameObject));
+
+        /// <summary>
         /// Gets an existing <see cref="Pickup"/> or creates a new instance of one.
         /// </summary>
         /// <param name="pickupBase">The <see cref="ItemPickupBase"/> to convert into a <see cref="Pickup"/>.</param>
@@ -428,10 +433,26 @@ namespace Exiled.API.Features.Pickups
         }
 
         /// <summary>
-        /// Destroys the already spawned pickup.
+        /// Destroys the already spawned pickup, or .
         /// </summary>
         /// <seealso cref="UnSpawn"/>
-        public void Destroy() => Base.DestroySelf();
+        public void Destroy()
+        {
+            Base.DestroySelf();
+
+            if (!IsSpawned)
+            {
+                foreach (var item in Server.ItemDistributor._unspawnedObjects)
+                {
+                    if (item.Value.Remove(GameObject))
+                    {
+                        Object.Destroy(GameObject);
+
+                        return;
+                    }
+                }
+            }
+        }
 
         /// <summary>
         /// Returns the Pickup in a human readable format.

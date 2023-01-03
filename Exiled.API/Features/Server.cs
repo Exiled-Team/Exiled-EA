@@ -14,6 +14,7 @@ namespace Exiled.API.Features
     using CustomPlayerEffects;
     using GameCore;
     using Interfaces;
+    using MapGeneration.Distributors;
     using MEC;
     using Mirror;
     using PlayerRoles.RoleAssign;
@@ -47,6 +48,11 @@ namespace Exiled.API.Features
         /// Gets the cached <see cref="SendSpawnMessage"/> <see cref="MethodInfo"/>.
         /// </summary>
         public static MethodInfo SendSpawnMessage => sendSpawnMessage ??= typeof(NetworkServer).GetMethod("SendSpawnMessage", BindingFlags.NonPublic | BindingFlags.Static);
+
+        /// <summary>
+        /// Gets the base <see cref="MapGeneration.Distributors.ItemDistributor"/>.
+        /// </summary>
+        public static ItemDistributor ItemDistributor { get; internal set; }
 
         /// <summary>
         /// Gets or sets the name of the server.
