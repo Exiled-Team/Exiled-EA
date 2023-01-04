@@ -16,7 +16,7 @@ namespace Exiled.Events.EventArgs.Scp079
     /// <summary>
     ///     Contains all information before SCP-079 changes rooms via elevator.
     /// </summary>
-    public class ElevatorTeleportingEventArgs : IPlayerEvent, IDeniableEvent
+    public class ElevatorTeleportingEventArgs : IPlayerEvent, IRoomEvent, IDeniableEvent
     {
         /// <summary>
         ///     Initializes a new instance of the <see cref="ElevatorTeleportingEventArgs" /> class.
