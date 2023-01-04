@@ -28,6 +28,21 @@ namespace Exiled.API.Features.Roles
         {
             SubroutineModule = baseRole.SubroutineModule;
             HumeShieldModule = baseRole.HumeShieldModule;
+
+            if (!SubroutineModule.TryGetSubroutine(out Scp049ResurrectAbility scp049ResurrectAbility))
+                Log.Error("Scp049ResurrectAbility subroutine not found in Scp049Role::ctor");
+
+            ResurrectAbility = scp049ResurrectAbility;
+
+            if (!SubroutineModule.TryGetSubroutine(out Scp049CallAbility scp049CallAbility))
+                Log.Error("Scp049CallAbility subroutine not found in Scp049Role::ctor");
+
+            CallAbility = scp049CallAbility;
+
+            if (!SubroutineModule.TryGetSubroutine(out Scp049SenseAbility scp049SenseAbility))
+                Log.Error("Scp049SenseAbility subroutine not found in Scp049Role::ctor");
+
+            SenseAbility = scp049SenseAbility;
         }
 
         /// <inheritdoc/>
@@ -40,56 +55,50 @@ namespace Exiled.API.Features.Roles
         public HumeShieldModuleBase HumeShieldModule { get; }
 
         /// <summary>
+        /// Gets SCP-049's <see cref="Scp049ResurrectAbility"/>.
+        /// </summary>
+        public Scp049ResurrectAbility ResurrectAbility { get; }
+
+        /// <summary>
+        /// Gets SCP-049's <see cref="Scp049CallAbility"/>.
+        /// </summary>
+        public Scp049CallAbility CallAbility { get; }
+
+        /// <summary>
+        /// Gets SCP-049's <see cref="Scp049SenseAbility"/>.
+        /// </summary>
+        public Scp049SenseAbility SenseAbility { get; }
+
+        /// <summary>
         /// Gets a value indicating whether or not SCP-049 is currently recalling a player.
         /// </summary>
-        public bool IsRecalling => SubroutineModule.TryGetSubroutine(out Scp049ResurrectAbility ability) && ability.IsInProgress;
+        public bool IsRecalling => ResurrectAbility.IsInProgress;
 
         /// <summary>
         /// Gets a value indicating whether or not SCP-049's "Doctor's Call" ability is currently active.
         /// </summary>
-        public bool IsCallActive => SubroutineModule.TryGetSubroutine(out Scp049CallAbility ability) && ability.IsMarkerShown;
+        public bool IsCallActive => CallAbility.IsMarkerShown;
 
         /// <summary>
         /// Gets the player that is currently being revived by SCP-049. Will be <see langword="null"/> if <see cref="IsRecalling"/> is <see langword="false"/>.
         /// </summary>
-        public Player RecallingPlayer
-        {
-            get
-            {
-                if (!IsRecalling || !SubroutineModule.TryGetSubroutine(out Scp049ResurrectAbility ability))
-                    return null;
-
-                return Player.Get(ability.CurRagdoll.Info.OwnerHub);
-            }
-        }
+        public Player RecallingPlayer => ResurrectAbility.CurRagdoll == null ? null : Player.Get(ResurrectAbility.CurRagdoll.Info.OwnerHub);
 
         /// <summary>
         /// Gets the ragdoll that is currently being revived by SCP-049. Will be <see langword="null"/> if <see cref="IsRecalling"/> is <see langword="false"/>.
         /// </summary>
-        public Ragdoll RecallingRagdoll
-        {
-            get
-            {
-                if (!IsRecalling || !SubroutineModule.TryGetSubroutine(out Scp049ResurrectAbility ability))
-                    return null;
-
-                return Ragdoll.Get(ability.CurRagdoll);
-            }
-        }
+        public Ragdoll RecallingRagdoll => Ragdoll.Get(ResurrectAbility.CurRagdoll);
 
         /// <summary>
         /// Gets or sets the amount of time before SCP-049 can use its Doctor's Call ability again.
         /// </summary>
         public float CallCooldown
         {
-            get => SubroutineModule.TryGetSubroutine(out Scp049CallAbility ability) ? ability.Cooldown.Remaining : 0f;
+            get => CallAbility.Cooldown.Remaining;
             set
             {
-                if (SubroutineModule.TryGetSubroutine(out Scp049CallAbility ability))
-                {
-                    ability.Cooldown.Remaining = value;
-                    ability.ServerSendRpc(true);
-                }
+                CallAbility.Cooldown.Remaining = value;
+                CallAbility.ServerSendRpc(true);
             }
         }
 
@@ -98,14 +107,11 @@ namespace Exiled.API.Features.Roles
         /// </summary>
         public float GoodSenseCooldown
         {
-            get => SubroutineModule.TryGetSubroutine(out Scp049SenseAbility ability) ? ability.Cooldown.Remaining : 0f;
+            get => SenseAbility.Cooldown.Remaining;
             set
             {
-                if (SubroutineModule.TryGetSubroutine(out Scp049SenseAbility ability))
-                {
-                    ability.Cooldown.Remaining = value;
-                    ability.ServerSendRpc(true);
-                }
+                SenseAbility.Cooldown.Remaining = value;
+                SenseAbility.ServerSendRpc(true);
             }
         }
 
@@ -114,14 +120,14 @@ namespace Exiled.API.Features.Roles
         /// </summary>
         /// <param name="ragdoll">The ragdoll to check.</param>
         /// <returns><see langword="true"/> if the body can be revived; otherwise, <see langword="false"/>.</returns>
-        public bool CanResurrect(BasicRagdoll ragdoll) => SubroutineModule.TryGetSubroutine(out Scp049ResurrectAbility ability) ? ability.CheckRagdoll(ragdoll) : false;
+        public bool CanResurrect(BasicRagdoll ragdoll) => ResurrectAbility.CheckRagdoll(ragdoll);
 
         /// <summary>
         /// Returns a <see langword="bool"/> indicating whether or not the ragdoll can be resurrected by SCP-049.
         /// </summary>
         /// <param name="ragdoll">The ragdoll to check.</param>
         /// <returns><see langword="true"/> if the body can be revived; otherwise, <see langword="false"/>.</returns>
-        public bool CanResurrect(Ragdoll ragdoll) => SubroutineModule.TryGetSubroutine(out Scp049ResurrectAbility ability) ? ability.CheckRagdoll(ragdoll.Base) : false;
+        public bool CanResurrect(Ragdoll ragdoll) => ResurrectAbility.CheckRagdoll(ragdoll.Base);
 
         /// <summary>
         /// Returns a <see langword="bool"/> indicating whether or not SCP-049 is close enough to a ragdoll to revive it.
@@ -129,7 +135,7 @@ namespace Exiled.API.Features.Roles
         /// <remarks>This method only returns whether or not SCP-049 is close enough to the body to revive it; the body may have expired. Make sure to check <see cref="CanResurrect(BasicRagdoll)"/> to ensure the body can be revived.</remarks>
         /// <param name="ragdoll">The ragdoll to check.</param>
         /// <returns><see langword="true"/> if close enough to revive the body; otherwise, <see langword="false"/>.</returns>
-        public bool IsInRecallRange(BasicRagdoll ragdoll) => SubroutineModule.TryGetSubroutine(out Scp049ResurrectAbility ability) && ability.IsCloseEnough(Owner.Position, ragdoll.transform.position);
+        public bool IsInRecallRange(BasicRagdoll ragdoll) => ResurrectAbility.IsCloseEnough(Owner.Position, ragdoll.transform.position);
 
         /// <summary>
         /// Returns a <see langword="bool"/> indicating whether or not SCP-049 is close enough to a ragdoll to revive it.

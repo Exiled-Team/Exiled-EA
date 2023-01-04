@@ -8,9 +8,9 @@
 namespace Exiled.API.Features.Roles
 {
     using System.Collections.Generic;
+    using System.Linq;
 
     using Mirror;
-
     using PlayerRoles;
     using PlayerRoles.PlayableScps.HumeShield;
     using PlayerRoles.PlayableScps.Scp173;
@@ -35,6 +35,26 @@ namespace Exiled.API.Features.Roles
             SubroutineModule = baseRole.SubroutineModule;
             HumeShieldModule = baseRole.HumeShieldModule;
             MovementModule = FirstPersonController.FpcModule as Scp173MovementModule;
+
+            if (!SubroutineModule.TryGetSubroutine(out Scp173ObserversTracker scp173ObserversTracker))
+                Log.Error("Scp173ObserversTracker not found in Scp173Role::ctor");
+
+            ObserversTracker = scp173ObserversTracker;
+
+            if (!SubroutineModule.TryGetSubroutine(out Scp173BlinkTimer scp173BlinkTimer))
+                Log.Error("Scp173BlinkTimer not found in Scp096Role::ctor");
+
+            BlinkTimer = scp173BlinkTimer;
+
+            if (!SubroutineModule.TryGetSubroutine(out Scp173TeleportAbility scp173TeleportAbility))
+                Log.Error("Scp173TeleportAbility not found in Scp096Role::ctor");
+
+            TeleportAbility = scp173TeleportAbility;
+
+            if (!SubroutineModule.TryGetSubroutine(out Scp173TantrumAbility scp173TantrumAbility))
+                Log.Error("Scp173TantrumAbility not found in Scp096Role::ctor");
+
+            TantrumAbility = scp173TantrumAbility;
         }
 
         /// <summary>
@@ -52,33 +72,49 @@ namespace Exiled.API.Features.Roles
         public HumeShieldModuleBase HumeShieldModule { get; }
 
         /// <summary>
-        /// Gets a value indicating whether or not SCP-173 is currently being viewed by one or more players.
-        /// </summary>
-        public bool IsObserved => SubroutineModule.TryGetSubroutine(out Scp173ObserversTracker ability) && ability.IsObserved;
-
-        /// <summary>
-        /// Gets a <see cref="IReadOnlyCollection{T}"/> of players that are currently viewing SCP-173. Can be empty.
-        /// </summary>
-        public IReadOnlyCollection<Player> ObservingPlayers
-        {
-            get
-            {
-                HashSet<Player> players = new();
-
-                if (SubroutineModule.TryGetSubroutine(out Scp173ObserversTracker ability))
-                {
-                    foreach (ReferenceHub player in ability.Observers)
-                        players.Add(Player.Get(player));
-                }
-
-                return players;
-            }
-        }
-
-        /// <summary>
         /// Gets SCP-173's movement module.
         /// </summary>
         public Scp173MovementModule MovementModule { get; }
+
+        /// <summary>
+        /// Gets SCP-173's <see cref="Scp173ObserversTracker"/>.
+        /// </summary>
+        public Scp173ObserversTracker ObserversTracker { get; }
+
+        /// <summary>
+        /// Gets SCP-173's <see cref="Scp173BlinkTimer"/>.
+        /// </summary>
+        public Scp173BlinkTimer BlinkTimer { get; }
+
+        /// <summary>
+        /// Gets SCP-173's <see cref="Scp173TeleportAbility"/>.
+        /// </summary>
+        public Scp173TeleportAbility TeleportAbility { get; }
+
+        /// <summary>
+        /// Gets SCP-173's <see cref="Scp173TantrumAbility"/>.
+        /// </summary>
+        public Scp173TantrumAbility TantrumAbility { get; }
+
+        /// <summary>
+        /// Gets or sets the amount of time before SCP-173 can use breakneck speed again.
+        /// </summary>
+        public float BreakneckCooldown { get; set; } = 40f; // It's hardcoded //TODO
+
+        /// <summary>
+        /// Gets or sets the amount of time before SCP-173 can place a tantrum.
+        /// </summary>
+        public float TantrumCooldown { get; set; } = 30f; // It's hardcoded //TODO
+
+        /// <summary>
+        /// Gets a value indicating whether or not SCP-173 is currently being viewed by one or more players.
+        /// </summary>
+        public bool IsObserved => ObserversTracker.IsObserved;
+
+        /// <summary>
+        /// Gets a <see cref="IEnumerable{T}"/> of players that are currently viewing SCP-173. Can be empty.
+        /// </summary>
+        public IEnumerable<Player> ObservingPlayers => ObserversTracker.Observers.Select(x => Player.Get(x));
 
         /// <summary>
         /// Gets SCP-173's max move speed.
@@ -95,14 +131,8 @@ namespace Exiled.API.Features.Roles
         /// </summary>
         public float SimulatedStare
         {
-            get => SubroutineModule.TryGetSubroutine(out Scp173ObserversTracker ability) ? ability.SimulatedStare : 0;
-            set
-            {
-                if (!SubroutineModule.TryGetSubroutine(out Scp173ObserversTracker ability))
-                    return;
-
-                ability.SimulatedStare = value;
-            }
+            get => ObserversTracker.SimulatedStare;
+            set => ObserversTracker.SimulatedStare = value;
         }
 
         /// <summary>
@@ -110,15 +140,12 @@ namespace Exiled.API.Features.Roles
         /// </summary>
         public bool BlinkReady
         {
-            get => SubroutineModule.TryGetSubroutine(out Scp173BlinkTimer ability) && ability.AbilityReady;
+            get => BlinkTimer.AbilityReady;
             set
             {
-                if (SubroutineModule.TryGetSubroutine(out Scp173BlinkTimer ability))
-                {
-                    ability._endSustainTime = -1;
-                    ability._totalCooldown = 0;
-                    ability._initialStopTime = NetworkTime.time;
-                }
+                BlinkTimer._endSustainTime = -1;
+                BlinkTimer._totalCooldown = 0;
+                BlinkTimer._initialStopTime = NetworkTime.time;
             }
         }
 
@@ -127,53 +154,26 @@ namespace Exiled.API.Features.Roles
         /// </summary>
         public float BlinkCooldown
         {
-            get => SubroutineModule.TryGetSubroutine(out Scp173BlinkTimer ability) ? ability.RemainingBlinkCooldown : 0;
+            get => BlinkTimer.RemainingBlinkCooldown;
             set
             {
-                if (SubroutineModule.TryGetSubroutine(out Scp173BlinkTimer ability))
-                {
-                    ability._initialStopTime = NetworkTime.time;
-                    ability._totalCooldown = value;
-                }
+                BlinkTimer._initialStopTime = NetworkTime.time;
+                BlinkTimer._totalCooldown = value;
             }
         }
 
         /// <summary>
         /// Gets a value indicating the max distance that SCP-173 can move in a blink. Factors in <see cref="BreakneckActive"/>.
         /// </summary>
-        public float BlinkDistance => SubroutineModule.TryGetSubroutine(out Scp173TeleportAbility ability) ? ability.EffectiveBlinkDistance : 0;
+        public float BlinkDistance => TeleportAbility.EffectiveBlinkDistance;
 
         /// <summary>
         /// Gets or sets a value indicating whether or not SCP-173's breakneck speed is active.
         /// </summary>
         public bool BreakneckActive
         {
-            get => SubroutineModule.TryGetSubroutine(out Scp173BlinkTimer ability) && ability._breakneckSpeedsAbility.IsActive;
-            set
-            {
-                if (!SubroutineModule.TryGetSubroutine(out Scp173BlinkTimer ability))
-                    return;
-
-                ability._breakneckSpeedsAbility.IsActive = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the amount of time before SCP-173 can use breakneck speed again.
-        /// </summary>
-        public float BreakneckCooldown
-        {
-            get => 40; // It's hardcoded
-            set { }
-        }
-
-        /// <summary>
-        /// Gets or sets the amount of time before SCP-173 can place a tantrum.
-        /// </summary>
-        public float TantrumCooldown
-        {
-            get => 30; // It's hardcoded
-            set { }
+            get => TeleportAbility._breakneckSpeedsAbility.IsActive;
+            set => TeleportAbility._breakneckSpeedsAbility.IsActive = value;
         }
 
         /// <summary>
@@ -187,8 +187,7 @@ namespace Exiled.API.Features.Roles
             if (failIfObserved && IsObserved)
                 return null;
 
-            if (cooldown > 0 && SubroutineModule.TryGetSubroutine(out Scp173TantrumAbility ability))
-                ability.Cooldown.Trigger(cooldown);
+            TantrumAbility.Cooldown.Trigger(cooldown);
 
             return Owner.PlaceTantrum();
         }
