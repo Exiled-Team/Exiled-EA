@@ -8,6 +8,7 @@
 namespace Exiled.Events.Handlers
 {
     using Exiled.Events.EventArgs.Scp079;
+    using Exiled.Events.Patches.Events.Scp079;
     using Extensions;
 
     using static Events;
@@ -23,12 +24,12 @@ namespace Exiled.Events.Handlers
         public static event CustomEventHandler<ChangingCameraEventArgs> ChangingCamera;
 
         /// <summary>
-        ///     Invoked before gaining experience with SCP-079
+        ///     Invoked before gaining experience with SCP-079.
         /// </summary>
         public static event CustomEventHandler<GainingExperienceEventArgs> GainingExperience;
 
         /// <summary>
-        ///     Invoked before gaining levels with SCP-079
+        ///     Invoked before gaining levels with SCP-079.
         /// </summary>
         public static event CustomEventHandler<GainingLevelEventArgs> GainingLevel;
 
@@ -58,9 +59,24 @@ namespace Exiled.Events.Handlers
         public static event CustomEventHandler<ChangingSpeakerStatusEventArgs> ChangingSpeakerStatus;
 
         /// <summary>
-        ///     Invoked after Scp079 recontainment.
+        ///     Invoked after SCP-079 recontainment.
         /// </summary>
         public static event CustomEventHandler<RecontainedEventArgs> Recontained;
+
+        /// <summary>
+        ///     Invoked before SCP-079 sends a ping.
+        /// </summary>
+        public static event CustomEventHandler<PingingEventArgs> Pinging;
+
+        /// <summary>
+        ///     Invoked before SCP-079 turns off the lights in a room.
+        /// </summary>
+        public static event CustomEventHandler<RoomBlackoutEventArgs> RoomBlackout;
+
+        /// <summary>
+        ///     Invoked before SCP-079 turns off the lights in a zone.
+        /// </summary>
+        public static event CustomEventHandler<ZoneBlackoutEventArgs> ZoneBlackout;
 
         /// <summary>
         ///     Called before SCP-079 switches cameras.
@@ -115,5 +131,23 @@ namespace Exiled.Events.Handlers
         /// </summary>
         /// <param name="ev">The <see cref="RecontainedEventArgs" /> instance.</param>
         public static void OnRecontained(RecontainedEventArgs ev) => Recontained.InvokeSafely(ev);
+
+        /// <summary>
+        ///     Called before SCP-079 sends a ping.
+        /// </summary>
+        /// <param name="ev">The <see cref="PingingEventArgs" /> instance.</param>
+        public static void OnPinging(PingingEventArgs ev) => Pinging.InvokeSafely(ev);
+
+        /// <summary>
+        ///     Called before SCP-079 turns off the lights in a room.
+        /// </summary>
+        /// <param name="ev">The <see cref="PingingEventArgs" /> instance.</param>
+        public static void OnRoomBlackout(RoomBlackoutEventArgs ev) => RoomBlackout.InvokeSafely(ev);
+
+        /// <summary>
+        ///     Called before SCP-079 turns off the lights in a zone.
+        /// </summary>
+        /// <param name="ev">The <see cref="PingingEventArgs" /> instance.</param>
+        public static void OnZoneBlackout(ZoneBlackoutEventArgs ev) => ZoneBlackout.InvokeSafely(ev);
     }
 }
