@@ -190,6 +190,6 @@ namespace Exiled.API.Features.Roles
         /// <summary>
         /// .
         /// </summary>
-        public void ClearTarget() => TargetsTracker.ClearAllTargets();
+        public void ClearTargets() => TargetsTracker.ClearAllTargets();
     }
 }

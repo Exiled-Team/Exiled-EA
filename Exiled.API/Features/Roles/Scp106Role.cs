@@ -164,10 +164,13 @@ namespace Exiled.API.Features.Roles
         public bool UsePortal(Vector3 position, float cost = 0f)
         {
             HuntersAtlasAbility._syncPos = position;
+
             if (Vigor > cost)
                 return false;
+
             HuntersAtlasAbility._estimatedCost = cost;
             HuntersAtlasAbility.SetSubmerged(true);
+
             return true;
         }
     }
