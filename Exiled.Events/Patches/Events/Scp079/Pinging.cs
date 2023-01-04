@@ -36,12 +36,10 @@ namespace Exiled.Events.Patches.Events.Scp079
             int index = newInstructions.FindIndex(
                 instruction => instruction.Calls(Method(typeof(RelativePositionSerialization), nameof(RelativePositionSerialization.ReadRelativePosition)))) + offset;
 
-            // this._syncPos = ev.Position;
             newInstructions.InsertRange(
                 index,
                 new CodeInstruction[]
                 {
-
                     // Load Scp079PingAbility , NetworkReader into ProcessPinging
                     new CodeInstruction(OpCodes.Ldarg_0).MoveBlocksFrom(newInstructions[index]),
                     new(OpCodes.Ldarg_1),
@@ -62,7 +60,7 @@ namespace Exiled.Events.Patches.Events.Scp079
 
             Handlers.Scp079.OnPinging(ev);
 
-             if (ev.IsAllowed)
+            if (ev.IsAllowed)
             {
                 instance._syncNormal = ev.Position;
                 instance._syncPos = curRelativePos;
