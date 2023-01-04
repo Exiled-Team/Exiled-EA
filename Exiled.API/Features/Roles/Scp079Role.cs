@@ -8,8 +8,8 @@
 namespace Exiled.API.Features.Roles
 {
     using System.Collections.Generic;
+    using System.Linq;
 
-    using Interactables.Interobjects.DoorUtils;
     using PlayerRoles;
     using PlayerRoles.PlayableScps.Scp079;
     using PlayerRoles.PlayableScps.Subroutines;
@@ -31,6 +31,45 @@ namespace Exiled.API.Features.Roles
         {
             SubroutineModule = baseRole.SubroutineModule;
             Internal = baseRole;
+
+            if (!SubroutineModule.TryGetSubroutine(out Scp079SpeakerAbility scp079SpeakerAbility))
+                Log.Error("Scp079SpeakerAbility subroutine not found in Scp079Role::ctor");
+
+            SpeakerAbility = scp079SpeakerAbility;
+
+            if (!SubroutineModule.TryGetSubroutine(out Scp079DoorLockChanger scp079DoorLockChanger))
+                Log.Error("Scp079DoorLockChanger subroutine not found in Scp079Role::ctor");
+            DoorLockChanger = scp079DoorLockChanger;
+
+            if (!SubroutineModule.TryGetSubroutine(out Scp079AuxManager scp079AuxManager))
+                Log.Error("Scp079AuxManager not found in Scp079Role::ctor");
+
+            AuxManager = scp079AuxManager;
+
+            if (!SubroutineModule.TryGetSubroutine(out Scp079TierManager scp079TierManager))
+                Log.Error("Scp079TierManager subroutine not found in Scp079Role::ctor");
+
+            TierManager = scp079TierManager;
+
+            if (!SubroutineModule.TryGetSubroutine(out Scp079LockdownRoomAbility scp079LockdownRoomAbility))
+                Log.Error("Scp079LockdownRoomAbility subroutine not found in Scp079Role::ctor");
+
+            LockdownRoomAbility = scp079LockdownRoomAbility;
+
+            if (!SubroutineModule.TryGetSubroutine(out Scp079BlackoutRoomAbility scp079BlackoutRoomAbility))
+                Log.Error("Scp079BlackoutRoomAbility subroutine not found in Scp079Role::ctor");
+
+            BlackoutRoomAbility = scp079BlackoutRoomAbility;
+
+            if (!SubroutineModule.TryGetSubroutine(out Scp079BlackoutZoneAbility scp079BlackoutZoneAbility))
+                Log.Error("Scp079BlackoutZoneAbility subroutine not found in Scp079Role::ctor");
+
+            BlackoutZoneAbility = scp079BlackoutZoneAbility;
+
+            if (!SubroutineModule.TryGetSubroutine(out Scp079LostSignalHandler scp079LostSignalHandler))
+                Log.Error("Scp079BlackoutZoneAbility subroutine not found in Scp079Role::ctor");
+
+            LostSignalHandler = scp079LostSignalHandler;
         }
 
         /// <inheritdoc/>
@@ -38,6 +77,46 @@ namespace Exiled.API.Features.Roles
 
         /// <inheritdoc/>
         public SubroutineManagerModule SubroutineModule { get; }
+
+        /// <summary>
+        /// Gets SCP-079's <see cref="Scp079SpeakerAbility"/>.
+        /// </summary>
+        public Scp079SpeakerAbility SpeakerAbility { get; }
+
+        /// <summary>
+        /// Gets SCP-079's <see cref="Scp079DoorLockChanger"/>.
+        /// </summary>
+        public Scp079DoorLockChanger DoorLockChanger { get; }
+
+        /// <summary>
+        /// Gets SCP-079's <see cref="Scp079AuxManager"/>.
+        /// </summary>
+        public Scp079AuxManager AuxManager { get; }
+
+        /// <summary>
+        /// Gets SCP-079's <see cref="Scp079TierManager"/>.
+        /// </summary>
+        public Scp079TierManager TierManager { get; }
+
+        /// <summary>
+        /// Gets SCP-079's <see cref="Scp079LockdownRoomAbility"/>.
+        /// </summary>
+        public Scp079LockdownRoomAbility LockdownRoomAbility { get; }
+
+        /// <summary>
+        /// Gets SCP-079's <see cref="Scp079BlackoutRoomAbility"/>.
+        /// </summary>
+        public Scp079BlackoutRoomAbility BlackoutRoomAbility { get; }
+
+        /// <summary>
+        /// Gets SCP-079's <see cref="Scp079BlackoutZoneAbility"/>.
+        /// </summary>
+        public Scp079BlackoutZoneAbility BlackoutZoneAbility { get; }
+
+        /// <summary>
+        /// Gets SCP-079's <see cref="Scp079LostSignalHandler"/>.
+        /// </summary>
+        public Scp079LostSignalHandler LostSignalHandler { get; }
 
         /// <summary>
         /// Gets or sets the camera SCP-079 is currently controlling.
@@ -51,40 +130,25 @@ namespace Exiled.API.Features.Roles
         /// <summary>
         /// Gets a value indicating whether or not SCP-079 can transmit its voice to a speaker.
         /// </summary>
-        public bool CanTransmit => SubroutineModule.TryGetSubroutine(out Scp079SpeakerAbility ability) && ability.CanTransmit;
+        public bool CanTransmit => SpeakerAbility.CanTransmit;
 
         /// <summary>
         /// Gets the speaker SCP-079 is currently using. Can be <see langword="null"/>.
         /// </summary>
-        public Scp079Speaker Speaker
-        {
-            get
-            {
-                if (Internal.CurrentCamera != null && Scp079Speaker.TryGetSpeaker(Internal.CurrentCamera, out Scp079Speaker speaker))
-                    return speaker;
-
-                return null;
-            }
-        }
+        public Scp079Speaker Speaker => Scp079Speaker.TryGetSpeaker(Internal.CurrentCamera, out Scp079Speaker speaker) ? speaker : null;
 
         /// <summary>
         /// Gets the doors SCP-079 has locked. Can be <see langword="null"/>.
         /// </summary>
-        public HashSet<DoorVariant> LockedDoors => SubroutineModule.TryGetSubroutine(out Scp079DoorLockChanger ability) ? ability._lockedDoors : null;
+        public IEnumerable<Door> LockedDoors => DoorLockChanger._lockedDoors.Select(x => Door.Get(x));
 
         /// <summary>
         /// Gets or sets SCP-079's abilities. Can be <see langword="null"/>.
         /// </summary>
         public Scp079AbilityBase[] Abilities
         {
-            get => SubroutineModule.TryGetSubroutine(out Scp079AuxManager ability) ? ability._abilities : null;
-            set
-            {
-                if (!SubroutineModule.TryGetSubroutine(out Scp079AuxManager ability))
-                    return;
-
-                ability._abilities = value;
-            }
+            get => AuxManager._abilities;
+            set => AuxManager._abilities = value;
         }
 
         /// <summary>
@@ -92,14 +156,8 @@ namespace Exiled.API.Features.Roles
         /// </summary>
         public int Experience
         {
-            get => SubroutineModule.TryGetSubroutine(out Scp079TierManager ability) ? ability.TotalExp : 0;
-            set
-            {
-                if (!SubroutineModule.TryGetSubroutine(out Scp079TierManager ability))
-                    return;
-
-                ability.TotalExp = value;
-            }
+            get => TierManager.TotalExp;
+            set => TierManager.TotalExp = value;
         }
 
         /// <summary>
@@ -107,14 +165,8 @@ namespace Exiled.API.Features.Roles
         /// </summary>
         public int Level
         {
-            get => SubroutineModule.TryGetSubroutine(out Scp079TierManager ability) ? ability.AccessTierLevel : 0;
-            set
-            {
-                if (!SubroutineModule.TryGetSubroutine(out Scp079TierManager ability))
-                    return;
-
-                Experience = value <= 1 ? 0 : ability.AbsoluteThresholds[Mathf.Clamp(value - 2, 0, ability.AbsoluteThresholds.Length - 1)];
-            }
+            get => TierManager.AccessTierLevel;
+            set => Experience = value <= 1 ? 0 : TierManager.AbsoluteThresholds[Mathf.Clamp(value - 2, 0, TierManager.AbsoluteThresholds.Length - 1)];
         }
 
         /// <summary>
@@ -122,28 +174,22 @@ namespace Exiled.API.Features.Roles
         /// </summary>
         public int LevelIndex
         {
-            get => SubroutineModule.TryGetSubroutine(out Scp079TierManager ability) ? ability.AccessTierIndex : 0;
+            get => TierManager.AccessTierIndex;
             set => Level = value + 1;
         }
 
         /// <summary>
         /// Gets SCP-079's next level threshold.
         /// </summary>
-        public int NextLevelThreshold => SubroutineModule.TryGetSubroutine(out Scp079TierManager ability) ? ability.NextLevelThreshold : 0;
+        public int NextLevelThreshold => TierManager.NextLevelThreshold;
 
         /// <summary>
         /// Gets or sets SCP-079's energy.
         /// </summary>
         public float Energy
         {
-            get => SubroutineModule.TryGetSubroutine(out Scp079AuxManager ability) ? ability.CurrentAux : 0;
-            set
-            {
-                if (!SubroutineModule.TryGetSubroutine(out Scp079AuxManager ability))
-                    return;
-
-                ability.CurrentAux = value;
-            }
+            get => AuxManager.CurrentAux;
+            set => AuxManager.CurrentAux = value;
         }
 
         /// <summary>
@@ -151,14 +197,8 @@ namespace Exiled.API.Features.Roles
         /// </summary>
         public float MaxEnergy
         {
-            get => SubroutineModule.TryGetSubroutine(out Scp079AuxManager ability) ? ability.MaxAux : 0;
-            set
-            {
-                if (!SubroutineModule.TryGetSubroutine(out Scp079AuxManager ability))
-                    return;
-
-                ability._maxPerTier[LevelIndex] = value;
-            }
+            get => AuxManager.MaxAux;
+            set => AuxManager._maxPerTier[LevelIndex] = value;
         }
 
         /// <summary>
@@ -166,52 +206,46 @@ namespace Exiled.API.Features.Roles
         /// </summary>
         public float RoomLockdownCooldown
         {
-            get => SubroutineModule.TryGetSubroutine(out Scp079LockdownRoomAbility ability) ? ability.RemainingCooldown : 0;
+            get => LockdownRoomAbility.RemainingCooldown;
             set
             {
-                if (!SubroutineModule.TryGetSubroutine(out Scp079LockdownRoomAbility ability))
-                    return;
-
-                ability.RemainingCooldown = value;
-                ability.ServerSendRpc(true);
+                LockdownRoomAbility.RemainingCooldown = value;
+                LockdownRoomAbility.ServerSendRpc(true);
             }
         }
 
         /// <summary>
         /// Gets the amount of rooms that SCP-079 has blacked out.
         /// </summary>
-        public int BlackoutCount => SubroutineModule.TryGetSubroutine(out Scp079BlackoutRoomAbility ability) ? ability.RoomsOnCooldown : 0;
+        public int BlackoutCount => BlackoutRoomAbility.RoomsOnCooldown;
 
         /// <summary>
         /// Gets the maximum amount of rooms that SCP-079 can black out at its current <see cref="Level"/>.
         /// </summary>
-        public int BlackoutCapacity => SubroutineModule.TryGetSubroutine(out Scp079BlackoutRoomAbility ability) ? ability.CurrentCapacity : 0;
+        public int BlackoutCapacity => BlackoutRoomAbility.CurrentCapacity;
 
         /// <summary>
         /// Gets or sets the amount of time until SCP-079 can use its blackout zone ability again.
         /// </summary>
         public float BlackoutZoneCooldown
         {
-            get => SubroutineModule.TryGetSubroutine(out Scp079BlackoutZoneAbility ability) ? ability._cooldownTimer.Remaining : 0;
+            get => BlackoutZoneAbility._cooldownTimer.Remaining;
             set
             {
-                if (SubroutineModule.TryGetSubroutine(out Scp079BlackoutZoneAbility ability))
-                {
-                    ability._cooldownTimer.Remaining = value;
-                    ability.ServerSendRpc(true);
-                }
+                BlackoutZoneAbility._cooldownTimer.Remaining = value;
+                BlackoutZoneAbility.ServerSendRpc(true);
             }
         }
 
         /// <summary>
         /// Gets a value indicating whether or not SCP-079's signal is lost due to SCP-2176.
         /// </summary>
-        public bool IsLost => SubroutineModule.TryGetSubroutine(out Scp079LostSignalHandler ability) && ability.Lost;
+        public bool IsLost => LostSignalHandler.Lost;
 
         /// <summary>
         /// Gets SCP-079's energy regeneration speed.
         /// </summary>
-        public float EnergyRegenerationSpeed => SubroutineModule.TryGetSubroutine(out Scp079AuxManager ability) ? ability.RegenSpeed : 0;
+        public float EnergyRegenerationSpeed => AuxManager.RegenSpeed;
 
         /// <summary>
         /// Gets the game <see cref="Scp079GameRole"/>.
@@ -221,57 +255,32 @@ namespace Exiled.API.Features.Roles
         /// <summary>
         /// Unlocks all doors that SCP-079 has locked.
         /// </summary>
-        public void UnlockAllDoors()
-        {
-            if (SubroutineModule.TryGetSubroutine(out Scp079DoorLockChanger ability))
-                ability.ServerUnlockAll();
-        }
+        public void UnlockAllDoors() => DoorLockChanger.ServerUnlockAll();
 
         /// <summary>
         /// Forces SCP-079's signal to be lost for the specified amount of time.
         /// </summary>
         /// <param name="duration">Time to lose SCP-079's signal.</param>
-        public void LoseSignal(float duration)
-        {
-            if (SubroutineModule.TryGetSubroutine(out Scp079LostSignalHandler ability))
-                ability.ServerLoseSignal(duration);
-        }
+        public void LoseSignal(float duration) => LostSignalHandler.ServerLoseSignal(duration);
 
         /// <summary>
         /// Grants SCP-079 experience.
         /// </summary>
         /// <param name="amount">The amount to grant.</param>
         /// <param name="reason">The reason to grant experience.</param>
-        public void AddExperience(int amount, Scp079HudTranslation reason = Scp079HudTranslation.ExpGainAdminCommand)
-        {
-            if (!SubroutineModule.TryGetSubroutine(out Scp079TierManager ability))
-                return;
-
-            ability.ServerGrantExperience(amount, reason);
-        }
+        public void AddExperience(int amount, Scp079HudTranslation reason = Scp079HudTranslation.ExpGainAdminCommand) => TierManager.ServerGrantExperience(amount, reason);
 
         /// <summary>
         /// Locks the provided <paramref name="door"/>.
         /// </summary>
         /// <param name="door">The door to lock.</param>
-        public void LockDoor(Door door)
-        {
-            if (door is null || !SubroutineModule.TryGetSubroutine(out Scp079DoorLockChanger ability))
-                return;
-
-            ability.SetDoorLock(door.Base, true);
-        }
+        /// <returns>.</returns>
+        public bool LockDoor(Door door) => DoorLockChanger.SetDoorLock(door.Base, true);
 
         /// <summary>
         /// Unlocks the provided <paramref name="door"/>.
         /// </summary>
         /// <param name="door">The door to unlock.</param>
-        public void UnlockDoor(Door door)
-        {
-            if (door is null || !SubroutineModule.TryGetSubroutine(out Scp079DoorLockChanger ability))
-                return;
-
-            ability.SetDoorLock(door.Base, false);
-        }
+        public void UnlockDoor(Door door) => DoorLockChanger.SetDoorLock(door.Base, false);
     }
 }
