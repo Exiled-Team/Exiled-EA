@@ -20,12 +20,12 @@ namespace Exiled.API.Enums
         /// <summary>
         /// Represents the <see cref="ItemType.GunCOM15"/>.
         /// </summary>
-        COM15,
+        Com15,
 
         /// <summary>
         /// Represents the <see cref="ItemType.GunCOM18"/>.
         /// </summary>
-        COM18,
+        Com18,
 
         /// <summary>
         /// Represents the <see cref="ItemType.GunE11SR"/>.
@@ -65,7 +65,7 @@ namespace Exiled.API.Enums
         /// <summary>
         /// Represents the <see cref="ItemType.GunCom45"/>.
         /// </summary>
-        COM45,
+        Com45,
 
         /// <summary>
         /// Represents the <see cref="ItemType.ParticleDisruptor"/>.
