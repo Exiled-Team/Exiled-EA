@@ -115,11 +115,11 @@ namespace Exiled.Events.Patches.Events.Scp106
             ListPool<CodeInstruction>.Shared.Return(newInstructions);
         }
 
-        private static bool Scp106ChangingIsActive(Scp106StalkAbility instance, bool value)
+        private static bool Scp106ChangingIsActive(Scp106StalkAbility instance, bool isActiveValue)
         {
-            API.Features.Player currentPlayer = API.Features.Player.Get(instance.Owner);
+            Player currentPlayer = Player.Get(instance.Owner);
             ServerChangingStalk playerChangingStalkStatus = new ServerChangingStalk(currentPlayer, instance, instance._sinkhole.Cooldown, instance._isActive);
-            Handlers.Scp106.OnServerChangingStalk(playerChangingStalkStatus);
+            Scp106.OnServerChangingStalk(playerChangingStalkStatus);
 
             // FYI, if you get to 0 vigor, and keep denying event, it will keep calling this function, you'll need to actually change time/value
             // to slow down spam of 60 per minute
@@ -134,17 +134,17 @@ namespace Exiled.Events.Patches.Events.Scp106
                 return false;
             }
 
-            instance._isActive = value;
+            instance._isActive = isActiveValue;
             instance._valueDirty = true;
             instance.Owner.interCoordinator.AddBlocker(instance);
-            if (value)
+            if (isActiveValue)
             {
-                instance.ScpRole.Sinkhole.TargetDuration = 2.5f;
+                instance.ScpRole.Sinkhole.TargetDuration = playerChangingStalkStatus.TargetDuration;
                 return false;
             }
             if (NetworkServer.active)
             {
-                instance._sinkhole.Cooldown.Trigger(20f);
+                instance._sinkhole.Cooldown.Trigger(playerChangingStalkStatus.Cooldown);
             }
 
             return false;

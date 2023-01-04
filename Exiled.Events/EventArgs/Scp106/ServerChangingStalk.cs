@@ -33,12 +33,13 @@ namespace Exiled.Events.EventArgs.Scp106
         /// <param name="isAllowed">
         ///     <inheritdoc cref="IsAllowed" />
         /// </param>
-        public ServerChangingStalk(Player player, Scp106StalkAbility stalkAbilityInstance, AbilityCooldown cooldown, bool isActive, bool isAllowed = true)
+        public ServerChangingStalk(Player player, Scp106StalkAbility stalkAbilityInstance, AbilityCooldown cooldownAbility, bool isActive, bool isAllowed = true)
         {
             Player = player;
             Scp106StalkAbility = stalkAbilityInstance;
             Vigor = Scp106StalkAbility.Vigor.VigorAmount;
-            Cooldown = cooldown;
+            CooldownAbility = cooldownAbility;
+            Cooldown = 20f;
             IsActive = isActive;
             IsAllowed = isAllowed;
             BypassChecks = false;
@@ -46,8 +47,19 @@ namespace Exiled.Events.EventArgs.Scp106
             MinimumVigor = .25f;
             MustUseAllVigor = false;
             AllowNwEventHandler = true;
+            TargetDuration = 2.5f;
 
         }
+
+        /// <summary>
+        /// Target duration if active.
+        /// </summary>
+        public float TargetDuration { get; set; }
+
+        /// <summary>
+        /// How long of a cooldown for ability
+        /// </summary>
+        public float Cooldown { get; set; }
 
         /// <summary>
         /// Whether stalk is currently active. DO NOT CALL IsActive, you will create infinite loop
@@ -67,7 +79,7 @@ namespace Exiled.Events.EventArgs.Scp106
         /// <summary>
         /// Scp106 cooldown, if you want to overwrite it, do <see cref="Scp106StalkAbility.ServerWriteRpc"/> with <see cref="NetworkWriterPool.GetWriter"/>
         /// </summary>
-        public AbilityCooldown Cooldown { get; set; }
+        public AbilityCooldown CooldownAbility { get; set; }
 
         /// <summary>
         /// Force the Scp106 to use all their current vigor before leaving state.
