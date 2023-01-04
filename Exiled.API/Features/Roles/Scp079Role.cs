@@ -65,6 +65,11 @@ namespace Exiled.API.Features.Roles
                 Log.Error("Scp079BlackoutZoneAbility subroutine not found in Scp079Role::ctor");
 
             BlackoutZoneAbility = scp079BlackoutZoneAbility;
+
+            if (!SubroutineModule.TryGetSubroutine(out Scp079LostSignalHandler scp079LostSignalHandler))
+                Log.Error("Scp079BlackoutZoneAbility subroutine not found in Scp079Role::ctor");
+
+            LostSignalHandler = scp079LostSignalHandler;
         }
 
         /// <inheritdoc/>
@@ -107,6 +112,11 @@ namespace Exiled.API.Features.Roles
         /// Gets SCP-079's <see cref="Scp079BlackoutZoneAbility"/>.
         /// </summary>
         public Scp079BlackoutZoneAbility BlackoutZoneAbility { get; }
+
+        /// <summary>
+        /// Gets SCP-079's <see cref="Scp079LostSignalHandler"/>.
+        /// </summary>
+        public Scp079LostSignalHandler LostSignalHandler { get; }
 
         /// <summary>
         /// Gets or sets the camera SCP-079 is currently controlling.
@@ -230,7 +240,7 @@ namespace Exiled.API.Features.Roles
         /// <summary>
         /// Gets a value indicating whether or not SCP-079's signal is lost due to SCP-2176.
         /// </summary>
-        public bool IsLost => SubroutineModule.TryGetSubroutine(out Scp079LostSignalHandler ability) && ability.Lost;
+        public bool IsLost => LostSignalHandler.Lost;
 
         /// <summary>
         /// Gets SCP-079's energy regeneration speed.
@@ -251,24 +261,14 @@ namespace Exiled.API.Features.Roles
         /// Forces SCP-079's signal to be lost for the specified amount of time.
         /// </summary>
         /// <param name="duration">Time to lose SCP-079's signal.</param>
-        public void LoseSignal(float duration)
-        {
-            if (SubroutineModule.TryGetSubroutine(out Scp079LostSignalHandler ability))
-                ability.ServerLoseSignal(duration);
-        }
+        public void LoseSignal(float duration) => LostSignalHandler.ServerLoseSignal(duration);
 
         /// <summary>
         /// Grants SCP-079 experience.
         /// </summary>
         /// <param name="amount">The amount to grant.</param>
         /// <param name="reason">The reason to grant experience.</param>
-        public void AddExperience(int amount, Scp079HudTranslation reason = Scp079HudTranslation.ExpGainAdminCommand)
-        {
-            if (!SubroutineModule.TryGetSubroutine(out Scp079TierManager ability))
-                return;
-
-            ability.ServerGrantExperience(amount, reason);
-        }
+        public void AddExperience(int amount, Scp079HudTranslation reason = Scp079HudTranslation.ExpGainAdminCommand) => TierManager.ServerGrantExperience(amount, reason);
 
         /// <summary>
         /// Locks the provided <paramref name="door"/>.
