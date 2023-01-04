@@ -190,7 +190,7 @@ namespace Exiled.API.Features.Roles
         }
 
         /// <summary>
-        /// Removes all recordings of player voices. Provide an optional target to remove all the recordings of a single player.
+        /// Removes all recordings of player voices.
         /// </summary>
         public void ClearRecordings()
         {
