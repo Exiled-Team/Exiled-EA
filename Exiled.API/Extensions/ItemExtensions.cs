@@ -131,7 +131,7 @@ namespace Exiled.API.Extensions
         /// <returns>The given weapon's AmmoType.</returns>
         public static AmmoType GetWeaponAmmoType(this FirearmType type) => type switch
         {
-            FirearmType.COM15 or FirearmType.COM18 or FirearmType.COM45 or FirearmType.Crossvec or FirearmType.FSP9 => AmmoType.Nato9,
+            FirearmType.Com15 or FirearmType.Com18 or FirearmType.Com45 or FirearmType.Crossvec or FirearmType.FSP9 => AmmoType.Nato9,
             FirearmType.E11SR => AmmoType.Nato556,
             FirearmType.AK or FirearmType.Logicer => AmmoType.Nato762,
             FirearmType.Revolver => AmmoType.Ammo44Cal,
@@ -161,8 +161,8 @@ namespace Exiled.API.Extensions
         /// <returns>The firearm type of the given item.</returns>
         public static FirearmType GetFirearmType(this ItemType type) => type switch
         {
-            ItemType.GunCOM15 => FirearmType.COM15,
-            ItemType.GunCOM18 => FirearmType.COM18,
+            ItemType.GunCOM15 => FirearmType.Com15,
+            ItemType.GunCOM18 => FirearmType.Com18,
             ItemType.GunE11SR => FirearmType.E11SR,
             ItemType.GunCrossvec => FirearmType.Crossvec,
             ItemType.GunFSP9 => FirearmType.FSP9,
@@ -170,7 +170,7 @@ namespace Exiled.API.Extensions
             ItemType.GunRevolver => FirearmType.Revolver,
             ItemType.GunAK => FirearmType.AK,
             ItemType.GunShotgun => FirearmType.Shotgun,
-            ItemType.GunCom45 => FirearmType.COM45,
+            ItemType.GunCom45 => FirearmType.Com45,
             ItemType.ParticleDisruptor => FirearmType.ParticleDisruptor,
             _ => FirearmType.None,
         };
@@ -197,8 +197,8 @@ namespace Exiled.API.Extensions
         /// <returns>The Item type of the specified firearm.</returns>
         public static ItemType GetItemType(this FirearmType type) => type switch
         {
-            FirearmType.COM15 => ItemType.GunCOM15,
-            FirearmType.COM18 => ItemType.GunCOM18,
+            FirearmType.Com15 => ItemType.GunCOM15,
+            FirearmType.Com18 => ItemType.GunCOM18,
             FirearmType.E11SR => ItemType.GunE11SR,
             FirearmType.Crossvec => ItemType.GunCrossvec,
             FirearmType.FSP9 => ItemType.GunFSP9,
@@ -206,7 +206,7 @@ namespace Exiled.API.Extensions
             FirearmType.Revolver => ItemType.GunRevolver,
             FirearmType.AK => ItemType.GunAK,
             FirearmType.Shotgun => ItemType.GunShotgun,
-            FirearmType.COM45 => ItemType.GunCom45,
+            FirearmType.Com45 => ItemType.GunCom45,
             FirearmType.ParticleDisruptor => ItemType.ParticleDisruptor,
             _ => ItemType.None,
         };
