@@ -36,7 +36,7 @@ namespace Exiled.API.Extensions
         /// <param name="type">The item to be checked.</param>
         /// <param name="checkMicro">Indicates whether the MicroHID item should be taken into account or not.</param>
         /// <returns>Returns whether the <see cref="ItemType"/> is a weapon or not.</returns>
-        public static bool IsWeapon(this ItemType type, bool checkMicro = true) => type.GetFirearmType() != FirearmType.None || (checkMicro && type == ItemType.MicroHID);
+        public static bool IsWeapon(this ItemType type, bool checkMicro = true) => type.GetFirearmType() is not FirearmType.None || (checkMicro && type is ItemType.MicroHID);
 
         /// <summary>
         /// Check if an <see cref="ItemType">item</see> is an SCP.
