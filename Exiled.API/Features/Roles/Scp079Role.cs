@@ -40,9 +40,13 @@ namespace Exiled.API.Features.Roles
         public SubroutineManagerModule SubroutineModule { get; }
 
         /// <summary>
-        /// Gets the camera SCP-079 is currently controlling.
+        /// Gets or sets the camera SCP-079 is currently controlling.
         /// </summary>
-        public Camera Camera => Camera.Get(Internal.CurrentCamera);
+        public Camera Camera
+        {
+            get => Camera.Get(Internal.CurrentCamera);
+            set => Internal._curCamSync.CurrentCamera = value.Base;
+        }
 
         /// <summary>
         /// Gets a value indicating whether or not SCP-079 can transmit its voice to a speaker.
@@ -200,6 +204,11 @@ namespace Exiled.API.Features.Roles
         }
 
         /// <summary>
+        /// Gets a value indicating whether or not SCP-079's signal is lost due to SCP-2176.
+        /// </summary>
+        public bool IsLost => SubroutineModule.TryGetSubroutine(out Scp079LostSignalHandler ability) && ability.Lost;
+
+        /// <summary>
         /// Gets SCP-079's energy regeneration speed.
         /// </summary>
         public float EnergyRegenerationSpeed => SubroutineModule.TryGetSubroutine(out Scp079AuxManager ability) ? ability.RegenSpeed : 0;
@@ -216,6 +225,29 @@ namespace Exiled.API.Features.Roles
         {
             if (SubroutineModule.TryGetSubroutine(out Scp079DoorLockChanger ability))
                 ability.ServerUnlockAll();
+        }
+
+        /// <summary>
+        /// Forces SCP-079's signal to be lost for the specified amount of time.
+        /// </summary>
+        /// <param name="duration">Time to lose SCP-079's signal.</param>
+        public void LoseSignal(float duration)
+        {
+            if (SubroutineModule.TryGetSubroutine(out Scp079LostSignalHandler ability))
+                ability.ServerLoseSignal(duration);
+        }
+
+        /// <summary>
+        /// Grants SCP-079 experience.
+        /// </summary>
+        /// <param name="amount">The amount to grant.</param>
+        /// <param name="reason">The reason to grant experience.</param>
+        public void AddExperience(int amount, Scp079HudTranslation reason = Scp079HudTranslation.ExpGainAdminCommand)
+        {
+            if (!SubroutineModule.TryGetSubroutine(out Scp079TierManager ability))
+                return;
+
+            ability.ServerGrantExperience(amount, reason);
         }
 
         /// <summary>
