@@ -64,17 +64,17 @@ namespace Exiled.API.Features.Roles
         public HumeShieldModuleBase HumeShieldModule { get; }
 
         /// <summary>
-        /// Gets .
+        /// Gets SCP-096's <see cref="Scp096RageCycleAbility"/>.
         /// </summary>
         public Scp096RageCycleAbility RageCycleAbility { get; }
 
         /// <summary>
-        /// Gets .
+        /// Gets SCP-096's <see cref="Scp096RageManager"/>.
         /// </summary>
         public Scp096RageManager RageManager { get; }
 
         /// <summary>
-        /// Gets .
+        /// Gets SCP-096's <see cref="Scp096TargetsTracker"/>.
         /// </summary>
         public Scp096TargetsTracker TargetsTracker { get; }
 
@@ -156,39 +156,39 @@ namespace Exiled.API.Features.Roles
         protected Scp096GameRole Internal { get; }
 
         /// <summary>
-        /// e.
+        /// Adds the specified <paramref name="player"/> as an SCP-096 target.
         /// </summary>
-        /// <param name="player">.</param>
+        /// <param name="player">The player to add as a target.</param>
         public void AddTarget(Player player) => TargetsTracker.AddTarget(player.ReferenceHub);
 
         /// <summary>
-        /// e.
+        /// Removes the specified <paramref name="player"/> from SCP-096's targets.
         /// </summary>
-        /// <param name="player">.</param>
+        /// <param name="player">The player to remove as a target.</param>
         public void RemoveTarget(Player player) => TargetsTracker.RemoveTarget(player.ReferenceHub);
 
         /// <summary>
-        /// .
+        /// Enrages SCP-096 for the given amount of times.
         /// </summary>
-        /// <param name="time">e.</param>
+        /// <param name="time">The amount of time to enrage SCP-096.</param>
         public void Enrage(float time) => RageManager.ServerEnrage(time);
 
         /// <summary>
-        /// .
+        /// Returns whether or not the provided <paramref name="player"/> is a target of SCP-096.
         /// </summary>
-        /// <param name="player">ee.</param>
-        /// <returns>e.</returns>
+        /// <param name="player">The player to check.</param>
+        /// <returns>Whether or not the player is a target of SCP-096.</returns>
         public bool HasTarget(Player player) => TargetsTracker.HasTarget(player.ReferenceHub);
 
         /// <summary>
-        /// .
+        /// Returns whether or not the provided <paramref name="player"/> is observed by SCP-096.
         /// </summary>
-        /// <param name="player">ee.</param>
-        /// <returns>e.</returns>
+        /// <param name="player">The player to check.</param>
+        /// <returns>Whether or not the player is observed.</returns>
         public bool IsObserved(Player player) => TargetsTracker.IsObservedBy(player.ReferenceHub);
 
         /// <summary>
-        /// .
+        /// Removes all targets from SCP-096's target list.
         /// </summary>
         public void ClearTargets() => TargetsTracker.ClearAllTargets();
     }

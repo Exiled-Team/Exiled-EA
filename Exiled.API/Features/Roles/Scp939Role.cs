@@ -74,32 +74,32 @@ namespace Exiled.API.Features.Roles
         public HumeShieldModuleBase HumeShieldModule { get; }
 
         /// <summary>
-        /// Gets .
+        /// Gets SCP-939's <see cref="Scp939ClawAbility"/>.
         /// </summary>
         public Scp939ClawAbility ClawAbility { get; }
 
         /// <summary>
-        /// Gets .
+        /// Gets SCP-939's <see cref="Scp939FocusAbility"/>.
         /// </summary>
         public Scp939FocusAbility FocusAbility { get; }
 
         /// <summary>
-        /// Gets .
+        /// Gets SCP-939's <see cref="Scp939LungeAbility"/>.
         /// </summary>
         public Scp939LungeAbility LungeAbility { get; }
 
         /// <summary>
-        /// Gets .
+        /// Gets SCP-939's <see cref="Scp939AmnesticCloudAbility"/>.
         /// </summary>
         public Scp939AmnesticCloudAbility AmnesticCloudAbility { get; }
 
         /// <summary>
-        /// Gets .
+        /// Gets SCP-939's <see cref="PlayerRoles.PlayableScps.Scp939.Mimicry.EnvironmentalMimicry"/>.
         /// </summary>
         public EnvironmentalMimicry EnvironmentalMimicry { get; }
 
         /// <summary>
-        /// Gets .
+        /// Gets SCP-939's <see cref="PlayerRoles.PlayableScps.Scp939.Mimicry.MimicryRecorder"/>.
         /// </summary>
         public MimicryRecorder MimicryRecorder { get; }
 

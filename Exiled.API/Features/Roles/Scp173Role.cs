@@ -77,22 +77,22 @@ namespace Exiled.API.Features.Roles
         public Scp173MovementModule MovementModule { get; }
 
         /// <summary>
-        /// Gets .
+        /// Gets SCP-173's <see cref="Scp173ObserversTracker"/>.
         /// </summary>
         public Scp173ObserversTracker ObserversTracker { get; }
 
         /// <summary>
-        /// Gets .
+        /// Gets SCP-173's <see cref="Scp173BlinkTimer"/>.
         /// </summary>
         public Scp173BlinkTimer BlinkTimer { get; }
 
         /// <summary>
-        /// Gets .
+        /// Gets SCP-173's <see cref="Scp173TeleportAbility"/>.
         /// </summary>
         public Scp173TeleportAbility TeleportAbility { get; }
 
         /// <summary>
-        /// Gets .
+        /// Gets SCP-173's <see cref="Scp173TantrumAbility"/>.
         /// </summary>
         public Scp173TantrumAbility TantrumAbility { get; }
 

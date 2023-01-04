@@ -57,17 +57,17 @@ namespace Exiled.API.Features.Roles
         public HumeShieldModuleBase HumeShieldModule { get; }
 
         /// <summary>
-        /// Gets .
+        /// Gets SCP-049-2's <see cref="ZombieAttackAbility"/>.
         /// </summary>
         public ZombieAttackAbility AttackAbility { get; }
 
         /// <summary>
-        /// Gets .
+        /// Gets SCP-049-2's <see cref="ZombieBloodlustAbility"/>.
         /// </summary>
         public ZombieBloodlustAbility BloodlustAbility { get; }
 
         /// <summary>
-        /// Gets .
+        /// Gets SCP-049-2's <see cref="ZombieConsumeAbility"/>.
         /// </summary>
         public ZombieConsumeAbility ConsumeAbility { get; }
 

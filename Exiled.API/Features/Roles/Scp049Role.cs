@@ -55,17 +55,17 @@ namespace Exiled.API.Features.Roles
         public HumeShieldModuleBase HumeShieldModule { get; }
 
         /// <summary>
-        /// Gets .
+        /// Gets SCP-049's <see cref="Scp049ResurrectAbility"/>.
         /// </summary>
         public Scp049ResurrectAbility ResurrectAbility { get; }
 
         /// <summary>
-        /// Gets .
+        /// Gets SCP-049's <see cref="Scp049CallAbility"/>.
         /// </summary>
         public Scp049CallAbility CallAbility { get; }
 
         /// <summary>
-        /// Gets .
+        /// Gets SCP-049's <see cref="Scp049SenseAbility"/>.
         /// </summary>
         public Scp049SenseAbility SenseAbility { get; }
 
