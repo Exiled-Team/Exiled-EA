@@ -74,37 +74,37 @@ namespace Exiled.API.Features.Roles
         public SubroutineManagerModule SubroutineModule { get; }
 
         /// <summary>
-        /// Gets .
+        /// Gets SCP-079's <see cref="Scp079SpeakerAbility"/>.
         /// </summary>
         public Scp079SpeakerAbility SpeakerAbility { get; }
 
         /// <summary>
-        /// Gets .
+        /// Gets SCP-079's <see cref="Scp079DoorLockChanger"/>.
         /// </summary>
         public Scp079DoorLockChanger DoorLockChanger { get; }
 
         /// <summary>
-        /// Gets .
+        /// Gets SCP-079's <see cref="Scp079AuxManager"/>.
         /// </summary>
         public Scp079AuxManager AuxManager { get; }
 
         /// <summary>
-        /// Gets .
+        /// Gets SCP-079's <see cref="Scp079TierManager"/>.
         /// </summary>
         public Scp079TierManager TierManager { get; }
 
         /// <summary>
-        /// Gets .
+        /// Gets SCP-079's <see cref="Scp079LockdownRoomAbility"/>.
         /// </summary>
         public Scp079LockdownRoomAbility LockdownRoomAbility { get; }
 
         /// <summary>
-        /// Gets .
+        /// Gets SCP-079's <see cref="Scp079BlackoutRoomAbility"/>.
         /// </summary>
         public Scp079BlackoutRoomAbility BlackoutRoomAbility { get; }
 
         /// <summary>
-        /// Gets .
+        /// Gets SCP-079's <see cref="Scp079BlackoutZoneAbility"/>.
         /// </summary>
         public Scp079BlackoutZoneAbility BlackoutZoneAbility { get; }
 
