@@ -28,7 +28,7 @@ namespace Exiled.API.Extensions
         /// </summary>
         /// <param name="item">The item to be checked.</param>
         /// <returns>Returns whether the <see cref="ItemType"/> is an ammo or not.</returns>
-        public static bool IsAmmo(this ItemType item) => item is ItemType.Ammo9x19 or ItemType.Ammo12gauge or ItemType.Ammo44cal or ItemType.Ammo556x45 or ItemType.Ammo762x39;
+        public static bool IsAmmo(this ItemType item) => item.GetAmmoType() is not AmmoType.None;
 
         /// <summary>
         /// Check if an <see cref="ItemType">item</see> is a weapon.
@@ -36,55 +36,48 @@ namespace Exiled.API.Extensions
         /// <param name="type">The item to be checked.</param>
         /// <param name="checkMicro">Indicates whether the MicroHID item should be taken into account or not.</param>
         /// <returns>Returns whether the <see cref="ItemType"/> is a weapon or not.</returns>
-        public static bool IsWeapon(this ItemType type, bool checkMicro = true) => type switch
-        {
-            ItemType.GunCrossvec or ItemType.GunCom45 or ItemType.GunLogicer or ItemType.GunRevolver or ItemType.GunShotgun or ItemType.GunAK
-                or ItemType.GunCOM15 or ItemType.GunCOM18 or ItemType.GunE11SR or ItemType.GunFSP9
-                or ItemType.ParticleDisruptor => true,
-            ItemType.MicroHID when checkMicro => true,
-            _ => false,
-        };
+        public static bool IsWeapon(this ItemType type, bool checkMicro = true) => type.GetFirearmType() is not FirearmType.None || (checkMicro && type is ItemType.MicroHID);
 
         /// <summary>
         /// Check if an <see cref="ItemType">item</see> is an SCP.
         /// </summary>
         /// <param name="type">The item to be checked.</param>
-        /// <returns>Returns whether the <see cref="ItemType"/> is an SCP or not.</returns>
+        /// <returns>Returns whether or not the <see cref="ItemType"/> is an SCP.</returns>
         public static bool IsScp(this ItemType type) => type is ItemType.SCP018 or ItemType.SCP500 or ItemType.SCP268 or ItemType.SCP207 or ItemType.SCP244a or ItemType.SCP244b or ItemType.SCP2176 or ItemType.SCP1853;
 
         /// <summary>
         /// Check if an <see cref="ItemType">item</see> is a throwable item.
         /// </summary>
         /// <param name="type">The item to be checked.</param>
-        /// <returns>Returns whether the <see cref="ItemType"/> is a throwable item or not.</returns>
+        /// <returns>Returns whether or not the <see cref="ItemType"/> is a throwable item.</returns>
         public static bool IsThrowable(this ItemType type) => type is ItemType.SCP018 or ItemType.GrenadeHE or ItemType.GrenadeFlash or ItemType.SCP2176;
 
         /// <summary>
         /// Check if an <see cref="ItemType">item</see> is a medical item.
         /// </summary>
         /// <param name="type">The item to be checked.</param>
-        /// <returns>Returns whether the <see cref="ItemType"/> is a medical item or not.</returns>
+        /// <returns>Returns whether or not the <see cref="ItemType"/> is a medical item.</returns>
         public static bool IsMedical(this ItemType type) => type is ItemType.Painkillers or ItemType.Medkit or ItemType.SCP500 or ItemType.Adrenaline;
 
         /// <summary>
         /// Check if an <see cref="ItemType">item</see> is a utility item.
         /// </summary>
         /// <param name="type">The item to be checked.</param>
-        /// <returns>Returns whether the <see cref="ItemType"/> is an utilty item or not.</returns>
+        /// <returns>Returns whether or not the <see cref="ItemType"/> is an utilty item.</returns>
         public static bool IsUtility(this ItemType type) => type is ItemType.Flashlight or ItemType.Radio;
 
         /// <summary>
         /// Check if a <see cref="ItemType"/> is an armor item.
         /// </summary>
         /// <param name="type">The item to be checked.</param>
-        /// <returns>Returns whether the <see cref="ItemType"/> is an armor or not.</returns>
+        /// <returns>Returns whether or not the <see cref="ItemType"/> is an armor.</returns>
         public static bool IsArmor(this ItemType type) => type is ItemType.ArmorCombat or ItemType.ArmorHeavy or ItemType.ArmorLight;
 
         /// <summary>
         /// Check if an <see cref="ItemType">item</see> is a keycard.
         /// </summary>
         /// <param name="type">The item to be checked.</param>
-        /// <returns>Returns whether the <see cref="ItemType"/> is a keycard or not.</returns>
+        /// <returns>Returns whether or not the <see cref="ItemType"/> is a keycard.</returns>
         public static bool IsKeycard(this ItemType type) => type is ItemType.KeycardJanitor or ItemType.KeycardScientist or
             ItemType.KeycardResearchCoordinator or ItemType.KeycardZoneManager or ItemType.KeycardGuard or ItemType.KeycardNTFOfficer or
             ItemType.KeycardContainmentEngineer or ItemType.KeycardNTFLieutenant or ItemType.KeycardNTFCommander or
@@ -121,11 +114,11 @@ namespace Exiled.API.Extensions
         /// <summary>
         /// Gets the maximum ammo of a weapon.
         /// </summary>
-        /// <param name="item">The <see cref="ItemType">weapon</see> that you want to get maximum of.</param>
+        /// <param name="item">The <see cref="FirearmType">weapon</see> that you want to get maximum of.</param>
         /// <returns>Returns the maximum.</returns>
-        public static byte GetMaxAmmo(this ItemType item)
+        public static byte GetMaxAmmo(this FirearmType item)
         {
-            if (!InventoryItemLoader.AvailableItems.TryGetValue(item, out ItemBase itemBase) || itemBase is not InventorySystem.Items.Firearms.Firearm firearm)
+            if (!InventoryItemLoader.AvailableItems.TryGetValue(item.GetItemType(), out ItemBase itemBase) || itemBase is not InventorySystem.Items.Firearms.Firearm firearm)
                 return 0;
 
             return firearm.AmmoManagerModule.MaxAmmo;
@@ -134,15 +127,15 @@ namespace Exiled.API.Extensions
         /// <summary>
         /// Returns the <see cref="AmmoType"/> of the weapon is using.
         /// </summary>
-        /// <param name="type">The <see cref="ItemType"/> to convert.</param>
+        /// <param name="type">The <see cref="FirearmType"/> to convert.</param>
         /// <returns>The given weapon's AmmoType.</returns>
-        public static AmmoType GetWeaponAmmoType(this ItemType type) => type switch
+        public static AmmoType GetWeaponAmmoType(this FirearmType type) => type switch
         {
-            ItemType.GunCOM15 or ItemType.GunCOM18 or ItemType.GunCrossvec or ItemType.GunFSP9 => AmmoType.Nato9,
-            ItemType.GunE11SR => AmmoType.Nato556,
-            ItemType.GunAK or ItemType.GunLogicer => AmmoType.Nato762,
-            ItemType.GunRevolver => AmmoType.Ammo44Cal,
-            ItemType.GunShotgun => AmmoType.Ammo12Gauge,
+            FirearmType.Com15 or FirearmType.Com18 or FirearmType.Com45 or FirearmType.Crossvec or FirearmType.FSP9 => AmmoType.Nato9,
+            FirearmType.E11SR => AmmoType.Nato556,
+            FirearmType.AK or FirearmType.Logicer => AmmoType.Nato762,
+            FirearmType.Revolver => AmmoType.Ammo44Cal,
+            FirearmType.Shotgun => AmmoType.Ammo12Gauge,
             _ => AmmoType.None,
         };
 
@@ -162,6 +155,27 @@ namespace Exiled.API.Extensions
         };
 
         /// <summary>
+        /// Converts a valid firearm <see cref="ItemType"/> into a <see cref="FirearmType"/>.
+        /// </summary>
+        /// <param name="type">The <see cref="ItemType"/> to convert.</param>
+        /// <returns>The firearm type of the given item.</returns>
+        public static FirearmType GetFirearmType(this ItemType type) => type switch
+        {
+            ItemType.GunCOM15 => FirearmType.Com15,
+            ItemType.GunCOM18 => FirearmType.Com18,
+            ItemType.GunE11SR => FirearmType.E11SR,
+            ItemType.GunCrossvec => FirearmType.Crossvec,
+            ItemType.GunFSP9 => FirearmType.FSP9,
+            ItemType.GunLogicer => FirearmType.Logicer,
+            ItemType.GunRevolver => FirearmType.Revolver,
+            ItemType.GunAK => FirearmType.AK,
+            ItemType.GunShotgun => FirearmType.Shotgun,
+            ItemType.GunCom45 => FirearmType.Com45,
+            ItemType.ParticleDisruptor => FirearmType.ParticleDisruptor,
+            _ => FirearmType.None,
+        };
+
+        /// <summary>
         /// Converts an <see cref="AmmoType"/> into it's corresponding <see cref="ItemType"/>.
         /// </summary>
         /// <param name="type">The <see cref="AmmoType"/> to convert.</param>
@@ -173,6 +187,27 @@ namespace Exiled.API.Extensions
             AmmoType.Nato9 => ItemType.Ammo9x19,
             AmmoType.Ammo12Gauge => ItemType.Ammo12gauge,
             AmmoType.Ammo44Cal => ItemType.Ammo44cal,
+            _ => ItemType.None,
+        };
+
+        /// <summary>
+        /// Converts a <see cref="FirearmType"/> into it's corresponding <see cref="ItemType"/>.
+        /// </summary>
+        /// <param name="type">The <see cref="FirearmType"/> to convert.</param>
+        /// <returns>The Item type of the specified firearm.</returns>
+        public static ItemType GetItemType(this FirearmType type) => type switch
+        {
+            FirearmType.Com15 => ItemType.GunCOM15,
+            FirearmType.Com18 => ItemType.GunCOM18,
+            FirearmType.E11SR => ItemType.GunE11SR,
+            FirearmType.Crossvec => ItemType.GunCrossvec,
+            FirearmType.FSP9 => ItemType.GunFSP9,
+            FirearmType.Logicer => ItemType.GunLogicer,
+            FirearmType.Revolver => ItemType.GunRevolver,
+            FirearmType.AK => ItemType.GunAK,
+            FirearmType.Shotgun => ItemType.GunShotgun,
+            FirearmType.Com45 => ItemType.GunCom45,
+            FirearmType.ParticleDisruptor => ItemType.ParticleDisruptor,
             _ => ItemType.None,
         };
 
@@ -212,12 +247,12 @@ namespace Exiled.API.Extensions
         public static IEnumerable<ItemType> GetItemTypes(this IEnumerable<Item> items) => items.Select(item => item.Type);
 
         /// <summary>
-        /// Gets all <see cref="AttachmentIdentifier"/>s present on an <see cref="ItemType"/>.
+        /// Gets all <see cref="AttachmentIdentifier"/>s present on a <see cref="FirearmType"/>.
         /// </summary>
-        /// <param name="type">The <see cref="ItemType"/> to iterate over.</param>
+        /// <param name="type">The <see cref="FirearmType"/> to iterate over.</param>
         /// <param name="code">The <see cref="uint"/> value which represents the attachments code to check.</param>
         /// <returns>A <see cref="IEnumerable{T}"/> of <see cref="AttachmentIdentifier"/> value which represents all the attachments present on the specified <see cref="ItemType"/>.</returns>
-        public static IEnumerable<AttachmentIdentifier> GetAttachmentIdentifiers(this ItemType type, uint code)
+        public static IEnumerable<AttachmentIdentifier> GetAttachmentIdentifiers(this FirearmType type, uint code)
         {
             if (type.GetBaseCode() > code)
                 code = type.GetBaseCode();
@@ -231,17 +266,17 @@ namespace Exiled.API.Extensions
         }
 
         /// <summary>
-        /// Tries to get all <see cref="AttachmentIdentifier"/>s present on an <see cref="ItemType"/>.
+        /// Tries to get all <see cref="AttachmentIdentifier"/>s present on a <see cref="FirearmType"/>.
         /// </summary>
-        /// <param name="type">The <see cref="ItemType"/> to iterate over.</param>
+        /// <param name="type">The <see cref="FirearmType"/> to iterate over.</param>
         /// <param name="code">The <see cref="uint"/> value which represents the attachments code to check.</param>
-        /// <param name="identifiers">The attachments present on the specified <see cref="ItemType"/>.</param>
-        /// <returns><see langword="true"/> if the specified <see cref="ItemType"/> is a weapon.</returns>
-        public static bool TryGetAttachments(this ItemType type, uint code, out IEnumerable<AttachmentIdentifier> identifiers)
+        /// <param name="identifiers">The attachments present on the specified <see cref="FirearmType"/>.</param>
+        /// <returns><see langword="true"/> if the specified <see cref="FirearmType"/> is a weapon.</returns>
+        public static bool TryGetAttachments(this FirearmType type, uint code, out IEnumerable<AttachmentIdentifier> identifiers)
         {
             identifiers = default;
 
-            if (!type.IsWeapon())
+            if (type is FirearmType.None)
                 return false;
 
             identifiers = GetAttachmentIdentifiers(type, code);
@@ -257,13 +292,13 @@ namespace Exiled.API.Extensions
         public static uint GetAttachmentsCode(this IEnumerable<AttachmentIdentifier> identifiers) => identifiers.Aggregate<AttachmentIdentifier, uint>(0, (current, identifier) => current + identifier);
 
         /// <summary>
-        /// Gets the base code of the specified <see cref="ItemType"/>.
+        /// Gets the base code of the specified <see cref="FirearmType"/>.
         /// </summary>
-        /// <param name="type">The <see cref="ItemType"/> to check.</param>
+        /// <param name="type">The <see cref="FirearmType"/> to check.</param>
         /// <returns>The corresponding base code.</returns>
-        public static uint GetBaseCode(this ItemType type)
+        public static uint GetBaseCode(this FirearmType type)
         {
-            if (!type.IsWeapon())
+            if (type is FirearmType.None)
                 return 0;
             else if (Firearm.BaseCodesValue.TryGetValue(type, out uint baseCode))
                 return baseCode;

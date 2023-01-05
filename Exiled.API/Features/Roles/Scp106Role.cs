@@ -12,6 +12,8 @@ namespace Exiled.API.Features.Roles
     using PlayerRoles.PlayableScps.Scp106;
     using PlayerRoles.PlayableScps.Subroutines;
 
+    using UnityEngine;
+
     using Scp106GameRole = PlayerRoles.PlayableScps.Scp106.Scp106Role;
 
     /// <summary>
@@ -29,6 +31,32 @@ namespace Exiled.API.Features.Roles
             SubroutineModule = baseRole.SubroutineModule;
             HumeShieldModule = baseRole.HumeShieldModule;
             Internal = baseRole;
+            MovementModule = FirstPersonController.FpcModule as Scp106MovementModule;
+
+            if (!SubroutineModule.TryGetSubroutine(out Scp106Vigor scp106Vigor))
+                Log.Error("Scp106Vigor subroutine not found in Scp096Role::ctor");
+
+            VigorComponent = scp106Vigor;
+
+            if (!SubroutineModule.TryGetSubroutine(out Scp106Attack scp106Attack))
+                Log.Error("Scp106Attack subroutine not found in Scp096Role::ctor");
+
+            Attack = scp106Attack;
+
+            if (!SubroutineModule.TryGetSubroutine(out Scp106StalkAbility scp106StalkAbility))
+                Log.Error("Scp106StalkAbility not found in Scp096Role::ctor");
+
+            StalkAbility = scp106StalkAbility;
+
+            if (!SubroutineModule.TryGetSubroutine(out Scp106HuntersAtlasAbility scp106HuntersAtlasAbility))
+                Log.Error("Scp106StalkAbility not found in Scp096Role::ctor");
+
+            HuntersAtlasAbility = scp106HuntersAtlasAbility;
+
+            if (!SubroutineModule.TryGetSubroutine(out Scp106SinkholeController scp106SinkholeController))
+                Log.Error("Scp106StalkAbility not found in Scp096Role::ctor");
+
+            SinkholeController = scp106SinkholeController;
         }
 
         /// <inheritdoc/>
@@ -43,32 +71,52 @@ namespace Exiled.API.Features.Roles
         public HumeShieldModuleBase HumeShieldModule { get; }
 
         /// <summary>
+        /// Gets the <see cref="Scp106Vigor"/>.
+        /// </summary>
+        public Scp106Vigor VigorComponent { get; }
+
+        /// <summary>
+        /// Gets the <see cref="Scp106Attack"/>.
+        /// </summary>
+        public Scp106Attack Attack { get; }
+
+        /// <summary>
+        /// Gets the <see cref="Scp106Attack"/>.
+        /// </summary>
+        public Scp106StalkAbility StalkAbility { get; }
+
+        /// <summary>
+        /// Gets the <see cref="Scp106HuntersAtlasAbility"/>.
+        /// </summary>
+        public Scp106HuntersAtlasAbility HuntersAtlasAbility { get; }
+
+        /// <summary>
+        /// Gets the <see cref="Scp106SinkholeController"/>.
+        /// </summary>
+        public Scp106SinkholeController SinkholeController { get; }
+
+        /// <summary>
+        /// Gets the <see cref="Scp106MovementModule"/>.
+        /// </summary>
+        public Scp106MovementModule MovementModule { get; }
+
+        /// <summary>
         /// Gets or sets SCP-106's Vigor.
         /// </summary>
         public float Vigor
         {
-            get => SubroutineModule.TryGetSubroutine(out Scp106Vigor ability) ? ability.VigorAmount : 0;
-            set
-            {
-                if (SubroutineModule.TryGetSubroutine(out Scp106Vigor ability))
-                    ability.VigorAmount = value;
-            }
+            get => VigorComponent.VigorAmount;
+            set => VigorComponent.VigorAmount = value;
         }
 
         /// <summary>
-        /// Gets a value indicating whether or not SCP-106 is currently inside of an object.
+        /// Gets or sets a value indicating whether or not SCP-106 is currently submerged.
         /// </summary>
-        public bool IsInsideObject => false; // TODO
-
-        /// <summary>
-        /// Gets a value indicating whether or not SCP-106 is currently submerged.
-        /// </summary>
-        public bool IsSubmerged => Internal.IsSubmerged;
-
-        /// <summary>
-        /// Gets a value indicating whether or not SCP-106 can activate the shock.
-        /// </summary>
-        public bool CanActivateShock => Internal.CanActivateShock;
+        public bool IsSubmerged
+        {
+            get => Internal.IsSubmerged;
+            set => HuntersAtlasAbility.SetSubmerged(value);
+        }
 
         /// <summary>
         /// Gets a value indicating whether or not SCP-106 is ready for idle.
@@ -76,34 +124,30 @@ namespace Exiled.API.Features.Roles
         public bool CanActivateIdle => Internal.CanActivateIdle;
 
         /// <summary>
-        /// Gets a value indicating whether or not SCP-106 is currently inside of a door.
+        /// Gets a value indicating whether or not SCP-106 is currently slow down by a door.
         /// </summary>
-        public bool IsInsideDoor => false; // TODO
-
-        /// <summary>
-        /// Gets the door that SCP-106 is currently inside of.
-        /// </summary>
-        public Door InsideDoor => null; // TODO
-
-        /// <summary>
-        /// Gets the <see cref="Scp106SinkholeController"/>.
-        /// </summary>
-        public Scp106SinkholeController SinkholeController => Internal.Sinkhole;
+        public bool IsSlowdown => MovementModule._slowndownTarget is < 1;
 
         /// <summary>
         /// Gets or sets the amount of time in between player captures.
         /// </summary>
         public float CaptureCooldown
         {
-            get => SubroutineModule.TryGetSubroutine(out Scp106Attack ability) ? ability._hitCooldown : 0;
+            get => Attack._hitCooldown;
             set
             {
-                if (SubroutineModule.TryGetSubroutine(out Scp106Attack ability))
-                {
-                    ability._hitCooldown = value;
-                    ability.ServerSendRpc(true);
-                }
+                Attack._hitCooldown = value;
+                Attack.ServerSendRpc(true);
             }
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether or not SCP-106 will enter his stalking mode.
+        /// </summary>
+        public bool IsStalking
+        {
+            get => StalkAbility.IsActive;
+            set => StalkAbility.IsActive = value;
         }
 
         /// <summary>
@@ -112,21 +156,22 @@ namespace Exiled.API.Features.Roles
         protected Scp106GameRole Internal { get; }
 
         /// <summary>
-        /// Forces SCP-106 to use its portal, if one is placed.
+        /// Forces SCP-106 to use its portal, and Teleport to position.
         /// </summary>
-        public void UsePortal()
+        /// <param name="position"> where player will be Teleport.</param>
+        /// <param name="cost"> how mush Vigor it's required and conssume.</param>
+        /// <returns>If the player will be teleport.</returns>
+        public bool UsePortal(Vector3 position, float cost = 0f)
         {
-            if (SubroutineModule.TryGetSubroutine(out Scp106HuntersAtlasAbility ability))
-                ability.SetSubmerged(true);
-        }
+            HuntersAtlasAbility._syncPos = position;
 
-        /// <summary>
-        /// Causes SCP-106 to enter his stalking mode.
-        /// </summary>
-        public void Stalk()
-        {
-            if (SubroutineModule.TryGetSubroutine(out Scp106StalkAbility ability))
-                ability.IsActive = true;
+            if (Vigor > cost)
+                return false;
+
+            HuntersAtlasAbility._estimatedCost = cost;
+            HuntersAtlasAbility.SetSubmerged(true);
+
+            return true;
         }
     }
 }

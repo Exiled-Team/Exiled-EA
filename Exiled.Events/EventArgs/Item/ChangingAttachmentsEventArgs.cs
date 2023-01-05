@@ -44,7 +44,7 @@ namespace Exiled.Events.EventArgs.Item
             Player = player;
             Firearm = firearm;
             CurrentAttachmentIdentifiers = firearm.AttachmentIdentifiers;
-            NewAttachmentIdentifiers = firearm.Type.GetAttachmentIdentifiers(code).ToList();
+            NewAttachmentIdentifiers = firearm.FirearmType.GetAttachmentIdentifiers(code).ToList();
             CurrentCode = firearm.Base.GetCurrentAttachmentsCode();
             NewCode = code;
             IsAllowed = isAllowed;

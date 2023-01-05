@@ -11,6 +11,7 @@ namespace Exiled.API.Structs
     using System.Collections.Generic;
     using System.Linq;
 
+    using Exiled.API.Enums;
     using InventorySystem.Items.Firearms.Attachments;
     using InventorySystem.Items.Firearms.Attachments.Components;
 
@@ -150,18 +151,18 @@ namespace Exiled.API.Structs
         /// <summary>
         /// Gets a <see cref="AttachmentIdentifier"/> by name.
         /// </summary>
-        /// <param name="type">Weapons <see cref="ItemType"/>.</param>
+        /// <param name="type">Weapons <see cref="FirearmType"/>.</param>
         /// <param name="name">Attachment name.</param>
         /// <returns><see cref="AttachmentIdentifier"/> instance.</returns>
-        public static AttachmentIdentifier Get(ItemType type, AttachmentName name) => Features.Items.Firearm.AvailableAttachments[type].FirstOrDefault(identifier => identifier.Name == name);
+        public static AttachmentIdentifier Get(FirearmType type, AttachmentName name) => Features.Items.Firearm.AvailableAttachments[type].FirstOrDefault(identifier => identifier.Name == name);
 
         /// <summary>
         /// Gets the all <see cref="AttachmentIdentifier"/>'s for type, by slot.
         /// </summary>
-        /// <param name="type">Weapons <see cref="ItemType"/>.</param>
+        /// <param name="type">Weapons <see cref="FirearmType"/>.</param>
         /// <param name="slot">Attachment slot.</param>
         /// <returns><see cref="AttachmentIdentifier"/> instance.</returns>
-        public static IEnumerable<AttachmentIdentifier> Get(ItemType type, AttachmentSlot slot) => Features.Items.Firearm.AvailableAttachments[type].Where(identifier => identifier.Slot == slot);
+        public static IEnumerable<AttachmentIdentifier> Get(FirearmType type, AttachmentSlot slot) => Features.Items.Firearm.AvailableAttachments[type].Where(identifier => identifier.Slot == slot);
 
         /// <summary>
         /// Converts the string representation of a <see cref="AttachmentName"/> to its <see cref="AttachmentName"/> equivalent.
