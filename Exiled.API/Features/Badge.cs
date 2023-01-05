@@ -12,7 +12,7 @@ namespace Exiled.API.Features
     using System.Linq;
 
     /// <summary>
-    /// Represents the in-game badge.
+    /// Represents an in-game badge.
     /// </summary>
     public struct Badge
     {

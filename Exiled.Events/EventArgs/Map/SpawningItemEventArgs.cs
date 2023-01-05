@@ -53,6 +53,7 @@ namespace Exiled.Events.EventArgs.Map
         /// <remarks>
         ///     Works only when <see cref="ShouldInitiallySpawn"/> is false.
         ///     null when <see cref="ShouldInitiallySpawn"/> is true.
+        ///     Can be not fully initialized.
         /// </remarks>
         public Door TriggerDoor { get; set; }
 

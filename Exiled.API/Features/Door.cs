@@ -42,7 +42,9 @@ namespace Exiled.API.Features
         /// <param name="room">The <see cref="Room"/> for this door.</param>
         public Door(DoorVariant door, Room room)
         {
-            DoorVariantToDoor.Add(door, this);
+            if (room != null)
+                DoorVariantToDoor.Add(door, this);
+
             Base = door;
             Room = room;
             Type = GetDoorType();

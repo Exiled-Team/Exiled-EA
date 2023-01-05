@@ -39,7 +39,7 @@ namespace Exiled.Updater
             Installed,
         }
 
-        public const long REPOID = 568270546;
+        public const long REPOID = 231269519;
 
         public static Updater Instance { get; } = new();
 
