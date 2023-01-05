@@ -35,7 +35,7 @@ namespace Exiled.Events.Patches.Events.Map
 
             LocalBuilder door = generator.DeclareLocal(typeof(DoorVariant));
             LocalBuilder initiallySpawn = generator.DeclareLocal(typeof(bool));
-            LocalBuilder ev = generator.DeclareLocal(typeof(SpawningItem));
+            LocalBuilder ev = generator.DeclareLocal(typeof(SpawningItemEventArgs));
 
             Label skip = generator.DefineLabel();
             Label doorSpawn = generator.DefineLabel();
