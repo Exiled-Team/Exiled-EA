@@ -27,6 +27,15 @@ namespace Exiled.API.Features.Pickups.Projectiles
         }
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="Scp2176Projectile"/> class.
+        /// </summary>
+        internal Scp2176Projectile()
+            : base(ItemType.SCP2176)
+        {
+            Base = (BaseScp2176Projectile)((Pickup)this).Base;
+        }
+
+        /// <summary>
         /// Gets the <see cref="ExplosionGrenade"/> that this class is encapsulating.
         /// </summary>
         public new BaseScp2176Projectile Base { get; }

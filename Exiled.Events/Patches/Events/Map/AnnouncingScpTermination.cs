@@ -39,17 +39,16 @@ namespace Exiled.Events.Patches.Events.Map
             LocalBuilder ev = generator.DeclareLocal(typeof(AnnouncingScpTerminationEventArgs));
 
             Label ret = generator.DefineLabel();
-            Label jcc = generator.DefineLabel();
-            Label jmp = generator.DefineLabel();
 
-            newInstructions.RemoveRange(0, 12);
+            int offset = 0;
+            int index = newInstructions.FindIndex(i => i.opcode == OpCodes.Ldloc_0) + offset;
 
             newInstructions.InsertRange(
-                0,
+                index,
                 new[]
                 {
                     // Player.Get(scp)
-                    new(OpCodes.Ldarg_0),
+                    new CodeInstruction(OpCodes.Ldarg_0),
                     new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
 
                     // hit
@@ -72,40 +71,14 @@ namespace Exiled.Events.Patches.Events.Map
                     new(OpCodes.Callvirt, PropertyGetter(typeof(AnnouncingScpTerminationEventArgs), nameof(AnnouncingScpTerminationEventArgs.IsAllowed))),
                     new(OpCodes.Brfalse_S, ret),
 
-                    // ev.DamageHandler is DamageHandler handler
+                    // hit = ev.DamageHandler.Base
                     new(OpCodes.Ldloc_S, ev.LocalIndex),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(AnnouncingScpTerminationEventArgs), nameof(AnnouncingScpTerminationEventArgs.DamageHandler))),
-                    new(OpCodes.Isinst, typeof(DamageHandler)),
-
-                    // hit = handler.Base
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(DamageHandler), nameof(DamageHandler.Base))),
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(CustomDamageHandler), nameof(CustomDamageHandler.Base))),
                     new(OpCodes.Starg, 1),
 
-                    // NineTailedFoxAnnouncer.singleton.scpListTimer = 0
-                    new(OpCodes.Ldsfld, Field(typeof(NineTailedFoxAnnouncer), nameof(NineTailedFoxAnnouncer.singleton))),
-                    new(OpCodes.Ldc_R4, 0f),
-                    new(OpCodes.Stfld, Field(typeof(NineTailedFoxAnnouncer), nameof(NineTailedFoxAnnouncer.scpListTimer))),
-
-                    // if (!ev.Player.IsSCP)
-                    //     goto jmp;
-                    new(OpCodes.Ldloc_S, ev.LocalIndex),
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(AnnouncingScpTerminationEventArgs), nameof(AnnouncingScpTerminationEventArgs.Player))),
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(Player), nameof(Player.IsScp))),
-                    new(OpCodes.Brfalse_S, jmp),
-
-                    // if (ev.Role != RoleTypeId.Scp0492)
-                    //     goto jcc;
-                    new(OpCodes.Ldloc_S, ev.LocalIndex),
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(AnnouncingScpTerminationEventArgs), nameof(AnnouncingScpTerminationEventArgs.Role))),
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(Role), nameof(Role.Type))),
-                    new(OpCodes.Ldc_I4_S, (sbyte)RoleTypeId.Scp0492),
-                    new(OpCodes.Bne_Un_S, jcc),
-
-                    // return
-                    new CodeInstruction(OpCodes.Ret).WithLabels(jmp),
-
                     // announcement = ev.TerminationCause
-                    new CodeInstruction(OpCodes.Ldloc_S, ev.LocalIndex).WithLabels(jcc),
+                    new(OpCodes.Ldloc_S, ev.LocalIndex),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(AnnouncingScpTerminationEventArgs), nameof(AnnouncingScpTerminationEventArgs.TerminationCause))),
                     new(OpCodes.Stloc_0),
                 });

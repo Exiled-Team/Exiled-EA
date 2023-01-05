@@ -39,7 +39,7 @@ namespace Exiled.Events.Patches.Generic
         {
             try
             {
-                if (query.Equals("$0 1"))
+                if (query.StartsWith("$", StringComparison.Ordinal))
                     return;
 
                 Player player = sender is PlayerCommandSender playerCommandSender ? Player.Get(playerCommandSender) : Server.Host;
