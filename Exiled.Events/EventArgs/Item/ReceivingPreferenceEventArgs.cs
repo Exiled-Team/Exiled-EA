@@ -12,6 +12,7 @@ namespace Exiled.Events.EventArgs.Item
 
     using API.Features;
     using API.Structs;
+    using Exiled.API.Enums;
     using Exiled.API.Extensions;
     using Interfaces;
 
@@ -41,7 +42,7 @@ namespace Exiled.Events.EventArgs.Item
         public ReceivingPreferenceEventArgs(Player player, ItemType itemType, uint currentCode, uint newCode, bool isAllowed = true)
         {
             Player = player;
-            Item = itemType;
+            Item = itemType.GetFirearmType();
             CurrentAttachmentIdentifiers = Item.GetAttachmentIdentifiers(currentCode);
             NewAttachmentIdentifiers = Item.GetAttachmentIdentifiers(newCode).ToList();
             CurrentCode = currentCode;
@@ -49,9 +50,9 @@ namespace Exiled.Events.EventArgs.Item
         }
 
         /// <summary>
-        ///     Gets the <see cref="ItemType" /> which is being modified.
+        ///     Gets the <see cref="FirearmType" /> which is being modified.
         /// </summary>
-        public ItemType Item { get; }
+        public FirearmType Item { get; }
 
         /// <summary>
         ///     Gets the old <see cref="AttachmentIdentifier" />[].
