@@ -42,42 +42,42 @@ namespace Exiled.API.Extensions
         /// Check if an <see cref="ItemType">item</see> is an SCP.
         /// </summary>
         /// <param name="type">The item to be checked.</param>
-        /// <returns>Returns whether the <see cref="ItemType"/> is an SCP or not.</returns>
+        /// <returns>Returns whether or not the <see cref="ItemType"/> is an SCP.</returns>
         public static bool IsScp(this ItemType type) => type is ItemType.SCP018 or ItemType.SCP500 or ItemType.SCP268 or ItemType.SCP207 or ItemType.SCP244a or ItemType.SCP244b or ItemType.SCP2176 or ItemType.SCP1853;
 
         /// <summary>
         /// Check if an <see cref="ItemType">item</see> is a throwable item.
         /// </summary>
         /// <param name="type">The item to be checked.</param>
-        /// <returns>Returns whether the <see cref="ItemType"/> is a throwable item or not.</returns>
+        /// <returns>Returns whether or not the <see cref="ItemType"/> is a throwable item.</returns>
         public static bool IsThrowable(this ItemType type) => type is ItemType.SCP018 or ItemType.GrenadeHE or ItemType.GrenadeFlash or ItemType.SCP2176;
 
         /// <summary>
         /// Check if an <see cref="ItemType">item</see> is a medical item.
         /// </summary>
         /// <param name="type">The item to be checked.</param>
-        /// <returns>Returns whether the <see cref="ItemType"/> is a medical item or not.</returns>
+        /// <returns>Returns whether or not the <see cref="ItemType"/> is a medical item.</returns>
         public static bool IsMedical(this ItemType type) => type is ItemType.Painkillers or ItemType.Medkit or ItemType.SCP500 or ItemType.Adrenaline;
 
         /// <summary>
         /// Check if an <see cref="ItemType">item</see> is a utility item.
         /// </summary>
         /// <param name="type">The item to be checked.</param>
-        /// <returns>Returns whether the <see cref="ItemType"/> is an utilty item or not.</returns>
+        /// <returns>Returns whether or not the <see cref="ItemType"/> is an utilty item.</returns>
         public static bool IsUtility(this ItemType type) => type is ItemType.Flashlight or ItemType.Radio;
 
         /// <summary>
         /// Check if a <see cref="ItemType"/> is an armor item.
         /// </summary>
         /// <param name="type">The item to be checked.</param>
-        /// <returns>Returns whether the <see cref="ItemType"/> is an armor or not.</returns>
+        /// <returns>Returns whether or not the <see cref="ItemType"/> is an armor.</returns>
         public static bool IsArmor(this ItemType type) => type is ItemType.ArmorCombat or ItemType.ArmorHeavy or ItemType.ArmorLight;
 
         /// <summary>
         /// Check if an <see cref="ItemType">item</see> is a keycard.
         /// </summary>
         /// <param name="type">The item to be checked.</param>
-        /// <returns>Returns whether the <see cref="ItemType"/> is a keycard or not.</returns>
+        /// <returns>Returns whether or not the <see cref="ItemType"/> is a keycard.</returns>
         public static bool IsKeycard(this ItemType type) => type is ItemType.KeycardJanitor or ItemType.KeycardScientist or
             ItemType.KeycardResearchCoordinator or ItemType.KeycardZoneManager or ItemType.KeycardGuard or ItemType.KeycardNTFOfficer or
             ItemType.KeycardContainmentEngineer or ItemType.KeycardNTFLieutenant or ItemType.KeycardNTFCommander or
