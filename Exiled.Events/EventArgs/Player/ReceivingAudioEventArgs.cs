@@ -50,7 +50,18 @@ namespace Exiled.Events.EventArgs.Player
             BypassAudioValidateReceive = false;
             BypassAudioValidateSend = false;
             Channel = msg.Channel;
+            CustomChat = false;
         }
+
+        /// <summary>
+        /// Players to send audio to if <see cref="CustomChat"/> is enabled.
+        /// </summary>
+        public HashSet<ReferenceHub> CustomConnectionPlayers { get;} = new();
+
+        /// <summary>
+        /// Set whether message should be shared to everyone or specific individuals with <see cref="CustomConnectionPlayers"/>
+        /// </summary>
+        public bool CustomChat { get; set; }
 
         /// <summary>
         /// Voice channel for player.
@@ -91,7 +102,7 @@ namespace Exiled.Events.EventArgs.Player
         /// <summary>
         /// Players who should not receive audio, Referencehub for efficiency.
         /// </summary>
-        public HashSet<ReferenceHub> PlayersToNotReceiveAudio { get; set; }
+        public HashSet<ReferenceHub> PlayersToNotReceiveAudio { get; } = new();
 
         /// <summary>
         /// Whether the current checks for allowing audio for each role should be ran

@@ -1,13 +1,16 @@
 ﻿using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Emit;
+using System.Text;
 using Exiled.Events.EventArgs.Player;
 using HarmonyLib;
 using Mirror;
 using NorthwoodLib.Pools;
 using PlayerRoles;
+using PlayerRoles.PlayableScps.Scp049;
 using PlayerRoles.Voice;
 using PluginAPI.Core;
+using UnityEngine;
 using VoiceChat;
 using VoiceChat.Networking;
 
@@ -73,7 +76,7 @@ namespace Exiled.Events.Patches.Events.Player
             }
 
             VcMuteFlags flags = VoiceChatMutes.GetFlags(msg.Speaker);
-            if (flags == VcMuteFlags.GlobalRegular || flags == VcMuteFlags.LocalRegular)
+            if (flags is VcMuteFlags.GlobalRegular or VcMuteFlags.LocalRegular)
             {
                 return;
             }
@@ -90,30 +93,56 @@ namespace Exiled.Events.Patches.Events.Player
             }
 
             voiceRole.VoiceModule.CurrentChannel = voiceChatChannel;
-            foreach (ReferenceHub referenceHub in ReferenceHub.AllHubs)
-            {
-                // Should not self-send, and should not send to server host.
-                if (referenceHub == msg.Speaker || referenceHub == API.Features.Server.Host.ReferenceHub)
-                {
-                    continue;
-                }
 
-                IVoiceRole voiceRole2;
-                if ((voiceRole2 = referenceHub.roleManager.CurrentRole as IVoiceRole) != null)
+            if (playerAudioEvent.CustomChat)
+            {
+                foreach (ReferenceHub customConnectionPlayer in playerAudioEvent.CustomConnectionPlayers)
                 {
-                    VoiceChatChannel voiceChannelOfNewClient = playerAudioEvent.Channel;
-                    if (!playerAudioEvent.BypassAudioValidateReceive)
+                    Log.Info($"Sending custom chat from {msg.Speaker.name} to {customConnectionPlayer.name} in channel {voiceChatChannel}");
+                    handleSendingAudio(customConnectionPlayer, playerAudioEvent, msg, voiceChatChannel);
+                }
+            }
+            else
+            {
+                foreach (ReferenceHub referenceHub in ReferenceHub.AllHubs)
+                {
+                    // Should not self-send, and should not send to server host.
+                    if (referenceHub == msg.Speaker || referenceHub == API.Features.Server.Host.ReferenceHub)
                     {
-                        voiceChannelOfNewClient = voiceRole2.VoiceModule.ValidateReceive(msg.Speaker, voiceChatChannel);
+                        continue;
                     }
 
-                    if (voiceChannelOfNewClient == VoiceChatChannel.None || playerAudioEvent.PlayersToNotReceiveAudio.Contains(referenceHub))
-                        continue;
-                    msg.Channel = voiceChannelOfNewClient;
-                    referenceHub.connectionToClient.Send(msg);
+                    handleSendingAudio(referenceHub, playerAudioEvent, msg, voiceChatChannel);
                 }
             }
         }
 
+        private static void handleSendingAudio(ReferenceHub referenceHub, ReceivingAudioEventArgs playerAudioEvent, VoiceMessage msg, VoiceChatChannel voiceChatChannel)
+        {
+            IVoiceRole voiceRole2;
+            if ((voiceRole2 = referenceHub.roleManager.CurrentRole as IVoiceRole) != null)
+            {
+                VoiceChatChannel voiceChannelOfNewClient = playerAudioEvent.Channel;
+                if (!playerAudioEvent.BypassAudioValidateReceive)
+                {
+                    voiceChannelOfNewClient = voiceRole2.VoiceModule.ValidateReceive(msg.Speaker, voiceChatChannel);
+                }
+
+                if (voiceChannelOfNewClient == VoiceChatChannel.None || playerAudioEvent.PlayersToNotReceiveAudio.Contains(referenceHub))
+                    return;
+
+                msg.Channel = voiceChannelOfNewClient;
+                referenceHub.connectionToClient.Send(msg);
+
+            }
+        }
+
+        public static string ByteArrayToString(byte[] ba)
+        {
+            StringBuilder hex = new StringBuilder(ba.Length * 2);
+            foreach (byte b in ba)
+                hex.AppendFormat("{0:x2}", b);
+            return hex.ToString();
+        }
     }
 }
