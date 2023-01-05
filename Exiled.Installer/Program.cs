@@ -42,7 +42,7 @@ namespace Exiled.Installer
 
     internal static class Program
     {
-        private const long RepoID = 568270546;
+        private const long RepoID = 231269519;
         private const string ExiledAssetName = "exiled.tar.gz";
 
         private static readonly Version VersionLimit = new("2.0.0");

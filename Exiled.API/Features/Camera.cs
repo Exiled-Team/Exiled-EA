@@ -210,7 +210,7 @@ namespace Exiled.API.Features
         public float Zoom => Base.ZoomAxis.CurrentZoom;
 
         /// <summary>
-        /// Gets or sets a value indicating whether this camera is being used by SCP-079.
+        /// Gets or sets a value indicating whether or not this camera is being used by SCP-079.
         /// </summary>
         public bool IsBeingUsed
         {
@@ -233,21 +233,21 @@ namespace Exiled.API.Features
         public static Camera Get(Scp079Camera camera079) => Camera079ToCamera.TryGetValue(camera079, out Camera camera) ? camera : new(camera079);
 
         /// <summary>
-        /// Gets a <see cref="Camera"/> given the specified id.
+        /// Gets a <see cref="Camera"/> given the specified <paramref name="cameraId"/>.
         /// </summary>
         /// <param name="cameraId">The camera id to be searched for.</param>
         /// <returns>The <see cref="Camera"/> with the given id or <see langword="null"/> if not found.</returns>
         public static Camera Get(uint cameraId) => List.FirstOrDefault(camera => camera.Id == cameraId);
 
         /// <summary>
-        /// Gets a <see cref="Camera"/> given the specified name.
+        /// Gets a <see cref="Camera"/> given the specified <paramref name="cameraName"/>.
         /// </summary>
         /// <param name="cameraName">The name of the camera.</param>
         /// <returns>The <see cref="Camera"/> or <see langword="null"/> if not found.</returns>
         public static Camera Get(string cameraName) => List.FirstOrDefault(camera => camera.Name == cameraName);
 
         /// <summary>
-        /// Gets a <see cref="Camera"/> given the specified <see cref="CameraType"/>.
+        /// Gets a <see cref="Camera"/> given the specified <paramref name="cameraType"/>.
         /// </summary>
         /// <param name="cameraType">The <see cref="CameraType"/> to search for.</param>
         /// <returns>The <see cref="Camera"/> with the given <see cref="CameraType"/> or <see langword="null"/> if not found.</returns>

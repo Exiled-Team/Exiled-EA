@@ -34,14 +34,14 @@ namespace Exiled.API.Features.Items
     public class Firearm : Item
     {
         /// <summary>
-        /// A <see cref="List{T}"/> of <see cref="Firearm"/> which contains all the existing firearms based on all the <see cref="ItemType"/>s.
+        /// A <see cref="List{T}"/> of <see cref="Firearm"/> which contains all the existing firearms based on all the <see cref="FirearmType"/>s.
         /// </summary>
-        internal static readonly Dictionary<ItemType, Firearm> ItemTypeToFirearmInstance = new();
+        internal static readonly Dictionary<FirearmType, Firearm> ItemTypeToFirearmInstance = new();
 
         /// <summary>
-        /// Gets a <see cref="Dictionary{TKey, TValue}"/> which contains all the base codes expressed in <see cref="ItemType"/> and <see cref="uint"/>.
+        /// Gets a <see cref="Dictionary{TKey, TValue}"/> which contains all the base codes expressed in <see cref="FirearmType"/> and <see cref="uint"/>.
         /// </summary>
-        internal static readonly Dictionary<ItemType, uint> BaseCodesValue = new();
+        internal static readonly Dictionary<FirearmType, uint> BaseCodesValue = new();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Firearm"/> class.
@@ -68,28 +68,28 @@ namespace Exiled.API.Features.Items
         }
 
         /// <inheritdoc cref="BaseCodesValue"/>.
-        public static IReadOnlyDictionary<ItemType, uint> BaseCodes => BaseCodesValue;
+        public static IReadOnlyDictionary<FirearmType, uint> BaseCodes => BaseCodesValue;
 
         /// <inheritdoc cref="AvailableAttachmentsValue"/>.
-        public static IReadOnlyDictionary<ItemType, AttachmentIdentifier[]> AvailableAttachments => AvailableAttachmentsValue;
+        public static IReadOnlyDictionary<FirearmType, AttachmentIdentifier[]> AvailableAttachments => AvailableAttachmentsValue;
 
         /// <summary>
         /// Gets a <see cref="Dictionary{TKey, TValue}"/> which represents all the preferences for each <see cref="Player"/>.
         /// </summary>
-        public static IReadOnlyDictionary<Player, Dictionary<ItemType, AttachmentIdentifier[]>> PlayerPreferences
+        public static IReadOnlyDictionary<Player, Dictionary<FirearmType, AttachmentIdentifier[]>> PlayerPreferences
         {
             get
             {
-                IEnumerable<KeyValuePair<Player, Dictionary<ItemType, AttachmentIdentifier[]>>> playerPreferences =
+                IEnumerable<KeyValuePair<Player, Dictionary<FirearmType, AttachmentIdentifier[]>>> playerPreferences =
                     AttachmentsServerHandler.PlayerPreferences.Where(
                         kvp => kvp.Key is not null).Select(
                         (KeyValuePair<ReferenceHub, Dictionary<ItemType, uint>> keyValuePair) =>
                         {
-                            return new KeyValuePair<Player, Dictionary<ItemType, AttachmentIdentifier[]>>(
+                            return new KeyValuePair<Player, Dictionary<FirearmType, AttachmentIdentifier[]>>(
                                 Player.Get(keyValuePair.Key),
                                 keyValuePair.Value.ToDictionary(
-                                    kvp => kvp.Key,
-                                    kvp => kvp.Key.GetAttachmentIdentifiers(kvp.Value).ToArray()));
+                                    kvp => kvp.Key.GetFirearmType(),
+                                    kvp => kvp.Key.GetFirearmType().GetAttachmentIdentifiers(kvp.Value).ToArray()));
                         });
 
                 return playerPreferences.Where(kvp => kvp.Key is not null).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
@@ -116,6 +116,11 @@ namespace Exiled.API.Features.Items
         public byte MaxAmmo => Base.AmmoManagerModule.MaxAmmo;
 
         /// <summary>
+        /// Gets the <see cref="Enums.FirearmType"/> of the firearm.
+        /// </summary>
+        public FirearmType FirearmType => Type.GetFirearmType();
+
+        /// <summary>
         /// Gets the <see cref="Enums.AmmoType"/> of the firearm.
         /// </summary>
         public AmmoType AmmoType => Base.AmmoType.GetAmmoType();
@@ -131,6 +136,11 @@ namespace Exiled.API.Features.Items
         public bool FlashlightEnabled => Base.Status.Flags.HasFlagFast(FirearmStatusFlags.FlashlightEnabled);
 
         /// <summary>
+        /// Gets a value indicating whether or not the firearm is automatic.
+        /// </summary>
+        public bool IsAutomatic => Base is AutomaticFirearm;
+
+        /// <summary>
         /// Gets the <see cref="Attachment"/>s of the firearm.
         /// </summary>
         public Attachment[] Attachments => Base.Attachments;
@@ -143,19 +153,20 @@ namespace Exiled.API.Features.Items
             get
             {
                 foreach (Attachment attachment in Attachments.Where(att => att.IsEnabled))
-                    yield return AvailableAttachments[Type].FirstOrDefault(att => att == attachment);
+                    yield return AvailableAttachments[FirearmType].FirstOrDefault(att => att == attachment);
             }
         }
 
         /// <summary>
         /// Gets the base code of the firearm.
         /// </summary>
-        public uint BaseCode => BaseCodesValue[Type];
+        public uint BaseCode => BaseCodesValue[FirearmType];
 
         /// <summary>
         /// Gets or sets the fire rate of the firearm, if it is an automatic weapon.
         /// </summary>
-        /// <exception cref="InvalidOperationException">When trying to set this value for a weapon that is semi-automatic.</exception>
+        /// <remarks>This property will not do anything if the firearm is not an automatic weapon.</remarks>
+        /// <seealso cref="IsAutomatic"/>
         public float FireRate
         {
             get => Base is AutomaticFirearm auto ? auto._fireRate : 1f;
@@ -163,15 +174,14 @@ namespace Exiled.API.Features.Items
             {
                 if (Base is AutomaticFirearm auto)
                     auto._fireRate = value;
-                else
-                    throw new InvalidOperationException("You cannot change the fire rate of non-automatic weapons.");
             }
         }
 
         /// <summary>
         /// Gets or sets the recoil settings of the firearm, if it's an automatic weapon.
         /// </summary>
-        /// <exception cref="InvalidOperationException">When trying to set this value for a weapon that is semi-automatic.</exception>
+        /// <remarks>This property will not do anything if the firearm is not an automatic weapon.</remarks>
+        /// <seealso cref="IsAutomatic"/>
         public RecoilSettings Recoil
         {
             get => Base is AutomaticFirearm auto ? auto._recoil : default;
@@ -179,15 +189,26 @@ namespace Exiled.API.Features.Items
             {
                 if (Base is AutomaticFirearm auto)
                     auto.ActionModule = new AutomaticAction(Base, auto._semiAutomatic, auto._boltTravelTime, 1f / auto._fireRate, auto._dryfireClipId, auto._triggerClipId, auto._gunshotPitchRandomization, value, auto._recoilPattern, false, Mathf.Max(1, auto._chamberSize));
-                else
-                    throw new InvalidOperationException("You cannot change the recoil pattern of non-automatic weapons.");
             }
         }
 
         /// <summary>
+        /// Gets the firearm's <see cref="FirearmRecoilPattern"/>. Will be <see langword="null"/> for non-automatic weapons.
+        /// </summary>
+        public FirearmRecoilPattern RecoilPattern => Base is AutomaticFirearm auto ? auto._recoilPattern : null;
+
+        /// <summary>
         /// Gets a <see cref="Dictionary{TKey, TValue}"/> of <see cref="ItemType"/> and <see cref="AttachmentIdentifier"/>[] which contains all available attachments for all firearms.
         /// </summary>
-        internal static Dictionary<ItemType, AttachmentIdentifier[]> AvailableAttachmentsValue { get; } = new();
+        internal static Dictionary<FirearmType, AttachmentIdentifier[]> AvailableAttachmentsValue { get; } = new();
+
+        /// <summary>
+        /// Creates and returns a <see cref="Firearm"/> representing the provided <see cref="Enums.FirearmType"/>.
+        /// </summary>
+        /// <param name="type">The type of firearm to create.</param>
+        /// <returns>The newly created firearm.</returns>
+        public static Firearm Create(FirearmType type)
+            => type is not FirearmType.None ? (Firearm)Create(type.GetItemType()) : null;
 
         /// <summary>
         /// Adds a <see cref="AttachmentIdentifier"/> to the firearm.
@@ -210,7 +231,7 @@ namespace Exiled.API.Features.Items
             }
 
             uint newCode = identifier.Code == 0
-                ? AvailableAttachments[Type].FirstOrDefault(
+                ? AvailableAttachments[FirearmType].FirstOrDefault(
                     attId =>
                         attId.Name == identifier.Name).Code
                 : identifier.Code;
@@ -223,7 +244,7 @@ namespace Exiled.API.Features.Items
         /// Adds a <see cref="Attachment"/> of the specified <see cref="AttachmentName"/> to the firearm.
         /// </summary>
         /// <param name="attachmentName">The <see cref="AttachmentName"/> to add.</param>
-        public void AddAttachment(AttachmentName attachmentName) => AddAttachment(AttachmentIdentifier.Get(Type, attachmentName));
+        public void AddAttachment(AttachmentName attachmentName) => AddAttachment(AttachmentIdentifier.Get(FirearmType, attachmentName));
 
         /// <summary>
         /// Adds a <see cref="IEnumerable{T}"/> of <see cref="AttachmentIdentifier"/> to the firearm.
@@ -270,7 +291,7 @@ namespace Exiled.API.Features.Items
         /// <param name="attachmentName">The <see cref="AttachmentName"/> to remove.</param>
         public void RemoveAttachment(AttachmentName attachmentName)
         {
-            uint code = AttachmentIdentifier.Get(Type, attachmentName).Code;
+            uint code = AttachmentIdentifier.Get(FirearmType, attachmentName).Code;
 
             Base.ApplyAttachmentsCode(Base.GetCurrentAttachmentsCode() & ~code, true);
 
@@ -291,7 +312,7 @@ namespace Exiled.API.Features.Items
             if (firearmAttachment is null)
                 return;
 
-            uint code = AvailableAttachments[Type].FirstOrDefault(attId => attId == firearmAttachment).Code;
+            uint code = AvailableAttachments[FirearmType].FirstOrDefault(attId => attId == firearmAttachment).Code;
 
             Base.ApplyAttachmentsCode(Base.GetCurrentAttachmentsCode() & ~code, true);
 
@@ -374,7 +395,7 @@ namespace Exiled.API.Features.Items
             if (Attachments.All(attachment => attachment.Name != attachmentName))
                 return false;
 
-            firearmAttachment = GetAttachment(AttachmentIdentifier.Get(Type, attachmentName));
+            firearmAttachment = GetAttachment(AttachmentIdentifier.Get(FirearmType, attachmentName));
 
             return true;
         }
@@ -383,17 +404,17 @@ namespace Exiled.API.Features.Items
         /// Adds or replaces an existing preference to the <see cref="PlayerPreferences"/>.
         /// </summary>
         /// <param name="player">The <see cref="Player"/> of which must be added.</param>
-        /// <param name="itemType">The <see cref="ItemType"/> to add.</param>
+        /// <param name="itemType">The <see cref="Enums.FirearmType"/> to add.</param>
         /// <param name="attachments">The <see cref="AttachmentIdentifier"/>[] to add.</param>
-        public void AddPreference(Player player, ItemType itemType, AttachmentIdentifier[] attachments)
+        public void AddPreference(Player player, FirearmType itemType, AttachmentIdentifier[] attachments)
         {
-            foreach (KeyValuePair<Player, Dictionary<ItemType, AttachmentIdentifier[]>> kvp in PlayerPreferences)
+            foreach (KeyValuePair<Player, Dictionary<FirearmType, AttachmentIdentifier[]>> kvp in PlayerPreferences)
             {
                 if (kvp.Key != player)
                     continue;
 
                 if (AttachmentsServerHandler.PlayerPreferences.TryGetValue(player.ReferenceHub, out Dictionary<ItemType, uint> dictionary))
-                    dictionary[itemType] = attachments.GetAttachmentsCode();
+                    dictionary[itemType.GetItemType()] = attachments.GetAttachmentsCode();
             }
         }
 
@@ -401,17 +422,17 @@ namespace Exiled.API.Features.Items
         /// Adds or replaces an existing preference to the <see cref="PlayerPreferences"/>.
         /// </summary>
         /// <param name="player">The <see cref="Player"/> of which must be added.</param>
-        /// <param name="preference">The <see cref="KeyValuePair{TKey, TValue}"/> of <see cref="ItemType"/> and <see cref="AttachmentIdentifier"/>[] to add.</param>
-        public void AddPreference(Player player, KeyValuePair<ItemType, AttachmentIdentifier[]> preference) => AddPreference(player, preference.Key, preference.Value);
+        /// <param name="preference">The <see cref="KeyValuePair{TKey, TValue}"/> of <see cref="Enums.FirearmType"/> and <see cref="AttachmentIdentifier"/>[] to add.</param>
+        public void AddPreference(Player player, KeyValuePair<FirearmType, AttachmentIdentifier[]> preference) => AddPreference(player, preference.Key, preference.Value);
 
         /// <summary>
         /// Adds or replaces an existing preference to the <see cref="PlayerPreferences"/>.
         /// </summary>
         /// <param name="player">The <see cref="Player"/> of which must be added.</param>
-        /// <param name="preference">The <see cref="Dictionary{TKey, TValue}"/> of <see cref="ItemType"/> and <see cref="AttachmentIdentifier"/>[] to add.</param>
-        public void AddPreference(Player player, Dictionary<ItemType, AttachmentIdentifier[]> preference)
+        /// <param name="preference">The <see cref="Dictionary{TKey, TValue}"/> of <see cref="Enums.FirearmType"/> and <see cref="AttachmentIdentifier"/>[] to add.</param>
+        public void AddPreference(Player player, Dictionary<FirearmType, AttachmentIdentifier[]> preference)
         {
-            foreach (KeyValuePair<ItemType, AttachmentIdentifier[]> kvp in preference)
+            foreach (KeyValuePair<FirearmType, AttachmentIdentifier[]> kvp in preference)
                 AddPreference(player, kvp);
         }
 
@@ -419,20 +440,20 @@ namespace Exiled.API.Features.Items
         /// Adds or replaces an existing preference to the <see cref="PlayerPreferences"/>.
         /// </summary>
         /// <param name="players">The <see cref="IEnumerable{T}"/> of <see cref="Player"/> of which must be added.</param>
-        /// <param name="itemType">The <see cref="ItemType"/> to add.</param>
+        /// <param name="type">The <see cref="Enums.FirearmType"/> to add.</param>
         /// <param name="attachments">The <see cref="AttachmentIdentifier"/>[] to add.</param>
-        public void AddPreference(IEnumerable<Player> players, ItemType itemType, AttachmentIdentifier[] attachments)
+        public void AddPreference(IEnumerable<Player> players, FirearmType type, AttachmentIdentifier[] attachments)
         {
             foreach (Player player in players)
-                AddPreference(player, itemType, attachments);
+                AddPreference(player, type, attachments);
         }
 
         /// <summary>
         /// Adds or replaces an existing preference to the <see cref="PlayerPreferences"/>.
         /// </summary>
         /// <param name="players">The <see cref="IEnumerable{T}"/> of <see cref="Player"/> of which must be added.</param>
-        /// <param name="preference">The <see cref="KeyValuePair{TKey, TValue}"/> of <see cref="ItemType"/> and <see cref="AttachmentIdentifier"/>[] to add.</param>
-        public void AddPreference(IEnumerable<Player> players, KeyValuePair<ItemType, AttachmentIdentifier[]> preference)
+        /// <param name="preference">The <see cref="KeyValuePair{TKey, TValue}"/> of <see cref="Enums.FirearmType"/> and <see cref="AttachmentIdentifier"/>[] to add.</param>
+        public void AddPreference(IEnumerable<Player> players, KeyValuePair<FirearmType, AttachmentIdentifier[]> preference)
         {
             foreach (Player player in players)
                 AddPreference(player, preference.Key, preference.Value);
@@ -442,10 +463,10 @@ namespace Exiled.API.Features.Items
         /// Adds or replaces an existing preference to the <see cref="PlayerPreferences"/>.
         /// </summary>
         /// <param name="players">The <see cref="IEnumerable{T}"/> of <see cref="Player"/> of which must be added.</param>
-        /// <param name="preference">The <see cref="Dictionary{TKey, TValue}"/> of <see cref="ItemType"/> and <see cref="AttachmentIdentifier"/>[] to add.</param>
-        public void AddPreference(IEnumerable<Player> players, Dictionary<ItemType, AttachmentIdentifier[]> preference)
+        /// <param name="preference">The <see cref="Dictionary{TKey, TValue}"/> of <see cref="Enums.FirearmType"/> and <see cref="AttachmentIdentifier"/>[] to add.</param>
+        public void AddPreference(IEnumerable<Player> players, Dictionary<FirearmType, AttachmentIdentifier[]> preference)
         {
-            foreach ((Player player, KeyValuePair<ItemType, AttachmentIdentifier[]> kvp) in players.SelectMany(player => preference.Select(kvp => (player, kvp))))
+            foreach ((Player player, KeyValuePair<FirearmType, AttachmentIdentifier[]> kvp) in players.SelectMany(player => preference.Select(kvp => (player, kvp))))
                 AddPreference(player, kvp);
         }
 
@@ -453,16 +474,16 @@ namespace Exiled.API.Features.Items
         /// Removes a preference from the <see cref="PlayerPreferences"/> if it already exists.
         /// </summary>
         /// <param name="player">The <see cref="Player"/> of which must be removed.</param>
-        /// <param name="itemType">The <see cref="ItemType"/> to remove.</param>
-        public void RemovePreference(Player player, ItemType itemType)
+        /// <param name="type">The <see cref="Enums.FirearmType"/> to remove.</param>
+        public void RemovePreference(Player player, FirearmType type)
         {
-            foreach (KeyValuePair<Player, Dictionary<ItemType, AttachmentIdentifier[]>> kvp in PlayerPreferences)
+            foreach (KeyValuePair<Player, Dictionary<FirearmType, AttachmentIdentifier[]>> kvp in PlayerPreferences)
             {
                 if (kvp.Key != player)
                     continue;
 
                 if (AttachmentsServerHandler.PlayerPreferences.TryGetValue(player.ReferenceHub, out Dictionary<ItemType, uint> dictionary))
-                    dictionary[itemType] = itemType.GetBaseCode();
+                    dictionary[type.GetItemType()] = type.GetBaseCode();
             }
         }
 
@@ -470,21 +491,21 @@ namespace Exiled.API.Features.Items
         /// Removes a preference from the <see cref="PlayerPreferences"/> if it already exists.
         /// </summary>
         /// <param name="players">The <see cref="IEnumerable{T}"/> of <see cref="Player"/> of which must be removed.</param>
-        /// <param name="itemType">The <see cref="ItemType"/> to remove.</param>
-        public void RemovePreference(IEnumerable<Player> players, ItemType itemType)
+        /// <param name="type">The <see cref="Enums.FirearmType"/> to remove.</param>
+        public void RemovePreference(IEnumerable<Player> players, FirearmType type)
         {
             foreach (Player player in players)
-                RemovePreference(player, itemType);
+                RemovePreference(player, type);
         }
 
         /// <summary>
         /// Removes a preference from the <see cref="PlayerPreferences"/> if it already exists.
         /// </summary>
         /// <param name="player">The <see cref="Player"/> of which must be removed.</param>
-        /// <param name="itemTypes">The <see cref="IEnumerable{T}"/> of <see cref="ItemType"/> to remove.</param>
-        public void RemovePreference(Player player, IEnumerable<ItemType> itemTypes)
+        /// <param name="types">The <see cref="IEnumerable{T}"/> of <see cref="Enums.FirearmType"/> to remove.</param>
+        public void RemovePreference(Player player, IEnumerable<FirearmType> types)
         {
-            foreach (ItemType itemType in itemTypes)
+            foreach (FirearmType itemType in types)
                 RemovePreference(player, itemType);
         }
 
@@ -492,11 +513,11 @@ namespace Exiled.API.Features.Items
         /// Removes a preference from the <see cref="PlayerPreferences"/> if it already exists.
         /// </summary>
         /// <param name="players">The <see cref="IEnumerable{T}"/> of <see cref="Player"/> of which must be removed.</param>
-        /// <param name="itemTypes">The <see cref="IEnumerable{T}"/> of <see cref="ItemType"/> to remove.</param>
-        public void RemovePreference(IEnumerable<Player> players, IEnumerable<ItemType> itemTypes)
+        /// <param name="types">The <see cref="IEnumerable{T}"/> of <see cref="Enums.FirearmType"/> to remove.</param>
+        public void RemovePreference(IEnumerable<Player> players, IEnumerable<FirearmType> types)
         {
-            foreach ((Player player, ItemType itemType) in players.SelectMany(player => itemTypes.Select(itemType => (player, itemType))))
-                RemovePreference(player, itemType);
+            foreach ((Player player, FirearmType firearmType) in players.SelectMany(player => types.Select(itemType => (player, itemType))))
+                RemovePreference(player, firearmType);
         }
 
         /// <summary>
@@ -508,7 +529,7 @@ namespace Exiled.API.Features.Items
             if (AttachmentsServerHandler.PlayerPreferences.TryGetValue(player.ReferenceHub, out Dictionary<ItemType, uint> dictionary))
             {
                 foreach (KeyValuePair<ItemType, uint> kvp in dictionary)
-                    dictionary[kvp.Key] = kvp.Key.GetBaseCode();
+                    dictionary[kvp.Key] = kvp.Key.GetFirearmType().GetBaseCode();
             }
         }
 

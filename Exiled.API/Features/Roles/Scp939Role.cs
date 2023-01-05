@@ -11,10 +11,10 @@ namespace Exiled.API.Features.Roles
 
     using PlayerRoles;
     using PlayerRoles.PlayableScps.HumeShield;
-    using PlayerRoles.PlayableScps.Scp173;
     using PlayerRoles.PlayableScps.Scp939;
     using PlayerRoles.PlayableScps.Scp939.Mimicry;
     using PlayerRoles.PlayableScps.Subroutines;
+    using UnityEngine;
 
     using Scp939GameRole = PlayerRoles.PlayableScps.Scp939.Scp939Role;
 
@@ -32,6 +32,36 @@ namespace Exiled.API.Features.Roles
         {
             SubroutineModule = baseRole.SubroutineModule;
             HumeShieldModule = baseRole.HumeShieldModule;
+
+            if (!SubroutineModule.TryGetSubroutine(out Scp939ClawAbility sp939ClawAbility))
+                Log.Error("Scp939ClawAbility not found in Scp939Role::ctor");
+
+            ClawAbility = sp939ClawAbility;
+
+            if (!SubroutineModule.TryGetSubroutine(out Scp939FocusAbility scp939FocusAbility))
+                Log.Error("Scp939FocusAbility not found in Scp939Role::ctor");
+
+            FocusAbility = scp939FocusAbility;
+
+            if (!SubroutineModule.TryGetSubroutine(out Scp939LungeAbility scp939LungeAbility))
+                Log.Error("Scp939LungeAbility not found in Scp939Role::ctor");
+
+            LungeAbility = scp939LungeAbility;
+
+            if (!SubroutineModule.TryGetSubroutine(out Scp939AmnesticCloudAbility scp939AmnesticCloudAbility))
+                Log.Error("Scp939AmnesticCloudAbility not found in Scp939Role::ctor");
+
+            AmnesticCloudAbility = scp939AmnesticCloudAbility;
+
+            if (!SubroutineModule.TryGetSubroutine(out EnvironmentalMimicry environmentalMimicry))
+                Log.Error("EnvironmentalMimicry not found in Scp939Role::ctor");
+
+            EnvironmentalMimicry = environmentalMimicry;
+
+            if (!SubroutineModule.TryGetSubroutine(out MimicryRecorder mimicryRecorder))
+                Log.Error("MimicryRecorder not found in Scp939Role::ctor");
+
+            MimicryRecorder = mimicryRecorder;
         }
 
         /// <inheritdoc/>
@@ -44,59 +74,73 @@ namespace Exiled.API.Features.Roles
         public HumeShieldModuleBase HumeShieldModule { get; }
 
         /// <summary>
+        /// Gets SCP-939's <see cref="Scp939ClawAbility"/>.
+        /// </summary>
+        public Scp939ClawAbility ClawAbility { get; }
+
+        /// <summary>
+        /// Gets SCP-939's <see cref="Scp939FocusAbility"/>.
+        /// </summary>
+        public Scp939FocusAbility FocusAbility { get; }
+
+        /// <summary>
+        /// Gets SCP-939's <see cref="Scp939LungeAbility"/>.
+        /// </summary>
+        public Scp939LungeAbility LungeAbility { get; }
+
+        /// <summary>
+        /// Gets SCP-939's <see cref="Scp939AmnesticCloudAbility"/>.
+        /// </summary>
+        public Scp939AmnesticCloudAbility AmnesticCloudAbility { get; }
+
+        /// <summary>
+        /// Gets SCP-939's <see cref="PlayerRoles.PlayableScps.Scp939.Mimicry.EnvironmentalMimicry"/>.
+        /// </summary>
+        public EnvironmentalMimicry EnvironmentalMimicry { get; }
+
+        /// <summary>
+        /// Gets SCP-939's <see cref="PlayerRoles.PlayableScps.Scp939.Mimicry.MimicryRecorder"/>.
+        /// </summary>
+        public MimicryRecorder MimicryRecorder { get; }
+
+        /// <summary>
         /// Gets or sets the amount of time before SCP-939 can attack again.
         /// </summary>
         public float AttackCooldown
         {
-            get => SubroutineModule.TryGetSubroutine(out Scp939ClawAbility ability) ? ability.Cooldown.Remaining : 0f;
+            get => ClawAbility.Cooldown.Remaining;
             set
             {
-                if (SubroutineModule.TryGetSubroutine(out Scp939ClawAbility ability))
-                {
-                    ability.Cooldown.Remaining = value;
-                    ability.ServerSendRpc(true);
-                }
+                ClawAbility.Cooldown.Remaining = value;
+                ClawAbility.ServerSendRpc(true);
             }
         }
 
         /// <summary>
         /// Gets a value indicating whether or not SCP-939 is currently using its focus ability.
         /// </summary>
-        public bool IsFocused => SubroutineModule.TryGetSubroutine(out Scp939FocusAbility focus) && focus.TargetState;
+        public bool IsFocused => FocusAbility.TargetState;
 
         /// <summary>
         /// Gets a value indicating whether or not SCP-939 is currently lunging.
         /// </summary>
-        public bool IsLunging => SubroutineModule.TryGetSubroutine(out Scp939LungeAbility ability) && ability.State != Scp939LungeState.None;
+        public bool IsLunging => LungeAbility.State is not Scp939LungeState.None;
 
         /// <summary>
-        /// Gets or sets SCP-939's <see cref="Scp939LungeState"/>.
+        /// Gets SCP-939's <see cref="Scp939LungeState"/>.
         /// </summary>
-        public Scp939LungeState State
-        {
-            get => SubroutineModule.TryGetSubroutine(out Scp939LungeAbility ability) ? ability.State : Scp939LungeState.None;
-            set
-            {
-                if (!SubroutineModule.TryGetSubroutine(out Scp939LungeAbility ability))
-                    return;
-
-                ability.State = value;
-            }
-        }
+        public Scp939LungeState LungeState => LungeAbility.State;
 
         /// <summary>
         /// Gets or sets the amount of time before SCP-939 can use its amnestic cloud ability again.
         /// </summary>
         public float AmnesticCloudCooldown
         {
-            get => SubroutineModule.TryGetSubroutine(out Scp939AmnesticCloudAbility ability) ? ability.Cooldown.Remaining : 0f;
+            get => AmnesticCloudAbility.Cooldown.Remaining;
             set
             {
-                if (SubroutineModule.TryGetSubroutine(out Scp939AmnesticCloudAbility ability))
-                {
-                    ability.Cooldown.Remaining = value;
-                    ability.ServerSendRpc(true);
-                }
+                AmnesticCloudAbility.Cooldown.Remaining = value;
+                AmnesticCloudAbility.ServerSendRpc(true);
             }
         }
 
@@ -105,31 +149,28 @@ namespace Exiled.API.Features.Roles
         /// </summary>
         public float MimicryCooldown
         {
-            get => SubroutineModule.TryGetSubroutine(out EnvironmentalMimicry ability) ? ability.Cooldown.Remaining : 0f;
+            get => EnvironmentalMimicry.Cooldown.Remaining;
             set
             {
-                if (SubroutineModule.TryGetSubroutine(out EnvironmentalMimicry ability))
-                {
-                    ability.Cooldown.Remaining = value;
-                    ability.ServerSendRpc(true);
-                }
+                EnvironmentalMimicry.Cooldown.Remaining = value;
+                EnvironmentalMimicry.ServerSendRpc(true);
             }
         }
 
         /// <summary>
         /// Gets a value indicating the amount of voices that SCP-939 has saved.
         /// </summary>
-        public int SavedVoices => SubroutineModule.TryGetSubroutine(out MimicryRecorder ability) ? ability.SavedVoices.Count : 0;
+        public int SavedVoices => MimicryRecorder.SavedVoices.Count;
 
         /// <summary>
         /// Gets a value indicating whether or not SCP-939 has a placed mimic point.
         /// </summary>
-        public bool MimicryPointActive => SubroutineModule.TryGetSubroutine(out EnvironmentalMimicry ability) && ability._mimicPoint.Active;
+        public bool MimicryPointActive => EnvironmentalMimicry._mimicPoint.Active;
 
         /// <summary>
         /// Gets a value indicating the position of SCP-939's mimic point. May be <see langword="null"/> if <see cref="MimicryPointActive"/> is <see langword="false"/>.
         /// </summary>
-        public UnityEngine.Vector3? MimicryPointPosition => SubroutineModule.TryGetSubroutine(out EnvironmentalMimicry ability) && ability._mimicPoint.Active ? ability._mimicPoint.MimicPointTransform.position : null;
+        public Vector3? MimicryPointPosition => EnvironmentalMimicry._mimicPoint.Active ? EnvironmentalMimicry._mimicPoint.MimicPointTransform.position : null;
 
         /// <summary>
         /// Gets a list of players this SCP-939 instance can see regardless of their movement.
@@ -140,22 +181,22 @@ namespace Exiled.API.Features.Roles
         /// Removes all recordings of player voices. Provide an optional target to remove all the recordings of a single player.
         /// </summary>
         /// <param name="target">If provided, will only remove recordings of the targeted player.</param>
-        public void ClearRecordings(Player target = null)
+        public void ClearRecordings(Player target)
         {
-            if (!SubroutineModule.TryGetSubroutine(out MimicryRecorder ability))
-                return;
-
             if (target is null)
-            {
-                ability.SavedVoices.Clear();
-                ability._serverSentVoices.Clear();
-            }
-            else
-            {
-                ability.RemoveRecordingsOfPlayer(target.ReferenceHub);
-            }
+                return;
+            MimicryRecorder.RemoveRecordingsOfPlayer(target.ReferenceHub);
+            MimicryRecorder.SavedVoicesModified = true;
+        }
 
-            ability.SavedVoicesModified = true;
+        /// <summary>
+        /// Removes all recordings of player voices.
+        /// </summary>
+        public void ClearRecordings()
+        {
+            MimicryRecorder.SavedVoices.Clear();
+            MimicryRecorder._serverSentVoices.Clear();
+            MimicryRecorder.SavedVoicesModified = true;
         }
     }
 }
